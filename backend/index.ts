@@ -2,6 +2,8 @@ import express from "express";
 import * as mongoose from "mongoose";
 import cors from "cors";
 import config from "./config";
+import categoryRouter from "./routers/categories";
+import productRouter from "./routers/products";
 
 const app = express();
 const port = 8000;
@@ -9,8 +11,8 @@ const port = 8000;
 app.use(cors());
 app.use(express.json());
 //admin
-//category
-//product
+app.use('/categories', categoryRouter);
+app.use('/products', productRouter);
 app.use(express.static("public"));
 
 const run = async () => {
