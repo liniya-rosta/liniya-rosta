@@ -5,49 +5,53 @@ import User, {generateAccessToken, generateRefreshToken, JWT_REFRESH_SECRET, JWT
 
 const usersRouter = express.Router();
 
-usersRouter.post("/sessions", async (req, res, _next) => {
-    if (!req.body.email || !req.body.password) {
-        res.status(400).send({error: "Вы успешно вошли"});
-        return;
+usersRouter.post("/sessions", async (req, res, next) => {
+    try {
+        if (!req.body.email || !req.body.password) {
+            res.status(400).send({error: "Email и парль обязательны"});
+            return;
+        }
+
+        const user = await User.findOne({email: req.body.email});
+        if (!user) {
+            res.status(404).send({error: "Пользователь не найден"});
+            return;
+        }
+
+        const isMatch = await user.checkPassword(req.body.password);
+        if (!isMatch) {
+            res.status(400).send({error: "Пароль неверный"});
+            return;
+        }
+
+        const accessToken = generateAccessToken(user);
+        const refreshToken = generateRefreshToken(user);
+
+        user.refreshToken = refreshToken;
+        await user.save();
+
+        res.cookie("refreshToken", refreshToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "strict",
+            maxAge: 7 * 24 * 60 * 60 * 1000,
+        });
+
+        const safeUser = {
+            _id: user._id,
+            email: user.email,
+            role: user.role,
+            displayName: user.displayName,
+        };
+
+        res.send({
+            message: "Почта и пароль корректны",
+            user: safeUser,
+            accessToken,
+        });
+    } catch (e) {
+        next(e);
     }
-
-    const user = await User.findOne({email: req.body.email});
-    if (!user) {
-        res.status(404).send({error: "Пользователь не найден"});
-        return;
-    }
-
-    const isMatch = await user.checkPassword(req.body.password);
-    if (!isMatch) {
-        res.status(400).send({error: "Пароль неверный"});
-        return;
-    }
-
-    const accessToken = generateAccessToken(user);
-    const refreshToken = generateRefreshToken(user);
-
-    user.refreshToken = refreshToken;
-    await user.save();
-
-    res.cookie("refreshToken", refreshToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
-
-    const safeUser = {
-        _id: user._id,
-        email: user.email,
-        role: user.role,
-        displayName: user.displayName,
-    };
-
-    res.send({
-        message: "Почта и пароль корректны",
-        user: safeUser,
-        accessToken,
-    });
 });
 
 usersRouter.delete("/logout", async (req: RequestWithUser, res, next) => {

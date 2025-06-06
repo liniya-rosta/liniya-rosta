@@ -18,12 +18,12 @@ export const authAdmin = (req: RequestWithUser, res: Response, next: NextFunctio
         const payload = jwt.verify(token, JWT_SECRET) as { _id: string; role: string };
         if (payload.role !== "admin" && payload.role !== "superadmin") {
             res.status(403).send({ error: "Доступ запрещен" });
-            return
+            return;
         }
         req.user = payload;
         next();
     } catch {
         res.status(401).send({ error: "Неверный токен" });
-        return
+        return;
     }
 };
