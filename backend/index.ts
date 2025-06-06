@@ -12,8 +12,8 @@ const port = 8000;
 app.use(cors());
 app.use(express.json());
 //admin
-//category
-//product
+app.use('/categories', categoryRouter);
+app.use('/products', productRouter);
 app.use(express.static("public"));
 app.use('/users', usersRouter);
 
