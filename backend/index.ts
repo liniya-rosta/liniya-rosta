@@ -2,12 +2,14 @@ import express from "express";
 import * as mongoose from "mongoose";
 import cors from "cors";
 import config from "./config";
+import usersRouter from "./routers/users";
 
 const app = express();
 const port = 8000;
 
 app.use(cors());
 app.use(express.json());
+app.use('/users', usersRouter)
 //admin
 //category
 //product

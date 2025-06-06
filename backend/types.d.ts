@@ -3,4 +3,5 @@ export interface UserFields {
     password: string;
     role: string;
     displayName: string;
+    refreshToken: string;
 }
