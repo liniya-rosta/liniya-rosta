@@ -4,6 +4,7 @@ import cors from "cors";
 import config from "./config";
 import categoryRouter from "./routers/categories";
 import productRouter from "./routers/products";
+import postRouter from "./routers/posts";
 
 const app = express();
 const port = 8000;
@@ -13,6 +14,7 @@ app.use(express.json());
 //admin
 app.use('/categories', categoryRouter);
 app.use('/products', productRouter);
+app.use('/posts', postRouter);
 app.use(express.static("public"));
 
 const run = async () => {

@@ -11,7 +11,7 @@ const CategorySchema = new mongoose.Schema({
                 if (category) return false;
                 return true;
             },
-            message: "Category title is unique",
+            message: "Заголовок категории должен быть уникальным",
         }
     }
 });

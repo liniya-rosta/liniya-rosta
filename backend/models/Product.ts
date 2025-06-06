@@ -6,19 +6,19 @@ const Schema = mongoose.Schema;
 const ProductSchema = new Schema({
     category: {
         type: Schema.Types.ObjectId,
-        ref: "Category",
+        ref: 'Category',
         required: true,
-        validate:  {
+        validate: {
             validator: async (value: string) => {
                 const category = await Category.findById(value);
-                return  !!category;
+                return !!category;
             },
-            message: "Category not found",
+            message: 'Категория не найдена',
         },
     },
     title: {
         type: String,
-        required: [true, 'Заголовок обязательное поле'],
+        required: [true, 'Поле заголовка обязательно для заполнения'],
     },
     description: {
         type: String,
