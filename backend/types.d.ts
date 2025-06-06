@@ -1,7 +1,1 @@
-export interface UserFields {
-    email: string;
-    password: string;
-    role: string;
-    displayName: string;
-    refreshToken: string;
 }
