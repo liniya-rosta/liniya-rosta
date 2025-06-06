@@ -5,13 +5,14 @@ import config from "./config";
 import categoryRouter from "./routers/categories";
 import productRouter from "./routers/products";
 import postRouter from "./routers/posts";
+import usersRouter from "./routers/users";
 
 const app = express();
 const port = 8000;
 
 app.use(cors());
 app.use(express.json());
-//admin
+app.use('/users', usersRouter);
 app.use('/categories', categoryRouter);
 app.use('/products', productRouter);
 app.use('/posts', postRouter);
