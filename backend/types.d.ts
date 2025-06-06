@@ -16,7 +16,8 @@ export interface Category {
 export interface UserFields {
     email: string;
     password: string;
-    role: string;
-    displayName: string;
     refreshToken: string;
+    role: "admin" | "superadmin";
+    __confirmPassword: string;
+    displayName: string;
 }

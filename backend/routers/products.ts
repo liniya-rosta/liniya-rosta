@@ -1,9 +1,9 @@
 import express from 'express';
 import Product from "../models/Product";
 
-const productRouter = express.Router();
+const productsRouter = express.Router();
 
-productRouter.get('/', async (req, res, next) => {
+productsRouter.get('/', async (req, res, next) => {
     try {
         const category_id = req.query.category as string;
         const filter: { category?: string } = {};
@@ -17,7 +17,7 @@ productRouter.get('/', async (req, res, next) => {
     }
 });
 
-productRouter.get('/:id', async (req, res, next) => {
+productsRouter.get('/:id', async (req, res, next) => {
     const id = req.params.id;
 
     try {
@@ -34,4 +34,4 @@ productRouter.get('/:id', async (req, res, next) => {
     }
 });
 
-export default productRouter;
+export default productsRouter;

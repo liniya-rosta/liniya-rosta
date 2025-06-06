@@ -1,9 +1,9 @@
 import express from 'express';
 import Post from "../models/Post";
 
-const postRouter = express.Router();
+const postsRouter = express.Router();
 
-postRouter.get('/', async (_req, res, next) => {
+postsRouter.get('/', async (_req, res, next) => {
     try {
         const posts = await Post.find();
         res.send(posts);
@@ -12,7 +12,7 @@ postRouter.get('/', async (_req, res, next) => {
     }
 });
 
-postRouter.get('/:id', async (req, res, next) => {
+postsRouter.get('/:id', async (req, res, next) => {
     const id = req.params.id;
 
     try {
@@ -29,4 +29,4 @@ postRouter.get('/:id', async (req, res, next) => {
     }
 });
 
-export default postRouter;
+export default postsRouter;

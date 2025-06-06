@@ -1,119 +1,118 @@
 import express from "express";
-import User from "../modules/User";
 import jwt from "jsonwebtoken";
-import { authAdmin, RequestWithUser } from "../middleware/authAdmin";
+import {RequestWithUser} from "../middleware/authAdmin";
+import User, {generateAccessToken, generateRefreshToken, JWT_REFRESH_SECRET, JWT_SECRET} from "../models/User";
 
 const usersRouter = express.Router();
 
-const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || "default_refresh_secret";
-
-usersRouter.post("/sessions", async (req, res, next) => {
+usersRouter.post("/sessions", async (req, res, _next) => {
     if (!req.body.email || !req.body.password) {
-        res.status(400).send({ error: "Email and password are required" });
-        return
+        res.status(400).send({error: "Вы успешно вошли"});
+        return;
     }
 
-    try {
-        const user = await User.findOne({ email: req.body.email });
-        if (!user) {
-            res.status(404).send({ error: "User not found" });
-            return
-        }
-
-        const isMatch = await user.checkPassword(req.body.password);
-        if (!isMatch) {
-            res.status(400).send({ error: "Invalid password" });
-            return
-        }
-
-        const accessToken = user.generateAccessToken();
-        const refreshToken = user.generateRefreshToken();
-
-        user.refreshToken = refreshToken;
-        await user.save();
-
-        res.cookie("refreshToken", refreshToken, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "strict",
-            maxAge: 7 * 24 * 60 * 60 * 1000,
-        });
-
-        res.send({
-            message: "Login successful",
-            user: {
-                _id: user._id,
-                email: user.email,
-                role: user.role,
-            },
-            accessToken,
-        });
-    } catch (e) {
-        next(e);
+    const user = await User.findOne({email: req.body.email});
+    if (!user) {
+        res.status(404).send({error: "Пользователь не найден"});
+        return;
     }
+
+    const isMatch = await user.checkPassword(req.body.password);
+    if (!isMatch) {
+        res.status(400).send({error: "Пароль неверный"});
+        return;
+    }
+
+    const accessToken = generateAccessToken(user);
+    const refreshToken = generateRefreshToken(user);
+
+    user.refreshToken = refreshToken;
+    await user.save();
+
+    res.cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    const safeUser = {
+        _id: user._id,
+        email: user.email,
+        role: user.role,
+        displayName: user.displayName,
+    };
+
+    res.send({
+        message: "Почта и пароль корректны",
+        user: safeUser,
+        accessToken,
+    });
 });
 
-usersRouter.delete("/sessions", authAdmin, async (req: RequestWithUser, res, next) => {
+usersRouter.delete("/logout", async (req: RequestWithUser, res, next) => {
     try {
-        const user = await User.findById(req.user!._id);
-        if (!user) {
-            res.status(404).send({ error: "User not found" });
-            return
-        }
-
-        user.refreshToken = "";
-        await user.save();
-
         res.clearCookie("refreshToken", {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             sameSite: "strict",
         });
 
-        res.send({ message: "Logout successful" });
+        const authHeader = req.headers.authorization;
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+            res.send({message: "Вы успешно вышли"});
+            return;
+        }
+
+        const token = authHeader.split(" ")[1];
+        if (!token) {
+            res.send({message: "Вы успешно вышли"});
+            return;
+        }
+
+        let payload: { _id: string; role: string };
+        try {
+            payload = jwt.verify(token, JWT_SECRET) as { _id: string; role: string };
+        } catch {
+            res.status(401).send({error: "Неверный токен"});
+            return;
+        }
+
+        const user = await User.findById(payload._id);
+        if (!user) {
+            res.status(404).send({error: "Пользователь не найден"});
+            return;
+        }
+        user.refreshToken = "";
+        await user.save();
+        res.send({message: "Вы вышли успешно"});
     } catch (error) {
         next(error);
     }
 });
 
-usersRouter.post("/refresh-token", async (req, res) => {
-    try {
-        const refreshToken = req.cookies.refreshToken;
-        if (!refreshToken) {
-            res.status(401).send({ error: "No refresh token provided" });
-            return
-        }
+usersRouter.post("/refresh-token", async (req, res, _next) => {
+    const refreshToken = req.cookies.refreshToken;
+    if (!refreshToken) {
+        res.status(403).send({error: "Refresh-токен отсутствует"});
+        return;
+    }
 
-        let payload: any;
-        try {
-            payload = jwt.verify(refreshToken, JWT_REFRESH_SECRET);
-        } catch {
-            res.status(401).send({ error: "Invalid refresh token" });
-            return
-        }
+    try {
+        const payload = jwt.verify(refreshToken, JWT_REFRESH_SECRET) as {
+            _id: string;
+        };
 
         const user = await User.findById(payload._id);
         if (!user || user.refreshToken !== refreshToken) {
-            res.status(401).send({ error: "Refresh token mismatch" });
-            return
+            res.status(403).send({error: "Некорректный refresh-токен"});
+            return;
         }
 
-        const newAccessToken = user.generateAccessToken();
-        const newRefreshToken = user.generateRefreshToken();
-
-        user.refreshToken = newRefreshToken;
-        await user.save();
-
-        res.cookie("refreshToken", newRefreshToken, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "strict",
-            maxAge: 7 * 24 * 60 * 60 * 1000,
-        });
-
-        res.send({ accessToken: newAccessToken });
+        const newAccessToken = generateAccessToken(user);
+        res.send({accessToken: newAccessToken});
     } catch (e) {
-        res.status(500).send({ error: "Internal server error" });
+        res.status(403).send({error: "Недействительный или истёкший refresh-токен"});
     }
 });
 
