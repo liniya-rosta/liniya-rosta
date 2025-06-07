@@ -27,13 +27,13 @@ superAdminRouter.post("/", async (req, res, next) => {
             return;
         }
 
-        const existingUser = await User.findOne({ email });
+        const existingUser = await User.findOne({email});
         if (existingUser) {
             res.status(400).send({error: "Пользователь с таким email уже существует"});
             return;
         }
 
-            const user = new User({
+        const user = new User({
             email,
             password,
             displayName,
@@ -43,7 +43,7 @@ superAdminRouter.post("/", async (req, res, next) => {
         user.confirmPassword = confirmPassword;
         await user.save();
         res.send({
-            message: "Админ создан успешно",
+            message: `Вы успешно создали ${user.role === "admin" ? "администратора" : user.role === "superadmin" ? "суперадминистратора" : ''}`,
             user: {
                 _id: user._id,
                 email: user.email,
@@ -62,13 +62,13 @@ superAdminRouter.patch("/:id/role", async (req: RequestWithUser, res, next) => {
         const {role} = req.body;
 
         if (role !== "superadmin" && role !== "admin") {
-            res.status(400).send({ error: "Недопустимая роль" });
+            res.status(400).send({error: "Недопустимая роль"});
             return;
         }
 
         const user = await User.findById(id);
         if (!user) {
-            res.status(404).send({ error: "Пользователь не найден" });
+            res.status(404).send({error: "Пользователь не найден"});
             return;
         }
 
@@ -76,17 +76,17 @@ superAdminRouter.patch("/:id/role", async (req: RequestWithUser, res, next) => {
         const isDowngrade = user.role === "superadmin" && role === "admin";
 
         if (isSelf && isDowngrade) {
-            const superadminsCount = await User.countDocuments({ role: "superadmin" });
+            const superadminsCount = await User.countDocuments({role: "superadmin"});
 
             if (superadminsCount <= 1) {
-                res.status(400).send({ error: "Нельзя понизить себя – вы единственный superadmin" });
+                res.status(400).send({error: "Нельзя понизить себя – вы единственный superadmin"});
                 return;
             }
         }
 
         user.role = role;
         await user.save();
-        res.send({ message: "Роль обновлена", user });
+        res.send({message: "Роль обновлена", user});
     } catch (e) {
         next(e);
     }
@@ -97,7 +97,7 @@ superAdminRouter.delete("/:id", async (req: RequestWithUser, res, next) => {
         const {id} = req.params;
 
         if (req.user?._id === id) {
-            res.status(400).send({ error: "Нельзя удалять самого себя" });
+            res.status(400).send({error: "Нельзя удалять самого себя"});
             return;
         }
 
@@ -107,7 +107,7 @@ superAdminRouter.delete("/:id", async (req: RequestWithUser, res, next) => {
             return;
         }
 
-        res.send({message: "Админ удалён"});
+        res.send({message: `${user.role === "admin" ? "Администратор" : user.role === "superadmin" ? "Суперадминистратор" : ''} удален`});
     } catch (e) {
         next(e);
     }

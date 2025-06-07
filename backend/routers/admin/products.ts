@@ -2,13 +2,14 @@ import express from 'express';
 import Product from "../../models/Product";
 import Category from "../../models/Category";
 import mongoose from "mongoose";
+import {productImage} from "../../middleware/multer";
 
 const productsAdminRouter = express.Router();
 
-productsAdminRouter.post("/", async (req, res, next) => {
+productsAdminRouter.post("/", productImage.single("image"), async (req, res, next) => {
     try {
-        const {category, title, description, image} = req.body;
-        if (!category || !title || !image || !title.trim() || !image.trim()) {
+        const {category, title, description} = req.body;
+        if (!category || !title || !title.trim() || !req.file) {
             res.status(400).send({error: "Категория, заголовок и изображение обязательны"});
             return;
         }
@@ -28,7 +29,7 @@ productsAdminRouter.post("/", async (req, res, next) => {
             category,
             title: title.trim(),
             description: description ? description.trim() : null,
-            image: image,
+            image: `/product/${req.file.filename}`,
         });
 
         await product.save();
@@ -38,17 +39,17 @@ productsAdminRouter.post("/", async (req, res, next) => {
     }
 });
 
-productsAdminRouter.patch("/:id", async (req, res, next) => {
+productsAdminRouter.patch("/:id", productImage.single("image"), async (req, res, next) => {
     try {
         const {id} = req.params;
-        const {category, title, description, image} = req.body;
+        const {category, title, description} = req.body;
 
         if (!mongoose.Types.ObjectId.isValid(id)) {
             res.status(400).send({error: "Неверный формат ID продукта"});
             return;
         }
 
-        if (!category && !title && !description && !image) {
+        if (!category && !title && !description && !req.file) {
             res.status(400).send({error: "Не указаны поля для обновления"});
             return;
         }
@@ -61,7 +62,7 @@ productsAdminRouter.patch("/:id", async (req, res, next) => {
 
         if (category) {
             if (!mongoose.Types.ObjectId.isValid(category)) {
-                res.status(400).send({ error: "Неверный формат ID категории" });
+                res.status(400).send({error: "Неверный формат ID категории"});
                 return;
             }
 
@@ -82,15 +83,10 @@ productsAdminRouter.patch("/:id", async (req, res, next) => {
             return;
         }
 
-        if (image && !image.trim()) {
-            res.status(400).send({error: "Изображение не может быть пустым"});
-            return;
-        }
-
         if (category) product.category = category;
         if (title) product.title = title.trim();
         if (description !== undefined) product.description = description;
-        if (image) product.image = image.trim();
+        if (req.file) product.image = `/product/${req.file.filename}`;
 
         await product.save();
         res.send({message: "Продукт обновлен успешно", product});

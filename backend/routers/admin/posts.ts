@@ -1,13 +1,14 @@
 import express from 'express';
 import Post from "../../models/Post";
 import mongoose from "mongoose";
+import {postImage} from "../../middleware/multer";
 
 const postsAdminRouter = express.Router();
 
-postsAdminRouter.post("/", async (req, res, next) => {
+postsAdminRouter.post("/", postImage.single("image"), async (req, res, next) => {
     try {
-        const {title, description, image} = req.body;
-        if (!title || !description || !image || !title.trim() || !description.trim() || !image.trim()) {
+        const {title, description} = req.body;
+        if (!title || !description || !title.trim() || !description.trim() || !req.file) {
             res.status(400).send({error: "Все поля обязательны для заполнения"});
             return;
         }
@@ -15,30 +16,30 @@ postsAdminRouter.post("/", async (req, res, next) => {
         const post = new Post({
             title: title.trim(),
             description: description.trim(),
-            image: image.trim()
+            image: `/post/${req.file.filename}`,
         });
 
         await post.save();
         res.send({
             message: "Пост создан успешно",
-            post
+            post,
         });
     } catch (e) {
         next(e);
     }
 });
 
-postsAdminRouter.patch("/:id", async (req, res, next) => {
+postsAdminRouter.patch("/:id", postImage.single("image"), async (req, res, next) => {
     try {
         const {id} = req.params;
-        const {title, description, image} = req.body;
+        const {title, description} = req.body;
 
         if (!mongoose.Types.ObjectId.isValid(id)) {
-            res.status(400).send({ error: "Неверный формат ID поста" });
+            res.status(400).send({error: "Неверный формат ID поста"});
             return;
         }
 
-        if (!title && !description && !image) {
+        if (!title && !description && !req.file) {
             res.status(400).send({error: "Не указаны поля для обновления"});
             return;
         }
@@ -57,14 +58,10 @@ postsAdminRouter.patch("/:id", async (req, res, next) => {
             res.status(400).send({error: "Описание не может быть пустым"});
             return;
         }
-        if (image && !image.trim()) {
-            res.status(400).send({error: "Изображение не может быть пустым"});
-            return;
-        }
 
         if (title) post.title = title.trim();
         if (description) post.description = description.trim();
-        if (image) post.image = image.trim();
+        if (req.file) post.image = `/post/${req.file.filename}`;
 
         await post.save();
         res.send({message: "Пост обновлен успешно", post});
@@ -76,7 +73,7 @@ postsAdminRouter.patch("/:id", async (req, res, next) => {
 postsAdminRouter.delete("/:id", async (req, res, next) => {
     try {
         if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
-            res.status(400).send({ error: "Неверный формат ID поста" });
+            res.status(400).send({error: "Неверный формат ID поста"});
             return;
         }
 
