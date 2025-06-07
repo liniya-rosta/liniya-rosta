@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express";
+import {Request, Response, NextFunction,} from "express";
 import jwt from "jsonwebtoken";
 import {JWT_SECRET} from "../models/User";
 
@@ -9,7 +9,7 @@ export interface RequestWithUser extends Request {
 export const authAdmin = (req: RequestWithUser, res: Response, next: NextFunction) => {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
-        res.status(401).send({ error: "Токен не предоставлен" });
+        res.status(401).send({error: "Токен не предоставлен"});
         return;
     }
 
@@ -17,13 +17,13 @@ export const authAdmin = (req: RequestWithUser, res: Response, next: NextFunctio
     try {
         const payload = jwt.verify(token, JWT_SECRET) as { _id: string; role: string };
         if (payload.role !== "admin" && payload.role !== "superadmin") {
-            res.status(403).send({ error: "Доступ запрещен" });
+            res.status(403).send({error: "Доступ запрещен"});
             return;
         }
         req.user = payload;
         next();
     } catch {
-        res.status(401).send({ error: "Неверный токен" });
+        res.status(401).send({error: "Неверный токен"});
         return;
     }
 };
