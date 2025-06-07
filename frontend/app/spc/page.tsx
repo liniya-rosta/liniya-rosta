@@ -1,11 +1,11 @@
 import React from 'react';
 
-const Page = () => {
+const SpcPage = () => {
     return (
         <div>
-          Main page
+            SPC ламинат
         </div>
     );
 };
 
-export default Page;
+export default SpcPage;
