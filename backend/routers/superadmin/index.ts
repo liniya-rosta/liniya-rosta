@@ -1,12 +1,19 @@
 import express from "express";
-import permit from "../../middleware/permit";
 import {authAdmin} from "../../middleware/authAdmin";
-
+import {authSuperAdmin} from "../../middleware/authSuperAdmin";
+import superAdminPrivateRouter from "./superadmin";
+import categoriesAdminRouter from "./categories";
+import productsAdminRouter from "./products";
+import postsAdminRouter from "./posts";
 
 const superAdminRouter = express.Router();
 
-superAdminRouter.use(authAdmin, permit('superadmin'));
+superAdminRouter.use(authAdmin);
+superAdminRouter.use(authSuperAdmin);
 
-// superAdminRouter.use('/users', usersAdminRouter);
+superAdminRouter.use("/categories", categoriesAdminRouter);
+superAdminRouter.use("/products", productsAdminRouter);
+superAdminRouter.use("/posts", postsAdminRouter);
+superAdminRouter.use("/admins", superAdminPrivateRouter);
 
 export default superAdminRouter;
