@@ -1,12 +1,12 @@
 import express from "express";
 import * as mongoose from "mongoose";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 import config from "./config";
 import categoryRouter from "./routers/categories";
 import productRouter from "./routers/products";
 import postRouter from "./routers/posts";
 import usersRouter from "./routers/users";
-import cookieParser from "cookie-parser";
 import adminRouter from "./routers/admin";
 
 const app = express();
