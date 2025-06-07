@@ -26,7 +26,7 @@ const ProductSchema = new Schema({
     },
     image: {
         type: String,
-        default: null,
+        required: [true, 'Фото обязательно для заполнения'],
     },
 });
 
