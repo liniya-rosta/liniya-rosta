@@ -3,9 +3,9 @@ import Category from "../../models/Category";
 import Product from "../../models/Product";
 import mongoose from "mongoose";
 
-const categoriesAdminRouter = express.Router();
+const categoriesSuperAdminRouter = express.Router();
 
-categoriesAdminRouter.post("/", async (req, res, next) => {
+categoriesSuperAdminRouter.post("/", async (req, res, next) => {
     try {
         const {title} = req.body;
         if (!title) {
@@ -27,7 +27,7 @@ categoriesAdminRouter.post("/", async (req, res, next) => {
     }
 });
 
-categoriesAdminRouter.patch("/:id", async (req, res, next) => {
+categoriesSuperAdminRouter.patch("/:id", async (req, res, next) => {
     try {
         const {id} = req.params;
         const {title} = req.body;
@@ -71,7 +71,7 @@ categoriesAdminRouter.patch("/:id", async (req, res, next) => {
     }
 });
 
-categoriesAdminRouter.delete("/:id", async (req, res, next) => {
+categoriesSuperAdminRouter.delete("/:id", async (req, res, next) => {
     try {
         if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
             res.status(400).send({error: "Неверный формат ID категории"});
@@ -91,5 +91,5 @@ categoriesAdminRouter.delete("/:id", async (req, res, next) => {
     }
 });
 
-export default categoriesAdminRouter;
+export default categoriesSuperAdminRouter;
 

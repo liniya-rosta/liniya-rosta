@@ -2,9 +2,9 @@ import express from "express";
 import User from "../../models/User";
 import {RequestWithUser} from "../../middleware/authAdmin";
 
-const superAdminRouter = express.Router();
+const superAdminPrivateRouter = express.Router();
 
-superAdminRouter.get("/", async (_req, res, next) => {
+superAdminPrivateRouter.get("/", async (_req, res, next) => {
     try {
         const admins = await User.find();
         res.send(admins);
@@ -13,7 +13,7 @@ superAdminRouter.get("/", async (_req, res, next) => {
     }
 });
 
-superAdminRouter.post("/", async (req, res, next) => {
+superAdminPrivateRouter.post("/", async (req, res, next) => {
     try {
         const {email, password, confirmPassword, displayName, role} = req.body;
 
@@ -56,7 +56,7 @@ superAdminRouter.post("/", async (req, res, next) => {
     }
 });
 
-superAdminRouter.patch("/:id/role", async (req: RequestWithUser, res, next) => {
+superAdminPrivateRouter.patch("/:id/role", async (req: RequestWithUser, res, next) => {
     try {
         const {id} = req.params;
         const {role} = req.body;
@@ -92,7 +92,7 @@ superAdminRouter.patch("/:id/role", async (req: RequestWithUser, res, next) => {
     }
 });
 
-superAdminRouter.delete("/:id", async (req: RequestWithUser, res, next) => {
+superAdminPrivateRouter.delete("/:id", async (req: RequestWithUser, res, next) => {
     try {
         const {id} = req.params;
 
@@ -113,4 +113,4 @@ superAdminRouter.delete("/:id", async (req: RequestWithUser, res, next) => {
     }
 });
 
-export default superAdminRouter;
+export default superAdminPrivateRouter;

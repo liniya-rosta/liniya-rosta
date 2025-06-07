@@ -3,9 +3,9 @@ import Post from "../../models/Post";
 import mongoose from "mongoose";
 import {postImage} from "../../middleware/multer";
 
-const postsAdminRouter = express.Router();
+const postsSuperAdminRouter = express.Router();
 
-postsAdminRouter.post("/", postImage.single("image"), async (req, res, next) => {
+postsSuperAdminRouter.post("/", postImage.single("image"), async (req, res, next) => {
     try {
         const {title, description} = req.body;
         if (!title || !description || !title.trim() || !description.trim() || !req.file) {
@@ -29,7 +29,7 @@ postsAdminRouter.post("/", postImage.single("image"), async (req, res, next) => 
     }
 });
 
-postsAdminRouter.patch("/:id", postImage.single("image"), async (req, res, next) => {
+postsSuperAdminRouter.patch("/:id", postImage.single("image"), async (req, res, next) => {
     try {
         const {id} = req.params;
         const {title, description} = req.body;
@@ -70,7 +70,7 @@ postsAdminRouter.patch("/:id", postImage.single("image"), async (req, res, next)
     }
 });
 
-postsAdminRouter.delete("/:id", async (req, res, next) => {
+postsSuperAdminRouter.delete("/:id", async (req, res, next) => {
     try {
         if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
             res.status(400).send({error: "Неверный формат ID поста"});
@@ -88,4 +88,4 @@ postsAdminRouter.delete("/:id", async (req, res, next) => {
     }
 });
 
-export default postsAdminRouter;
+export default postsSuperAdminRouter;

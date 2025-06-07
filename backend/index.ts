@@ -7,7 +7,7 @@ import categoryRouter from "./routers/categories";
 import productRouter from "./routers/products";
 import postRouter from "./routers/posts";
 import usersRouter from "./routers/users";
-import adminRouter from "./routers/admin";
+import superAdminRouter from "./routers/superadmin";
 
 const app = express();
 const port = 8000;
@@ -23,7 +23,7 @@ app.use(express.static("public"));
 app.use(express.json());
 
 app.use('/users', usersRouter);
-app.use('/admin', adminRouter);
+app.use('/superadmin', superAdminRouter);
 app.use('/categories', categoryRouter);
 app.use('/products', productRouter);
 app.use('/posts', postRouter);

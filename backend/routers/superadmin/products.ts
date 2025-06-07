@@ -4,9 +4,9 @@ import Category from "../../models/Category";
 import mongoose from "mongoose";
 import {productImage} from "../../middleware/multer";
 
-const productsAdminRouter = express.Router();
+const productsSuperAdminRouter = express.Router();
 
-productsAdminRouter.post("/", productImage.single("image"), async (req, res, next) => {
+productsSuperAdminRouter.post("/", productImage.single("image"), async (req, res, next) => {
     try {
         const {category, title, description} = req.body;
         if (!category || !title || !title.trim() || !req.file) {
@@ -39,7 +39,7 @@ productsAdminRouter.post("/", productImage.single("image"), async (req, res, nex
     }
 });
 
-productsAdminRouter.patch("/:id", productImage.single("image"), async (req, res, next) => {
+productsSuperAdminRouter.patch("/:id", productImage.single("image"), async (req, res, next) => {
     try {
         const {id} = req.params;
         const {category, title, description} = req.body;
@@ -95,7 +95,7 @@ productsAdminRouter.patch("/:id", productImage.single("image"), async (req, res,
     }
 });
 
-productsAdminRouter.delete("/:id", async (req, res, next) => {
+productsSuperAdminRouter.delete("/:id", async (req, res, next) => {
     try {
         if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
             res.status(400).send({error: "Неверный формат ID продукта"});
@@ -113,4 +113,4 @@ productsAdminRouter.delete("/:id", async (req, res, next) => {
     }
 });
 
-export default productsAdminRouter;
+export default productsSuperAdminRouter;
