@@ -5,6 +5,7 @@ import superAdminPrivateRouter from "./superadmin";
 import categoriesAdminRouter from "./categories";
 import productsAdminRouter from "./products";
 import postsAdminRouter from "./posts";
+import portfolioItemsSuperAdminRouter from "./portfolioItems";
 
 const superAdminRouter = express.Router();
 
@@ -15,5 +16,6 @@ superAdminRouter.use("/categories", categoriesAdminRouter);
 superAdminRouter.use("/products", productsAdminRouter);
 superAdminRouter.use("/posts", postsAdminRouter);
 superAdminRouter.use("/admins", superAdminPrivateRouter);
+superAdminRouter.use("/portfolio-items", portfolioItemsSuperAdminRouter);
 
 export default superAdminRouter;
