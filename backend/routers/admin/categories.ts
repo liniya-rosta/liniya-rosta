@@ -1,5 +1,7 @@
 import express from 'express';
 import Category from "../../models/Category";
+import Product from "../../models/Product";
+import mongoose from "mongoose";
 
 const categoriesAdminRouter = express.Router();
 
@@ -29,8 +31,13 @@ categoriesAdminRouter.patch("/:id", async (req, res, next) => {
     try {
         const {id} = req.params;
         const {title} = req.body;
-        if (!title) {
+        if (!title || !title.trim()) {
             res.status(400).send({error: "Заголовок обязателен"});
+            return;
+        }
+
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            res.status(400).send({error: "Неверный формат ID категории"});
             return;
         }
 
@@ -40,9 +47,19 @@ categoriesAdminRouter.patch("/:id", async (req, res, next) => {
             return;
         }
 
+        if (category.title === title) {
+            res.send({
+                message: "Название категории не изменилось",
+                category
+            });
+            return;
+        }
+
         const existing = await Category.findOne({title});
-        if (existing && existing._id.toString() !== id) {
-            res.status(400).send({error: "Категория с таким названием уже существует"});
+        if (existing) {
+            res.status(400).send({
+                error: "Категория с таким названием уже существует"
+            });
             return;
         }
 
@@ -56,12 +73,19 @@ categoriesAdminRouter.patch("/:id", async (req, res, next) => {
 
 categoriesAdminRouter.delete("/:id", async (req, res, next) => {
     try {
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            res.status(400).send({error: "Неверный формат ID категории"});
+            return;
+        }
+
         const category = await Category.findByIdAndDelete(req.params.id);
         if (!category) {
             res.status(404).send({error: "Категория не найдена"});
             return;
         }
-        res.send({message: "Категория успешно удалена"});
+
+        await Product.deleteMany({category: req.params.id});
+        res.send({message: "Категория и связанные с ней продукты успешно удалены"});
     } catch (e) {
         next(e);
     }

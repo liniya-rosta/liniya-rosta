@@ -27,16 +27,21 @@ superAdminRouter.post("/", async (req, res, next) => {
             return;
         }
 
-        const user = new User({
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            res.status(400).send({error: "Пользователь с таким email уже существует"});
+            return;
+        }
+
+            const user = new User({
             email,
             password,
             displayName,
             role
         });
+
         user.confirmPassword = confirmPassword;
-
         await user.save();
-
         res.send({
             message: "Админ создан успешно",
             user: {

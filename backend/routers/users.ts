@@ -8,7 +8,7 @@ const usersRouter = express.Router();
 usersRouter.post("/sessions", async (req, res, next) => {
     try {
         if (!req.body.email || !req.body.password) {
-            res.status(400).send({error: "Email и парль обязательны"});
+            res.status(400).send({error: "Email и пароль обязательны"});
             return;
         }
 
@@ -78,13 +78,13 @@ usersRouter.delete("/logout", async (req: RequestWithUser, res, next) => {
         try {
             payload = jwt.verify(token, JWT_SECRET) as { _id: string; role: string };
         } catch {
-            res.status(401).send({error: "Неверный токен"});
+            res.send({message: "Вы успешно вышли"});
             return;
         }
 
         const user = await User.findById(payload._id);
         if (!user) {
-            res.status(404).send({error: "Пользователь не найден"});
+            res.send({message: "Вы успешно вышли"});
             return;
         }
         user.refreshToken = "";
