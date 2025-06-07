@@ -63,7 +63,7 @@ categoriesAdminRouter.patch("/:id", async (req, res, next) => {
             return;
         }
 
-        category.title = title;
+        category.title = title.trim();
         await category.save();
         res.send({message: "Категория обновлена успешно", category});
     } catch (e) {

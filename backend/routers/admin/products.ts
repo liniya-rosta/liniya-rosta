@@ -1,14 +1,20 @@
 import express from 'express';
 import Product from "../../models/Product";
 import Category from "../../models/Category";
+import mongoose from "mongoose";
 
 const productsAdminRouter = express.Router();
 
 productsAdminRouter.post("/", async (req, res, next) => {
     try {
         const {category, title, description, image} = req.body;
-        if (!category || !title || !image) {
+        if (!category || !title || !image || !title.trim() || !image.trim()) {
             res.status(400).send({error: "Категория, заголовок и изображение обязательны"});
+            return;
+        }
+
+        if (!mongoose.Types.ObjectId.isValid(category)) {
+            res.status(400).send({error: "Неверный формат ID категории"});
             return;
         }
 
@@ -20,8 +26,8 @@ productsAdminRouter.post("/", async (req, res, next) => {
 
         const product = new Product({
             category,
-            title,
-            description: description || null,
+            title: title.trim(),
+            description: description ? description.trim() : null,
             image: image,
         });
 
@@ -37,6 +43,11 @@ productsAdminRouter.patch("/:id", async (req, res, next) => {
         const {id} = req.params;
         const {category, title, description, image} = req.body;
 
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            res.status(400).send({error: "Неверный формат ID продукта"});
+            return;
+        }
+
         if (!category && !title && !description && !image) {
             res.status(400).send({error: "Не указаны поля для обновления"});
             return;
@@ -49,6 +60,11 @@ productsAdminRouter.patch("/:id", async (req, res, next) => {
         }
 
         if (category) {
+            if (!mongoose.Types.ObjectId.isValid(category)) {
+                res.status(400).send({ error: "Неверный формат ID категории" });
+                return;
+            }
+
             const categoryExists = await Category.findById(category);
             if (!categoryExists) {
                 res.status(400).send({error: "Указанная категория не существует"});
@@ -61,7 +77,7 @@ productsAdminRouter.patch("/:id", async (req, res, next) => {
             return;
         }
 
-        if (description !== undefined && description !== null && !description.trim()) {
+        if (description?.trim() === '') {
             res.status(400).send({error: "Описание не может быть пустым"});
             return;
         }
@@ -85,6 +101,11 @@ productsAdminRouter.patch("/:id", async (req, res, next) => {
 
 productsAdminRouter.delete("/:id", async (req, res, next) => {
     try {
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            res.status(400).send({error: "Неверный формат ID продукта"});
+            return;
+        }
+
         const product = await Product.findByIdAndDelete(req.params.id);
         if (!product) {
             res.status(404).send({error: "Продукт не найден"});
