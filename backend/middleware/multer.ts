@@ -21,3 +21,4 @@ const createImageUpload = (folder: string) =>
 
 export const productImage = createImageUpload("products");
 export const postImage = createImageUpload("posts");
+export const portfolioImage = createImageUpload("portfolio");
