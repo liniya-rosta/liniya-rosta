@@ -5,6 +5,23 @@ const portfolioItemRouter = express.Router();
 
 portfolioItemRouter.get("/", async (req, res, next) => {
     try {
+        const { galleryId } = req.query;
+
+        if (galleryId) {
+            const item = await PortfolioItem.findOne(
+                { "gallery._id": galleryId },
+                { "gallery.$": 1 }
+            );
+
+            if (!item || !item.gallery || item.gallery.length === 0) {
+                res.status(404).send({ message: "Элемент галереи не найден" });
+                return;
+            }
+
+            res.send(item.gallery[0]);
+            return;
+        }
+
         const items = await PortfolioItem.find().select("-gallery");
         res.send(items);
     } catch (err) {
@@ -19,25 +36,6 @@ portfolioItemRouter.get("/:id", async (req, res, next) => {
         res.send(items);
     } catch (err) {
         next(err);
-    }
-});
-
-portfolioItemRouter.get("/gallery/:id", async (req, res, next) => {
-    try {
-        const {id} = req.params;
-        const item = await PortfolioItem.findOne(
-            { "gallery._id": id },
-            { "gallery.$": 1 }
-        );
-
-        if (!item || !item.gallery || item.gallery.length === 0) {
-            res.status(404).send({ message: "Элемент галереи не найден" });
-            return;
-        }
-
-        res.send(item.gallery[0]);
-    } catch (e) {
-        next(e);
     }
 });
 
