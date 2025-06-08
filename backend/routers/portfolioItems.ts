@@ -12,7 +12,7 @@ portfolioItemRouter.get("/", async (req, res, next) => {
     }
 });
 
-portfolioItemRouter.get("/cover/:id", async (req, res, next) => {
+portfolioItemRouter.get("/:id", async (req, res, next) => {
     try {
         const {id} = req.params;
         const items = await PortfolioItem.findById(id);

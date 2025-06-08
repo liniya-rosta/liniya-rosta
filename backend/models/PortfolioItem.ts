@@ -13,6 +13,10 @@ const PortfolioItemSchema = new mongoose.Schema({
         type: [GalleryItemSchema],
         required: true,
     },
+    description: {
+        type: String,
+        default: null,
+    },
 });
 
 export const PortfolioItem = mongoose.model("PortfolioItem", PortfolioItemSchema);

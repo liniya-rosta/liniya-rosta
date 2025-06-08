@@ -1,11 +1,11 @@
 import express from "express";
 import {PortfolioItem} from "../../models/PortfolioItem";
-import {portfolioItemImage} from "../../middleware/multer";
+import {portfolioImage} from "../../middleware/multer";
 import {Error, Types} from "mongoose";
 
 const portfolioItemsSuperAdminRouter = express.Router();
 
-portfolioItemsSuperAdminRouter.post("/", portfolioItemImage.fields([
+portfolioItemsSuperAdminRouter.post("/", portfolioImage.fields([
     {name: "cover", maxCount: 1},
     {name: "gallery"}
 ]), async (req, res, next) => {
@@ -29,6 +29,8 @@ portfolioItemsSuperAdminRouter.post("/", portfolioItemImage.fields([
         const newItem = new PortfolioItem({
             cover: coverFile ? "portfolio/" + coverFile.filename : null,
             gallery: galleryImages,
+            description: req.body.description,
+
         });
 
         await newItem.save();
@@ -42,7 +44,7 @@ portfolioItemsSuperAdminRouter.post("/", portfolioItemImage.fields([
     }
 });
 
-portfolioItemsSuperAdminRouter.patch("/cover/:id", portfolioItemImage.single("cover"), async (req, res, next) => {
+portfolioItemsSuperAdminRouter.patch("/:id", portfolioImage.single("cover"), async (req, res, next) => {
     try {
         const {id} = req.params;
 
@@ -51,14 +53,24 @@ portfolioItemsSuperAdminRouter.patch("/cover/:id", portfolioItemImage.single("co
             return;
         }
 
+        const updateData: Partial<{ cover: string; description: string }> = {};
+
+        if (req.file) {
+            updateData.cover = "portfolio/" + req.file.filename;
+        }
+
+        if (req.body.description !== undefined) {
+            updateData.description = req.body.description;
+        }
+
         const updatedItem = await PortfolioItem.findByIdAndUpdate(
             id,
-            {cover: req.file ? "portfolio/" + req.file.filename : null,},
-            {new: true, runValidators: true}
+            updateData,
+            { new: true, runValidators: true }
         );
 
         if (!updatedItem) {
-            res.status(404).send({message: "Обложка не найдена не найден"});
+            res.status(404).send({ message: "Элемент не найден" });
             return;
         }
 
@@ -72,7 +84,7 @@ portfolioItemsSuperAdminRouter.patch("/cover/:id", portfolioItemImage.single("co
     }
 });
 
-portfolioItemsSuperAdminRouter.patch("/gallery/:id", portfolioItemImage.fields([
+portfolioItemsSuperAdminRouter.patch("/gallery/:id", portfolioImage.fields([
     {name: "gallery", maxCount: 1}
 ]), async (req, res, next) => {
     try {
@@ -119,9 +131,15 @@ portfolioItemsSuperAdminRouter.patch("/gallery/:id", portfolioItemImage.fields([
     }
 });
 
-portfolioItemsSuperAdminRouter.delete("/cover/:id", async (req, res, next) => {
+portfolioItemsSuperAdminRouter.delete("/:id", async (req, res, next) => {
     try {
         const {id} = req.params;
+
+        if (!Types.ObjectId.isValid(id)) {
+            res.status(400).send({error: "Неверный формат ID обложки портфолио"});
+            return;
+        }
+
         const item = await PortfolioItem.findByIdAndDelete(id)
 
         if (!item) {
