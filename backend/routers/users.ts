@@ -120,4 +120,37 @@ usersRouter.post("/refresh-token", async (req, res, _next) => {
     }
 });
 
+usersRouter.post("/", async (req, res, next) => {
+    try {
+        const {email, password, confirmPassword, displayName, role} = req.body;
+
+        if (!email || !password || !confirmPassword || !role) {
+            res.status(400).send({error: "Все поля обязательны"});
+            return;
+        }
+
+
+        const user = new User({
+            email,
+            password,
+            displayName,
+            role
+        });
+
+        user.confirmPassword = confirmPassword;
+        await user.save();
+        res.send({
+            message: `Вы успешно создали ${user.role === "admin" ? "администратора" : user.role === "superadmin" ? "суперадминистратора" : ''}`,
+            user: {
+                _id: user._id,
+                email: user.email,
+                displayName: user.displayName,
+                role: user.role,
+            },
+        });
+    } catch (e) {
+        next(e);
+    }
+});
+
 export default usersRouter;

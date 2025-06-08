@@ -8,6 +8,7 @@ import productRouter from "./routers/products";
 import postRouter from "./routers/posts";
 import usersRouter from "./routers/users";
 import superAdminRouter from "./routers/superadmin";
+import requestRouter from "./routers/requests";
 
 const app = express();
 const port = 8000;
@@ -27,6 +28,7 @@ app.use('/superadmin', superAdminRouter);
 app.use('/categories', categoryRouter);
 app.use('/products', productRouter);
 app.use('/posts', postRouter);
+app.use('/requests', requestRouter)
 
 const run = async () => {
     await mongoose.connect(config.db);
