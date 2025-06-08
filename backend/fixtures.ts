@@ -5,6 +5,7 @@ import {randomUUID} from "node:crypto";
 import Category from "./models/Category";
 import Product from "./models/Product";
 import Post from "./models/Post";
+import {PortfolioItem} from "./models/PortfolioItem";
 
 const run = async () => {
     await mongoose.connect(config.db);
@@ -59,25 +60,25 @@ const run = async () => {
             category: lightingTechnology,
             title: 'Светодиодная лента leds power',
             description: 'световой поток: 1000 Лм/м, мощность: 10 Вт/м, длина: 5 м, ширина: 8 мм',
-            image: 'test',
+            image: 'test/lightingTechnology1.jpg',
         },
         {
             category: lightingTechnology,
             title: 'Светодиодная лента vacco group',
             description: 'световой поток: 1000 Лм/м, мощность: 10 Вт/м, длина: 5 м, ширина: 8 мм',
-            image: 'test',
+            image: 'test/lightingTechnology1.jpg',
         },
         {
             category: film,
             title: 'Пленка ПВХ LEGEND',
             description: 'ЛАК:; толщина - 0,18±0,01 мм; ГР/М; плотность - 210 г/м2; ширина полотна - 320 см',
-            image: 'test',
+            image: 'test/legend-paint.jpg',
         },
         {
             category: film,
             title: 'Пленка ПВХ IDEAL',
             description: 'ЛАК:; толщина - 0,18±0,01 мм; ГР/М; плотность - 210 г/м2; ширина полотна - 320 см',
-            image: 'test',
+            image: 'test/plenkaPBX.png',
         },
     );
 
@@ -85,13 +86,38 @@ const run = async () => {
         {
             title: 'Тестовый пост №1',
             description: 'Lorem ipsum',
-            image: 'test',
+            image: 'test/news1.jpg',
         },
         {
             title: 'Тестовый пост №2',
             description: 'Lorem ipsum',
-            image: 'test',
+            image: 'test/news2.png',
         },
+    );
+
+    await PortfolioItem.create(
+        {
+            cover: 'test/IMG_0448.jpg',
+            gallery: [
+                {
+                    image: 'test/IMG_0450.jpg',
+                },
+                {
+                    image: 'test/IMG_0451.jpg',
+                },
+            ],
+        },
+        {
+            cover: 'test/IMG_2687.jpg',
+            gallery: [
+                {
+                    image: 'test/IMG_2683.jpg',
+                },
+                {
+                    image: 'test/IMG_2682.jpg',
+                },
+            ],
+        }
     );
 }
 
