@@ -1,10 +1,8 @@
 import type {Metadata} from "next";
 import "./globals.css";
-import { Manrope } from 'next/font/google';
-import Header from "@/components/header/Header";
-import Footer from "@/components/footer/Footer";
-
-
+import {Manrope} from 'next/font/google';
+import Header from "@/components/shared/Header";
+import Footer from "@/components/shared/Footer";
 
 export const manrope = Manrope({
     subsets: ['latin', 'cyrillic'],
@@ -17,9 +15,7 @@ export const metadata: Metadata = {
     description: "",
 };
 
-export default function RootLayout({
-                                       children,
-                                   }: Readonly<{
+export default function RootLayout({children,}: Readonly<{
     children: React.ReactNode;
 }>) {
     return (
