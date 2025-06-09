@@ -21,3 +21,11 @@ export interface UserFields {
     __confirmPassword: string;
     displayName: string;
 }
+
+export interface UpdatesRequest {
+    name?: string;
+    email?: string;
+    phone?: string;
+    status?: 'Новая'| 'В работе' | 'Завершена'| 'Отклонена';
+    commentOfManager?: string | null;
+}

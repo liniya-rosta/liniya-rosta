@@ -8,6 +8,7 @@ import productRouter from "./routers/products";
 import postRouter from "./routers/posts";
 import usersRouter from "./routers/users";
 import superAdminRouter from "./routers/superadmin";
+import requestRouter from "./routers/requests";
 import portfolioItemRouter from "./routers/portfolioItems";
 
 const app = express();
@@ -28,6 +29,7 @@ app.use('/superadmin', superAdminRouter);
 app.use('/categories', categoryRouter);
 app.use('/products', productRouter);
 app.use('/posts', postRouter);
+app.use('/requests', requestRouter)
 app.use('/portfolio-items', portfolioItemRouter);
 
 const run = async () => {

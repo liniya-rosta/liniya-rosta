@@ -6,6 +6,7 @@ import Category from "./models/Category";
 import Product from "./models/Product";
 import Post from "./models/Post";
 import {PortfolioItem} from "./models/PortfolioItem";
+import RequestFromClient from "./models/Request";
 
 const run = async () => {
     await mongoose.connect(config.db);
@@ -17,6 +18,7 @@ const run = async () => {
         await db.dropCollection('users');
         await db.dropCollection('posts');
         await db.dropCollection('portfolioitems');
+        await db.dropCollection('requests');
     } catch (e) {
         console.log('Коллекции отсутствовали, пропуск сброса');
     }
@@ -119,6 +121,24 @@ const run = async () => {
             ],
         }
     );
+
+    await RequestFromClient.create(
+        {
+            name: "Нурбек",
+            phone: "+996555123456",
+            email: 'nurbek@gmail.com',
+        },
+        {
+            name: "Александр",
+            phone: "+996550654321",
+            email: 'alex@gmail.com',
+        },
+        {
+            name: "Айдана",
+            phone: "+996555112233",
+            email: 'aidana@gmail.com',
+        },
+    )
 }
 
 run().catch(console.error);
