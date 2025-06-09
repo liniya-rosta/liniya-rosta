@@ -9,13 +9,14 @@ import postRouter from "./routers/posts";
 import usersRouter from "./routers/users";
 import superAdminRouter from "./routers/superadmin";
 import requestRouter from "./routers/requests";
+import portfolioItemRouter from "./routers/portfolioItems";
 
 const app = express();
 const port = 8000;
 
 app.use(
     cors({
-        origin: "http://localhost:5173",
+        origin: "http://localhost:3000",
         credentials: true,
     }),
 );
@@ -29,6 +30,7 @@ app.use('/categories', categoryRouter);
 app.use('/products', productRouter);
 app.use('/posts', postRouter);
 app.use('/requests', requestRouter)
+app.use('/portfolio-items', portfolioItemRouter);
 
 const run = async () => {
     await mongoose.connect(config.db);
