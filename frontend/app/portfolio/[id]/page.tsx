@@ -2,12 +2,12 @@
 
 import React, {useLayoutEffect, useState} from 'react';
 import {usePortfolioStore} from "@/store/portfolioItem";
-import {Container} from "@/components/shared/container";
+import {Container} from "@/components/shared/Container";
 import {useParams} from 'next/navigation';
 import {API_BASE_URL} from "@/lib/globalConstants";
 import Image from "next/image";
 import {GalleryItem} from "@/lib/types";
-import {ModalWindow} from "@/components/UI/modal-window";
+import {ModalWindow} from "@/components/ui/modal-window";
 
 const GalleryPage = () => {
     const {detailItem, fetchItem} = usePortfolioStore();
