@@ -48,16 +48,26 @@ requestAdminRouter.patch('/:id', async (req, res, next) => {
             return;
         }
 
-        if (!name || !phone || !name.trim() || !phone.trim() || !email || !email.trim()) {
-            res.status(400).send({error: "Поля имя, номер, почта должны быть заполнены"});
-            return;
+        if (name !== undefined && !name.trim()) {
+             res.status(400).send({ error: "Имя должно быть заполнено" });
+            return
+        }
+
+        if (email !== undefined && !email.trim()) {
+             res.status(400).send({ error: "Почта должна быть заполнена" });
+            return
+        }
+
+        if (phone !== undefined && !phone.trim()) {
+             res.status(400).send({ error: "Номер телефона должен быть заполнен" });
+             return
         }
 
         const updates: UpdatesRequest = {};
-        if (name) updates.name = name.trim();
-        if (phone) updates.phone = phone.trim();
-        if (email) updates.email = email.trim();
-        if (status) updates.status = status;
+        if (name !== undefined) updates.name = name.trim();
+        if (phone !== undefined) updates.phone = phone.trim();
+        if (email !== undefined) updates.email = email.trim();
+        if (status !== undefined) updates.status = status;
         if (commentOfManager !== undefined) updates.commentOfManager = commentOfManager;
 
         const updated = await RequestFromClient.findByIdAndUpdate(
