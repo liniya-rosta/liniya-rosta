@@ -1,8 +1,8 @@
 'use client';
 
-import ContactInfoCard from "@/components/shared/ContactInfoCard";
-import WorkingHoursCard from "@/components/shared/WorkingHoursCard";
-import MapSection from "@/components/shared/MapSection"; // Компонент с картой
+import ContactInfoCard from "@/app/contacts/components/ContactInfoCard";
+import WorkingHoursCard from "@/app/contacts/components/WorkingHoursCard";
+import MapSection from "@/app/contacts/components/MapSection"; // Компонент с картой
 
 const ContactsPage = () => (
     <div className="container mx-auto px-4 py-8">
