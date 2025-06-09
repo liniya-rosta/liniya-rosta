@@ -3,11 +3,29 @@ import {model, Schema} from "mongoose";
 const RequestSchema = new Schema({
     name: {
         type: String,
-        required: true,
+        required: [true, 'Имя обязательно'],
     },
-    phoneNumber: {
+    phone: {
         type: String,
-        required: true,
+        required: [true, 'Номер обязателен'],
+        validate: {
+            validator: (value: string) => {
+                const onlyDigits = value.replace(/\D/g, '');
+                const containsLetters = /[a-zA-Zа-яА-Я]/.test(value);
+
+                return onlyDigits.length >= 9 && !containsLetters;
+            },
+            message: "Номер телефона должен содержать минимум 9 цифр и не должен включать буквы",
+        },
+    },
+    email: {
+        type: String,
+        required: [true, 'Email обязателен'],
+        trim: true,
+        validate: {
+            validator: (value: string) => /^[\w.-]+@[\w.-]+\.\w{2,}$/.test(value),
+            message: "Некорректный email" ,
+        },
     },
     commentOfManager: {
         type: String,
@@ -16,10 +34,10 @@ const RequestSchema = new Schema({
     status: {
         type: String,
         enum: {
-            values: ['new', 'in_progress', 'done', 'rejected'],
+            values: ['Новая', 'В работе', 'Завершена', 'Отклонена'],
             message: 'Недопустимый статус заявки',
         },
-        default: 'new',
+        default: 'Новая',
     }
 }, { timestamps: true });
 
