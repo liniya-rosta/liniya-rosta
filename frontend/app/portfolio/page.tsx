@@ -2,8 +2,8 @@
 
 import React, {useLayoutEffect} from 'react';
 import {usePortfolioStore} from "@/store/portfolioItem";
-import {Container} from "@/components/shared/container";
-import {CartPortfolio} from "@/components/shared/cart-portfolio";
+import {Container} from "@/components/shared/Container";
+import {CartPortfolio} from "@/app/portfolio/components/CartPortfolio";
 import {API_BASE_URL} from "@/lib/globalConstants";
 
 const PortfolioPage = () => {

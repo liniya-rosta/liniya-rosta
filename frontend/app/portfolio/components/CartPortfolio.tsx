@@ -1,7 +1,7 @@
 import React from 'react';
 import {cn} from "@/lib/utils";
 import Image from "next/image";
-import {DarkBtn} from "@/components/UI/dark-btn";
+import {DarkBtn} from "@/components/ui/dark-btn";
 import Link from "next/link";
 
 interface Props {
