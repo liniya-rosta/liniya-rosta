@@ -18,8 +18,8 @@ const WorkingHoursCard = () => (
                 <li className="flex justify-between items-center">
                     <span>Понедельник - Воскресенье:</span>
                     <span className="font-medium text-gray-900">
-    <time dateTime="09:00">9:00</time> – <time dateTime="19:00">19:00</time>
-  </span>
+                        <time dateTime="09:00">9:00</time> – <time dateTime="19:00">19:00</time>
+                    </span>
                 </li>
             </ul>
         </div>

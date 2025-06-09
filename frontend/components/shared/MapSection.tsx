@@ -18,7 +18,7 @@ const MapSection = () => {
 
                 if (!mapRef.current) return;
 
-                const map = L.map(mapRef.current).setView([42.890104, 74.623837], 13);
+                const map = L.map(mapRef.current, {scrollWheelZoom: false}).setView([42.890104, 74.623837], 13);
 
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     attribution: '&copy; OpenStreetMap contributors',
