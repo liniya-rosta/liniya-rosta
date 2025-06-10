@@ -12,3 +12,8 @@ export interface GalleryItem {
 export interface PortfolioItemDetail extends PortfolioItemPreview {
     gallery: GalleryItem[];
 }
+
+export interface ContactDataDTO {
+    _id: string;
+
+}

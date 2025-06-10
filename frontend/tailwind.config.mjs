@@ -1,6 +1,6 @@
 import animatePlugin from "tailwindcss-animate"
 
-const createFluidFontSize = (mobileSize, desktopSize, lineHeight, fontWeight) => {
+const createFluidFontSize = (mobileSize, desktopSize, lineHeight) => {
     const minFontSize = `${mobileSize}px`;
     const maxFontSize = `${desktopSize}px`;
 
@@ -8,7 +8,6 @@ const createFluidFontSize = (mobileSize, desktopSize, lineHeight, fontWeight) =>
         `clamp(${minFontSize}, ${mobileSize}px + (${desktopSize} - ${mobileSize}) * ((100vw - 320px) / (1920 - 320)), ${maxFontSize})`,
         {
             lineHeight: lineHeight.toString(),
-            fontWeight: fontWeight,
         },
     ];
 };
@@ -50,16 +49,18 @@ export default {
         },
         extend: {
             fontSize: {
-                "16-24-1.2": createFluidFontSize(16, 24, 1.2, 400),
+                "16-24-1.2": createFluidFontSize(16, 24, 1.2),
+                "20-36-1.2": createFluidFontSize(20, 36, 1.2)
             },
             spacing: {
                 "dynamic-48-96": createFluidSpacing(48, 96),
+                "dynamic-46-64": createFluidSpacing(46, 64),
             },
             width: {
-                fluidHalf: createFluidWidth(160, 320),
+                "fluid-328-1083": createFluidWidth(328, 1083),
             },
             height: {
-                fluidSection: createFluidHeight(400, 800),
+                "fluid-170-620": createFluidHeight(170, 620),
             },
             gridTemplateColumns: {
                 "13": "repeat(13, minmax(0, 1fr))",
