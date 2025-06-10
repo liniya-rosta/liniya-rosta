@@ -7,7 +7,7 @@ interface PortfolioState {
     detailItem: PortfolioItemDetail | null;
     galleryItem: GalleryItem | null;
     fetchLoading: boolean;
-    fetchPortfolio: (gallery_id?: string) => Promise<void>;
+    setPortfolioPreview: (data: PortfolioItemPreview[]) => void;
     fetchItem: (item_id: string) => Promise<void>;
 }
 
@@ -17,22 +17,8 @@ export const usePortfolioStore = create<PortfolioState>((set) => ({
     galleryItem: null,
     fetchLoading: false,
 
-    fetchPortfolio: async (gallery_id) => {
-        set({fetchLoading: true});
-
-        try {
-            if (gallery_id) {
-                const response = await axiosAPI<GalleryItem>("/portfolio-items?galleryId=" + gallery_id);
-                set({galleryItem: response.data});
-            }
-
-            const response = await axiosAPI<PortfolioItemPreview[]>("/portfolio-items");
-            set({items: response.data});
-        } catch (e) {
-            console.error(e);
-        } finally {
-            set({fetchLoading: false});
-        }
+    setPortfolioPreview: (data) => {
+        set({items: data})
     },
 
     fetchItem: async (item_id) => {

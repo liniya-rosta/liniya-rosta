@@ -124,23 +124,29 @@
     @apply bg-background text-foreground;
   }
 }
-
 .swiper-pagination-bullets {
   display: flex;
   justify-content: center;
   gap: 0.5rem;
-  margin-top: 1.5rem;
+  margin-top: 30px;
   position: static !important;
 }
 
+.swiper-button-next,
+.swiper-button-prev {
+  color: hsl(var(--primary)) !important;
+}
+
 .swiper-pagination-bullet {
+  background-color: #555555 !important; /* Универсальный темный серый для неактивных */
+  opacity: 0.7 !important;
   width: 10px;
   height: 10px;
-  background-color: #d1d5db;
-  opacity: 1;
-  transition: background-color 0.3s ease;
+  border-radius: 50%;
+  transition: background-color 0.3s ease, opacity 0.3s ease;
 }
 
 .swiper-pagination-bullet-active {
-  background-color: #f59e0b;
+  background-color: #000000 !important; /* Черный для активной точки */
+  opacity: 1 !important;
 }

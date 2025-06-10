@@ -1,18 +1,17 @@
-// src/components/ProductCard.jsx
 import React from 'react';
 import Image from 'next/image';
-import { AspectRatio } from '@/components/ui/aspect-ratio';
-import { Card, CardContent, CardFooter } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { API_BASE_URL } from '@/lib/globalConstants';
+import {AspectRatio} from '@/components/ui/aspect-ratio';
+import {Card, CardContent, CardFooter} from '@/components/ui/card';
+import {Button} from '@/components/ui/button';
+import {Badge} from '@/components/ui/badge';
+import {API_BASE_URL} from '@/lib/globalConstants';
 import {Product} from "@/lib/types";
 
 interface Props {
     product: Product;
 }
 
-const ProductCard: React.FC<Props> = ({ product }) => (
+const ProductCard: React.FC<Props> = ({product}) => (
     <Card className="group overflow-hidden hover:shadow-md transition-all">
         <AspectRatio ratio={4 / 3}>
             <Image
