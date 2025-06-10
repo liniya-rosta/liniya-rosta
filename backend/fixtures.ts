@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 import config from "./config";
 import User from "./src/models/User";
-import {randomUUID} from "node:crypto";
 import Category from "./src/models/Category";
 import Product from "./src/models/Product";
 import Post from "./src/models/Post";
@@ -30,7 +29,6 @@ const run = async () => {
             confirmPassword: '123',
             role: 'superadmin',
             displayName: 'Бакыт',
-            token: randomUUID(),
         },
         {
             email: 'alice@gmail.com',
@@ -38,7 +36,6 @@ const run = async () => {
             confirmPassword: '123',
             role: 'admin',
             displayName: 'Алиса',
-            token: randomUUID(),
         },
     );
 
