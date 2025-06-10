@@ -1,7 +1,10 @@
+'use client'
+
 import React, {useState} from 'react';
 import { toast } from "react-toastify";
 import {IRequestMutation} from "@/lib/types";
-import {useRequestStore} from "@/store/request";
+import {useRequestStore} from "@/store/requestStore";
+import {createRequest} from "@/actions/requestActions";
 
 interface Props {
     closeModal: () => void;
@@ -15,19 +18,20 @@ const initialState: IRequestMutation = {
 
 const RequestForm: React.FC<Props> = ({closeModal}) => {
     const [state, setState] = useState<IRequestMutation>(initialState);
-    const {createItem} = useRequestStore();
-    const [localError, setLocalError] = useState<string | null>(null);
+    const {createLoading, createError, errorMessage, setLoading, setError} = useRequestStore();
 
     const submitFormHandler = async (e: React.FormEvent) => {
         e.preventDefault();
-        const error = await createItem(state);
+        setLoading(true);
+        setError(null);
 
-        if (error) {
-            setLocalError(error);
-            return;
-        } else {
-            setLocalError(null);
+        const response = await createRequest(state);
+
+        if (response !== null) {
+            setError(response);
         }
+
+        setLoading(false);
         toast.success('Заявка отправлена! Менеджер свяжется с вами.');
         closeModal();
         setState(initialState);
@@ -46,9 +50,9 @@ const RequestForm: React.FC<Props> = ({closeModal}) => {
             className="max-w-md mx-auto p-4 bg-white rounded-2xl shadow-md space-y-4"
         >
             <h2 className="text-xl font-semibold text-center">Оставить заявку</h2>
-            {localError && (
+            {createError && (
                 <div className="flex items-center mt-2 text-red-700 bg-red-100 border border-red-400 rounded-md px-3 py-2">
-                    <p className="text-sm font-medium">{localError}</p>
+                    <p className="text-sm font-medium">{errorMessage}</p>
                 </div>
             )}
             <input
@@ -85,7 +89,7 @@ const RequestForm: React.FC<Props> = ({closeModal}) => {
                 type="submit"
                 className="w-full bg-gray-600 text-white py-2 rounded-xl hover:bg-gray-700 transition"
             >
-                Отправить
+               { createLoading && '...'} Отправить
             </button>
         </form>
     );
