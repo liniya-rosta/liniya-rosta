@@ -124,6 +124,13 @@
     @apply bg-background text-foreground;
   }
 }
+
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 25px
+}
+
 .swiper-pagination-bullets {
   display: flex;
   justify-content: center;

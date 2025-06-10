@@ -44,3 +44,13 @@ export interface ValidationError {
 export interface GlobalMessage {
     error: string;
 }
+export interface IRequestMutation {
+    name: string;
+    email: string;
+    phone: string;
+}
+
+export interface ContactDataDTO {
+    _id: string;
+
+}

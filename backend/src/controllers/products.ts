@@ -1,9 +1,7 @@
-import express from 'express';
 import Product from "../models/Product";
+import { Request, Response, NextFunction } from "express";
 
-const productsRouter = express.Router();
-
-productsRouter.get('/', async (req, res, next) => {
+export const getProducts = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const category_id = req.query.category as string;
         const filter: { category?: string } = {};
@@ -15,9 +13,9 @@ productsRouter.get('/', async (req, res, next) => {
     } catch (e) {
         next(e);
     }
-});
+}
 
-productsRouter.get('/:id', async (req, res, next) => {
+export const getProductById = async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
 
     try {
@@ -32,6 +30,4 @@ productsRouter.get('/:id', async (req, res, next) => {
     } catch (e) {
         next(e);
     }
-});
-
-export default productsRouter;
+}

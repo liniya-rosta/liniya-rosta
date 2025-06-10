@@ -1,6 +1,6 @@
 import mongoose, { HydratedDocument, Model } from "mongoose";
 import argon2 from "argon2";
-import { UserFields } from "../types";
+import { UserFields } from "../../types";
 import jwt from "jsonwebtoken";
 
 interface UserMethods {

@@ -1,10 +1,8 @@
-import express from "express";
+import { Request, Response } from "express";
 import RequestFromClient from "../models/Request";
 import mongoose from "mongoose";
 
-const requestRouter = express.Router();
-
-requestRouter.post('/', async (req, res) => {
+export const postRequest =  async (req: Request, res: Response) => {
         try {
             const {name, phone, email} = req.body;
             if (!name.trim()  || !phone.trim() || !email.trim()) {
@@ -28,6 +26,4 @@ requestRouter.post('/', async (req, res) => {
             }
             res.status(500).send({ message: "Что-то пошло не так" });
         }
-});
-
-export default requestRouter
+};

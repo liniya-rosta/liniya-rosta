@@ -1,12 +1,12 @@
 import mongoose from "mongoose";
 import config from "./config";
-import User from "./models/User";
+import User from "./src/models/User";
 import {randomUUID} from "node:crypto";
-import Category from "./models/Category";
-import Product from "./models/Product";
-import Post from "./models/Post";
-import {PortfolioItem} from "./models/PortfolioItem";
-import RequestFromClient from "./models/Request";
+import Category from "./src/models/Category";
+import Product from "./src/models/Product";
+import Post from "./src/models/Post";
+import {PortfolioItem} from "./src/models/PortfolioItem";
+import RequestFromClient from "./src/models/Request";
 
 const run = async () => {
     await mongoose.connect(config.db);
