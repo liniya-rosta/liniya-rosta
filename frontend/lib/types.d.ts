@@ -12,3 +12,9 @@ export interface GalleryItem {
 export interface PortfolioItemDetail extends PortfolioItemPreview {
     gallery: GalleryItem[];
 }
+
+export interface IRequestMutation {
+    name: string;
+    email: string;
+    phone: string;
+}
