@@ -18,3 +18,8 @@ export interface IRequestMutation {
     email: string;
     phone: string;
 }
+
+export interface ContactDataDTO {
+    _id: string;
+
+}

@@ -1,18 +1,16 @@
-import express from 'express';
 import Category from "../models/Category";
+import { Request, Response, NextFunction } from 'express';
 
-const categoriesRouter = express.Router();
-
-categoriesRouter.get('/', async (_req, res, next) => {
+export const getCategories = async (_req: Request, res: Response, next: NextFunction) => {
     try {
         const categories = await Category.find();
         res.send(categories);
     } catch (e) {
         next(e);
     }
-});
+}
 
-categoriesRouter.get("/:id", async (req, res, next) => {
+export const getCategoryById = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const category = await Category.findById(req.params.id);
         if (!category) {
@@ -23,7 +21,4 @@ categoriesRouter.get("/:id", async (req, res, next) => {
     } catch (e) {
         next(e);
     }
-});
-
-export default categoriesRouter;
-
+}

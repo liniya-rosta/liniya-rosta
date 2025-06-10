@@ -1,9 +1,7 @@
-import express from "express";
 import {PortfolioItem} from "../models/PortfolioItem";
+import { Request, Response, NextFunction } from "express";
 
-const portfolioItemRouter = express.Router();
-
-portfolioItemRouter.get("/", async (req, res, next) => {
+export const getPortfolioItems = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { galleryId } = req.query;
 
@@ -27,9 +25,9 @@ portfolioItemRouter.get("/", async (req, res, next) => {
     } catch (err) {
         next(err);
     }
-});
+}
 
-portfolioItemRouter.get("/:id", async (req, res, next) => {
+export const getPortfolioItemById = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const {id} = req.params;
         const items = await PortfolioItem.findById(id);
@@ -37,6 +35,4 @@ portfolioItemRouter.get("/:id", async (req, res, next) => {
     } catch (err) {
         next(err);
     }
-});
-
-export default portfolioItemRouter;
+}

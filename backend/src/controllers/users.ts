@@ -1,11 +1,9 @@
-import express from "express";
-import jwt from "jsonwebtoken";
-import {RequestWithUser} from "../middleware/authAdmin";
 import User, {generateAccessToken, generateRefreshToken, JWT_REFRESH_SECRET, JWT_SECRET} from "../models/User";
+import { Request, Response, NextFunction } from "express";
+import {RequestWithUser} from "../middleware/authAdmin";
+import jwt from "jsonwebtoken";
 
-const usersRouter = express.Router();
-
-usersRouter.post("/sessions", async (req, res, next) => {
+export const login = async (req: Request, res: Response, next: NextFunction) => {
     try {
         if (!req.body.email || !req.body.password) {
             res.status(400).send({error: "Email и пароль обязательны"});
@@ -52,9 +50,9 @@ usersRouter.post("/sessions", async (req, res, next) => {
     } catch (e) {
         next(e);
     }
-});
+}
 
-usersRouter.delete("/logout", async (req: RequestWithUser, res, next) => {
+export const logout = async (req: RequestWithUser, res: Response, next: NextFunction) => {
     try {
         res.clearCookie("refreshToken", {
             httpOnly: true,
@@ -93,9 +91,9 @@ usersRouter.delete("/logout", async (req: RequestWithUser, res, next) => {
     } catch (error) {
         next(error);
     }
-});
+}
 
-usersRouter.post("/refresh-token", async (req, res, _next) => {
+export const refreshToken = async (req: Request, res: Response, _next: NextFunction) => {
     const refreshToken = req.cookies.refreshToken;
     if (!refreshToken) {
         res.status(403).send({error: "Refresh-токен отсутствует"});
@@ -118,6 +116,4 @@ usersRouter.post("/refresh-token", async (req, res, _next) => {
     } catch (e) {
         res.status(403).send({error: "Недействительный или истёкший refresh-токен"});
     }
-});
-
-export default usersRouter;
+}

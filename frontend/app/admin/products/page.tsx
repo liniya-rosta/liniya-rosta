@@ -2,7 +2,7 @@ import React from 'react';
 
 const AdminProductsPage = () => {
     return (
-        <div>
+        <div className='mb-dynamic-48-96'>
             Товары
         </div>
     );

@@ -1,6 +1,6 @@
 import express from "express";
 import RequestFromClient from "../../models/Request";
-import {UpdatesRequest} from "../../types";
+import {UpdatesRequest} from "../../../types";
 import {Types} from "mongoose";
 
 const requestAdminRouter = express.Router();
