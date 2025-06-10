@@ -13,6 +13,12 @@ export interface PortfolioItemDetail extends PortfolioItemPreview {
     gallery: GalleryItem[];
 }
 
+export interface IRequestMutation {
+    name: string;
+    email: string;
+    phone: string;
+}
+
 export interface ContactDataDTO {
     _id: string;
 
