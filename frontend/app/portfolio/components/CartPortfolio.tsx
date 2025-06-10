@@ -6,8 +6,8 @@ import Link from "next/link";
 
 interface Props {
     className?: string;
-    imageSrc:  string;
-    link:  string;
+    imageSrc: string;
+    link: string;
     alt?: string;
 }
 
@@ -17,7 +17,7 @@ export const CartPortfolio: React.FC<Props> = (
         <Link
             href={link}
             className={cn(
-                "relative w-full max-w-[240px] aspect-[3/4] overflow-hidden rounded-xl shadow-lg group",
+                "relative w-full max-w-[440px] aspect-[3/4] overflow-hidden rounded-xl shadow-lg group",
                 className
             )}>
             <Image
