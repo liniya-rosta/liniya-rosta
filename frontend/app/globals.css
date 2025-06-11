@@ -145,7 +145,7 @@
 }
 
 .swiper-pagination-bullet {
-  background-color: #555555 !important; /* Универсальный темный серый для неактивных */
+  background-color: #555555 !important;
   opacity: 0.7 !important;
   width: 10px;
   height: 10px;
@@ -154,6 +154,6 @@
 }
 
 .swiper-pagination-bullet-active {
-  background-color: #000000 !important; /* Черный для активной точки */
+  background-color: #000000 !important;
   opacity: 1 !important;
 }

@@ -75,6 +75,14 @@ const HomePageClient: React.FC<HomePageClientProps> = ({
         setProductsLoading(false);
 
         setIsHydrating(false);
+
+        const script = document.createElement('script');
+        script.src = 'https://cdn.lightwidget.com/widgets/lightwidget.js';
+        script.async = true;
+        document.body.appendChild(script);
+        return () => {
+            document.body.removeChild(script);
+        };
     }, [
         categories, products, portfolioItems, initialCategoriesError,
         initialProductsError, initialPortfolioError,
@@ -134,8 +142,9 @@ const HomePageClient: React.FC<HomePageClientProps> = ({
                         slidesPerView={2}
                         spaceBetween={10}
                         breakpoints={{
-                            640: {slidesPerView: 3, spaceBetween: 15},
+                            640: {slidesPerView: 3, spaceBetween: 20},
                             1024: {slidesPerView: 4, spaceBetween: 20},
+                            1280: {slidesPerView: 4, spaceBetween: 30},
                         }}
                         navigation
                         pagination={{clickable: true}}
@@ -169,7 +178,7 @@ const HomePageClient: React.FC<HomePageClientProps> = ({
                         spaceBetween={10}
                         breakpoints={{
                             768: {slidesPerView: 2, spaceBetween: 20},
-                            1024: {slidesPerView: 3, spaceBetween: 30},
+                            1024: {slidesPerView: 3, spaceBetween: 20},
                             1280: {slidesPerView: 4, spaceBetween: 30},
                         }}
                         navigation
@@ -229,6 +238,17 @@ const HomePageClient: React.FC<HomePageClientProps> = ({
                         <a href="tel:+996555757513">+996 555 757 513</a>
                     </Button>
                 </div>
+            </section>
+
+            <section className=" space-y-6 mx-auto bg-white">
+                <h2 className="text-3xl font-bold text-center from-primary">
+                    Наша лента в Instagram
+                </h2>
+                <iframe
+                    src="//lightwidget.com/widgets/a5595befc0b75c39ae732dfc56693cbd.html"
+                    className="lightwidget-widget w-full h-[500px] border-none rounded-xl shadow-md transition-opacity duration-700 ease-in-out"
+                    style={{overflow: 'hidden'}}
+                ></iframe>
             </section>
         </main>
     );
