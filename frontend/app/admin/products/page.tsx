@@ -1,8 +1,10 @@
-'use client'
+'use client';
 
-import {Category, Product, ProductWithoutId } from "@/lib/types";
-import {useEffect, useState} from "react";
-import {Pencil, Plus, Save, Trash2, X} from "lucide-react";
+import { Category, Product, ProductWithoutId } from "@/lib/types";
+import { useEffect, useState } from "react";
+import { fetchProducts } from "@/actions/products";
+import { fetchCategories } from "@/actions/categories";
+import { Pencil, Plus, Save, Trash2, X, Eye, EyeOff } from "lucide-react";
 
 const AdminProductsPage = () => {
     const [products, setProducts] = useState<Product[]>([]);
@@ -10,6 +12,9 @@ const AdminProductsPage = () => {
     const [loading, setLoading] = useState(true);
     const [editingId, setEditingId] = useState<string | null>(null);
     const [isAdding, setIsAdding] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
+    const [isMobile, setIsMobile] = useState(false);
     const [formData, setFormData] = useState<ProductWithoutId>({
         category: "",
         title: "",
@@ -17,106 +22,43 @@ const AdminProductsPage = () => {
         image: ""
     });
 
-    // Загрузка данных при монтировании компонента
     useEffect(() => {
-        void fetchProducts();
-        void fetchCategories();
+        void loadProducts();
+        void loadCategories();
+
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth < 1200);
+        };
+
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+
+        return () => window.removeEventListener('resize', checkMobile);
     }, []);
 
-    // Закомментированные запросы для будущей реализации
-    const fetchProducts = async () => {
+    const loadProducts = async () => {
         try {
             setLoading(true);
-            // const response = await fetch('/api/products');
-            // const data = await response.json();
-            // setProducts(data);
-
-            // Временно устанавливаем пустой массив
-            setProducts([]);
-        } catch (error) {
-            console.error('Ошибка при загрузке продуктов:', error);
+            setError(null);
+            const data = await fetchProducts();
+            setProducts(data);
+        } catch (e) {
+            setError(e instanceof Error ? e.message : 'Неизвестная ошибка при загрузке продуктов');
+            console.error('Ошибка при загрузке продуктов:', e);
         } finally {
             setLoading(false);
         }
     };
 
-    const fetchCategories = async () => {
+    const loadCategories = async () => {
         try {
-            // const response = await fetch('/api/categories');
-            // const data = await response.json();
-            // setCategories(data);
-
-            // Временно устанавливаем пустой массив
-            setCategories([]);
-        } catch (error) {
-            console.error('Ошибка при загрузке категорий:', error);
+            const data = await fetchCategories();
+            setCategories(data);
+        } catch (e) {
+            console.error('Ошибка при загрузке категорий:', e);
         }
     };
 
-    const createProduct = async (productData: ProductWithoutId) => {
-        try {
-            // const response = await fetch('/api/products', {
-            //     method: 'POST',
-            //     headers: {
-            //         'Content-Type': 'application/json',
-            //     },
-            //     body: JSON.stringify(productData),
-            // });
-            // const newProduct = await response.json();
-            // return newProduct;
-
-            // Временная реализация для демонстрации
-            const newProduct: Product = {
-                _id: Date.now().toString(),
-                ...productData
-            };
-            return newProduct;
-        } catch (error) {
-            console.error('Ошибка при создании продукта:', error);
-            throw error;
-        }
-    };
-
-    const updateProduct = async (id: string, productData: ProductWithoutId) => {
-        try {
-            // const response = await fetch(`/api/products/${id}`, {
-            //     method: 'PUT',
-            //     headers: {
-            //         'Content-Type': 'application/json',
-            //     },
-            //     body: JSON.stringify(productData),
-            // });
-            // const updatedProduct = await response.json();
-            // return updatedProduct;
-
-            // Временная реализация для демонстрации
-            const updatedProduct: Product = {
-                _id: id,
-                ...productData
-            };
-            return updatedProduct;
-        } catch (error) {
-            console.error('Ошибка при обновлении продукта:', error);
-            throw error;
-        }
-    };
-
-    const deleteProduct = async (id: string) => {
-        try {
-            // await fetch(`/api/products/${id}`, {
-            //     method: 'DELETE',
-            // });
-
-            // Временная реализация для демонстрации
-            console.log('Удаление продукта с ID:', id);
-        } catch (error) {
-            console.error('Ошибка при удалении продукта:', error);
-            throw error;
-        }
-    };
-
-
-    // Handles
     const handleEdit = (product: Product) => {
         setEditingId(product._id);
         setFormData({
@@ -140,16 +82,21 @@ const AdminProductsPage = () => {
     };
 
     const handleSave = async () => {
+        if (!formData.title.trim() || !formData.category.trim()) {
+            alert('Пожалуйста, заполните обязательные поля: название и категория');
+            return;
+        }
+
         try {
             if (isAdding) {
-                const newProduct = await createProduct(formData);
-                setProducts([...products, newProduct]);
+                // const newProduct = await createProduct(formData);
+                // setProducts([...products, newProduct]);
                 setIsAdding(false);
             } else if (editingId) {
-                const updatedProduct = await updateProduct(editingId, formData);
-                setProducts(products.map(product =>
-                    product._id === editingId ? updatedProduct : product
-                ));
+                // const updatedProduct = await updateProduct(editingId, formData);
+                // setProducts(products.map(product =>
+                //   product._id === editingId ? updatedProduct : product
+                // ));
                 setEditingId(null);
             }
 
@@ -161,6 +108,7 @@ const AdminProductsPage = () => {
             });
         } catch (error) {
             console.error('Ошибка при сохранении:', error);
+            alert(error instanceof Error ? error.message : 'Ошибка при сохранении');
         }
     };
 
@@ -178,10 +126,11 @@ const AdminProductsPage = () => {
     const handleDelete = async (id: string) => {
         if (window.confirm("Вы уверены, что хотите удалить этот товар?")) {
             try {
-                await deleteProduct(id);
+                // await deleteProduct(id);
                 setProducts(products.filter(product => product._id !== id));
             } catch (error) {
                 console.error('Ошибка при удалении:', error);
+                alert(error instanceof Error ? error.message : 'Ошибка при удалении');
             }
         }
     };
@@ -193,47 +142,205 @@ const AdminProductsPage = () => {
         }));
     };
 
-    if (loading) {
-        return (
-            <div className="min-h-screen bg-gray-50">
-                <div className="p-6">
-                    <div className="bg-white rounded-lg shadow p-6">
-                        <div className="text-center">Загрузка...</div>
+    const getCategoryTitle = (category: string | Category) => {
+        if (typeof category === 'object' && category !== null) {
+            return category.title;
+        }
+        const found = categories.find(cat => cat._id === category);
+        return found ? found.title : String(category);
+    };
+
+    const toggleRowExpanded = (productId: string) => {
+        const newExpandedRows = new Set(expandedRows);
+        if (newExpandedRows.has(productId)) {
+            newExpandedRows.delete(productId);
+        } else {
+            newExpandedRows.add(productId);
+        }
+        setExpandedRows(newExpandedRows);
+    };
+
+    const ProductCard = ({ product }: { product: Product }) => {
+        const isExpanded = expandedRows.has(product._id);
+        const isEditing = editingId === product._id;
+
+        if (isEditing) {
+            return (
+                <div className="bg-white border border-blue-200 rounded-lg p-4 mb-4 shadow-sm">
+                    <div className="space-y-4">
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Название *</label>
+                            <input
+                                type="text"
+                                value={formData.title}
+                                onChange={(e) => handleInputChange('title', e.target.value)}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Категория *</label>
+                            <select
+                                value={formData.category}
+                                onChange={(e) => handleInputChange('category', e.target.value)}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            >
+                                {categories.map(cat => (
+                                    <option key={cat._id} value={cat._id}>{cat.title}</option>
+                                ))}
+                            </select>
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Изображение</label>
+                            <input
+                                type="text"
+                                value={formData.image || ""}
+                                onChange={(e) => handleInputChange('image', e.target.value)}
+                                placeholder="URL изображения"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Описание</label>
+                            <textarea
+                                value={formData.description || ""}
+                                onChange={(e) => handleInputChange('description', e.target.value)}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 h-20"
+                            />
+                        </div>
+
+                        <div className="flex gap-2 pt-2">
+                            <button
+                                onClick={handleSave}
+                                className="flex-1 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition flex items-center justify-center gap-2"
+                            >
+                                <Save size={16} />
+                                Сохранить
+                            </button>
+                            <button
+                                onClick={handleCancel}
+                                className="flex-1 bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition flex items-center justify-center gap-2"
+                            >
+                                <X size={16} />
+                                Отмена
+                            </button>
+                        </div>
                     </div>
                 </div>
+            );
+        }
+
+        return (
+            <div className="bg-white border border-gray-200 rounded-lg p-4 mb-4 shadow-sm">
+                <div className="flex justify-between items-start mb-3">
+                    <h3 className="font-semibold text-lg text-gray-900 flex-1 pr-2">{product.title}</h3>
+                    <div className="flex gap-1 flex-shrink-0">
+                        <button
+                            onClick={() => toggleRowExpanded(product._id)}
+                            className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded"
+                            title={isExpanded ? "Скрыть детали" : "Показать детали"}
+                        >
+                            {isExpanded ? <EyeOff size={16} /> : <Eye size={16} />}
+                        </button>
+                        <button
+                            onClick={() => handleEdit(product)}
+                            className="p-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded"
+                            title="Редактировать"
+                        >
+                            <Pencil size={16} />
+                        </button>
+                        <button
+                            onClick={() => handleDelete(product._id)}
+                            className="p-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded"
+                            title="Удалить"
+                        >
+                            <Trash2 size={16} />
+                        </button>
+                    </div>
+                </div>
+
+                <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                        <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-sm">
+                            {getCategoryTitle(product.category)}
+                        </span>
+                    </div>
+
+                    {product.image && (
+                        <div className="flex justify-center">
+                            <img
+                                src={product.image}
+                                alt={product.title}
+                                className="w-20 h-20 object-cover rounded-lg"
+                                onError={(e) => {
+                                    e.currentTarget.style.display = 'none';
+                                }}
+                            />
+                        </div>
+                    )}
+
+                    {isExpanded && (
+                        <div className="pt-3 border-t border-gray-100 space-y-2">
+                            <div>
+                                <span className="text-sm font-medium text-gray-600">ID:</span>
+                                <span className="text-sm text-gray-800 ml-2 font-mono">{product._id}</span>
+                            </div>
+                            {product.description && (
+                                <div>
+                                    <span className="text-sm font-medium text-gray-600">Описание:</span>
+                                    <p className="text-sm text-gray-800 mt-1">{product.description}</p>
+                                </div>
+                            )}
+                        </div>
+                    )}
+                </div>
+            </div>
+        );
+    };
+
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
+                <div className="bg-white rounded-lg shadow p-6 text-center">Загрузка...</div>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-gray-50">
-            <div className="p-6">
-                <div className="bg-white rounded-lg shadow">
-                    <div className="p-6 border-b border-gray-200">
-                        <div className="flex justify-between items-center">
-                            <h1 className="text-2xl font-bold text-gray-900">
-                                Товары - Натяжные потолки
-                            </h1>
-                            <button
-                                onClick={handleAdd}
-                                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition flex items-center gap-2"
-                            >
-                                <Plus size={16} />
-                                Добавить товар
-                            </button>
-                        </div>
+        <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
+            <div className="bg-white rounded-lg shadow">
+                <div className="p-4 sm:p-6 border-b border-gray-200">
+                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+                        <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
+                            Товары - Натяжные потолки
+                        </h1>
+                        <button
+                            onClick={handleAdd}
+                            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition flex items-center justify-center gap-2 w-full sm:w-auto"
+                        >
+                            <Plus size={16} />
+                            Добавить товар
+                        </button>
                     </div>
+                </div>
 
-                    <div className="p-6">
-                        {isAdding && (
-                            <div className="bg-blue-50 p-4 rounded-lg mb-6 border-2 border-blue-200">
-                                <h3 className="text-lg font-semibold mb-4 text-blue-800">
-                                    Добавить новый товар
-                                </h3>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="p-4 sm:p-6">
+                    {error && (
+                        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
+                            {error}
+                        </div>
+                    )}
+
+                    {isAdding && (
+                        <div className="bg-blue-50 p-4 rounded-lg mb-6 border-2 border-blue-200">
+                            <h3 className="text-lg font-semibold mb-4 text-blue-800">Добавить новый товар</h3>
+                            <div className="space-y-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <input
                                         type="text"
-                                        placeholder="Название товара"
+                                        placeholder="Название товара *"
                                         value={formData.title}
                                         onChange={(e) => handleInputChange('title', e.target.value)}
                                         className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -243,44 +350,52 @@ const AdminProductsPage = () => {
                                         onChange={(e) => handleInputChange('category', e.target.value)}
                                         className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     >
-                                        <option value="">Выберите категорию</option>
+                                        <option value="">Выберите категорию *</option>
                                         {categories.map(cat => (
-                                            <option key={cat._id} value={cat.title}>{cat.title}</option>
+                                            <option key={cat._id} value={cat._id}>{cat.title}</option>
                                         ))}
                                     </select>
-                                    <input
-                                        type="text"
-                                        placeholder="URL изображения"
-                                        value={formData.image || ""}
-                                        onChange={(e) => handleInputChange('image', e.target.value)}
-                                        className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    />
-                                    <textarea
-                                        placeholder="Описание товара"
-                                        value={formData.description || ""}
-                                        onChange={(e) => handleInputChange('description', e.target.value)}
-                                        className="md:col-span-2 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 h-20"
-                                    />
                                 </div>
-                                <div className="flex gap-2 mt-4">
+                                <input
+                                    type="text"
+                                    placeholder="URL изображения"
+                                    value={formData.image || ""}
+                                    onChange={(e) => handleInputChange('image', e.target.value)}
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                />
+                                <textarea
+                                    placeholder="Описание товара"
+                                    value={formData.description || ""}
+                                    onChange={(e) => handleInputChange('description', e.target.value)}
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 h-20"
+                                />
+                                <div className="flex flex-col sm:flex-row gap-2">
                                     <button
                                         onClick={handleSave}
-                                        className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition flex items-center gap-2"
+                                        className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition flex items-center justify-center gap-2"
                                     >
                                         <Save size={16} />
                                         Сохранить
                                     </button>
                                     <button
                                         onClick={handleCancel}
-                                        className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition flex items-center gap-2"
+                                        className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition flex items-center justify-center gap-2"
                                     >
                                         <X size={16} />
                                         Отмена
                                     </button>
                                 </div>
                             </div>
-                        )}
+                        </div>
+                    )}
 
+                    {isMobile ? (
+                        <div>
+                            {products.map((product) => (
+                                <ProductCard key={product._id} product={product} />
+                            ))}
+                        </div>
+                    ) : (
                         <div className="overflow-x-auto">
                             <table className="w-full border-collapse">
                                 <thead>
@@ -304,33 +419,33 @@ const AdminProductsPage = () => {
                                                         type="text"
                                                         value={formData.title}
                                                         onChange={(e) => handleInputChange('title', e.target.value)}
-                                                        className="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                        className="w-full px-2 py-1 border border-gray-300 rounded"
                                                     />
                                                 </td>
                                                 <td className="p-3 border-b">
                                                     <select
                                                         value={formData.category}
                                                         onChange={(e) => handleInputChange('category', e.target.value)}
-                                                        className="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                        className="w-full px-2 py-1 border border-gray-300 rounded"
                                                     >
                                                         {categories.map(cat => (
-                                                            <option key={cat._id} value={cat.title}>{cat.title}</option>
+                                                            <option key={cat._id} value={cat._id}>{cat.title}</option>
                                                         ))}
                                                     </select>
                                                 </td>
                                                 <td className="p-3 border-b">
-                                                    <textarea
-                                                        value={formData.description || ""}
-                                                        onChange={(e) => handleInputChange('description', e.target.value)}
-                                                        className="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 h-16"
-                                                    />
+                                                  <textarea
+                                                      value={formData.description || ""}
+                                                      onChange={(e) => handleInputChange('description', e.target.value)}
+                                                      className="w-full px-2 py-1 border border-gray-300 rounded h-16"
+                                                  />
                                                 </td>
                                                 <td className="p-3 border-b">
                                                     <input
                                                         type="text"
                                                         value={formData.image || ""}
                                                         onChange={(e) => handleInputChange('image', e.target.value)}
-                                                        className="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                        className="w-full px-2 py-1 border border-gray-300 rounded"
                                                         placeholder="URL изображения"
                                                     />
                                                 </td>
@@ -338,14 +453,14 @@ const AdminProductsPage = () => {
                                                     <div className="flex gap-2">
                                                         <button
                                                             onClick={handleSave}
-                                                            className="bg-green-600 text-white p-2 rounded hover:bg-green-700 transition"
+                                                            className="bg-green-600 text-white p-2 rounded hover:bg-green-700"
                                                             title="Сохранить"
                                                         >
                                                             <Save size={16} />
                                                         </button>
                                                         <button
                                                             onClick={handleCancel}
-                                                            className="bg-gray-500 text-white p-2 rounded hover:bg-gray-600 transition"
+                                                            className="bg-gray-500 text-white p-2 rounded hover:bg-gray-600"
                                                             title="Отмена"
                                                         >
                                                             <X size={16} />
@@ -355,12 +470,12 @@ const AdminProductsPage = () => {
                                             </>
                                         ) : (
                                             <>
-                                                <td className="p-3 border-b text-gray-600">{product._id}</td>
+                                                <td className="p-3 border-b text-gray-600 font-mono text-xs">{product._id}</td>
                                                 <td className="p-3 border-b font-medium">{product.title}</td>
                                                 <td className="p-3 border-b">
-                                                    <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-sm">
-                                                        {product.category}
-                                                    </span>
+                                                  <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-sm">
+                                                    {getCategoryTitle(product.category)}
+                                                  </span>
                                                 </td>
                                                 <td className="p-3 border-b text-gray-600 max-w-xs truncate">
                                                     {product.description || "Нет описания"}
@@ -383,14 +498,14 @@ const AdminProductsPage = () => {
                                                     <div className="flex gap-2">
                                                         <button
                                                             onClick={() => handleEdit(product)}
-                                                            className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700 transition"
+                                                            className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700"
                                                             title="Редактировать"
                                                         >
                                                             <Pencil size={16} />
                                                         </button>
                                                         <button
                                                             onClick={() => handleDelete(product._id)}
-                                                            className="bg-red-600 text-white p-2 rounded hover:bg-red-700 transition"
+                                                            className="bg-red-600 text-white p-2 rounded hover:bg-red-700"
                                                             title="Удалить"
                                                         >
                                                             <Trash2 size={16} />
@@ -404,14 +519,14 @@ const AdminProductsPage = () => {
                                 </tbody>
                             </table>
                         </div>
+                    )}
 
-                        {products.length === 0 && (
-                            <div className="text-center py-8 text-gray-500">
-                                <p className="text-lg">Товары не найдены</p>
-                                <p className="text-sm mt-2">Добавьте первый товар, нажав кнопку Добавить товар</p>
-                            </div>
-                        )}
-                    </div>
+                    {products.length === 0 && !error && (
+                        <div className="text-center py-8 text-gray-500">
+                            <p className="text-lg">Товары не найдены</p>
+                            <p className="text-sm mt-2">Добавьте первый товар, нажав кнопку "Добавить товар"</p>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
