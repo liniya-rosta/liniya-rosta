@@ -54,3 +54,17 @@ export interface ContactDataDTO {
     _id: string;
 
 }
+
+export interface User {
+    _id: string;
+    email: string;
+    displayName: string;
+    role: string;
+}
+
+export interface UserForm {
+    email: string;
+    password: string;
+    confirmPassword: string;
+}
+

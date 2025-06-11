@@ -4,16 +4,20 @@ import { useState } from "react";
 import useUserStore from "@/store/usersStore";
 import Link from "next/link";
 import {logout} from "@/actions/users";
+import {useRouter} from "next/navigation";
 
 const AdminHeader = () => {
     const { user, setLogout } = useUserStore();
     const [menuOpen, setMenuOpen] = useState(false);
+    const router = useRouter();
 
     const toggleMenu = () => setMenuOpen((prev) => !prev);
 
     const handleLogout = async () => {
-        await logout()
         setLogout();
+        await logout();
+        router.push("/admin/login");
+        setMenuOpen(false);
     };
 
     return (
@@ -26,7 +30,7 @@ const AdminHeader = () => {
                             onClick={toggleMenu}
                             className="flex items-center gap-2 bg-gray-700 px-4 py-2 rounded hover:bg-gray-600 transition"
                         >
-                            <span>Привет,{user.displayName}</span>
+                            <span>Привет, {user.displayName}</span>
                             <svg
                                 className={`w-4 h-4 transition-transform ${menuOpen ? "rotate-180" : ""}`}
                                 fill="none"

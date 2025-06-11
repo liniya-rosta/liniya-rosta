@@ -2,7 +2,7 @@
 
 import React, {useEffect, useState} from 'react';
 import {useProductStore} from '@/store/productsStore';
-import {usePortfolioStore} from '@/store/portfolioItem';
+import {usePortfolioStore} from "@/store/portfolioItemStore";
 import {Button} from '@/components/ui/button';
 import {API_BASE_URL} from '@/lib/globalConstants';
 import {Swiper, SwiperSlide} from 'swiper/react';
@@ -27,7 +27,7 @@ interface HomePageClientProps {
     categoriesError: string | null;
     productsError: string | null;
     portfolioError: string | null;
-};
+}
 
 const HomePageClient: React.FC<HomePageClientProps> = ({
                                                            categories,
