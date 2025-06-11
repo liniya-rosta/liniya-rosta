@@ -1,24 +1,25 @@
 'use client';
 
-import {useEffect, useRef} from 'react';
+import { useEffect, useRef } from 'react';
 import 'leaflet/dist/leaflet.css';
+import type { Map as LeafletMap } from 'leaflet';
 
 const MapSection = () => {
     const mapRef = useRef<HTMLDivElement>(null);
-    const leafletMapRef = useRef<any>(null); // Храним карту, чтобы избежать повторной инициализации
+    const leafletMapRef = useRef<LeafletMap | null>(null);
 
     useEffect(() => {
+        let L: typeof import('leaflet');
+
         const loadMap = async () => {
             try {
-                const L = await import('leaflet');
+                L = await import('leaflet');
 
-                if (leafletMapRef.current) {
-                    leafletMapRef.current.remove();
-                }
+                cleanupMap();
 
                 if (!mapRef.current) return;
 
-                const map = L.map(mapRef.current, {scrollWheelZoom: false}).setView([42.890104, 74.623837], 13);
+                const map = L.map(mapRef.current, { scrollWheelZoom: false }).setView([42.890104, 74.623837], 13);
 
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     attribution: '&copy; OpenStreetMap contributors',
@@ -32,7 +33,7 @@ const MapSection = () => {
                     iconAnchor: [12, 41],
                 });
 
-                L.marker([42.890104, 74.623837], {icon: markerIcon})
+                L.marker([42.890104, 74.623837], { icon: markerIcon })
                     .addTo(map)
                     .bindPopup('<b>Наше местоположение</b><br>г. Бишкек, ул. Куренкеева, 49');
 
@@ -42,13 +43,15 @@ const MapSection = () => {
             }
         };
 
-        loadMap();
-
-        return () => {
+        const cleanupMap = () => {
             if (leafletMapRef.current) {
                 leafletMapRef.current.remove();
+                leafletMapRef.current = null;
             }
         };
+
+        loadMap();
+        return cleanupMap;
     }, []);
 
     return (
@@ -58,8 +61,9 @@ const MapSection = () => {
             </h2>
             <div
                 ref={mapRef}
-                className="w-full h-[600px] rounded-xl overflow-hidden"
+                className="w-full h-[300px] rounded-xl overflow-hidden"
                 aria-label="Где находится Линия роста: г. Бишкек, ул. Куренкеева, 49"
+                tabIndex={0}
             />
         </section>
     );

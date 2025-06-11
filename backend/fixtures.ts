@@ -79,6 +79,12 @@ const run = async () => {
             description: 'ЛАК:; толщина - 0,18±0,01 мм; ГР/М; плотность - 210 г/м2; ширина полотна - 320 см',
             image: 'test/plenkaPBX.png',
         },
+        {
+            category: film,
+            title: 'Пленка ПВХ as;lkdf;sajf',
+            description: 'ЛАК:; толщина - 0,18±0,01 мм; ГР/М; плотность - 210 г/м2; ширина полотна - 320 см',
+            image: 'test/plenkaPBX.png',
+        },
     );
 
     await Post.create(

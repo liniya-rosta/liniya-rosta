@@ -1,25 +1,69 @@
 import React from 'react';
-import MainPageClient from "@/app/mainPage/MainPageClient";
-import type {Metadata} from "next";
+import {fetchCategories} from '@/actions/categories';
+import {fetchProducts} from '@/actions/products';
+import {Category, Product, PortfolioItemPreview} from '@/lib/types';
+import {fetchPortfolio} from "@/actions/portfolios";
+import HomePageClient from "@/app/HomeClient";
 
-export const metadata: Metadata = {
-    title: 'Главная страницаю Линия Роста',
-    description: '',
-    keywords: '',
-    openGraph: {
-        title: 'Свежие новости — Главные события мира тенниса в Кыргызстане',
-        description:
-            'Читайте последние новости о турнирах, достижениях спортсменов и других событиях теннисного мира в Кыргызстане.',
-        images: 'https://tennis.kg/kslt.svg',
-        type: 'website',
-    },
-};
+interface HomePageClientProps {
+    categories: Category[];
+    products: Product[];
+    portfolioItems: PortfolioItemPreview[];
+    categoriesError: string | null;
+    productsError: string | null;
+    portfolioError: string | null;
+}
 
-const Page = async () => {
+const HomePage = async () => {
+    let categoriesData: Category[] = [];
+    let productsData: Product[] = [];
+    let portfolioData: PortfolioItemPreview[] = [];
+    let categoriesError: string | null = null;
+    let productsError: string | null = null;
+    let portfolioError: string | null = null;
+
+    try {
+        categoriesData = await fetchCategories();
+    } catch (e) {
+        if (e instanceof Error) {
+            categoriesError = e.message;
+        } else {
+            categoriesError = 'Неизвестная ошибка на сервере при загрузке категорий.';
+        }
+    }
+
+    try {
+        productsData = await fetchProducts();
+    } catch (e) {
+        if (e instanceof Error) {
+            productsError = e.message;
+        } else {
+            productsError = 'Неизвестная ошибка на сервере при загрузке товаров.';
+        }
+    }
+
+    try {
+        portfolioData = await fetchPortfolio();
+    } catch (e) {
+        if (e instanceof Error) {
+            portfolioError = e.message;
+        } else {
+            portfolioError = 'Неизвестная ошибка на сервере при загрузке портфолио.';
+        }
+    }
+
+    const initialProps: HomePageClientProps = {
+        categories: categoriesData,
+        products: productsData,
+        portfolioItems: portfolioData,
+        categoriesError: categoriesError,
+        productsError: productsError,
+        portfolioError: portfolioError,
+    };
 
     return (
-        <MainPageClient/>
+        <HomePageClient {...initialProps} />
     );
 };
 
-export default Page;
+export default HomePage;

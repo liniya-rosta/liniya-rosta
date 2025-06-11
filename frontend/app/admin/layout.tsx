@@ -1,7 +1,8 @@
 import type {ReactNode} from "react";
 import Sidebar from "@/app/admin/components/shared/Sidebar";
-import {manrope} from "@/app/layout";
+import manrope from "@/lib/fonts";
 import AdminHeader from "@/app/admin/components/shared/AdminHeader";
+
 
 
 export default function AdminLayout({children}: { children: ReactNode }) {
