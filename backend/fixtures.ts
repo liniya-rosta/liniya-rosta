@@ -56,7 +56,8 @@ const run = async () => {
                 saturday: "09:00–15:00",
                 sunday: "Выходной"
             },
-            linkLocation: "https://www.openstreetmap.org/export/embed.html?bbox=74.619%2C42.887%2C74.628%2C42.892&layer=mapnik&marker=42.890104%2C74.623837"
+            linkLocation: "https://www.openstreetmap.org/export/embed.html?bbox=74.619%2C42.887%2C74.628%2C42.892&layer=mapnik&marker=42.890104%2C74.623837",
+            mapLocation: "https://www.openstreetmap.org/export/embed.html?bbox=74.619%2C42.887%2C74.628%2C42.892&layer=mapnik&marker=42.890104%2C74.623837",
         }
     );
 
@@ -131,7 +132,26 @@ const run = async () => {
                 {
                     image: 'test/IMG_0451.jpg',
                 },
+                {
+                    image: 'test/IMG_0449.jpg',
+                },
+                {
+                    image: 'test/IMG_0453.jpg',
+                },
+                {
+                    image: 'test/IMG_0454.jpg',
+                },
+                {
+                    image: 'test/IMG_0455.jpg',
+                },
+                {
+                    image: 'test/IMG_0610.jpg',
+                },
+                {
+                    image: 'test/IMG_0611.jpg',
+                },
             ],
+            description: "Современная гостиная",
         },
         {
             cover: 'test/IMG_2687.jpg',
@@ -142,7 +162,32 @@ const run = async () => {
                 {
                     image: 'test/IMG_2682.jpg',
                 },
+                {
+                    image: 'test/IMG_2688.jpg',
+                },
+                {
+                    image: 'test/IMG_2685.jpg',
+                },
+                {
+                    image: 'test/IMG_2689.jpg',
+                },
+                {
+                    image: 'test/IMG_2690.jpg',
+                },
+                {
+                    image: 'test/IMG_2691.jpg',
+                },
+                {
+                    image: 'test/IMG_2692.jpg',
+                },
+                {
+                    image: 'test/IMG_2683.jpg',
+                },
+                {
+                    image: 'test/IMG_2682.jpg',
+                },
             ],
+            description: "Современная гостиная",
         }
     );
 
