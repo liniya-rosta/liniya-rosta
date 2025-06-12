@@ -50,10 +50,23 @@ export interface IRequestMutation {
     phone: string;
 }
 
-export interface ContactDataDTO {
+export interface Contact {
     _id: string;
-
+    location: string;
+    phone1: string;
+    phone2?: string;
+    email: string;
+    workingHours: {
+        monday: string;
+        tuesday: string;
+        wednesday: string;
+        thursday: string;
+        friday: string;
+        saturday: string;
+        sunday: string;
+    };
 }
+
 
 export interface User {
     _id: string;

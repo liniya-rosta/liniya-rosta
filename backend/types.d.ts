@@ -44,4 +44,5 @@ export interface ContactFields {
         saturday: string;
         sunday: string;
     };
+    linkLocation: string;
 }

@@ -12,14 +12,14 @@ contactsAdminRouter.post("/", async (req, res, next) => {
             return;
         }
 
-        const {location, phone1, phone2, email, workingHours} = req.body;
+        const {location, phone1, phone2, email, workingHours, locationLink} = req.body;
 
-        if (!location || !phone1 || !email || !workingHours) {
+        if (!location || !phone1 || !email || !workingHours || !locationLink) {
             res.status(400).send({error: "Все обязательные поля должны быть заполнены"});
             return;
         }
 
-        const contact = new Contact({location, phone1, phone2, email, workingHours});
+        const contact = new Contact({location, phone1, phone2, email, workingHours, locationLink});
         await contact.save();
         res.send({message: "Контакт успешно создан", contact});
     } catch (e) {
@@ -42,7 +42,7 @@ contactsAdminRouter.patch("/:id", async (req, res, next) => {
             return;
         }
 
-        const {location, phone1, phone2, email, workingHours} = req.body;
+        const {location, phone1, phone2, email, workingHours, linkLocation} = req.body;
 
         if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
             res.status(400).send({error: "Неверный формат email"});
@@ -54,6 +54,7 @@ contactsAdminRouter.patch("/:id", async (req, res, next) => {
         if (phone2 !== undefined) contact.phone2 = phone2;
         if (email !== undefined) contact.email = email;
         if (workingHours !== undefined) contact.workingHours = workingHours;
+        if (linkLocation !== undefined) contact.linkLocation = linkLocation
 
         await contact.save();
         res.send({message: "Контакт успешно обновлён", contact});
