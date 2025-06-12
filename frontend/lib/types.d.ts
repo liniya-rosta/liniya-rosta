@@ -44,16 +44,32 @@ export interface ValidationError {
 export interface GlobalMessage {
     error: string;
 }
+
 export interface IRequestMutation {
     name: string;
     email: string;
     phone: string;
 }
 
-export interface ContactDataDTO {
+export interface Contact {
     _id: string;
-
+    location: string;
+    phone1: string;
+    phone2?: string;
+    email: string;
+    workingHours: {
+        monday: string;
+        tuesday: string;
+        wednesday: string;
+        thursday: string;
+        friday: string;
+        saturday: string;
+        sunday: string;
+    };
+    linkLocation: string;
+    mapLocation: string;
 }
+
 
 export interface User {
     _id: string;
@@ -68,3 +84,21 @@ export interface UserForm {
     confirmPassword: string;
 }
 
+export interface Post {
+    _id: string;
+    title: string;
+    description: string;
+    image: string;
+}
+
+export interface CreatePostData {
+    title: string;
+    description: string;
+    image: File;
+}
+
+export interface UpdatePostData {
+    title?: string;
+    description?: string;
+    image?: File;
+}
