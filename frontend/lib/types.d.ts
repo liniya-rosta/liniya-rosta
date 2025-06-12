@@ -102,3 +102,13 @@ export interface UpdatePostData {
     description?: string;
     image?: File;
 }
+
+export interface ProductAdmin {
+    _id: string;
+    title: string;
+    category: string;
+    image: string
+    description: string | null;
+}
+
+export type ProductWithoutId = Omit<ProductAdmin, '_id'>;
