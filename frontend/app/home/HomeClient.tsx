@@ -230,6 +230,17 @@ const HomePageClient: React.FC<HomePageClientProps> = ({
                     </Button>
                 </div>
             </section>
+
+            <section className=" space-y-6 mx-auto bg-white">
+                <h2 className="text-3xl font-bold text-center from-primary">
+                    Наша лента в Instagram
+                </h2>
+                <iframe
+                    src="//lightwidget.com/widgets/a5595befc0b75c39ae732dfc56693cbd.html"
+                    className="lightwidget-widget w-full h-[500px] border-none rounded-xl shadow-md transition-opacity duration-700 ease-in-out"
+                    style={{overflow: 'hidden'}}
+                ></iframe>
+            </section>
         </main>
     );
 };
