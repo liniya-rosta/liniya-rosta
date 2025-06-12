@@ -54,3 +54,10 @@ export interface ContactDataDTO {
     _id: string;
 
 }
+
+export interface Laminate {
+    _id: string;
+    title: string;
+    image: string;
+    description: string | null;
+}

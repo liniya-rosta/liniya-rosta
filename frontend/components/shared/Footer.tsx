@@ -48,7 +48,9 @@ const Footer = () => {
                 </div>
             </footer>
 
-            <ModalWindow isOpen={isOpen} onClose={closeModal} children={<RequestForm closeModal={closeModal} />}/>
+            <ModalWindow isOpen={isOpen} onClose={closeModal}>
+                <RequestForm closeModal={closeModal} />
+            </ModalWindow>
         </>
 
     );
