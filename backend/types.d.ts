@@ -26,6 +26,24 @@ export interface UpdatesRequest {
     name?: string;
     email?: string;
     phone?: string;
-    status?: 'Новая'| 'В работе' | 'Завершена'| 'Отклонена';
+    status?: 'Новая' | 'В работе' | 'Завершена' | 'Отклонена';
     commentOfManager?: string | null;
+}
+
+export interface ContactFields {
+    location: string;
+    phone1: string;
+    phone2?: string;
+    email: string;
+    workingHours: {
+        monday: string;
+        tuesday: string;
+        wednesday: string;
+        thursday: string;
+        friday: string;
+        saturday: string;
+        sunday: string;
+    };
+    mapLocation: string;
+    linkLocation: string;
 }
