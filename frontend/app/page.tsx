@@ -2,8 +2,8 @@ import React from 'react';
 import {fetchCategories} from '@/actions/categories';
 import {fetchProducts} from '@/actions/products';
 import {Category, Product, PortfolioItemPreview} from '@/lib/types';
-import {fetchPortfolio} from "@/actions/portfolios";
-import HomePageClient from "@/app/HomeClient";
+import {fetchPortfolioPreviews} from "@/actions/portfolios";
+import HomePageClient from "@/app/home/HomeClient";
 
 interface HomePageClientProps {
     categories: Category[];
@@ -43,7 +43,7 @@ const HomePage = async () => {
     }
 
     try {
-        portfolioData = await fetchPortfolio();
+        portfolioData = await fetchPortfolioPreviews();
     } catch (e) {
         if (e instanceof Error) {
             portfolioError = e.message;

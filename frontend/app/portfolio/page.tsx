@@ -1,9 +1,9 @@
 import React from 'react';
 import PortfolioClient from "@/app/portfolio/PortfolioClient";
-import {fetchAllPortfolio} from "@/actions/portfolio";
+import {fetchPortfolioPreviews} from "@/actions/portfolios";
 
 const PortfolioPage = async () => {
-    const portfolioData = await fetchAllPortfolio();
+    const portfolioData = await fetchPortfolioPreviews();
 
     return (
         <main className="container">

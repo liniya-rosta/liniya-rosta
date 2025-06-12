@@ -7,6 +7,8 @@ import Post from "./src/models/Post";
 import {PortfolioItem} from "./src/models/PortfolioItem";
 import RequestFromClient from "./src/models/Request";
 import LaminateItem from "./src/models/LaminateItem";
+import Contact from "./src/models/Contact";
+
 
 const run = async () => {
     await mongoose.connect(config.db);
@@ -19,6 +21,7 @@ const run = async () => {
         await db.dropCollection('posts');
         await db.dropCollection('portfolioitems');
         await db.dropCollection('requests');
+        await db.dropCollection('contacts');
     } catch (e) {
         console.log('Коллекции отсутствовали, пропуск сброса');
     }
@@ -40,8 +43,26 @@ const run = async () => {
         },
     );
 
-    const [lightingTechnology, film, spatula,
-        ventilationGrilles, laminate] = await Category.create(
+    await Contact.create(
+        {
+            location: "г. Бишкек, ул. Ленина 123",
+            phone1: "+996700123456",
+            phone2: "+996555654321",
+            email: "liniyarosta49@gmail.com",
+            workingHours: {
+                monday: "09:00–15:00",
+                tuesday: "09:00–17:00",
+                wednesday: "09:00–17:00",
+                thursday: "09:00–17:00",
+                friday: "09:00–17:00",
+                saturday: "09:00–15:00",
+                sunday: "Выходной"
+            },
+            linkLocation: "https://www.openstreetmap.org/export/embed.html?bbox=74.619%2C42.887%2C74.628%2C42.892&layer=mapnik&marker=42.890104%2C74.623837"
+        }
+    );
+
+    const [lightingTechnology, film] = await Category.create(
         {
             title: 'Светотехника',
         },

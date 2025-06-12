@@ -2,7 +2,7 @@
 
 import React, {useEffect, useState} from 'react';
 import {useProductStore} from '@/store/productsStore';
-import {usePortfolioStore} from '@/store/portfolioItem';
+import {usePortfolioStore} from "@/store/portfolioItemStore";
 import {Button} from '@/components/ui/button';
 import {API_BASE_URL} from '@/lib/globalConstants';
 import {Swiper, SwiperSlide} from 'swiper/react';
@@ -14,8 +14,8 @@ import {Navigation, Pagination} from 'swiper/modules';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faWhatsapp} from '@fortawesome/free-brands-svg-icons';
 import {CartPortfolio} from '@/app/portfolio/components/CartPortfolio';
-import CategoryCard from "@/components/shared/CategoryCard";
-import ProductCard from "@/components/shared/ProductCard";
+import CategoryCard from "@/app/home/components/CategoryCard";
+import ProductCard from "@/app/home/components/ProductCard";
 import {Category, PortfolioItemPreview, Product} from '@/lib/types';
 import {useCategoryStore} from "@/store/categoriesStore";
 import Loading from "@/components/shared/Loading";
@@ -27,7 +27,7 @@ interface HomePageClientProps {
     categoriesError: string | null;
     productsError: string | null;
     portfolioError: string | null;
-};
+}
 
 const HomePageClient: React.FC<HomePageClientProps> = ({
                                                            categories,
@@ -229,6 +229,17 @@ const HomePageClient: React.FC<HomePageClientProps> = ({
                         <a href="tel:+996555757513">+996 555 757 513</a>
                     </Button>
                 </div>
+            </section>
+
+            <section className=" space-y-6 mx-auto bg-white">
+                <h2 className="text-3xl font-bold text-center from-primary">
+                    Наша лента в Instagram
+                </h2>
+                <iframe
+                    src="//lightwidget.com/widgets/a5595befc0b75c39ae732dfc56693cbd.html"
+                    className="lightwidget-widget w-full h-[500px] border-none rounded-xl shadow-md transition-opacity duration-700 ease-in-out"
+                    style={{overflow: 'hidden'}}
+                ></iframe>
             </section>
         </main>
     );

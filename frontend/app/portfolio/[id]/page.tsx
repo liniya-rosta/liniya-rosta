@@ -1,5 +1,5 @@
 import React from 'react';
-import {fetchPortfolioItems} from "@/actions/portfolio";
+import {fetchPortfolioItems} from "@/actions/portfolios";
 import GalleryClient from './GalleryClient';
 
 type Props = {
