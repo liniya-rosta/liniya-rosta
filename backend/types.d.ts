@@ -46,4 +46,6 @@ export interface ContactFields {
     };
     mapLocation: string;
     linkLocation: string;
+    instagram: string;
+    whatsapp: string;
 }

@@ -28,6 +28,8 @@ const ContactSchema = new mongoose.Schema<ContactFields>({
     },
     mapLocation: {type: String, required: true},
     linkLocation: {type: String, required: true},
+    instagram: {type: String, required: true},
+    whatsapp: {type: String, required: true},
 });
 
 

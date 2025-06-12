@@ -68,6 +68,8 @@ export interface Contact {
     };
     linkLocation: string;
     mapLocation: string;
+    instagram: string;
+    whatsapp: string;
 }
 
 
