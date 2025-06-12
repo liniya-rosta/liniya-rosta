@@ -68,3 +68,21 @@ export interface UserForm {
     confirmPassword: string;
 }
 
+export interface Post {
+    _id: string;
+    title: string;
+    description: string;
+    image: string;
+}
+
+export interface CreatePostData {
+    title: string;
+    description: string;
+    image: File;
+}
+
+export interface UpdatePostData {
+    title?: string;
+    description?: string;
+    image?: File;
+}
