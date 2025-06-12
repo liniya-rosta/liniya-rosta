@@ -44,6 +44,7 @@ export interface ValidationError {
 export interface GlobalMessage {
     error: string;
 }
+
 export interface IRequestMutation {
     name: string;
     email: string;
@@ -65,6 +66,8 @@ export interface Contact {
         saturday: string;
         sunday: string;
     };
+    linkLocation: string;
+    mapLocation: string;
 }
 
 

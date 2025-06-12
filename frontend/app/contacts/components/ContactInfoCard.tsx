@@ -7,10 +7,7 @@ import {useContactStore} from '@/store/contactsStore';
 
 const ContactInfoCard = () => {
     const contact = useContactStore(state => state.contact);
-
-    if (!contact) {
-        return <p>Данные контактов не загружены.</p>;
-    }
+    if (!contact) return <p>Данные контактов не загружены</p>;
 
     return (
         <section
@@ -30,7 +27,7 @@ const ContactInfoCard = () => {
                     <ul className="space-y-4">
                         <li>
                             <a
-                                href={`https://2gis.kg/search/${encodeURIComponent(contact.location)}`}
+                                href={contact.linkLocation}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="inline-flex items-center space-x-2 group hover:text-blue-600 transition-colors"

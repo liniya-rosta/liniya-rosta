@@ -26,6 +26,7 @@ const ContactSchema = new mongoose.Schema<ContactFields>({
         saturday: {type: String, required: true},
         sunday: {type: String, required: true},
     },
+    mapLocation: {type: String, required: true},
     linkLocation: {type: String, required: true},
 });
 

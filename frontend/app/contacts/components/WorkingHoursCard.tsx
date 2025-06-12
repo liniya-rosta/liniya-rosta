@@ -15,8 +15,6 @@ const dayLabels: Record<string, string> = {
 };
 
 const WorkingHoursCard: React.FC<Props> = ({workingHours}) => {
-    console.log(workingHours);
-
     return (
         <section
             aria-labelledby="working-hours-heading"
@@ -41,7 +39,7 @@ const WorkingHoursCard: React.FC<Props> = ({workingHours}) => {
                                 <span>{dayLabels[key]}:</span>
                                 <span
                                     className={`font-medium ${isDayOff ? 'text-red-600 uppercase' : 'text-gray-900'}`}>
-                  {isDayOff ? 'выходной' : time}
+                  {isDayOff ? 'Выходной' : time}
                 </span>
                             </li>
                         );
