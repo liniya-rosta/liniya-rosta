@@ -41,24 +41,26 @@ const run = async () => {
         },
     );
 
-    await Contact.create(
-        {
-            location: "г. Бишкек, ул. Ленина 123",
-            phone1: "+996700123456",
-            phone2: "+996555654321",
-            email: "liniyarosta49@gmail.com",
-            workingHours: {
-                monday: "09:00–15:00",
-                tuesday: "09:00–17:00",
-                wednesday: "09:00–17:00",
-                thursday: "09:00–17:00",
-                friday: "09:00–17:00",
-                saturday: "09:00–15:00",
-                sunday: "Выходной"
-            },
-            linkLocation: "https://www.openstreetmap.org/export/embed.html?bbox=74.619%2C42.887%2C74.628%2C42.892&layer=mapnik&marker=42.890104%2C74.623837"
-        }
-    );
+    await Contact.create({
+        location: "г. Бишкек, Улица Куренкеева, 49",
+        phone1: "+996700123456",
+        phone2: "+996555654321",
+        email: "liniyarosta49@gmail.com",
+        whatsapp: "+996700123456",
+        instagram: "https://www.instagram.com/liniya_rosta.kg/",
+        mapLocation: "https://2gis.kg/bishkek/geo/15763234350959494/74.623805%2C42.89017",
+        workingHours: {
+            monday: "09:00–15:00",
+            tuesday: "09:00–17:00",
+            wednesday: "09:00–17:00",
+            thursday: "09:00–17:00",
+            friday: "09:00–17:00",
+            saturday: "09:00–15:00",
+            sunday: "Выходной"
+        },
+        linkLocation: "https://www.openstreetmap.org/export/embed.html?bbox=74.619%2C42.887%2C74.628%2C42.892&layer=mapnik&marker=42.890104%2C74.623837"
+    });
+
 
     const [lightingTechnology, film] = await Category.create(
         {
