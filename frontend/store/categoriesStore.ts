@@ -3,18 +3,18 @@ import {Category} from '@/lib/types';
 
 interface CategoryState {
     categories: Category[];
-    fetchLoading: boolean;
-    fetchError: string | null;
+    fetchCategoriesLoading: boolean;
+    fetchCategoriesError: string | null;
     setCategories: (categories: Category[]) => void;
-    setFetchLoading: (loading: boolean) => void;
-    setFetchError: (error: string | null) => void;
+    setFetchCategoriesLoading: (loading: boolean) => void;
+    setFetchCategoriesError: (error: string | null) => void;
 }
 
 export const useCategoryStore = create<CategoryState>((set) => ({
     categories: [],
-    fetchLoading: false,
-    fetchError: null,
+    fetchCategoriesLoading: false,
+    fetchCategoriesError: null,
     setCategories: (categories) => set({categories}),
-    setFetchLoading: (loading) => set({fetchLoading: loading}),
-    setFetchError: (error) => set({fetchError: error})
+    setFetchCategoriesLoading: (loading) => set({fetchCategoriesLoading: loading}),
+    setFetchCategoriesError: (error) => set({fetchCategoriesError: error})
 }));
