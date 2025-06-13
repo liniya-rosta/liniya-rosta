@@ -12,7 +12,7 @@ interface CategoryState {
 
 export const useCategoryStore = create<CategoryState>((set) => ({
     categories: [],
-    fetchCategoriesLoading: false,
+    fetchCategoriesLoading: true,
     fetchCategoriesError: null,
     setCategories: (categories) => set({categories}),
     setFetchCategoriesLoading: (loading) => set({fetchCategoriesLoading: loading}),

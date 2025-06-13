@@ -12,9 +12,9 @@ interface ProductState {
 
 export const useProductStore = create<ProductState>((set) => ({
     products: [],
-    fetchProductsLoading: false,
+    fetchProductsLoading: true,
     fetchProductsError: null,
-    setProducts: (products) => set({ products }),
-    setFetchProductsLoading: (loading) => set({ fetchProductsLoading: loading }),
-    setFetchProductsError: (error) => set({ fetchProductsError: error })
+    setProducts: (products) => set({products}),
+    setFetchProductsLoading: (loading) => set({fetchProductsLoading: loading}),
+    setFetchProductsError: (error) => set({fetchProductsError: error})
 }));

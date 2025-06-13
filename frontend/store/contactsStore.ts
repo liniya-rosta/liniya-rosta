@@ -12,7 +12,7 @@ interface ContactState {
 
 export const useContactStore = create<ContactState>((set) => ({
     contact: null,
-    fetchLoading: false,
+    fetchLoading: true,
     fetchError: null,
     setContact: (contact) => set({contact}),
     setFetchLoading: (loading) => set({fetchLoading: loading}),

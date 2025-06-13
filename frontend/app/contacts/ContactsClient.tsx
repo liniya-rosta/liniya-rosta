@@ -4,8 +4,10 @@ import ContactInfoCard from "@/app/contacts/components/ContactInfoCard";
 import WorkingHoursCard from "@/app/contacts/components/WorkingHoursCard";
 import MapSection from "@/app/contacts/components/MapSection";
 import {Contact} from "@/lib/types";
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 import {useContactStore} from "@/store/contactsStore";
+import Loading from "@/components/shared/Loading";
+import ErrorMsg from "@/components/shared/ErrorMsg";
 
 interface Props {
     data: Contact | null;
@@ -13,12 +15,22 @@ interface Props {
 }
 
 const ContactsClient: React.FC<Props> = ({data, error}) => {
-    const {contact, setContact, setFetchError} = useContactStore();
+    const {contact, setContact, setFetchError, fetchLoading, setFetchLoading, fetchError} = useContactStore();
+
+    const [isHydrating, setIsHydrating] = useState(true);
 
     useEffect(() => {
         if (data) setContact(data);
         setFetchError(error);
-    }, [data, error, setContact, setFetchError]);
+        setFetchLoading(false);
+        setIsHydrating(false);
+    }, [data, error, setContact, setFetchError, setFetchLoading, setIsHydrating]);
+
+    const overallLoading = isHydrating || fetchLoading;
+
+    if (overallLoading) return <Loading/>;
+
+    if (fetchError) return <ErrorMsg error={fetchError} label='контактов'/>
 
     return (
         <div className="container mx-auto px-4 py-8">
