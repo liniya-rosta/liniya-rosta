@@ -1,19 +1,23 @@
-'use client'
+'use client';
 
-import React, { useState, useEffect } from 'react';
-import {
-    fetchPosts,
-    createPost,
-    updatePost,
-    deletePost,
-} from '@/actions/posts';
-import {CreatePostData, Post, UpdatePostData} from "@/lib/types";
-import {AxiosError} from "axios";
+import React, { useEffect, useState } from 'react';
+import { usePostsStore } from '@/store/postsStore';
+import { CreatePostData, UpdatePostData, Post } from '@/lib/types';
+import { AxiosError } from 'axios';
+import { ModalWindow } from "@/components/ui/modal-window";
 
 const AdminBlogClient: React.FC = () => {
-    const [posts, setPosts] = useState<Post[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+    const {
+        posts,
+        fetchPostsAsync,
+        createPostAsync,
+        updatePostAsync,
+        deletePostAsync,
+        fetchLoading,
+        fetchError,
+        clearErrors,
+    } = usePostsStore();
+
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingPost, setEditingPost] = useState<Post | null>(null);
     const [formData, setFormData] = useState({
@@ -22,26 +26,9 @@ const AdminBlogClient: React.FC = () => {
         image: null as File | null
     });
 
-    const loadPosts = async () => {
-        try {
-            setLoading(true);
-            const data = await fetchPosts();
-            setPosts(data);
-        } catch (err) {
-            let errorMessage = 'Ошибка при загрузке постов';
-            if (err instanceof AxiosError) {
-                errorMessage = err.response?.data?.error || errorMessage;
-            }
-            setError(errorMessage);
-            console.error(err);
-        } finally {
-            setLoading(false);
-        }
-    };
-
     useEffect(() => {
-        void loadPosts();
-    }, []);
+        void fetchPostsAsync();
+    }, [fetchPostsAsync]);
 
     const resetForm = () => {
         setFormData({
@@ -54,6 +41,7 @@ const AdminBlogClient: React.FC = () => {
 
     const openCreateModal = () => {
         resetForm();
+        clearErrors();
         setIsModalOpen(true);
     };
 
@@ -64,6 +52,7 @@ const AdminBlogClient: React.FC = () => {
             description: post.description,
             image: null
         });
+        clearErrors();
         setIsModalOpen(true);
     };
 
@@ -98,15 +87,12 @@ const AdminBlogClient: React.FC = () => {
                 image: formData.image
             };
 
-            await createPost(postData);
-            await loadPosts();
+            await createPostAsync(postData);
             closeModal();
             alert('Пост создан успешно!');
         } catch (err) {
-            let errorMessage = 'Ошибка при создании поста';
-            if (err instanceof AxiosError) {
-                errorMessage = err.response?.data?.error || errorMessage;
-            }
+            const errorMessage =
+                err instanceof AxiosError ? err.response?.data?.error : 'Ошибка при создании поста';
             alert(errorMessage);
         }
     };
@@ -127,33 +113,25 @@ const AdminBlogClient: React.FC = () => {
                 postData.image = formData.image;
             }
 
-            await updatePost(editingPost._id, postData);
-            await loadPosts();
+            await updatePostAsync(editingPost._id, postData);
             closeModal();
             alert('Пост обновлен успешно!');
         } catch (err) {
-            let errorMessage = 'Ошибка при обновлении поста';
-            if (err instanceof AxiosError) {
-                errorMessage = err.response?.data?.error || errorMessage;
-            }
+            const errorMessage =
+                err instanceof AxiosError ? err.response?.data?.error : 'Ошибка при обновлении поста';
             alert(errorMessage);
         }
     };
 
     const handleDeletePost = async (postId: string) => {
-        if (!window.confirm('Вы уверены, что хотите удалить этот пост?')) {
-            return;
-        }
+        if (!window.confirm('Вы уверены, что хотите удалить этот пост?')) return;
 
         try {
-            await deletePost(postId);
-            await loadPosts();
+            await deletePostAsync(postId);
             alert('Пост удален успешно!');
         } catch (err) {
-            let errorMessage = 'Ошибка при удалении поста';
-            if (err instanceof AxiosError) {
-                errorMessage = err.response?.data?.error || errorMessage;
-            }
+            const errorMessage =
+                err instanceof AxiosError ? err.response?.data?.error : 'Ошибка при удалении поста';
             alert(errorMessage);
         }
     };
@@ -178,7 +156,7 @@ const AdminBlogClient: React.FC = () => {
         }
     };
 
-    if (loading) {
+    if (fetchLoading) {
         return (
             <div className="flex justify-center items-center min-h-[400px]">
                 <div className="text-lg">Загрузка...</div>
@@ -186,12 +164,12 @@ const AdminBlogClient: React.FC = () => {
         );
     }
 
-    if (error) {
+    if (fetchError) {
         return (
             <div className="text-red-600 text-center p-4">
-                {error}
+                {fetchError}
                 <button
-                    onClick={loadPosts}
+                    onClick={fetchPostsAsync}
                     className="ml-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
                 >
                     Попробовать снова
@@ -268,86 +246,81 @@ const AdminBlogClient: React.FC = () => {
                 </div>
             )}
 
-            {isModalOpen && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
-                        <h2 className="text-xl font-bold mb-4">
-                            {editingPost ? 'Редактировать пост' : 'Создать новый пост'}
-                        </h2>
+            <ModalWindow isOpen={isModalOpen} onClose={closeModal}>
+                <h2 className="text-xl font-bold mb-4">
+                    {editingPost ? 'Редактировать пост' : 'Создать новый пост'}
+                </h2>
 
-                        <form onSubmit={handleSubmit}>
-                            <div className="mb-4">
-                                <label htmlFor="title" className="block text-sm font-medium mb-2">
-                                    Заголовок *
-                                </label>
-                                <input
-                                    type="text"
-                                    id="title"
-                                    name="title"
-                                    value={formData.title}
-                                    onChange={handleInputChange}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    required
-                                />
-                            </div>
-
-                            <div className="mb-4">
-                                <label htmlFor="description" className="block text-sm font-medium mb-2">
-                                    Описание *
-                                </label>
-                                <textarea
-                                    id="description"
-                                    name="description"
-                                    value={formData.description}
-                                    onChange={handleInputChange}
-                                    rows={4}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    required
-                                />
-                            </div>
-
-                            <div className="mb-6">
-                                <label htmlFor="image" className="block text-sm font-medium mb-2">
-                                    Изображение {!editingPost && '*'}
-                                </label>
-                                <input
-                                    type="file"
-                                    id="image"
-                                    accept="image/*"
-                                    onChange={handleFileChange}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                />
-                                {editingPost && (
-                                    <div className="mt-2 text-sm text-gray-600">
-                                        Текущее изображение:
-                                        <img
-                                            src={editingPost.image}
-                                            alt="Текущее"
-                                            className="w-16 h-16 object-cover rounded mt-1"
-                                        />
-                                    </div>
-                                )}
-                            </div>
-
-                            <div className="flex space-x-4">
-                                <button
-                                    type="submit"
-                                    className="flex-1 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
-                                >
-                                    {editingPost ? 'Обновить' : 'Создать'}
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={closeModal}
-                                    className="flex-1 px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors"
-                                >
-                                    Отмена
-                                </button>
-                            </div>
-                        </form>
+                <form onSubmit={handleSubmit}>
+                    <div className="mb-4">
+                        <label htmlFor="title" className="block text-sm font-medium mb-2">
+                            Заголовок *
+                        </label>
+                        <input
+                            type="text"
+                            id="title"
+                            name="title"
+                            value={formData.title}
+                            onChange={handleInputChange}
+                            className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            required
+                        />
                     </div>
-                </div>
-            )}
+
+                    <div className="mb-4">
+                        <label htmlFor="description" className="block text-sm font-medium mb-2">
+                            Описание *
+                        </label>
+                        <textarea
+                            id="description"
+                            name="description"
+                            value={formData.description}
+                            onChange={handleInputChange}
+                            className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            required
+                        />
+                    </div>
+
+                    <div className="mb-6">
+                        <label htmlFor="image" className="block text-sm font-medium mb-2">
+                            Изображение {!editingPost && '*'}
+                        </label>
+                        <input
+                            type="file"
+                            id="image"
+                            accept="image/*"
+                            onChange={handleFileChange}
+                            className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                        {editingPost && (
+                            <div className="mt-2 text-sm text-gray-600">
+                                Текущее изображение:
+                                <img
+                                    src={editingPost.image}
+                                    alt="Текущее"
+                                    className="w-16 h-16 object-cover rounded mt-1"
+                                />
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="flex space-x-4">
+                        <button
+                            type="submit"
+                            className="flex-1 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+                        >
+                            {editingPost ? 'Обновить' : 'Создать'}
+                        </button>
+                        <button
+                            type="button"
+                            onClick={closeModal}
+                            className="flex-1 px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors"
+                        >
+                            Отмена
+                        </button>
+                    </div>
+                </form>
+            </ModalWindow>
         </div>
     );
 };

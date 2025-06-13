@@ -5,6 +5,8 @@ import { Search, Phone, MessageCircle, Filter, X } from 'lucide-react';
 import RequestForm from "@/components/shared/RequestForm";
 import { ModalWindow } from '@/components/ui/modal-window';
 import {Category, Product} from "@/lib/types";
+import {useCategoryStore} from "@/store/categoriesStore";
+import {useProductStore} from "@/store/productsStore";
 
 type Props = {
     initialProducts: Product[];
@@ -15,8 +17,22 @@ const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories })
     const [selectedCategory, setSelectedCategory] = useState<string>('all');
     const [showConsultationModal, setShowConsultationModal] = useState<boolean>(false);
     const [searchTerm, setSearchTerm] = useState<string>('');
-    const [products, setProducts] = useState<Product[]>(initialProducts);
-    const [loading, setLoading] = useState<boolean>(false);
+
+    const {
+        products,
+        fetchLoading,
+        setProducts
+    } = useProductStore();
+
+    const {
+        categories,
+        setCategories
+    } = useCategoryStore();
+
+    useEffect(() => {
+        setProducts(initialProducts);
+        setCategories(initialCategories);
+    }, [initialProducts, initialCategories, setProducts, setCategories]);
 
     useEffect(() => {
         const fetchFilteredProducts = async () => {
@@ -26,18 +42,17 @@ const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories })
             }
 
             try {
-                setLoading(true);
                 const filteredProducts = initialProducts.filter(product =>
                     product.category?._id === selectedCategory
                 );
                 setProducts(filteredProducts);
-            } finally {
-                setLoading(false);
+            } catch (error) {
+                console.error('Error filtering products:', error);
             }
         };
 
         void fetchFilteredProducts();
-    }, [selectedCategory, initialProducts]);
+    }, [selectedCategory, initialProducts, setProducts]);
 
     const filteredProducts = useMemo(() => {
         return products.filter(product =>
@@ -116,7 +131,7 @@ const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories })
                                     <span className="text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded-full">{initialProducts.length}</span>
                                 </div>
                             </div>
-                            {initialCategories.map(cat => (
+                            {categories.map(cat => (
                                 <div
                                     key={cat._id}
                                     onClick={() => setSelectedCategory(cat._id)}
@@ -143,7 +158,7 @@ const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories })
                         )}
                     </div>
 
-                    {loading ? (
+                    {fetchLoading ? (
                         <div className="flex justify-center items-center py-12">
                             <div className="animate-spin h-12 w-12 border-b-2 border-blue-600 rounded-full"></div>
                         </div>

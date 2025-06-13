@@ -1,10 +1,9 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
-import { Post } from '@/lib/types';
-import {fetchPostById} from "@/actions/posts";
+import {usePostsStore} from "@/store/postsStore";
 
 type Props = {
     postId: string;
@@ -12,35 +11,26 @@ type Props = {
 
 const PostClient: React.FC<Props> = ({ postId }) => {
     const router = useRouter();
-    const [post, setPost] = useState<Post | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+
+    const post = usePostsStore((state) => state.getPostById(postId));
+    const fetchPostByIdAsync = usePostsStore((state) => state.fetchPostByIdAsync);
+    const fetchLoading = usePostsStore((state) => state.fetchLoading);
+    const fetchError = usePostsStore((state) => state.fetchError);
+    const clearErrors = usePostsStore((state) => state.clearErrors);
+
+    useEffect(() => {
+        clearErrors();
+        if (postId) {
+            void fetchPostByIdAsync(postId);
+        }
+    }, [postId, fetchPostByIdAsync, clearErrors]);
 
     const getImageUrl = (imagePath?: string) => {
         if (!imagePath) return null;
         return imagePath.startsWith('http') ? imagePath : `/${imagePath}`;
     };
 
-    useEffect(() => {
-        const loadPost = async () => {
-            try {
-                setLoading(true);
-                const fetchedPost = await fetchPostById(postId);
-                setPost(fetchedPost);
-            } catch (err) {
-                setError('Ошибка при загрузке поста');
-                console.error('Error fetching post:', err);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        if (postId) {
-            void loadPost();
-        }
-    }, [postId]);
-
-    if (loading) {
+    if (fetchLoading) {
         return (
             <div className="flex justify-center items-center min-h-screen">
                 <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-500"></div>
@@ -48,10 +38,10 @@ const PostClient: React.FC<Props> = ({ postId }) => {
         );
     }
 
-    if (error) {
+    if (fetchError) {
         return (
             <div className="flex justify-center items-center min-h-screen">
-                <div className="text-red-500 text-xl">{error}</div>
+                <div className="text-red-500 text-xl">{fetchError}</div>
             </div>
         );
     }
@@ -79,7 +69,8 @@ const PostClient: React.FC<Props> = ({ postId }) => {
                     <img
                         src={getImageUrl(post.image) || 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=800&h=400&fit=crop'}
                         onError={(e) => {
-                            (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=800&h=400&fit=crop';
+                            (e.target as HTMLImageElement).src =
+                                'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=800&h=400&fit=crop';
                         }}
                         alt={post.title}
                         className="w-full h-64 md:h-96 object-cover"
@@ -87,14 +78,10 @@ const PostClient: React.FC<Props> = ({ postId }) => {
                 </div>
 
                 <div className="p-8">
-                    <h1 className="text-4xl font-bold text-gray-900 mb-6">
-                        {post.title}
-                    </h1>
+                    <h1 className="text-4xl font-bold text-gray-900 mb-6">{post.title}</h1>
 
                     <div className="prose prose-lg max-w-none">
-                        <p className="text-gray-700 leading-relaxed text-lg">
-                            {post.description}
-                        </p>
+                        <p className="text-gray-700 leading-relaxed text-lg">{post.description}</p>
                     </div>
 
                     <div className="mt-8 pt-6 border-t border-gray-200">

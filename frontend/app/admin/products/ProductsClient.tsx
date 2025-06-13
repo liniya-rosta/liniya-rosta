@@ -1,23 +1,35 @@
 'use client';
 
-import { Category, Product, ProductWithoutId } from "@/lib/types";
+import { Category, ProductWithoutId, Product } from "@/lib/types";
 import { useEffect, useState, useRef } from "react";
-import { fetchProducts, createProduct, updateProduct, deleteProduct } from "@/actions/products";
-import { fetchCategories } from "@/actions/categories";
 import { Pencil, Plus, Save, Trash2, X, Eye, EyeOff } from "lucide-react";
+import { useProductStore } from "@/store/productsStore";
+import { useCategoryStore } from "@/store/categoriesStore";
 
 const ProductsClient = () => {
-    const [products, setProducts] = useState<Product[]>([]);
-    const [categories, setCategories] = useState<Category[]>([]);
-    const [loading, setLoading] = useState(true);
+    const {
+        products,
+        loading,
+        error,
+        fetchProducts,
+        createProduct,
+        updateProduct,
+        deleteProduct,
+        clearError
+    } = useProductStore();
+
+    const {
+        categories,
+        fetchCategoriesAsync: loadCategories,
+    } = useCategoryStore();
+
     const [editingId, setEditingId] = useState<string | null>(null);
     const [isAdding, setIsAdding] = useState(false);
-    const [error, setError] = useState<string | null>(null);
     const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
     const [isMobile, setIsMobile] = useState(false);
-    const [saving, setSaving] = useState(false);
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
+    const [saving, setSaving] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const [formData, setFormData] = useState<ProductWithoutId>({
@@ -28,7 +40,7 @@ const ProductsClient = () => {
     });
 
     useEffect(() => {
-        void loadProducts();
+        void fetchProducts();
         void loadCategories();
 
         const checkMobile = () => {
@@ -39,30 +51,7 @@ const ProductsClient = () => {
         window.addEventListener('resize', checkMobile);
 
         return () => window.removeEventListener('resize', checkMobile);
-    }, []);
-
-    const loadProducts = async () => {
-        try {
-            setLoading(true);
-            setError(null);
-            const data = await fetchProducts();
-            setProducts(data);
-        } catch (e) {
-            setError(e instanceof Error ? e.message : 'Неизвестная ошибка при загрузке продуктов');
-            console.error('Ошибка при загрузке продуктов:', e);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const loadCategories = async () => {
-        try {
-            const data = await fetchCategories();
-            setCategories(data);
-        } catch (e) {
-            console.error('Ошибка при загрузке категорий:', e);
-        }
-    };
+    }, [fetchProducts, loadCategories]);
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -119,18 +108,13 @@ const ProductsClient = () => {
             if (isAdding) {
                 if (!imageFile) {
                     alert('Пожалуйста, выберите изображение для нового товара');
-                    setSaving(false);
                     return;
                 }
-                const newProduct = await createProduct(formData, imageFile);
-                setProducts([...products, newProduct]);
+                await createProduct(formData, imageFile);
                 setIsAdding(false);
                 alert('Товар успешно создан!');
             } else if (editingId) {
-                const updatedProduct = await updateProduct(editingId, formData, imageFile || undefined);
-                setProducts(products.map(product =>
-                    product._id === editingId ? updatedProduct : product
-                ));
+                await updateProduct(editingId, formData, imageFile || undefined);
                 setEditingId(null);
                 alert('Товар успешно обновлен!');
             }
@@ -164,13 +148,15 @@ const ProductsClient = () => {
 
     const handleDelete = async (id: string) => {
         if (window.confirm("Вы уверены, что хотите удалить этот товар?")) {
+            setSaving(true);
             try {
                 await deleteProduct(id);
-                setProducts(products.filter(product => product._id !== id));
                 alert('Товар успешно удален!');
             } catch (error) {
                 console.error('Ошибка при удалении:', error);
                 alert(error instanceof Error ? error.message : 'Ошибка при удалении');
+            } finally {
+                setSaving(false);
             }
         }
     };
@@ -284,7 +270,7 @@ const ProductsClient = () => {
                         <div className="flex gap-2 pt-2">
                             <button
                                 onClick={handleSave}
-                                disabled={saving}
+                                disabled={saving || loading}
                                 className="flex-1 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition flex items-center justify-center gap-2 disabled:opacity-50"
                             >
                                 <Save size={16} />
@@ -292,7 +278,7 @@ const ProductsClient = () => {
                             </button>
                             <button
                                 onClick={handleCancel}
-                                disabled={saving}
+                                disabled={saving || loading}
                                 className="flex-1 bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition flex items-center justify-center gap-2 disabled:opacity-50"
                             >
                                 <X size={16} />
@@ -400,8 +386,14 @@ const ProductsClient = () => {
 
                 <div className="p-4 sm:p-6">
                     {error && (
-                        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
-                            {error}
+                        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4 flex justify-between items-center">
+                            <span>{error}</span>
+                            <button
+                                onClick={clearError}
+                                className="text-red-600 hover:text-red-800"
+                            >
+                                <X size={16} />
+                            </button>
                         </div>
                     )}
 
@@ -440,7 +432,7 @@ const ProductsClient = () => {
                                 <div className="flex flex-col sm:flex-row gap-2">
                                     <button
                                         onClick={handleSave}
-                                        disabled={saving}
+                                        disabled={saving || loading}
                                         className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition flex items-center justify-center gap-2 disabled:opacity-50"
                                     >
                                         <Save size={16} />
@@ -448,7 +440,7 @@ const ProductsClient = () => {
                                     </button>
                                     <button
                                         onClick={handleCancel}
-                                        disabled={saving}
+                                        disabled={saving || loading}
                                         className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition flex items-center justify-center gap-2 disabled:opacity-50"
                                     >
                                         <X size={16} />
@@ -533,7 +525,7 @@ const ProductsClient = () => {
                                                     <div className="flex gap-2">
                                                         <button
                                                             onClick={handleSave}
-                                                            disabled={saving}
+                                                            disabled={saving || loading}
                                                             className="bg-green-600 text-white p-2 rounded hover:bg-green-700 disabled:opacity-50"
                                                             title="Сохранить"
                                                         >
@@ -541,7 +533,7 @@ const ProductsClient = () => {
                                                         </button>
                                                         <button
                                                             onClick={handleCancel}
-                                                            disabled={saving}
+                                                            disabled={saving || loading}
                                                             className="bg-gray-500 text-white p-2 rounded hover:bg-gray-600 disabled:opacity-50"
                                                             title="Отмена"
                                                         >
