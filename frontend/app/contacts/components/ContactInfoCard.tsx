@@ -71,7 +71,7 @@ const ContactInfoCard = () => {
                     <ul className="flex gap-4 mt-6">
                         <li>
                             <a
-                                href="https://www.instagram.com/liniya_rosta.kg/"
+                                href={contact.instagram}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 aria-label="Instagram"
@@ -89,7 +89,7 @@ const ContactInfoCard = () => {
                         </li>
                         <li>
                             <a
-                                href="https://wa.me/996553088988"
+                                href={contact.whatsapp}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 aria-label="WhatsApp"

@@ -121,3 +121,4 @@ export interface Laminate {
 }
 
 export type ProductWithoutId = Omit<ProductAdmin, '_id'>;
+
