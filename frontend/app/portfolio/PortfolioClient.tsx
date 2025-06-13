@@ -3,7 +3,7 @@
 import {usePortfolioStore} from "@/store/portfolioItemStore";
 import React, {useEffect} from "react";
 import {API_BASE_URL} from "@/lib/globalConstants";
-import {CartPortfolio} from "@/app/portfolio/components/CartPortfolio";
+import { CartPortfolio } from '@/app/portfolio/components/CartPortfolio';
 import {PortfolioItemPreview} from "@/lib/types";
 import Link from "next/link";
 
