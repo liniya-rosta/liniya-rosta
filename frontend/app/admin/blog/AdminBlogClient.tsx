@@ -10,7 +10,7 @@ import {
 import {CreatePostData, Post, UpdatePostData} from "@/lib/types";
 import {AxiosError} from "axios";
 
-const BlogClient: React.FC = () => {
+const AdminBlogClient: React.FC = () => {
     const [posts, setPosts] = useState<Post[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -352,4 +352,4 @@ const BlogClient: React.FC = () => {
     );
 };
 
-export default BlogClient;
+export default AdminBlogClient;

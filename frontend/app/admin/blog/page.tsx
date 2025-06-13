@@ -1,10 +1,10 @@
 import React from 'react';
-import BlogClient from "@/app/admin/blog/BlogClient";
+import AdminBlogClient from "@/app/admin/blog/AdminBlogClient";
 
 const AdminBlogPage = () => {
     return (
         <div>
-            <BlogClient />
+            <AdminBlogClient />
         </div>
     );
 };
