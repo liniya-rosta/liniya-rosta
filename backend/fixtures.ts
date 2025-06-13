@@ -6,7 +6,9 @@ import Product from "./src/models/Product";
 import Post from "./src/models/Post";
 import {PortfolioItem} from "./src/models/PortfolioItem";
 import RequestFromClient from "./src/models/Request";
+import LaminateItem from "./src/models/LaminateItem";
 import Contact from "./src/models/Contact";
+
 
 const run = async () => {
     await mongoose.connect(config.db);
@@ -165,6 +167,30 @@ const run = async () => {
             email: 'aidana@gmail.com',
         },
     )
+
+    await LaminateItem.create({
+            title: 'Тис Альпик',
+            description: 'Размер: 180x1220x4,0/0,3+1ммIXPE',
+            image: 'test/laminate1.JPG',
+        },{
+            title: 'Тис Латте',
+            description: 'Размер: 180x1220x4,0/0,3+1ммIXPE',
+            image: 'test/laminate2.JPG',
+        },{
+            title: 'Бук Шале',
+            description: 'Размер: 180x1220x4,0/0,3+1ммIXPE',
+            image: 'test/laminate3.JPG',
+        },{
+            title: 'Орех Шато',
+            description: 'Размер: 180x1220x4,0/0,3+1ммIXPE',
+            image: 'test/laminate4.JPG',
+        },{
+            title: 'Дуб Классик',
+            description: 'Размер: 180x1220x4,0/0,3+1ммIXPE',
+            image: 'test/laminate5.JPG',
+        },
+    )
 }
+
 
 run().catch(console.error);

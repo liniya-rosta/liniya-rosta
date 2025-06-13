@@ -113,4 +113,12 @@ export interface ProductAdmin {
     description: string | null;
 }
 
+export interface Laminate {
+    _id: string;
+    title: string;
+    image: string;
+    description: string | null;
+}
+
 export type ProductWithoutId = Omit<ProductAdmin, '_id'>;
+
