@@ -68,6 +68,8 @@ export interface Contact {
     };
     linkLocation: string;
     mapLocation: string;
+    instagram: string;
+    whatsapp: string;
 }
 
 
@@ -102,3 +104,20 @@ export interface UpdatePostData {
     description?: string;
     image?: File;
 }
+
+export interface ProductAdmin {
+    _id: string;
+    title: string;
+    category: string;
+    image: string
+    description: string | null;
+}
+
+export interface Laminate {
+    _id: string;
+    title: string;
+    image: string;
+    description: string | null;
+}
+
+export type ProductWithoutId = Omit<ProductAdmin, '_id'>;
