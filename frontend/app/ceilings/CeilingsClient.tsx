@@ -4,19 +4,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Search, Phone, MessageCircle, Filter, X } from 'lucide-react';
 import RequestForm from "@/components/shared/RequestForm";
 import { ModalWindow } from '@/components/ui/modal-window';
-
-type Category = {
-    _id: string;
-    title: string;
-};
-
-type Product = {
-    _id: string;
-    title: string;
-    description?: string;
-    image?: string;
-    category?: Category;
-};
+import {Category, Product} from "@/lib/types";
 
 type Props = {
     initialProducts: Product[];
