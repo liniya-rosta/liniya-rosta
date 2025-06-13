@@ -13,7 +13,7 @@ import 'swiper/css/pagination';
 import {Navigation, Pagination} from 'swiper/modules';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faWhatsapp} from '@fortawesome/free-brands-svg-icons';
-import {CartPortfolio} from '@/app/portfolio/components/CartPortfolio';
+import { CartPortfolio } from '@/app/portfolio/components/CartPortfolio';
 import CategoryCard from "@/app/home/components/CategoryCard";
 import ProductCard from "@/app/home/components/ProductCard";
 import {Category, PortfolioItemPreview, Product} from '@/lib/types';
@@ -200,11 +200,13 @@ const HomePageClient: React.FC<HomePageClientProps> = ({
                 {storedPortfolioItems && storedPortfolioItems.length > 0 ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                         {storedPortfolioItems.map((item) => (
-                            <CartPortfolio
-                                key={item._id}
-                                link={`/portfolio/${item._id}`}
-                                imageSrc={`${API_BASE_URL}/${item.cover}`}
-                            />
+                            <Link key={item._id} href={`/portfolio/${item._id}`}>
+                                <CartPortfolio
+                                    textBtn={"Смотреть все"}
+                                    key={item._id}
+                                    imageSrc={`${API_BASE_URL}/${item.cover}`}
+                                />
+                            </Link>
                         ))}
                     </div>
                 ) : (
