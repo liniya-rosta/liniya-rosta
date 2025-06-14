@@ -1,11 +1,24 @@
-import React from 'react';
+import React from "react";
+import { Post } from "@/lib/types";
 import BlogClient from "@/app/blog/BlogClient";
+import { fetchPosts } from "@/actions/posts";
 
-const BlogPage = () => {
+const BlogPage = async () => {
+    let posts: Post[] = [];
+    let postsError: string | null = null;
+
+    try {
+        posts = await fetchPosts();
+    } catch (e) {
+        if (e instanceof Error) {
+            postsError = e.message;
+        } else {
+            postsError = 'Неизвестная ошибка на сервере при загрузке постов.';
+        }
+    }
+
     return (
-        <div>
-           <BlogClient/>
-        </div>
+        <BlogClient data={posts} error={postsError} />
     );
 };
 

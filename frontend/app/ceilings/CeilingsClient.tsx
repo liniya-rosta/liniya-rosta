@@ -20,7 +20,7 @@ const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories })
 
     const {
         products,
-        fetchLoading,
+        loading: fetchLoading,
         setProducts
     } = useProductStore();
 

@@ -1,54 +1,44 @@
-import {create} from 'zustand';
-import {Category} from '@/lib/types';
-import {fetchCategories} from "@/actions/categories";
+import { create } from 'zustand';
+import { Category } from '@/lib/types';
 
 interface CategoryState {
     categories: Category[];
+    loading: boolean;
     fetchLoading: boolean;
+    error: string | null;
     fetchError: string | null;
 
     setCategories: (categories: Category[]) => void;
+    setLoading: (loading: boolean) => void;
     setFetchLoading: (loading: boolean) => void;
+    setCategoriesError: (error: string | null) => void;
     setFetchError: (error: string | null) => void;
-
-    fetchCategoriesAsync: () => Promise<void>;
-
-    clearErrors: () => void;
-    reset: () => void;
     getCategoryById: (id: string) => Category | undefined;
+    clearError: () => void;
+    reset: () => void;
 }
 
 export const useCategoryStore = create<CategoryState>((set, get) => ({
     categories: [],
-    currentCategory: null,
+    loading: false,
     fetchLoading: false,
+    error: null,
     fetchError: null,
 
     setCategories: (categories) => set({ categories }),
-    setFetchLoading: (loading) => set({ fetchLoading: loading }),
-    setFetchError: (error) => set({ fetchError: error }),
+    setLoading: (loading) => set({ loading }),
+    setFetchLoading: (loading) => set({ fetchLoading: loading, loading }),
+    setCategoriesError: (error) => set({ error }),
+    setFetchError: (error) => set({ fetchError: error, error }),
 
-    fetchCategoriesAsync: async () => {
-        set({ fetchLoading: true, fetchError: null });
-        try {
-            const categories = await fetchCategories();
-            set({ categories, fetchLoading: false });
-        } catch (error) {
-            set({
-                fetchError: error instanceof Error ? error.message : 'Произошла ошибка при загрузке категорий',
-                fetchLoading: false
-            });
-        }
-    },
+    getCategoryById: (id) => get().categories.find(category => category._id === id),
 
-    clearErrors: () => set({ fetchError: null }),
+    clearError: () => set({ error: null, fetchError: null }),
     reset: () => set({
         categories: [],
+        loading: false,
         fetchLoading: false,
+        error: null,
         fetchError: null
-    }),
-    getCategoryById: (id: string) => {
-        const { categories } = get();
-        return categories.find(category => category._id === id);
-    }
+    })
 }));

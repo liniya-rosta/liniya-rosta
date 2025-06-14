@@ -5,19 +5,29 @@ import { usePostsStore } from '@/store/postsStore';
 import { CreatePostData, UpdatePostData, Post } from '@/lib/types';
 import { AxiosError } from 'axios';
 import { ModalWindow } from "@/components/ui/modal-window";
+import Loading from "@/components/shared/Loading";
+import { createPost, updatePost, deletePost } from "@/actions/posts";
 
-const AdminBlogClient: React.FC = () => {
+interface Props {
+    data: Post[];
+    error: string | null;
+}
+
+const AdminBlogClient: React.FC<Props> = ({ data, error }) => {
     const {
         posts,
-        fetchPostsAsync,
-        createPostAsync,
-        updatePostAsync,
-        deletePostAsync,
-        fetchLoading,
-        fetchError,
-        clearErrors,
+        setPosts,
+        setError: setStoreError,
+        setLoading,
+        loading,
+        error: storeError,
+        addPost,
+        updatePost: updatePostInStore,
+        removePost,
+        clearError,
     } = usePostsStore();
 
+    const [isHydrating, setIsHydrating] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingPost, setEditingPost] = useState<Post | null>(null);
     const [formData, setFormData] = useState({
@@ -26,9 +36,17 @@ const AdminBlogClient: React.FC = () => {
         image: null as File | null
     });
 
+    const getImageUrl = (imagePath?: string) => {
+        if (!imagePath) return null;
+        return imagePath.startsWith('http') ? imagePath : `/${imagePath}`;
+    };
+
     useEffect(() => {
-        void fetchPostsAsync();
-    }, [fetchPostsAsync]);
+        if (data) setPosts(data);
+        setStoreError(error);
+        setLoading(false);
+        setIsHydrating(false);
+    }, [data, error, setPosts, setStoreError, setLoading]);
 
     const resetForm = () => {
         setFormData({
@@ -41,7 +59,7 @@ const AdminBlogClient: React.FC = () => {
 
     const openCreateModal = () => {
         resetForm();
-        clearErrors();
+        clearError();
         setIsModalOpen(true);
     };
 
@@ -52,7 +70,7 @@ const AdminBlogClient: React.FC = () => {
             description: post.description,
             image: null
         });
-        clearErrors();
+        clearError();
         setIsModalOpen(true);
     };
 
@@ -87,7 +105,9 @@ const AdminBlogClient: React.FC = () => {
                 image: formData.image
             };
 
-            await createPostAsync(postData);
+            const result = await createPost(postData);
+            addPost(result.post);
+
             closeModal();
             alert('Пост создан успешно!');
         } catch (err) {
@@ -113,7 +133,9 @@ const AdminBlogClient: React.FC = () => {
                 postData.image = formData.image;
             }
 
-            await updatePostAsync(editingPost._id, postData);
+            const result = await updatePost(editingPost._id, postData);
+            updatePostInStore(editingPost._id, result.post);
+
             closeModal();
             alert('Пост обновлен успешно!');
         } catch (err) {
@@ -127,7 +149,9 @@ const AdminBlogClient: React.FC = () => {
         if (!window.confirm('Вы уверены, что хотите удалить этот пост?')) return;
 
         try {
-            await deletePostAsync(postId);
+            await deletePost(postId);
+            removePost(postId);
+
             alert('Пост удален успешно!');
         } catch (err) {
             const errorMessage =
@@ -156,20 +180,16 @@ const AdminBlogClient: React.FC = () => {
         }
     };
 
-    if (fetchLoading) {
-        return (
-            <div className="flex justify-center items-center min-h-[400px]">
-                <div className="text-lg">Загрузка...</div>
-            </div>
-        );
+    if (isHydrating || loading) {
+        return <Loading />;
     }
 
-    if (fetchError) {
+    if (storeError) {
         return (
             <div className="text-red-600 text-center p-4">
-                {fetchError}
+                Ошибка при загрузке постов: {storeError}
                 <button
-                    onClick={fetchPostsAsync}
+                    onClick={() => window.location.reload()}
                     className="ml-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
                 >
                     Попробовать снова
@@ -179,148 +199,120 @@ const AdminBlogClient: React.FC = () => {
     }
 
     return (
-        <div className="p-6">
+        <div className="container mx-auto px-4 py-8">
             <div className="flex justify-between items-center mb-6">
-                <h1 className="text-2xl font-bold">Управление постами блога</h1>
+                <h1 className="text-3xl font-bold">Управление блогом</h1>
                 <button
                     onClick={openCreateModal}
-                    className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors"
+                    className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
                 >
                     Создать пост
                 </button>
             </div>
 
-            {posts.length === 0 ? (
-                <div className="text-center py-8 text-gray-500">
-                    Посты не найдены
-                </div>
-            ) : (
-                <div className="overflow-x-auto">
-                    <table className="w-full border-collapse border border-gray-300">
-                        <thead>
-                        <tr className="bg-gray-100">
-                            <th className="border border-gray-300 px-4 py-2 text-left">Изображение</th>
-                            <th className="border border-gray-300 px-4 py-2 text-left">Заголовок</th>
-                            <th className="border border-gray-300 px-4 py-2 text-left">Описание</th>
-                            <th className="border border-gray-300 px-4 py-2 text-center">Действия</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {posts.map((post) => (
-                            <tr key={post._id} className="hover:bg-gray-50">
-                                <td className="border border-gray-300 px-4 py-2">
-                                    <img
-                                        src={post.image}
-                                        alt={post.title}
-                                        className="w-16 h-16 object-cover rounded"
-                                    />
-                                </td>
-                                <td className="border border-gray-300 px-4 py-2 font-medium">
-                                    {post.title}
-                                </td>
-                                <td className="border border-gray-300 px-4 py-2">
-                                    <div className="max-w-xs truncate" title={post.description}>
-                                        {post.description}
-                                    </div>
-                                </td>
-                                <td className="border border-gray-300 px-4 py-2">
-                                    <div className="flex space-x-2 justify-center">
-                                        <button
-                                            onClick={() => openEditModal(post)}
-                                            className="px-3 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600 transition-colors"
-                                        >
-                                            Редактировать
-                                        </button>
-                                        <button
-                                            onClick={() => handleDeletePost(post._id)}
-                                            className="px-3 py-1 bg-red-500 text-white text-sm rounded hover:bg-red-600 transition-colors"
-                                        >
-                                            Удалить
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        ))}
-                        </tbody>
-                    </table>
-                </div>
-            )}
-
-            <ModalWindow isOpen={isModalOpen} onClose={closeModal}>
-                <h2 className="text-xl font-bold mb-4">
-                    {editingPost ? 'Редактировать пост' : 'Создать новый пост'}
-                </h2>
-
-                <form onSubmit={handleSubmit}>
-                    <div className="mb-4">
-                        <label htmlFor="title" className="block text-sm font-medium mb-2">
-                            Заголовок *
-                        </label>
-                        <input
-                            type="text"
-                            id="title"
-                            name="title"
-                            value={formData.title}
-                            onChange={handleInputChange}
-                            className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            required
-                        />
-                    </div>
-
-                    <div className="mb-4">
-                        <label htmlFor="description" className="block text-sm font-medium mb-2">
-                            Описание *
-                        </label>
-                        <textarea
-                            id="description"
-                            name="description"
-                            value={formData.description}
-                            onChange={handleInputChange}
-                            className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            required
-                        />
-                    </div>
-
-                    <div className="mb-6">
-                        <label htmlFor="image" className="block text-sm font-medium mb-2">
-                            Изображение {!editingPost && '*'}
-                        </label>
-                        <input
-                            type="file"
-                            id="image"
-                            accept="image/*"
-                            onChange={handleFileChange}
-                            className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                        {editingPost && (
-                            <div className="mt-2 text-sm text-gray-600">
-                                Текущее изображение:
-                                <img
-                                    src={editingPost.image}
-                                    alt="Текущее"
-                                    className="w-16 h-16 object-cover rounded mt-1"
-                                />
+            <div className="grid gap-6">
+                {posts.map((post) => (
+                    <div key={post._id} className="border rounded-lg p-6 shadow-sm">
+                        <div className="flex justify-between items-start mb-4">
+                            <div>
+                                <h3 className="text-xl font-semibold mb-2">{post.title}</h3>
+                                <p className="text-gray-600 line-clamp-3">{post.description}</p>
                             </div>
+                            <div className="flex gap-2 ml-4">
+                                <button
+                                    onClick={() => openEditModal(post)}
+                                    className="px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600"
+                                >
+                                    Редактировать
+                                </button>
+                                <button
+                                    onClick={() => handleDeletePost(post._id)}
+                                    className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+                                >
+                                    Удалить
+                                </button>
+                            </div>
+                        </div>
+                        {post.image && (
+                            <img
+                                src={getImageUrl(post.image) || 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=800&h=400&fit=crop'}
+                                onError={(e) => {
+                                    (e.target as HTMLImageElement).src =
+                                        'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=800&h=400&fit=crop';
+                                }}
+                                alt={post.title}
+                                className="w-full h-48 object-cover rounded"
+                            />
                         )}
                     </div>
+                ))}
+            </div>
 
-                    <div className="flex space-x-4">
-                        <button
-                            type="submit"
-                            className="flex-1 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
-                        >
-                            {editingPost ? 'Обновить' : 'Создать'}
-                        </button>
-                        <button
-                            type="button"
-                            onClick={closeModal}
-                            className="flex-1 px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors"
-                        >
-                            Отмена
-                        </button>
-                    </div>
-                </form>
-            </ModalWindow>
+            {isModalOpen && (
+                <ModalWindow isOpen={isModalOpen} onClose={closeModal}>
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                        <h2 className="text-2xl font-bold mb-4">
+                            {editingPost ? 'Редактировать пост' : 'Создать пост'}
+                        </h2>
+
+                        <div>
+                            <label className="block text-sm font-medium mb-1">
+                                Заголовок *
+                            </label>
+                            <input
+                                type="text"
+                                name="title"
+                                value={formData.title}
+                                onChange={handleInputChange}
+                                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                required
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium mb-1">
+                                Описание *
+                            </label>
+                            <textarea
+                                name="description"
+                                value={formData.description}
+                                onChange={handleInputChange}
+                                rows={4}
+                                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                required
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium mb-1">
+                                Изображение {!editingPost && '*'}
+                            </label>
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={handleFileChange}
+                                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            />
+                        </div>
+
+                        <div className="flex gap-2 pt-4">
+                            <button
+                                type="submit"
+                                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                            >
+                                {editingPost ? 'Обновить' : 'Создать'}
+                            </button>
+                            <button
+                                type="button"
+                                onClick={closeModal}
+                                className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+                            >
+                                Отмена
+                            </button>
+                        </div>
+                    </form>
+                </ModalWindow>
+            )}
         </div>
     );
 };

@@ -4,25 +4,39 @@ import React, { useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { usePostsStore } from '@/store/postsStore';
+import {Post} from "@/lib/types";
 
-const BlogClient = () => {
-    const posts = usePostsStore((state) => state.posts);
-    const fetchPostsAsync = usePostsStore((state) => state.fetchPostsAsync);
-    const fetchLoading = usePostsStore((state) => state.fetchLoading);
-    const fetchError = usePostsStore((state) => state.fetchError);
-    const clearErrors = usePostsStore((state) => state.clearErrors);
+interface Props {
+    data: Post[];
+    error: string | null;
+}
+
+const BlogClient: React.FC<Props> = ({ data, error }) => {
+    const {
+        posts,
+        loading,
+        error: storeError,
+        setPosts,
+        setError,
+        setLoading,
+        clearError
+    } = usePostsStore();
 
     useEffect(() => {
-        clearErrors();
-        void fetchPostsAsync();
-    }, [fetchPostsAsync, clearErrors]);
+        if (data) {
+            setPosts(data);
+        }
+        setError(error);
+        setLoading(false);
+        clearError();
+    }, [data, error, setPosts, setError, setLoading, clearError]);
 
     const getImageUrl = (imagePath?: string) => {
         if (!imagePath) return null;
         return imagePath.startsWith('http') ? imagePath : `/${imagePath}`;
     };
 
-    if (fetchLoading) {
+    if (loading) {
         return (
             <div className="flex justify-center items-center min-h-screen">
                 <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-500"></div>
@@ -30,10 +44,10 @@ const BlogClient = () => {
         );
     }
 
-    if (fetchError) {
+    if (storeError) {
         return (
             <div className="flex justify-center items-center min-h-screen">
-                <div className="text-red-500 text-xl">{fetchError}</div>
+                <div className="text-red-500 text-xl">{storeError}</div>
             </div>
         );
     }
