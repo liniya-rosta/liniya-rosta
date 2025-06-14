@@ -49,3 +49,9 @@ export interface ContactFields {
     instagram: string;
     whatsapp: string;
 }
+
+export interface PortfolioUpdate{
+    cover?: string;
+    description?: string;
+    alt?: string;
+}
