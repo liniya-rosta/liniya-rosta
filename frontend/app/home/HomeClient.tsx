@@ -1,6 +1,6 @@
 'use client';
 
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {useProductStore} from '@/store/productsStore';
 import {usePortfolioStore} from "@/store/portfolioItemStore";
 import {Button} from '@/components/ui/button';
@@ -48,8 +48,6 @@ const HomePageClient: React.FC<HomePageClientProps> = ({
         fetchLoading: portfolioLoading,
     } = usePortfolioStore();
 
-    const [isHydrating, setIsHydrating] = useState(true);
-
     useEffect(() => {
         categoriesStore.setCategories(categories);
         productsStore.setProducts(products);
@@ -60,19 +58,12 @@ const HomePageClient: React.FC<HomePageClientProps> = ({
 
         categoriesStore.setFetchCategoriesLoading(false);
         productsStore.setFetchProductsLoading(false);
+    }, [categories, products, portfolioItems, categoriesError, productsError, portfolioError, setPortfolioPreview, categoriesStore, productsStore]);
 
-        setIsHydrating(false);
-    }, [
-        categories, products, portfolioItems, categoriesError,
-        productsError, portfolioError,
-        setPortfolioPreview,
-    ]);
-
-    const overallLoading = isHydrating || categoriesStore.fetchCategoriesLoading || productsStore.fetchProductsLoading || portfolioLoading;
+    const overallLoading = categoriesStore.fetchCategoriesLoading || productsStore.fetchProductsLoading || portfolioLoading;
     const overallError = categoriesStore.fetchCategoriesError || productsStore.fetchProductsError || portfolioError;
 
     if (overallLoading) return <Loading/>;
-
     if (overallError && (!categoriesStore.categories.length && !productsStore.products.length && !storedPortfolioItems.length)) {
         return <ErrorMsg error={overallError}/>
     }

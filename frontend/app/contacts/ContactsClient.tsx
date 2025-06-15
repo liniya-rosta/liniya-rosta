@@ -4,7 +4,7 @@ import ContactInfoCard from "@/app/contacts/components/ContactInfoCard";
 import WorkingHoursCard from "@/app/contacts/components/WorkingHoursCard";
 import MapSection from "@/app/contacts/components/MapSection";
 import {Contact} from "@/lib/types";
-import {useEffect, useState} from "react";
+import {useEffect} from "react";
 import {useContactStore} from "@/store/contactsStore";
 import Loading from "@/components/shared/Loading";
 import ErrorMsg from "@/components/shared/ErrorMsg";
@@ -17,19 +17,13 @@ interface Props {
 const ContactsClient: React.FC<Props> = ({data, error}) => {
     const {contact, setContact, setFetchError, fetchLoading, setFetchLoading, fetchError} = useContactStore();
 
-    const [isHydrating, setIsHydrating] = useState(true);
-
     useEffect(() => {
         if (data) setContact(data);
         setFetchError(error);
         setFetchLoading(false);
-        setIsHydrating(false);
-    }, [data, error, setContact, setFetchError, setFetchLoading, setIsHydrating]);
+    }, [data, error, setContact, setFetchError, setFetchLoading]);
 
-    const overallLoading = isHydrating || fetchLoading;
-
-    if (overallLoading) return <Loading/>;
-
+    if (fetchLoading) return <Loading/>;
     if (fetchError) return <ErrorMsg error={fetchError} label='контактов'/>
 
     return (
