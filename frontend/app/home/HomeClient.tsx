@@ -58,7 +58,7 @@ const HomePageClient: React.FC<HomePageClientProps> = ({
 
         categoriesStore.setFetchCategoriesLoading(false);
         productsStore.setFetchProductsLoading(false);
-    }, [categories, products, portfolioItems, categoriesError, productsError, portfolioError, setPortfolioPreview, categoriesStore, productsStore]);
+    }, [categories, products, portfolioItems, categoriesError, productsError, portfolioError, setPortfolioPreview]);
 
     const overallLoading = categoriesStore.fetchCategoriesLoading || productsStore.fetchProductsLoading || portfolioLoading;
     const overallError = categoriesStore.fetchCategoriesError || productsStore.fetchProductsError || portfolioError;
