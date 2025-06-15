@@ -18,8 +18,8 @@ export interface ContactFormData {
     phone1: string;
     phone2?: string | undefined;
     email: string;
-    instagram?: string | undefined;
-    whatsapp?: string | undefined;
+    instagram: string;
+    whatsapp: string;
     linkLocation: string;
     mapLocation: string;
     workingHours: {
@@ -133,7 +133,7 @@ const AdminContactForm: React.FC<Props> = ({contact}) => {
                             <Controller
                                 name={`workingHours.${day}`}
                                 control={control}
-                                render={({ field }) => (
+                                render={({field}) => (
                                     <input
                                         {...field}
                                         id={`workingHours.${day}`}
