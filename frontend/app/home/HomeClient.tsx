@@ -20,6 +20,8 @@ import {Category, PortfolioItemPreview, Product} from '@/lib/types';
 import {useCategoryStore} from "@/store/categoriesStore";
 import Loading from "@/components/shared/Loading";
 import ErrorMsg from "@/components/shared/ErrorMsg";
+import {ModalWindow} from "@/components/ui/modal-window";
+import RequestForm from "@/components/shared/RequestForm";
 
 interface HomePageClientProps {
     categories: Category[];
@@ -39,8 +41,28 @@ const HomePageClient: React.FC<HomePageClientProps> = ({
                                                            portfolioError
                                                        }) => {
 
-    const categoriesStore = useCategoryStore();
-    const productsStore = useProductStore();
+    const {
+        categories: storedCategories,
+        setCategories,
+        fetchCategoriesLoading,
+        fetchCategoriesError,
+        setFetchCategoriesError,
+        setFetchCategoriesLoading
+    } = useCategoryStore();
+
+    const {
+        products: storedProducts,
+        setProducts,
+        fetchProductsLoading,
+        fetchProductsError,
+        setFetchProductsError,
+        setFetchProductsLoading
+    } = useProductStore();
+
+
+    const [isModalOpen, setIsModalOpen] = React.useState(false);
+    const openModal = () => setIsModalOpen(true);
+    const closeModal = () => setIsModalOpen(false);
 
     const {
         items: storedPortfolioItems,
@@ -49,22 +71,22 @@ const HomePageClient: React.FC<HomePageClientProps> = ({
     } = usePortfolioStore();
 
     useEffect(() => {
-        categoriesStore.setCategories(categories);
-        productsStore.setProducts(products);
+        setCategories(categories);
+        setProducts(products);
         setPortfolioPreview(portfolioItems);
 
-        categoriesStore.setFetchCategoriesError(categoriesError);
-        productsStore.setFetchProductsError(productsError);
+        setFetchCategoriesError(categoriesError);
+        setFetchProductsError(productsError);
 
-        categoriesStore.setFetchCategoriesLoading(false);
-        productsStore.setFetchProductsLoading(false);
-    }, [categories, products, portfolioItems, categoriesError, productsError, portfolioError, setPortfolioPreview]);
+        setFetchCategoriesLoading(false);
+        setFetchProductsLoading(false);
+    }, [categories, products, portfolioItems, categoriesError, productsError, portfolioError, setPortfolioPreview, setCategories, setProducts, setFetchCategoriesError, setFetchProductsError, setFetchCategoriesLoading, setFetchProductsLoading]);
 
-    const overallLoading = categoriesStore.fetchCategoriesLoading || productsStore.fetchProductsLoading || portfolioLoading;
-    const overallError = categoriesStore.fetchCategoriesError || productsStore.fetchProductsError || portfolioError;
+    const overallLoading = fetchCategoriesLoading || fetchProductsLoading || portfolioLoading;
+    const overallError = fetchCategoriesError || fetchProductsError || portfolioError;
 
     if (overallLoading) return <Loading/>;
-    if (overallError && (!categoriesStore.categories.length && !productsStore.products.length && !storedPortfolioItems.length)) {
+    if (overallError && (!storedCategories.length && !storedProducts.length && !storedPortfolioItems.length)) {
         return <ErrorMsg error={overallError}/>
     }
 
@@ -79,7 +101,7 @@ const HomePageClient: React.FC<HomePageClientProps> = ({
                     Натяжные потолки, SPC ламинат и монтажные услуги. Сделаем ваш дом стильным и функциональным.
                 </p>
                 <div className="flex gap-4 justify-center flex-wrap">
-                    <Button size="lg" className="min-w-[180px]">Оставить заявку</Button>
+                    <Button size="lg" className="min-w-[180px]" onClick={openModal}>Оставить заявку</Button>
                     <Button
                         variant="outline"
                         size="lg"
@@ -96,10 +118,10 @@ const HomePageClient: React.FC<HomePageClientProps> = ({
 
             <section className="space-y-6" aria-labelledby="categories-heading">
                 <h2 id="categories-heading" className="text-3xl font-bold text-center">Категории продукции</h2>
-                {categoriesStore.fetchCategoriesError && (
-                    <ErrorMsg error={categoriesStore.fetchCategoriesError} label='категорий'/>
+                {fetchCategoriesError && (
+                    <ErrorMsg error={fetchCategoriesError} label='категорий'/>
                 )}
-                {categoriesStore.categories.length > 0 ? (
+                {storedCategories.length > 0 ? (
                     <Swiper
                         slidesPerView={2}
                         spaceBetween={10}
@@ -112,14 +134,14 @@ const HomePageClient: React.FC<HomePageClientProps> = ({
                         modules={[Navigation, Pagination]}
                         className="mySwiper py-4"
                     >
-                        {categoriesStore.categories.map((cat) => (
+                        {storedCategories.map((cat) => (
                             <SwiperSlide key={cat._id}>
                                 <CategoryCard category={cat}/>
                             </SwiperSlide>
                         ))}
                     </Swiper>
                 ) : (
-                    !categoriesStore.fetchCategoriesError && <p className="text-center">Нет категорий</p>
+                    !fetchCategoriesError && <p className="text-center">Нет категорий</p>
                 )}
             </section>
 
@@ -130,10 +152,10 @@ const HomePageClient: React.FC<HomePageClientProps> = ({
                         Все товары →
                     </Link>
                 </div>
-                {productsStore.fetchProductsError && (
-                    <ErrorMsg error={productsStore.fetchProductsError} label='продуктов'/>
+                {fetchProductsError && (
+                    <ErrorMsg error={fetchProductsError} label='продуктов'/>
                 )}
-                {productsStore.products.length > 0 ? (
+                {storedProducts.length > 0 ? (
                     <Swiper
                         slidesPerView={1}
                         spaceBetween={10}
@@ -147,7 +169,7 @@ const HomePageClient: React.FC<HomePageClientProps> = ({
                         modules={[Navigation, Pagination]}
                         className="mySwiper py-4"
                     >
-                        {productsStore.products.map((product) => (
+                        {storedProducts.map((product) => (
                             <SwiperSlide key={product._id}>
                                 <div className="max-w-xs mx-auto md:max-w-none">
                                     <ProductCard product={product}/>
@@ -156,12 +178,12 @@ const HomePageClient: React.FC<HomePageClientProps> = ({
                         ))}
                     </Swiper>
                 ) : (
-                    !productsStore.fetchProductsError && <p className="text-center">Нет продуктов</p>
+                    !fetchProductsError && <p className="text-center">Нет продуктов</p>
                 )}
             </section>
 
             <section className="space-y-6" aria-labelledby="portfolio-heading">
-                <div role="presentation" className="flex justify-between items-center">
+                <div role="presentation" className="flex justify-between items-center mx-auto">
                     <h2 id="portfolio-heading" className="text-3xl font-bold">Наши работы</h2>
                     <Link href="/portfolio" className="text-primary text-sm font-medium hover:underline">
                         Все работы →
@@ -190,7 +212,7 @@ const HomePageClient: React.FC<HomePageClientProps> = ({
                     Свяжитесь с нами — мы проконсультируем и подберём решения под ваш бюджет.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                    <Button variant="secondary" size="lg">Получить консультацию</Button>
+                    <Button variant="secondary" size="lg" onClick={openModal}>Получить консультацию</Button>
                     <Button
                         variant="outline"
                         size="lg"
@@ -212,6 +234,10 @@ const HomePageClient: React.FC<HomePageClientProps> = ({
                     style={{overflow: 'hidden'}}
                 ></iframe>
             </section>
+
+            <ModalWindow isOpen={isModalOpen} onClose={closeModal}>
+                <RequestForm closeModal={closeModal}/>
+            </ModalWindow>
         </div>
     );
 };
