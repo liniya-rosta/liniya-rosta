@@ -9,7 +9,6 @@ export const createProductSchema = z.object({
         .refine((file) => file.size > 0, 'Изображение обязательно для нового продукта'),
 });
 
-
 export const updateProductSchema = z.object({
     category: z.string().min(1, 'Категория обязательна'),
     title: z.string().min(1, 'Название обязательно').max(200, 'Название слишком длинное'),
