@@ -7,6 +7,8 @@ import { ModalWindow } from '@/components/ui/modal-window';
 import {Category, Product} from "@/lib/types";
 import {useCategoryStore} from "@/store/categoriesStore";
 import {useProductStore} from "@/store/productsStore";
+import {API_BASE_URL} from "@/lib/globalConstants";
+import Image from "next/image";
 
 type Props = {
     initialProducts: Product[];
@@ -76,11 +78,6 @@ const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories })
 
     const closeModal = () => {
         setShowConsultationModal(false);
-    };
-
-    const getImageUrl = (imagePath?: string) => {
-        if (!imagePath) return null;
-        return imagePath.startsWith('http') ? imagePath : `/${imagePath}`;
     };
 
     return (
@@ -165,19 +162,20 @@ const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories })
                     ) : filteredProducts.length > 0 ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                             {filteredProducts.map(product => {
-                                const imageUrl = getImageUrl(product.image);
                                 return (
-                                    <div key={product._id} className="bg-white rounded-lg shadow-sm hover:shadow-md transition">
-                                        {imageUrl && (
-                                            <img
-                                                src={imageUrl}
-                                                onError={e => {
+                                    <div key={product._id} className="bg-white rounded-lg shadow-sm hover:shadow-md transition overflow-hidden">
+                                        <div className="relative w-full h-48">
+                                            <Image
+                                                src={`${API_BASE_URL}/${product.image}`}
+                                                fill
+                                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                                onError={(e) => {
                                                     (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop';
                                                 }}
-                                                alt={product.title}
-                                                className="w-full h-48 object-cover rounded-t-lg"
+                                                alt={product.title || 'Product image'}
+                                                className="object-cover"
                                             />
-                                        )}
+                                        </div>
                                         <div className="p-4">
                                             <h3 className="font-semibold text-lg text-gray-900 mb-2">{product.title}</h3>
                                             <p className="text-gray-600 text-sm line-clamp-2 mb-3">{product.description}</p>

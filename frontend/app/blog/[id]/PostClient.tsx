@@ -6,6 +6,8 @@ import { ArrowLeft } from 'lucide-react';
 import { usePostsStore } from "@/store/postsStore";
 import { Post } from "@/lib/types";
 import Loading from "@/components/shared/Loading";
+import {API_BASE_URL} from "@/lib/globalConstants";
+import Image from "next/image";
 
 interface Props {
     data: Post | null;
@@ -33,11 +35,6 @@ const PostClient: React.FC<Props> = ({ data, error }) => {
         setLoading(false);
         setIsHydrating(false);
     }, [data, error, upsertPost, setError, setLoading]);
-
-    const getImageUrl = (imagePath?: string) => {
-        if (!imagePath) return null;
-        return imagePath.startsWith('http') ? imagePath : `/${imagePath}`;
-    };
 
     if (isHydrating || loading) return <Loading />;
     if (storeError) return (
@@ -67,15 +64,17 @@ const PostClient: React.FC<Props> = ({ data, error }) => {
             </button>
 
             <article className="bg-white rounded-lg shadow-lg overflow-hidden">
-                <div className="aspect-w-16 aspect-h-9">
-                    <img
-                        src={getImageUrl(data.image) || 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=800&h=400&fit=crop'}
+                <div className="relative aspect-w-16 aspect-h-9 h-64 md:h-96">
+                    <Image
+                        src={`${API_BASE_URL}/${data.image}`}
+                        fill
+                        sizes="(max-width: 768px) 100vw, 1200px"
                         onError={(e) => {
                             (e.target as HTMLImageElement).src =
                                 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=800&h=400&fit=crop';
                         }}
                         alt={data.title}
-                        className="w-full h-64 md:h-96 object-cover"
+                        className="object-cover"
                     />
                 </div>
 

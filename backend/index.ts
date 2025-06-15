@@ -12,6 +12,7 @@ import requestRouter from "./src/routes/requests";
 import portfolioItemRouter from "./src/routes/portfolioItems";
 import laminateItemsRouter from "./src/routes/laminateItems";
 import contactsRouter from "./src/routes/contacts";
+import path from "path";
 
 const app = express();
 const port = 8000;
@@ -24,6 +25,10 @@ app.use(
 );
 app.use(cookieParser());
 app.use(express.static("public"));
+app.use('/post', express.static(path.join(config.publicPath, 'posts')));
+app.use('/product', express.static(path.join(config.publicPath, 'products')));
+app.use('/portfolio', express.static(path.join(config.publicPath, 'portfolio')));
+app.use('/laminate', express.static(path.join(config.publicPath, 'laminate')));
 app.use(express.json());
 
 app.use('/users', usersRouter);

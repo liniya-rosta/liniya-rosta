@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { usePostsStore } from '@/store/postsStore';
 import {Post} from "@/lib/types";
+import {API_BASE_URL} from "@/lib/globalConstants";
+import Image from "next/image";
 
 interface Props {
     data: Post[];
@@ -30,11 +32,6 @@ const BlogClient: React.FC<Props> = ({ data, error }) => {
         setLoading(false);
         clearError();
     }, [data, error, setPosts, setError, setLoading, clearError]);
-
-    const getImageUrl = (imagePath?: string) => {
-        if (!imagePath) return null;
-        return imagePath.startsWith('http') ? imagePath : `/${imagePath}`;
-    };
 
     if (loading) {
         return (
@@ -71,15 +68,17 @@ const BlogClient: React.FC<Props> = ({ data, error }) => {
                         key={post._id}
                         className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
                     >
-                        <div className="aspect-w-16 aspect-h-9">
-                            <img
-                                src={getImageUrl(post.image) || 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=400&h=300&fit=crop'}
+                        <div className="relative aspect-w-16 aspect-h-9 h-48">
+                            <Image
+                                src={`${API_BASE_URL}/${post.image}`}
+                                fill
+                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                 onError={(e) => {
                                     (e.target as HTMLImageElement).src =
                                         'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=400&h=300&fit=crop';
                                 }}
                                 alt={post.title}
-                                className="w-full h-48 object-cover"
+                                className="object-cover"
                             />
                         </div>
 

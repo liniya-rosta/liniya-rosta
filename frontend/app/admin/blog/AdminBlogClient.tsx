@@ -7,6 +7,11 @@ import { AxiosError } from 'axios';
 import { ModalWindow } from "@/components/ui/modal-window";
 import Loading from "@/components/shared/Loading";
 import { createPost, updatePost, deletePost } from "@/actions/posts";
+import { useForm } from 'react-hook-form';
+import { CreatePostFormData, UpdatePostFormData, createPostSchema, updatePostSchema } from '@/lib/zodSchemas/postSchema';
+import { zodResolver } from '@hookform/resolvers/zod';
+import {API_BASE_URL} from "@/lib/globalConstants";
+import Image from "next/image";
 
 interface Props {
     data: Post[];
@@ -30,16 +35,22 @@ const AdminBlogClient: React.FC<Props> = ({ data, error }) => {
     const [isHydrating, setIsHydrating] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingPost, setEditingPost] = useState<Post | null>(null);
-    const [formData, setFormData] = useState({
-        title: '',
-        description: '',
-        image: null as File | null
-    });
 
-    const getImageUrl = (imagePath?: string) => {
-        if (!imagePath) return null;
-        return imagePath.startsWith('http') ? imagePath : `/${imagePath}`;
-    };
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+        reset,
+        setValue,
+
+    } = useForm<CreatePostFormData | UpdatePostFormData>({
+        resolver: zodResolver(editingPost ? updatePostSchema : createPostSchema),
+        defaultValues: {
+            title: '',
+            description: '',
+            image: null
+        }
+    });
 
     useEffect(() => {
         if (data) setPosts(data);
@@ -49,7 +60,7 @@ const AdminBlogClient: React.FC<Props> = ({ data, error }) => {
     }, [data, error, setPosts, setStoreError, setLoading]);
 
     const resetForm = () => {
-        setFormData({
+        reset({
             title: '',
             description: '',
             image: null
@@ -65,7 +76,7 @@ const AdminBlogClient: React.FC<Props> = ({ data, error }) => {
 
     const openEditModal = (post: Post) => {
         setEditingPost(post);
-        setFormData({
+        reset({
             title: post.title,
             description: post.description,
             image: null
@@ -79,25 +90,17 @@ const AdminBlogClient: React.FC<Props> = ({ data, error }) => {
         resetForm();
     };
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }));
-    };
-
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0] || null;
-        setFormData(prev => ({
-            ...prev,
-            image: file
-        }));
+        setValue('image', file);
     };
 
-    const handleCreatePost = async () => {
+    const handleCreatePost = async (formData: CreatePostFormData) => {
         try {
-            if (!formData.image) return;
+            if (!formData.image) {
+                alert('Выберите изображение для поста');
+                return;
+            }
 
             const postData: CreatePostData = {
                 title: formData.title,
@@ -117,7 +120,7 @@ const AdminBlogClient: React.FC<Props> = ({ data, error }) => {
         }
     };
 
-    const handleUpdatePost = async () => {
+    const handleUpdatePost = async (formData: UpdatePostFormData) => {
         if (!editingPost) return;
 
         try {
@@ -160,23 +163,11 @@ const AdminBlogClient: React.FC<Props> = ({ data, error }) => {
         }
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-
-        if (!formData.title.trim() || !formData.description.trim()) {
-            alert('Заполните все обязательные поля');
-            return;
-        }
-
-        if (!editingPost && !formData.image) {
-            alert('Выберите изображение для поста');
-            return;
-        }
-
+    const onSubmit = (formData: CreatePostFormData | UpdatePostFormData) => {
         if (editingPost) {
-            void handleUpdatePost();
+            handleUpdatePost(formData as UpdatePostFormData);
         } else {
-            void handleCreatePost();
+            handleCreatePost(formData as CreatePostFormData);
         }
     };
 
@@ -234,15 +225,19 @@ const AdminBlogClient: React.FC<Props> = ({ data, error }) => {
                             </div>
                         </div>
                         {post.image && (
-                            <img
-                                src={getImageUrl(post.image) || 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=800&h=400&fit=crop'}
-                                onError={(e) => {
-                                    (e.target as HTMLImageElement).src =
-                                        'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=800&h=400&fit=crop';
-                                }}
-                                alt={post.title}
-                                className="w-full h-48 object-cover rounded"
-                            />
+                            <div className="relative w-full h-48 rounded overflow-hidden">
+                                <Image
+                                    src={`${API_BASE_URL}/${post.image}`}
+                                    fill
+                                    sizes="(max-width: 768px) 100vw, 800px"
+                                    onError={(e) => {
+                                        (e.target as HTMLImageElement).src =
+                                            'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=800&h=400&fit=crop';
+                                    }}
+                                    alt={post.title}
+                                    className="object-cover"
+                                />
+                            </div>
                         )}
                     </div>
                 ))}
@@ -250,7 +245,7 @@ const AdminBlogClient: React.FC<Props> = ({ data, error }) => {
 
             {isModalOpen && (
                 <ModalWindow isOpen={isModalOpen} onClose={closeModal}>
-                    <form onSubmit={handleSubmit} className="space-y-4">
+                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                         <h2 className="text-2xl font-bold mb-4">
                             {editingPost ? 'Редактировать пост' : 'Создать пост'}
                         </h2>
@@ -261,12 +256,12 @@ const AdminBlogClient: React.FC<Props> = ({ data, error }) => {
                             </label>
                             <input
                                 type="text"
-                                name="title"
-                                value={formData.title}
-                                onChange={handleInputChange}
+                                {...register('title')}
                                 className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                required
                             />
+                            {errors.title && (
+                                <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>
+                            )}
                         </div>
 
                         <div>
@@ -274,13 +269,13 @@ const AdminBlogClient: React.FC<Props> = ({ data, error }) => {
                                 Описание *
                             </label>
                             <textarea
-                                name="description"
-                                value={formData.description}
-                                onChange={handleInputChange}
+                                {...register('description')}
                                 rows={4}
                                 className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                required
                             />
+                            {errors.description && (
+                                <p className="text-red-500 text-sm mt-1">{errors.description.message}</p>
+                            )}
                         </div>
 
                         <div>

@@ -1,6 +1,6 @@
 'use client';
 
-import { Category, ProductWithoutId, Product } from "@/lib/types";
+import { Category, Product } from "@/lib/types";
 import { useEffect, useState, useRef } from "react";
 import { Pencil, Plus, Save, Trash2, X } from "lucide-react";
 import { useProductStore } from "@/store/productsStore";
@@ -8,6 +8,11 @@ import { useCategoryStore } from "@/store/categoriesStore";
 import { createProduct, updateProduct, deleteProduct } from "@/actions/products";
 import { AxiosError } from 'axios';
 import Loading from "@/components/shared/Loading";
+import { useForm } from 'react-hook-form';
+import { CreateProductFormData, UpdateProductFormData, createProductSchema, updateProductSchema } from '@/lib/zodSchemas/productSchema';
+import { zodResolver } from '@hookform/resolvers/zod';
+import Image from "next/image";
+import {API_BASE_URL} from "@/lib/globalConstants";
 
 interface ProductsClientProps {
     initialProducts: Product[];
@@ -37,21 +42,24 @@ const ProductsClient: React.FC<ProductsClientProps> = ({initialProducts, initial
     const [isHydrating, setIsHydrating] = useState(true);
     const [editingId, setEditingId] = useState<string | null>(null);
     const [isAdding, setIsAdding] = useState(false);
-    const [imageFile, setImageFile] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    const [formData, setFormData] = useState({
-        category: "",
-        title: "",
-        description: "",
-        image: ""
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+        reset,
+        setValue
+    } = useForm<CreateProductFormData | UpdateProductFormData>({
+        resolver: zodResolver(isAdding ? createProductSchema : updateProductSchema),
+        defaultValues: {
+            category: "",
+            title: "",
+            description: "",
+            image: null
+        }
     });
-
-    const getImageUrl = (imagePath?: string) => {
-        if (!imagePath) return '';
-        if (imagePath.startsWith('http')) return imagePath;
-    };
 
     useEffect(() => {
         if (initialProducts) setProducts(initialProducts);
@@ -62,11 +70,11 @@ const ProductsClient: React.FC<ProductsClientProps> = ({initialProducts, initial
     }, [initialProducts, initialCategories, initialError, setProducts, setCategories, setError, setLoading]);
 
     const resetForm = () => {
-        setFormData({
+        reset({
             category: "",
             title: "",
             description: "",
-            image: ""
+            image: null
         });
         setEditingId(null);
         setIsAdding(false);
@@ -74,7 +82,7 @@ const ProductsClient: React.FC<ProductsClientProps> = ({initialProducts, initial
     };
 
     const clearImage = () => {
-        setImageFile(null);
+        setValue('image', null);
         setImagePreview(null);
         if (fileInputRef.current) {
             fileInputRef.current.value = '';
@@ -84,7 +92,7 @@ const ProductsClient: React.FC<ProductsClientProps> = ({initialProducts, initial
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            setImageFile(file);
+            setValue('image', file);
             const reader = new FileReader();
             reader.onload = () => {
                 setImagePreview(reader.result as string);
@@ -95,11 +103,11 @@ const ProductsClient: React.FC<ProductsClientProps> = ({initialProducts, initial
 
     const handleEdit = (product: Product) => {
         setEditingId(product._id);
-        setFormData({
+        reset({
             category: typeof product.category === 'object' ? product.category._id : product.category,
             title: product.title,
             description: product.description || "",
-            image: product.image || ""
+            image: null
         });
         setIsAdding(false);
         clearImage();
@@ -107,26 +115,26 @@ const ProductsClient: React.FC<ProductsClientProps> = ({initialProducts, initial
     };
 
     const handleAdd = () => {
-        setIsAdding(true);
         resetForm();
+        setIsAdding(true);
         clearError();
     };
 
-    const handleInputChange = (field: keyof ProductWithoutId, value: string) => {
-        setFormData(prev => ({
-            ...prev,
-            [field]: value
-        }));
-    };
-
-    const handleCreateProduct = async () => {
+    const handleCreateProduct = async (formData: CreateProductFormData) => {
         try {
-            if (!imageFile) {
+            if (!formData.image) {
                 alert('Пожалуйста, выберите изображение для нового товара');
                 return;
             }
 
-            const newProduct = await createProduct(formData, imageFile);
+            const productData = {
+                category: formData.category,
+                title: formData.title,
+                description: formData.description || "",
+                image: ""
+            };
+
+            const newProduct = await createProduct(productData, formData.image);
             addProduct(newProduct);
 
             resetForm();
@@ -139,11 +147,18 @@ const ProductsClient: React.FC<ProductsClientProps> = ({initialProducts, initial
         }
     };
 
-    const handleUpdateProduct = async () => {
+    const handleUpdateProduct = async (formData: UpdateProductFormData) => {
         if (!editingId) return;
 
         try {
-            const updatedProduct = await updateProduct(editingId, formData, imageFile || undefined);
+            const productData = {
+                category: formData.category,
+                title: formData.title,
+                description: formData.description || "",
+                image: ""
+            };
+
+            const updatedProduct = await updateProduct(editingId, productData, formData.image || undefined);
             updateProductInStore(editingId, updatedProduct);
 
             resetForm();
@@ -171,18 +186,11 @@ const ProductsClient: React.FC<ProductsClientProps> = ({initialProducts, initial
         }
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-
-        if (!formData.title.trim() || !formData.category.trim()) {
-            alert('Пожалуйста, заполните обязательные поля: название и категория');
-            return;
-        }
-
+    const onSubmit = (formData: CreateProductFormData | UpdateProductFormData) => {
         if (isAdding) {
-            void handleCreateProduct();
+            handleCreateProduct(formData as CreateProductFormData);
         } else if (editingId) {
-            void handleUpdateProduct();
+            handleUpdateProduct(formData as UpdateProductFormData);
         }
     };
 
@@ -236,7 +244,7 @@ const ProductsClient: React.FC<ProductsClientProps> = ({initialProducts, initial
                         </h2>
                     </div>
 
-                    <form onSubmit={handleSubmit} className="space-y-4">
+                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -244,12 +252,13 @@ const ProductsClient: React.FC<ProductsClientProps> = ({initialProducts, initial
                                 </label>
                                 <input
                                     type="text"
-                                    value={formData.title}
-                                    onChange={(e) => handleInputChange('title', e.target.value)}
+                                    {...register('title')}
                                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     placeholder="Введите название продукта"
-                                    required
                                 />
+                                {errors.title && (
+                                    <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>
+                                )}
                             </div>
 
                             <div>
@@ -257,10 +266,8 @@ const ProductsClient: React.FC<ProductsClientProps> = ({initialProducts, initial
                                     Категория *
                                 </label>
                                 <select
-                                    value={formData.category}
-                                    onChange={(e) => handleInputChange('category', e.target.value)}
+                                    {...register('category')}
                                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    required
                                 >
                                     <option value="">Выберите категорию</option>
                                     {categories.map((category) => (
@@ -269,6 +276,9 @@ const ProductsClient: React.FC<ProductsClientProps> = ({initialProducts, initial
                                         </option>
                                     ))}
                                 </select>
+                                {errors.category && (
+                                    <p className="text-red-500 text-sm mt-1">{errors.category.message}</p>
+                                )}
                             </div>
 
                             <div className="md:col-span-2">
@@ -276,12 +286,14 @@ const ProductsClient: React.FC<ProductsClientProps> = ({initialProducts, initial
                                     Описание
                                 </label>
                                 <textarea
-                                    value={formData.description}
-                                    onChange={(e) => handleInputChange('description', e.target.value)}
+                                    {...register('description')}
                                     rows={3}
                                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     placeholder="Введите описание продукта"
                                 />
+                                {errors.description && (
+                                    <p className="text-red-500 text-sm mt-1">{errors.description.message}</p>
+                                )}
                             </div>
 
                             <div className="md:col-span-2">
@@ -378,14 +390,16 @@ const ProductsClient: React.FC<ProductsClientProps> = ({initialProducts, initial
                                     </div>
                                 </div>
                                 {product.image && (
-                                    <div className="relative">
-                                        <img
-                                            src={getImageUrl(product.image) || 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=800&h=400&fit=crop'}
+                                    <div className="relative w-full h-48">
+                                        <Image
+                                            src={`${API_BASE_URL}/${product.image}`}
+                                            fill
+                                            sizes="100vw"
                                             alt={product.title}
-                                            className="w-full h-48 object-cover rounded"
+                                            className="object-cover rounded"
                                             onError={(e) => {
                                                 console.error('Image failed to load:', product.image);
-                                                console.error('Attempted URL:', getImageUrl(product.image));
+                                                console.error('Attempted URL:', `${API_BASE_URL}/${product.image}`);
                                                 (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=800&h=400&fit=crop';
                                             }}
                                         />
