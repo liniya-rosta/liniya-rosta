@@ -1,6 +1,7 @@
 import axiosAPI from '@/lib/axiosAPI';
-import {Product, ProductWithoutId} from '@/lib/types';
-import {isAxiosError} from "axios";
+import { Product, ProductWithoutId, Category } from '@/lib/types';
+import { isAxiosError } from 'axios';
+import { create } from 'zustand';
 
 export const fetchProducts = async (categoryId?: string): Promise<Product[]> => {
     try {
@@ -35,20 +36,13 @@ export const createProduct = async (productData: ProductWithoutId, imageFile?: F
         const formData = new FormData();
         formData.append('category', productData.category);
         formData.append('title', productData.title);
+        if (productData.description) formData.append('description', productData.description);
+        if (imageFile) formData.append('image', imageFile);
 
-        if (productData.description) {
-            formData.append('description', productData.description);
-        }
-
-        if (imageFile) {
-            formData.append('image', imageFile);
-        }
-
-        const res = await axiosAPI.post<{message: string, product: Product}>('/superadmin/products', formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
+        const res = await axiosAPI.post<{ message: string; product: Product }>('/superadmin/products', formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
         });
+
         return res.data.product;
     } catch (e) {
         if (isAxiosError(e)) {
@@ -58,31 +52,26 @@ export const createProduct = async (productData: ProductWithoutId, imageFile?: F
     }
 };
 
-export const updateProduct = async (id: string, productData: Partial<ProductWithoutId>, imageFile?: File): Promise<Product> => {
+export const updateProduct = async (
+    id: string,
+    productData: Partial<ProductWithoutId>,
+    imageFile?: File
+): Promise<Product> => {
     try {
         const formData = new FormData();
+        if (productData.category) formData.append('category', productData.category);
+        if (productData.title) formData.append('title', productData.title);
+        if (productData.description) formData.append('description', productData.description);
+        if (imageFile) formData.append('image', imageFile);
 
-        if (productData.category) {
-            formData.append('category', productData.category);
-        }
+        const res = await axiosAPI.patch<{ message: string; product: Product }>(
+            `/superadmin/products/${id}`,
+            formData,
+            {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            }
+        );
 
-        if (productData.title) {
-            formData.append('title', productData.title);
-        }
-
-        if (productData.description) {
-            formData.append('description', productData.description);
-        }
-
-        if (imageFile) {
-            formData.append('image', imageFile);
-        }
-
-        const res = await axiosAPI.patch<{message: string, product: Product}>(`/superadmin/products/${id}`, formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
-        });
         return res.data.product;
     } catch (e) {
         if (isAxiosError(e)) {
@@ -94,7 +83,7 @@ export const updateProduct = async (id: string, productData: Partial<ProductWith
 
 export const deleteProduct = async (id: string): Promise<string> => {
     try {
-        const res = await axiosAPI.delete<{message: string}>(`/superadmin/products/${id}`);
+        const res = await axiosAPI.delete<{ message: string }>(`/superadmin/products/${id}`);
         return res.data.message;
     } catch (e) {
         if (isAxiosError(e)) {
