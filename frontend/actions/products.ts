@@ -3,19 +3,9 @@ import {Product, ProductWithoutId} from '@/lib/types';
 import {isAxiosError} from "axios";
 
 export const fetchProducts = async (categoryId?: string) => {
-    try {
-        let url = '/products';
-        if (categoryId) {
-            url += `?category=${categoryId}`;
-        }
-        const res = await axiosAPI.get<Product[]>(url);
-        return res.data;
-    } catch (e) {
-        if (isAxiosError(e)) {
-            throw new Error(e.response?.data || 'Произошла ошибка при получении продуктов');
-        }
-        throw e;
-    }
+    const url = categoryId ? `/products?category=${categoryId}` : '/products';
+    const res = await axiosAPI.get<Product[]>(url);
+    return res.data;
 };
 
 export const fetchProductById = async (id: string) => {
@@ -44,7 +34,7 @@ export const createProduct = async (productData: ProductWithoutId, imageFile?: F
             formData.append('image', imageFile);
         }
 
-        const res = await axiosAPI.post<{message: string, product: Product}>('/superadmin/products', formData, {
+        const res = await axiosAPI.post<{ message: string, product: Product }>('/superadmin/products', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },
@@ -78,7 +68,10 @@ export const updateProduct = async (id: string, productData: Partial<ProductWith
             formData.append('image', imageFile);
         }
 
-        const res = await axiosAPI.patch<{message: string, product: Product}>(`/superadmin/products/${id}`, formData, {
+        const res = await axiosAPI.patch<{
+            message: string,
+            product: Product
+        }>(`/superadmin/products/${id}`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },
@@ -94,7 +87,7 @@ export const updateProduct = async (id: string, productData: Partial<ProductWith
 
 export const deleteProduct = async (id: string) => {
     try {
-        const res = await axiosAPI.delete<{message: string}>(`/superadmin/products/${id}`);
+        const res = await axiosAPI.delete<{ message: string }>(`/superadmin/products/${id}`);
         return res.data.message;
     } catch (e) {
         if (isAxiosError(e)) {

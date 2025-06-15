@@ -4,7 +4,12 @@ import {ContactFields} from "../../types";
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const ContactSchema = new mongoose.Schema<ContactFields>({
-    location: {type: String, required: true},
+    location: {
+        type: String,
+        required: true,
+        validator: (v: string) => v.trim().length > 0,
+        message: "Поле обязательно для заполнения",
+    },
     phone1: {type: String, required: true},
     phone2: {type: String},
     email: {
