@@ -1,7 +1,6 @@
 import axiosAPI from '@/lib/axiosAPI';
 import { Product, ProductWithoutId, Category } from '@/lib/types';
 import { isAxiosError } from 'axios';
-import { create } from 'zustand';
 
 export const fetchProducts = async (categoryId?: string): Promise<Product[]> => {
     try {
