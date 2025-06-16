@@ -16,7 +16,7 @@ const GalleryPage = async ({ params }: { params: Promise<Params> }) => {
             <p className="mb-8 text-lg text-muted-foreground text-center">{detailItem?.description}</p>
             {
                detailItem ? <GalleryClient detailItem={detailItem}/>
-                    : <p>Галерея пуста</p>
+                    : <p className="text-center">Галерея пуста</p>
             }
         </main>
     );

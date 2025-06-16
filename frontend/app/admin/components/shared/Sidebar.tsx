@@ -3,10 +3,12 @@ import Link from "next/link";
 
 const Sidebar = () => {
     const navLinks = [
-        { href: "/admin", label: "Заявки" },
-        { href: "/admin/products", label: "Товары" },
-        { href: "/admin/blog", label: "Блог" },
-        { href: "/admin/admins", label: "Админы" },
+        {href: "/admin", label: "Заявки"},
+        {href: "/admin/products", label: "Товары"},
+        {href: "/admin/blog", label: "Блог"},
+        {href: "/admin/admins", label: "Админы"},
+        {href: "/admin/contacts", label: "Контакты"},
+        {href: "/admin/portfolio", label: "Портфолио"},
     ];
 
     return (

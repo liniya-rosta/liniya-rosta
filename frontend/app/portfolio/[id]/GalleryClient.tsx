@@ -5,7 +5,7 @@ import {usePortfolioStore} from "@/store/portfolioItemStore";
 import {API_BASE_URL} from "@/lib/globalConstants";
 import Image from "next/image";
 import {GalleryItem, PortfolioItemDetail} from "@/lib/types";
-import {ModalImage} from "@/app/portfolio/components/Modal-image";
+import {ModalImage} from "@/components/shared/ModalImage";
 
 type Props = {
     detailItem: PortfolioItemDetail
@@ -40,7 +40,7 @@ const GalleryClient: React.FC<Props> = ({detailItem}) => {
         if (currentIndex === null) {
             setSelectedItem(null);
         } else if (currentIndex === -1) {
-            setSelectedItem({image: detailItem.cover, _id: detailItem._id});
+            setSelectedItem({image: detailItem.cover, _id: detailItem._id, alt: detailItem.alt});
         } else if (gallery && currentIndex >= 0) {
             setSelectedItem(gallery[currentIndex]);
         }
@@ -63,7 +63,7 @@ const GalleryClient: React.FC<Props> = ({detailItem}) => {
                 >
                     <Image
                         src={`${API_BASE_URL}/${detailItem.cover}`}
-                        alt={detailItem._id}
+                        alt={detailItem.alt}
                         fill
                         priority
                         className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
@@ -87,7 +87,7 @@ const GalleryClient: React.FC<Props> = ({detailItem}) => {
                         >
                             <Image
                                 src={imageUrl}
-                                alt={item._id}
+                                alt={item.alt}
                                 fill
                                 priority
                                 className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
@@ -99,14 +99,20 @@ const GalleryClient: React.FC<Props> = ({detailItem}) => {
             </div>
 
             {selectedItem && (
-                <ModalImage isOpen={true} onClose={handleClose} handleNext={handleNext} handlePrev={handlePrev}>
+                <ModalImage
+                    isOpen={true}
+                    onClose={handleClose}
+                    handleNext={handleNext}
+                    handlePrev={handlePrev}
+                    isNavigable
+                >
                     <a
                         className="block max-w-[90vw] max-h-[90vh] w-auto h-auto"
                         target="_blank"
                         rel="noopener noreferrer"
                     ><Image
                             src={`${API_BASE_URL}/${selectedItem.image}`}
-                            alt="modal"
+                            alt={selectedItem.alt}
                             width={800}
                             height={600}
                             className="w-auto h-auto max-w-full max-h-[80vh] object-contain"

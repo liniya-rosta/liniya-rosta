@@ -2,11 +2,14 @@ export interface PortfolioItemPreview {
     _id: string;
     description: string;
     cover: string;
+    alt:  string;
+    galleryCount: string;
 }
 
 export interface GalleryItem {
     _id: string;
     image: string;
+    alt: string;
 }
 
 export interface PortfolioItemDetail extends PortfolioItemPreview {
