@@ -15,7 +15,7 @@ export const usePostsStore = create<PostsState>((set) => ({
     fetchPostsLoading: true,
     fetchPostsError: null,
 
-    setPosts: (posts) => set({ posts }),
-    setfetchPostsLoading: (loading) => set({ fetchPostsLoading: loading }),
+    setPosts: (posts) => set({posts}),
+    setfetchPostsLoading: (loading) => set({ fetchPostsLoading: loading}),
     setFetchPostsError: (error) => set({ fetchPostsError: error }),
 }));
