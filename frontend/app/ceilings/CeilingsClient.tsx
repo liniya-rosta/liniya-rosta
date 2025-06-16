@@ -1,19 +1,21 @@
 "use client"
 
-import React, { useState, useEffect, useMemo } from 'react';
-import { Search, Phone, MessageCircle, Filter, X } from 'lucide-react';
+import React, {useEffect, useMemo, useState} from 'react';
+import {Filter, MessageCircle, Phone, Search, X} from 'lucide-react';
 import RequestForm from "@/components/shared/RequestForm";
-import { ModalWindow } from '@/components/ui/modal-window';
 import {Category, Product} from "@/lib/types";
+import {Dialog, DialogTrigger} from "@/components/ui/dialog";
+import {Button} from "@/components/ui/button";
 
 type Props = {
     initialProducts: Product[];
     initialCategories: Category[];
 };
 
-const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories }) => {
+const CeilingsClient: React.FC<Props> = ({initialProducts, initialCategories}) => {
     const [selectedCategory, setSelectedCategory] = useState<string>('all');
     const [showConsultationModal, setShowConsultationModal] = useState<boolean>(false);
+    const [activeProductId, setActiveProductId] = useState<string | null>(null);
     const [searchTerm, setSearchTerm] = useState<string>('');
     const [products, setProducts] = useState<Product[]>(initialProducts);
     const [loading, setLoading] = useState<boolean>(false);
@@ -55,14 +57,6 @@ const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories })
         return counts;
     }, [initialProducts]);
 
-    const openConsultationModal = () => {
-        setShowConsultationModal(true);
-    };
-
-    const closeModal = () => {
-        setShowConsultationModal(false);
-    };
-
     const getImageUrl = (imagePath?: string) => {
         if (!imagePath) return null;
         return imagePath.startsWith('http') ? imagePath : `/${imagePath}`;
@@ -77,12 +71,19 @@ const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories })
                         <p className="text-gray-600 mt-1">Все необходимое для создания идеального потолка</p>
                     </div>
                     <div className="flex gap-3">
-                        <button onClick={() => openConsultationModal()} className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 flex items-center gap-2">
-                            <Phone size={18} />
-                            Консультация
-                        </button>
-                        <a href="https://wa.me/996552088988" target="_blank" rel="noopener noreferrer" className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 flex items-center gap-2">
-                            <MessageCircle size={18} />
+                        <Dialog open={showConsultationModal} onOpenChange={setShowConsultationModal}>
+                            <DialogTrigger asChild>
+                                <Button variant="secondary"
+                                        className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 flex items-center gap-2"
+                                        size="lg">
+                                    <Phone size={18}/>
+                                    Консультация</Button>
+                            </DialogTrigger>
+                            <RequestForm closeModal={() => setShowConsultationModal(false)}/>
+                        </Dialog>
+                        <a href="https://wa.me/996552088988" target="_blank" rel="noopener noreferrer"
+                           className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 flex items-center gap-2">
+                            <MessageCircle size={18}/>
                             WhatsApp
                         </a>
                     </div>
@@ -93,11 +94,12 @@ const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories })
                 <div className="lg:w-80 sticky top-4 h-fit">
                     <div className="bg-white rounded-lg shadow-sm p-6">
                         <h2 className="text-xl font-semibold flex items-center gap-2 mb-4">
-                            <Filter size={20} />
+                            <Filter size={20}/>
                             Категории
                         </h2>
                         <div className="relative mb-6">
-                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                                    size={20}/>
                             <input
                                 type="text"
                                 placeholder="Поиск товаров..."
@@ -113,7 +115,8 @@ const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories })
                             >
                                 <div className="flex justify-between items-center">
                                     <span>Все товары</span>
-                                    <span className="text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded-full">{initialProducts.length}</span>
+                                    <span
+                                        className="text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded-full">{initialProducts.length}</span>
                                 </div>
                             </div>
                             {initialCategories.map(cat => (
@@ -124,7 +127,8 @@ const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories })
                                 >
                                     <div className="flex justify-between items-center">
                                         <span>{cat.title}</span>
-                                        <span className="text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded-full">{categoryCounts[cat._id] || 0}</span>
+                                        <span
+                                            className="text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded-full">{categoryCounts[cat._id] || 0}</span>
                                     </div>
                                 </div>
                             ))}
@@ -136,8 +140,9 @@ const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories })
                     <div className="flex justify-between items-center mb-6">
                         <p className="text-gray-600">Найдено товаров: <strong>{filteredProducts.length}</strong></p>
                         {selectedCategory !== 'all' && (
-                            <button onClick={() => setSelectedCategory('all')} className="text-blue-600 hover:text-blue-700 text-sm flex items-center gap-1">
-                                <X size={16} />
+                            <button onClick={() => setSelectedCategory('all')}
+                                    className="text-blue-600 hover:text-blue-700 text-sm flex items-center gap-1">
+                                <X size={16}/>
                                 Сбросить фильтр
                             </button>
                         )}
@@ -152,7 +157,8 @@ const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories })
                             {filteredProducts.map(product => {
                                 const imageUrl = getImageUrl(product.image);
                                 return (
-                                    <div key={product._id} className="bg-white rounded-lg shadow-sm hover:shadow-md transition">
+                                    <div key={product._id}
+                                         className="bg-white rounded-lg shadow-sm hover:shadow-md transition">
                                         {imageUrl && (
                                             <img
                                                 src={imageUrl}
@@ -167,14 +173,19 @@ const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories })
                                             <h3 className="font-semibold text-lg text-gray-900 mb-2">{product.title}</h3>
                                             <p className="text-gray-600 text-sm line-clamp-2 mb-3">{product.description}</p>
                                             <div className="mb-3">
-                                                <span className="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded">{product.category?.title || 'Без категории'}</span>
+                                                <span
+                                                    className="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded">{product.category?.title || 'Без категории'}</span>
                                             </div>
-                                            <button
-                                                onClick={() => openConsultationModal()}
+                                            <Button
+                                                variant="secondary"
                                                 className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
+                                                size="lg"
+                                                onClick={() => setActiveProductId(product._id)}
                                             >
+                                                <Phone size={18}/>
                                                 Консультация по товару
-                                            </button>
+                                            </Button>
+
                                         </div>
                                     </div>
                                 );
@@ -182,7 +193,7 @@ const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories })
                         </div>
                     ) : (
                         <div className="text-center py-12">
-                            <Search size={48} className="mx-auto text-gray-400 mb-4" />
+                            <Search size={48} className="mx-auto text-gray-400 mb-4"/>
                             <h3 className="text-lg font-medium text-gray-900 mb-2">Товары не найдены</h3>
                             <p className="text-gray-600">Попробуйте изменить критерии поиска или фильтры</p>
                         </div>
@@ -190,9 +201,11 @@ const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories })
                 </div>
             </div>
 
-            <ModalWindow isOpen={showConsultationModal} onClose={closeModal}>
-                <RequestForm closeModal={closeModal} />
-            </ModalWindow>
+            <Dialog open={!!activeProductId} onOpenChange={(open) => {
+                if (!open) setActiveProductId(null);
+            }}>
+                <RequestForm closeModal={() => setActiveProductId(null)}/>
+            </Dialog>
         </div>
     );
 };

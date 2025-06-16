@@ -80,7 +80,7 @@ const RequestForm: React.FC<Props> = ({closeModal}) => {
                         <Input
                             id="name"
                             {...register("name")}
-                            placeholder="Иван Иванов"
+                            placeholder="Вася Пупкин"
                             disabled={createLoading}
                         />
                         {errors.name && (
@@ -108,7 +108,7 @@ const RequestForm: React.FC<Props> = ({closeModal}) => {
                             id="phone"
                             type="tel"
                             {...register("phone")}
-                            placeholder="+996 999 999 999"
+                            placeholder="+996999999999"
                             disabled={createLoading}
                         />
                         {errors.phone && (
@@ -119,11 +119,11 @@ const RequestForm: React.FC<Props> = ({closeModal}) => {
 
                 <DialogFooter>
                     <DialogClose asChild>
-                        <Button type="button" variant="outline" disabled={createLoading}>
+                        <Button type="button" variant="outline" disabled={createLoading} className="cursor-pointer">
                             Отмена
                         </Button>
                     </DialogClose>
-                    <Button type="submit" disabled={createLoading}>
+                    <Button type="submit" disabled={createLoading} className="cursor-pointer">
                         {createLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin"/>}
                         Отправить
                     </Button>

@@ -103,8 +103,7 @@ const HomePageClient: React.FC<HomePageClientProps> = ({
 
                     <Dialog open={isModalTopOpen} onOpenChange={setIsModalTopOpen}>
                         <DialogTrigger asChild>
-                            <Button size="lg" className="min-w-[180px] cursor-pointer"
-                                    onClick={() => setIsModalTopOpen(true)}>
+                            <Button size="lg" className="min-w-[180px] cursor-pointer duration-500">
                                 Оставить заявку
                             </Button>
                         </DialogTrigger>
@@ -114,7 +113,7 @@ const HomePageClient: React.FC<HomePageClientProps> = ({
                     <Button
                         variant="outline"
                         size="lg"
-                        className="min-w-[180px] border-primary text-primary hover:bg-primary/10"
+                        className="min-w-[180px] border-primary text-primary hover:bg-primary/10 duration-500"
                         asChild
                     >
                         <a href="https://wa.me/996553088988" target="_blank" rel="noopener noreferrer">
@@ -223,15 +222,16 @@ const HomePageClient: React.FC<HomePageClientProps> = ({
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                     <Dialog open={isModalBottomOpen} onOpenChange={setIsModalBottomOpen}>
                         <DialogTrigger asChild>
-                            <Button variant="secondary" className='cursor-pointer' size="lg"
-                                    onClick={() => setIsModalBottomOpen(true)}>Получить консультацию</Button>
+                            <Button variant="secondary" className="cursor-pointer duration-500" size="lg">Получить
+                                консультацию
+                            </Button>
                         </DialogTrigger>
                         <RequestForm closeModal={() => setIsModalBottomOpen(false)}/>
                     </Dialog>
                     <Button
                         variant="outline"
                         size="lg"
-                        className="bg-transparent border-white text-white hover:bg-white/10"
+                        className="bg-transparent border-white text-white hover:bg-white/10 duration-500"
                         asChild
                     >
                         <a href="tel:+996555757513">+996 555 757 513</a>
@@ -239,14 +239,13 @@ const HomePageClient: React.FC<HomePageClientProps> = ({
                 </div>
             </section>
 
-            <section className=" space-y-6 mx-auto bg-white">
+            <section className="space-y-6 mx-auto">
                 <h2 className="text-3xl font-bold text-center from-primary">
                     Наша лента в Instagram
                 </h2>
                 <iframe
                     src="//lightwidget.com/widgets/a5595befc0b75c39ae732dfc56693cbd.html"
-                    className="lightwidget-widget w-full h-[500px] border-none rounded-xl shadow-md transition-opacity duration-700 ease-in-out"
-                    style={{overflow: 'hidden'}}
+                    className="lightwidget-widget w-full h-[400px]"
                 ></iframe>
             </section>
         </div>
