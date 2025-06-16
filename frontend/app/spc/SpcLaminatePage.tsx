@@ -2,17 +2,17 @@
 
 import React, {useEffect, useState} from 'react';
 import Image from "next/image";
-import {Waves, Brush, ShieldCheck, Volume2} from 'lucide-react';
+import {Brush, ShieldCheck, Volume2, Waves} from 'lucide-react';
 import AdvantageLaminateCard from "@/app/spc/components/AdvantageLaminateCard";
 import {Navigation, Pagination} from "swiper/modules";
 import {Swiper, SwiperSlide} from "swiper/react";
 import {useLaminateStore} from "@/store/laminateItems";
 import LaminateCard from "@/app/spc/components/LaminateCard";
 import RequestForm from "@/components/shared/RequestForm";
-import {ModalWindow} from "@/components/ui/modal-window";
 import RequestBtnOrange from "@/components/ui/requestBtnOrange";
 import Loading from "@/components/shared/Loading";
 import {fetchLaminateItems} from "@/actions/laminateItems";
+import {Dialog, DialogTrigger} from "@/components/ui/dialog";
 
 const advantages = [
     {
@@ -42,11 +42,9 @@ const SpcLaminatePage = () => {
         fetchLaminateLoading,
         fetchLaminateError,
         setFetchLaminateError,
-    } = useLaminateStore()
-    const [isOpen, setIsOpen] = useState(false);
+    } = useLaminateStore();
 
-    const openModal = () => setIsOpen(true);
-    const closeModal = () => setIsOpen(false);
+    const [isOpen, setIsOpen] = useState(false);
 
     useEffect(() => {
         const loadLaminate = async () => {
@@ -66,68 +64,70 @@ const SpcLaminatePage = () => {
         void loadLaminate();
     }, [setLaminateItems, setLaminateLoading, setFetchLaminateError]);
 
-        return (
-            <div className="container">
-                <div className="flex items-center -mt-8 mb-18">
-                    <div className="w-[40%]">
-                        <h2 className="text-2xl pb-3">Что такое SPC Ламинат?</h2>
-                        <p>
-                            SPC-ламинат — это влагостойкое, прочное, долговечное покрытие нового поколения, подходящее
-                            практически для любых условий, включая ванные комнаты. Он выглядит как обычный ламинат, но
-                            по
-                            характеристикам ближе к виниловой плитке или плитке ПВХ.
-                        </p>
-                        <RequestBtnOrange onClick={openModal}/>
-                    </div>
-                    <div className="w-[60%] h-[400] shrink-0 ml-20 -mr-20">
-                        <Image
-                            src="/images/spc-laminate.png"
-                            alt="SPC ламинат"
-                            width={600}
-                            height={400}
-                            className="w-full h-full cover"
-                        />
-                    </div>
+    return (
+        <div className="container">
+            <div className="flex items-center -mt-8 mb-18">
+                <div className="w-[40%]">
+                    <h2 className="text-2xl pb-3">Что такое SPC Ламинат?</h2>
+                    <p>
+                        SPC-ламинат — это влагостойкое, прочное, долговечное покрытие нового поколения, подходящее
+                        практически для любых условий, включая ванные комнаты. Он выглядит как обычный ламинат, но
+                        по
+                        характеристикам ближе к виниловой плитке или плитке ПВХ.
+                    </p>
+
+                    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+                        <DialogTrigger asChild>
+                            <RequestBtnOrange onClick={() => setIsOpen(true)}/>
+                        </DialogTrigger>
+                        <RequestForm closeModal={() => setIsOpen(false)}/>
+                    </Dialog>
                 </div>
-
-                <div className="mb-18">
-                    <h3 className="text-[28px] mb-10 text-center">Преимущества SPC ламината</h3>
-                    <div className="flex flex-wrap justify-center gap-7">
-                        {
-                            advantages.map((advantage, i) => (
-                                <AdvantageLaminateCard key={i} text={advantage.text} title={advantage.title}
-                                                       icon={advantage.icon}/>
-                            ))
-                        }
-                    </div>
+                <div className="w-[60%] h-[400] shrink-0 ml-20 -mr-20">
+                    <Image
+                        src="/images/spc-laminate.png"
+                        alt="SPC ламинат"
+                        width={600}
+                        height={400}
+                        className="w-full h-full cover"
+                    />
                 </div>
-
-                {fetchLaminateLoading ? <Loading/> :
-                    fetchLaminateError ? (<h4>{fetchLaminateError}</h4>) :
-                        (<div className="mb-[55px]">
-                                <h3 className="text-[28px] mb-10 text-center">Каталог</h3>
-                                <Swiper
-                                    slidesPerView={1}
-                                    navigation
-                                    pagination={{clickable: true}}
-                                    modules={[Navigation, Pagination]}
-                                    className="mySwiper py-4"
-                                >
-                                    {laminateItems.map(item => (
-                                        <SwiperSlide key={item._id}>
-                                            <LaminateCard title={item.title} image={item.image}
-                                                          description={item.description}/>
-                                        </SwiperSlide>
-                                    ))}
-                                </Swiper>
-                            </div>
-                        )}
-
-                <ModalWindow isOpen={isOpen} onClose={closeModal}>
-                    <RequestForm closeModal={closeModal}/>
-                </ModalWindow>
             </div>
-        );
-    };
 
-    export default SpcLaminatePage;
+            <div className="mb-18">
+                <h3 className="text-[28px] mb-10 text-center">Преимущества SPC ламината</h3>
+                <div className="flex flex-wrap justify-center gap-7">
+                    {
+                        advantages.map((advantage, i) => (
+                            <AdvantageLaminateCard key={i} text={advantage.text} title={advantage.title}
+                                                   icon={advantage.icon}/>
+                        ))
+                    }
+                </div>
+            </div>
+
+            {fetchLaminateLoading ? <Loading/> :
+                fetchLaminateError ? (<h4>{fetchLaminateError}</h4>) :
+                    (<div className="mb-[55px]">
+                            <h3 className="text-[28px] mb-10 text-center">Каталог</h3>
+                            <Swiper
+                                slidesPerView={1}
+                                navigation
+                                pagination={{clickable: true}}
+                                modules={[Navigation, Pagination]}
+                                className="mySwiper py-4"
+                            >
+                                {laminateItems.map(item => (
+                                    <SwiperSlide key={item._id}>
+                                        <LaminateCard title={item.title} image={item.image}
+                                                      description={item.description}/>
+                                    </SwiperSlide>
+                                ))}
+                            </Swiper>
+                        </div>
+                    )}
+        </div>
+    );
+};
+
+export default SpcLaminatePage;
