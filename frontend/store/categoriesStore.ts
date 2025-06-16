@@ -3,41 +3,20 @@ import { Category } from '@/lib/types';
 
 interface CategoryState {
     categories: Category[];
-    loading: boolean;
-    fetchLoading: boolean;
-    error: string | null;
-    fetchError: string | null;
+    fetchCategoriesLoading: boolean;
+    fetchCategoriesError: string | null;
 
     setCategories: (categories: Category[]) => void;
-    setLoading: (loading: boolean) => void;
-    setFetchLoading: (loading: boolean) => void;
-    setCategoriesError: (error: string | null) => void;
-    setFetchError: (error: string | null) => void;
-    getCategoryById: (id: string) => Category | undefined;
-    clearError: () => void;
-    reset: () => void;
+    setFetchCategoriesLoading: (loading: boolean) => void;
+    setFetchCategoriesError: (error: string | null) => void;
 }
 
-export const useCategoryStore = create<CategoryState>((set, get) => ({
+export const useCategoryStore = create<CategoryState>((set) => ({
     categories: [],
-    loading: false,
-    fetchLoading: false,
-    error: null,
-    fetchError: null,
+    fetchCategoriesLoading: true,
+    fetchCategoriesError: null,
 
     setCategories: (categories) => set({ categories }),
-    setLoading: (loading) => set({ loading }),
-    setFetchLoading: (loading) => set({ fetchLoading: loading, loading }),
-    setCategoriesError: (error) => set({ error }),
-    setFetchError: (error) => set({ fetchError: error, error }),
-    getCategoryById: (id) => get().categories.find((category) => category._id === id),
-    clearError: () => set({ error: null, fetchError: null }),
-    reset: () =>
-        set({
-            categories: [],
-            loading: false,
-            fetchLoading: false,
-            error: null,
-            fetchError: null
-        })
+    setFetchCategoriesLoading: (loading) => set({ fetchCategoriesLoading: loading }),
+    setFetchCategoriesError: (error) => set({ fetchCategoriesError: error }),
 }));

@@ -24,14 +24,10 @@ const ProductsClient: React.FC<ProductsClientProps> = ({initialProducts, initial
     const {
         products,
         setProducts,
-        setLoading,
-        setError,
-        addProduct,
-        updateProduct: updateProductInStore,
-        removeProduct,
-        clearError,
-        loading,
-        error: storeError
+        fetchProductsLoading,
+        fetchProductsError,
+        setFetchProductsLoading,
+        setFetchProductsError,
     } = useProductStore();
 
     const {
@@ -43,6 +39,7 @@ const ProductsClient: React.FC<ProductsClientProps> = ({initialProducts, initial
     const [editingId, setEditingId] = useState<string | null>(null);
     const [isAdding, setIsAdding] = useState(false);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
+    const [actionLoading, setActionLoading] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const {
@@ -64,10 +61,10 @@ const ProductsClient: React.FC<ProductsClientProps> = ({initialProducts, initial
     useEffect(() => {
         if (initialProducts) setProducts(initialProducts);
         if (initialCategories) setCategories(initialCategories);
-        setError(initialError);
-        setLoading(false);
+        setFetchProductsError(initialError);
+        setFetchProductsLoading(false);
         setIsHydrating(false);
-    }, [initialProducts, initialCategories, initialError, setProducts, setCategories, setError, setLoading]);
+    }, [initialProducts, initialCategories, initialError, setProducts, setCategories, setFetchProductsError, setFetchProductsLoading]);
 
     const resetForm = () => {
         reset({
@@ -111,13 +108,13 @@ const ProductsClient: React.FC<ProductsClientProps> = ({initialProducts, initial
         });
         setIsAdding(false);
         clearImage();
-        clearError();
+        setFetchProductsError(null);
     };
 
     const handleAdd = () => {
         resetForm();
         setIsAdding(true);
-        clearError();
+        setFetchProductsError(null);
     };
 
     const handleCreateProduct = async (formData: CreateProductFormData) => {
@@ -127,6 +124,8 @@ const ProductsClient: React.FC<ProductsClientProps> = ({initialProducts, initial
                 return;
             }
 
+            setActionLoading(true);
+
             const productData = {
                 category: formData.category,
                 title: formData.title,
@@ -135,7 +134,8 @@ const ProductsClient: React.FC<ProductsClientProps> = ({initialProducts, initial
             };
 
             const newProduct = await createProduct(productData, formData.image);
-            addProduct(newProduct);
+
+            setProducts([...products, newProduct]);
 
             resetForm();
             alert('Товар успешно создан!');
@@ -144,6 +144,8 @@ const ProductsClient: React.FC<ProductsClientProps> = ({initialProducts, initial
                 ? err.response?.data?.error
                 : 'Ошибка при создании товара';
             alert(errorMessage);
+        } finally {
+            setActionLoading(false);
         }
     };
 
@@ -151,6 +153,8 @@ const ProductsClient: React.FC<ProductsClientProps> = ({initialProducts, initial
         if (!editingId) return;
 
         try {
+            setActionLoading(true);
+
             const productData = {
                 category: formData.category,
                 title: formData.title,
@@ -159,7 +163,10 @@ const ProductsClient: React.FC<ProductsClientProps> = ({initialProducts, initial
             };
 
             const updatedProduct = await updateProduct(editingId, productData, formData.image || undefined);
-            updateProductInStore(editingId, updatedProduct);
+
+            setProducts(products.map(product =>
+                product._id === editingId ? updatedProduct : product
+            ));
 
             resetForm();
             alert('Товар успешно обновлен!');
@@ -168,6 +175,8 @@ const ProductsClient: React.FC<ProductsClientProps> = ({initialProducts, initial
                 ? err.response?.data?.error
                 : 'Ошибка при обновлении товара';
             alert(errorMessage);
+        } finally {
+            setActionLoading(false);
         }
     };
 
@@ -175,14 +184,19 @@ const ProductsClient: React.FC<ProductsClientProps> = ({initialProducts, initial
         if (!window.confirm("Вы уверены, что хотите удалить этот товар?")) return;
 
         try {
+            setActionLoading(true);
             await deleteProduct(id);
-            removeProduct(id);
+
+            setProducts(products.filter(product => product._id !== id));
+
             alert('Товар успешно удален!');
         } catch (err) {
             const errorMessage = err instanceof AxiosError
                 ? err.response?.data?.error
                 : 'Ошибка при удалении товара';
             alert(errorMessage);
+        } finally {
+            setActionLoading(false);
         }
     };
 
@@ -202,13 +216,14 @@ const ProductsClient: React.FC<ProductsClientProps> = ({initialProducts, initial
         return found ? found.title : String(category);
     };
 
-    if (isHydrating || loading) return <Loading />;
-    if (storeError) {
+    if (isHydrating || fetchProductsLoading) return <Loading />;
+
+    if (fetchProductsError) {
         return (
             <div className="flex items-center justify-center min-h-64">
                 <div className="text-center">
                     <p className="text-red-600 mb-4">
-                        Ошибка при загрузке продуктов: {storeError}
+                        Ошибка при загрузке продуктов: {fetchProductsError}
                     </p>
                     <button
                         onClick={() => window.location.reload()}
@@ -229,7 +244,8 @@ const ProductsClient: React.FC<ProductsClientProps> = ({initialProducts, initial
                 </div>
                 <button
                     onClick={handleAdd}
-                    className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2"
+                    disabled={actionLoading}
+                    className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                     <Plus size={16} />
                     Добавить продукт
@@ -253,7 +269,8 @@ const ProductsClient: React.FC<ProductsClientProps> = ({initialProducts, initial
                                 <input
                                     type="text"
                                     {...register('title')}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    disabled={actionLoading}
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
                                     placeholder="Введите название продукта"
                                 />
                                 {errors.title && (
@@ -267,7 +284,8 @@ const ProductsClient: React.FC<ProductsClientProps> = ({initialProducts, initial
                                 </label>
                                 <select
                                     {...register('category')}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    disabled={actionLoading}
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
                                 >
                                     <option value="">Выберите категорию</option>
                                     {categories.map((category) => (
@@ -288,7 +306,8 @@ const ProductsClient: React.FC<ProductsClientProps> = ({initialProducts, initial
                                 <textarea
                                     {...register('description')}
                                     rows={3}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    disabled={actionLoading}
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
                                     placeholder="Введите описание продукта"
                                 />
                                 {errors.description && (
@@ -306,7 +325,8 @@ const ProductsClient: React.FC<ProductsClientProps> = ({initialProducts, initial
                                         type="file"
                                         accept="image/*"
                                         onChange={handleImageChange}
-                                        className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                                        disabled={actionLoading}
+                                        className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 disabled:opacity-50 disabled:cursor-not-allowed"
                                     />
 
                                     {imagePreview && (
@@ -319,7 +339,8 @@ const ProductsClient: React.FC<ProductsClientProps> = ({initialProducts, initial
                                             <button
                                                 type="button"
                                                 onClick={clearImage}
-                                                className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600"
+                                                disabled={actionLoading}
+                                                className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed"
                                             >
                                                 <X size={12} />
                                             </button>
@@ -332,16 +353,18 @@ const ProductsClient: React.FC<ProductsClientProps> = ({initialProducts, initial
                         <div className="flex gap-2">
                             <button
                                 type="submit"
-                                className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg flex items-center gap-2"
+                                disabled={actionLoading}
+                                className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 <Save size={16} />
-                                {isAdding ? 'Создать' : 'Обновить'}
+                                {actionLoading ? 'Сохранение...' : (isAdding ? 'Создать' : 'Обновить')}
                             </button>
 
                             <button
                                 type="button"
                                 onClick={resetForm}
-                                className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg flex items-center gap-2"
+                                disabled={actionLoading}
+                                className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 <X size={16} />
                                 Отмена
@@ -377,13 +400,15 @@ const ProductsClient: React.FC<ProductsClientProps> = ({initialProducts, initial
                                     <div className="flex gap-2 ml-4">
                                         <button
                                             onClick={() => handleEdit(product)}
-                                            className="px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600"
+                                            disabled={actionLoading}
+                                            className="px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 disabled:opacity-50 disabled:cursor-not-allowed"
                                         >
                                             <Pencil size={16} />
                                         </button>
                                         <button
                                             onClick={() => handleDeleteProduct(product._id)}
-                                            className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+                                            disabled={actionLoading}
+                                            className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed"
                                         >
                                             <Trash2 size={16} />
                                         </button>

@@ -22,8 +22,9 @@ const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories })
 
     const {
         products,
-        loading: fetchLoading,
-        setProducts
+        fetchProductsLoading,
+        setProducts,
+        setFetchProductsLoading
     } = useProductStore();
 
     const {
@@ -34,7 +35,8 @@ const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories })
     useEffect(() => {
         setProducts(initialProducts);
         setCategories(initialCategories);
-    }, [initialProducts, initialCategories, setProducts, setCategories]);
+        setFetchProductsLoading(false);
+    }, [initialProducts, initialCategories, setProducts, setCategories, setFetchProductsLoading]);
 
     useEffect(() => {
         const fetchFilteredProducts = async () => {
@@ -155,7 +157,7 @@ const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories })
                         )}
                     </div>
 
-                    {fetchLoading ? (
+                    {fetchProductsLoading ? (
                         <div className="flex justify-center items-center py-12">
                             <div className="animate-spin h-12 w-12 border-b-2 border-blue-600 rounded-full"></div>
                         </div>
