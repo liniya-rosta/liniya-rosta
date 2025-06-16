@@ -24,8 +24,6 @@ superAdminRouter.use("/posts", postsAdminRouter);
 superAdminRouter.use("/admins", superAdminPrivateRouter);
 superAdminRouter.use("/portfolio-items", portfolioItemsSuperAdminRouter);
 superAdminRouter.use("/laminate-items", laminateItemsSuperAdminRouter);
-superAdminRouter.use('/contacts', contactsAdminRouter);
-
-
+superAdminRouter.use("/contacts", contactsAdminRouter);
 
 export default superAdminRouter;

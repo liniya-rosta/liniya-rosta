@@ -21,7 +21,7 @@ export default function RootLayout({children,}: Readonly<{
         <div className="min-h-screen flex flex-col">
             <ClientLayout>{children}</ClientLayout>
         </div>
-        <ToastContainer position="top-right" autoClose={3000} />
+        <ToastContainer position="top-left" autoClose={500} />
         </body>
         </html>
     );

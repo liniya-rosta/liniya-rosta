@@ -14,7 +14,7 @@ export const useCategoryStore = create<CategoryState>((set) => ({
     categories: [],
     fetchCategoriesLoading: true,
     fetchCategoriesError: null,
-    setCategories: (categories) => set({ categories }),
-    setFetchCategoriesLoading: (loading) => set({ fetchCategoriesLoading: loading }),
-    setFetchCategoriesError: (error) => set({ fetchCategoriesError: error }),
+    setCategories: (categories) => set({categories}),
+    setFetchCategoriesLoading: (loading) => set({fetchCategoriesLoading: loading}),
+    setFetchCategoriesError: (error) => set({fetchCategoriesError: error})
 }));

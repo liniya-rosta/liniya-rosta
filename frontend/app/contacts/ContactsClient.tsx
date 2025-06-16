@@ -6,6 +6,8 @@ import MapSection from "@/app/contacts/components/MapSection";
 import {Contact} from "@/lib/types";
 import {useEffect} from "react";
 import {useContactStore} from "@/store/contactsStore";
+import Loading from "@/components/shared/Loading";
+import ErrorMsg from "@/components/shared/ErrorMsg";
 
 interface Props {
     data: Contact | null;
@@ -13,12 +15,16 @@ interface Props {
 }
 
 const ContactsClient: React.FC<Props> = ({data, error}) => {
-    const {contact, setContact, setFetchError} = useContactStore();
+    const {contact, setContact, setFetchError, fetchLoading, setFetchLoading, fetchError} = useContactStore();
 
     useEffect(() => {
         if (data) setContact(data);
         setFetchError(error);
-    }, [data, error, setContact, setFetchError]);
+        setFetchLoading(false);
+    }, [data, error, setContact, setFetchError, setFetchLoading]);
+
+    if (fetchLoading) return <Loading/>;
+    if (fetchError) return <ErrorMsg error={fetchError} label='контактов'/>
 
     return (
         <div className="container mx-auto px-4 py-8">

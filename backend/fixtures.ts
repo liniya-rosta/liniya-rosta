@@ -21,7 +21,7 @@ const run = async () => {
         await db.dropCollection('posts');
         await db.dropCollection('portfolioitems');
         await db.dropCollection('requests');
-        await db.dropCollection('contacts');
+        await db.dropCollection('contacts.ts');
     } catch (e) {
         console.log('Коллекции отсутствовали, пропуск сброса');
     }
@@ -50,7 +50,7 @@ const run = async () => {
         email: "liniyarosta49@gmail.com",
         whatsapp: "+996700123456",
         instagram: "https://www.instagram.com/liniya_rosta.kg/",
-        mapLocation: "https://2gis.kg/bishkek/geo/15763234350959494/74.623805%2C42.89017",
+        mapLocation: "https://2gis.kg/bishkek/firm/70000001094990183?m=74.623804%2C42.890143%2F16",
         workingHours: {
             monday: "09:00–15:00",
             tuesday: "09:00–17:00",
@@ -216,24 +216,26 @@ const run = async () => {
             title: 'Тис Альпик',
             description: 'Размер: 180x1220x4,0/0,3+1ммIXPE',
             image: 'test/laminate1.JPG',
-        },{
+        }, {
             title: 'Тис Латте',
             description: 'Размер: 180x1220x4,0/0,3+1ммIXPE',
             image: 'test/laminate2.JPG',
-        },{
+        }, {
             title: 'Бук Шале',
             description: 'Размер: 180x1220x4,0/0,3+1ммIXPE',
             image: 'test/laminate3.JPG',
-        },{
+        }, {
             title: 'Орех Шато',
             description: 'Размер: 180x1220x4,0/0,3+1ммIXPE',
             image: 'test/laminate4.JPG',
-        },{
+        }, {
             title: 'Дуб Классик',
             description: 'Размер: 180x1220x4,0/0,3+1ммIXPE',
             image: 'test/laminate5.JPG',
         },
     )
+    await db.close();
+
 }
 
 

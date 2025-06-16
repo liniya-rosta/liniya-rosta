@@ -27,7 +27,7 @@ const ContactInfoCard = () => {
                     <ul className="space-y-4">
                         <li>
                             <a
-                                href={contact.linkLocation}
+                                href={contact.mapLocation}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="inline-flex items-center space-x-2 group hover:text-blue-600 transition-colors"
