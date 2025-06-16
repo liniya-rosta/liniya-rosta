@@ -128,7 +128,7 @@ const run = async () => {
     await PortfolioItem.create([
         {
             cover: 'test/IMG_0448.jpg',
-            coverAlt: 'Обложка проекта 1',
+            alt: 'Обложка проекта 1',
             gallery: [
                 { image: 'test/IMG_0450.jpg', alt: 'Галерея 1 - 1' },
                 { image: 'test/IMG_0451.jpg', alt: 'Галерея 1 - 2' },
@@ -143,7 +143,7 @@ const run = async () => {
         },
         {
             cover: 'test/IMG_2687.jpg',
-            coverAlt: 'Обложка проекта 2',
+            alt: 'Обложка проекта 2',
             gallery: [
                 { image: 'test/IMG_2683.jpg', alt: 'Галерея 2 - 1' },
                 { image: 'test/IMG_2682.jpg', alt: 'Галерея 2 - 2' },
@@ -200,6 +200,8 @@ const run = async () => {
             image: 'test/laminate5.JPG',
         },
     )
+
+    await db.close();
 }
 
 

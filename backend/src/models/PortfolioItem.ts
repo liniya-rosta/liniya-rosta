@@ -10,9 +10,9 @@ const PortfolioItemSchema = new mongoose.Schema({
         type: String,
         required: [true, "Поле обложки портфолио обязательно"],
     },
-    coverAlt: {
+    alt: {
         type: String,
-        default: null,
+        required: true,
         maxLength: 150,
     },
     gallery: {
