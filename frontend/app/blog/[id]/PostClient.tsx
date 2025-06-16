@@ -6,8 +6,14 @@ import { ArrowLeft } from 'lucide-react';
 import { usePostsStore } from "@/store/postsStore";
 import { Post } from "@/lib/types";
 import Loading from "@/components/shared/Loading";
-import {API_BASE_URL} from "@/lib/globalConstants";
+import { API_BASE_URL } from "@/lib/globalConstants";
 import Image from "next/image";
+
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Separator } from '@/components/ui/separator';
+import { Terminal } from 'lucide-react';
 
 interface Props {
     data: Post | null;
@@ -18,53 +24,64 @@ const PostClient: React.FC<Props> = ({ data, error }) => {
     const router = useRouter();
 
     const {
-        upsertPost,
-        setError,
-        loading,
-        setLoading,
-        error: storeError
+        setFetchPostsError,
+        fetchPostsLoading,
+        setfetchPostsLoading,
+        fetchPostsError: storeError
     } = usePostsStore();
 
     const [isHydrating, setIsHydrating] = useState(true);
 
     useEffect(() => {
-        if (data) {
-            upsertPost(data);
-        }
-        setError(error);
-        setLoading(false);
+        setFetchPostsError(error);
+        setfetchPostsLoading(false);
         setIsHydrating(false);
-    }, [data, error, upsertPost, setError, setLoading]);
+    }, [data, error, setFetchPostsError, setfetchPostsLoading]);
 
-    if (isHydrating || loading) return <Loading />;
-    if (storeError) return (
-        <div className="container mx-auto px-4 py-8">
-            <div className="text-center text-red-500 text-xl">
-                Ошибка при загрузке поста: {storeError}
+    if (isHydrating || fetchPostsLoading) return <Loading />;
+
+    if (storeError) {
+        return (
+            <div className="container mx-auto px-4 py-8 flex justify-center items-center min-h-[calc(100vh-100px)]">
+                <Alert variant="destructive" className="max-w-md">
+                    <Terminal className="h-4 w-4" />
+                    <AlertTitle>Ошибка!</AlertTitle>
+                    <AlertDescription>
+                        Ошибка при загрузке поста: {storeError}
+                    </AlertDescription>
+                </Alert>
             </div>
-        </div>
-    );
+        );
+    }
 
     if (!data) {
         return (
-            <div className="flex justify-center items-center min-h-screen">
-                <div className="text-gray-500 text-xl">Пост не найден</div>
+            <div className="container mx-auto px-4 py-8 flex justify-center items-center min-h-[calc(100vh-100px)]">
+                <Card className="max-w-md w-full">
+                    <CardContent className="pt-6 text-center">
+                        <p className="text-muted-foreground text-lg">Пост не найден.</p>
+                        <Button onClick={() => router.push('/blog')} className="mt-4">
+                            Вернуться к блогу
+                        </Button>
+                    </CardContent>
+                </Card>
             </div>
         );
     }
 
     return (
         <div className="max-w-4xl mx-auto px-4 py-8">
-            <button
+            <Button
+                variant="ghost"
                 onClick={() => router.back()}
-                className="flex items-center gap-2 text-blue-600 hover:text-blue-700 mb-6 transition-colors"
+                className="mb-6 pl-0 text-muted-foreground hover:text-foreground"
             >
-                <ArrowLeft size={20} />
+                <ArrowLeft className="mr-2 h-4 w-4" />
                 Вернуться к блогу
-            </button>
+            </Button>
 
-            <article className="bg-white rounded-lg shadow-lg overflow-hidden">
-                <div className="relative aspect-w-16 aspect-h-9 h-64 md:h-96">
+            <Card className="overflow-hidden">
+                <div className="relative aspect-video md:aspect-[2/1] w-full">
                     <Image
                         src={`${API_BASE_URL}/${data.image}`}
                         fill
@@ -78,25 +95,26 @@ const PostClient: React.FC<Props> = ({ data, error }) => {
                     />
                 </div>
 
-                <div className="p-8">
-                    <h1 className="text-4xl font-bold text-gray-900 mb-6">{data.title}</h1>
-
-                    <div className="prose prose-lg max-w-none">
-                        <p className="text-gray-700 leading-relaxed text-lg">{data.description}</p>
+                <CardHeader className="space-y-4 pt-6 pb-4">
+                    <CardTitle className="text-4xl font-extrabold leading-tight text-foreground">{data.title}</CardTitle>
+                    <div className="prose prose-lg max-w-none text-muted-foreground">
+                        <p className="leading-relaxed text-lg">{data.description}</p>
                     </div>
+                </CardHeader>
 
-                    <div className="mt-8 pt-6 border-t border-gray-200">
-                        <div className="flex justify-between items-center">
-                            <button
-                                onClick={() => router.push('/blog')}
-                                className="text-blue-600 hover:text-blue-700 font-medium"
-                            >
-                                ← Все посты
-                            </button>
-                        </div>
+                <CardContent className="pt-4 pb-6">
+                    <Separator className="my-6" />
+                    <div className="flex justify-between items-center">
+                        <Button
+                            variant="outline"
+                            onClick={() => router.push('/blog')}
+                            className="text-muted-foreground hover:text-foreground"
+                        >
+                            ← Все посты
+                        </Button>
                     </div>
-                </div>
-            </article>
+                </CardContent>
+            </Card>
         </div>
     );
 };

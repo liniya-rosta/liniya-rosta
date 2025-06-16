@@ -2,7 +2,7 @@
 
 import { Category, Product } from "@/lib/types";
 import { useEffect, useState, useRef } from "react";
-import { Pencil, Plus, Save, Trash2, X } from "lucide-react";
+import { Pencil, Plus, Trash2, X } from "lucide-react";
 import { useProductStore } from "@/store/productsStore";
 import { useCategoryStore } from "@/store/categoriesStore";
 import { createProduct, updateProduct, deleteProduct } from "@/actions/products";
@@ -12,7 +12,32 @@ import { useForm } from 'react-hook-form';
 import { CreateProductFormData, UpdateProductFormData, createProductSchema, updateProductSchema } from '@/lib/zodSchemas/productSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Image from "next/image";
-import {API_BASE_URL} from "@/lib/globalConstants";
+import { API_BASE_URL } from "@/lib/globalConstants";
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog';
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from '@/components/ui/form';
+
 
 interface ProductsClientProps {
     initialProducts: Product[];
@@ -36,27 +61,61 @@ const ProductsClient: React.FC<ProductsClientProps> = ({initialProducts, initial
     } = useCategoryStore();
 
     const [isHydrating, setIsHydrating] = useState(true);
-    const [editingId, setEditingId] = useState<string | null>(null);
-    const [isAdding, setIsAdding] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [editingProduct, setEditingProduct] = useState<Product | null>(null);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const [actionLoading, setActionLoading] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-        reset,
-        setValue
-    } = useForm<CreateProductFormData | UpdateProductFormData>({
-        resolver: zodResolver(isAdding ? createProductSchema : updateProductSchema),
+    const isEditing = !!editingProduct;
+
+    type ProductFormUnionData = CreateProductFormData | UpdateProductFormData;
+
+    const formKey = isEditing ? `update-form-${editingProduct?._id || 'new'}` : 'create-form';
+
+
+    const form = useForm<ProductFormUnionData>({
+        resolver: zodResolver(isEditing ? updateProductSchema : createProductSchema),
         defaultValues: {
-            category: "",
-            title: "",
-            description: "",
-            image: null
-        }
+            category: editingProduct ? (typeof editingProduct.category === 'object' ? editingProduct.category._id : editingProduct.category) : "",
+            title: editingProduct?.title || "",
+            description: editingProduct?.description || "",
+            image: undefined,
+        } as ProductFormUnionData
     });
+
+    useEffect(() => {
+        if (editingProduct) {
+            form.reset({
+                category: typeof editingProduct.category === 'object' ? editingProduct.category._id : editingProduct.category,
+                title: editingProduct.title,
+                description: editingProduct.description || "",
+                image: undefined,
+            } as UpdateProductFormData);
+
+
+            if (editingProduct.image) {
+                setImagePreview(`${API_BASE_URL}/${editingProduct.image}`);
+            } else {
+                setImagePreview(null);
+            }
+        } else {
+
+            form.reset({
+                category: "",
+                title: "",
+                description: "",
+            } as CreateProductFormData);
+            setImagePreview(null);
+        }
+
+
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+        }
+        form.clearErrors();
+    }, [editingProduct, form]);
+
 
     useEffect(() => {
         if (initialProducts) setProducts(initialProducts);
@@ -66,114 +125,97 @@ const ProductsClient: React.FC<ProductsClientProps> = ({initialProducts, initial
         setIsHydrating(false);
     }, [initialProducts, initialCategories, initialError, setProducts, setCategories, setFetchProductsError, setFetchProductsLoading]);
 
-    const resetForm = () => {
-        reset({
-            category: "",
-            title: "",
-            description: "",
-            image: null
-        });
-        setEditingId(null);
-        setIsAdding(false);
-        clearImage();
-    };
-
-    const clearImage = () => {
-        setValue('image', null);
+    const resetAndCloseModal = () => {
+        setEditingProduct(null);
         setImagePreview(null);
         if (fileInputRef.current) {
             fileInputRef.current.value = '';
         }
+        setIsModalOpen(false);
+        setFetchProductsError(null);
     };
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            setValue('image', file);
+            form.setValue('image', file);
             const reader = new FileReader();
             reader.onload = () => {
                 setImagePreview(reader.result as string);
             };
             reader.readAsDataURL(file);
+        } else {
+            form.setValue('image', undefined);
+            setImagePreview(null);
         }
+        form.trigger('image');
     };
 
-    const handleEdit = (product: Product) => {
-        setEditingId(product._id);
-        reset({
-            category: typeof product.category === 'object' ? product.category._id : product.category,
-            title: product.title,
-            description: product.description || "",
-            image: null
-        });
-        setIsAdding(false);
-        clearImage();
+    const clearImage = () => {
+        form.setValue('image', null);
+        setImagePreview(null);
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+        }
+        form.trigger('image');
+    };
+
+    const openCreateModal = () => {
+        setEditingProduct(null);
+        setIsModalOpen(true);
         setFetchProductsError(null);
     };
 
-    const handleAdd = () => {
-        resetForm();
-        setIsAdding(true);
+    const openEditModal = (product: Product) => {
+        setEditingProduct(product);
+        setIsModalOpen(true);
         setFetchProductsError(null);
     };
 
-    const handleCreateProduct = async (formData: CreateProductFormData) => {
+    const onSubmit = async (formData: ProductFormUnionData) => {
+        setActionLoading(true);
         try {
-            if (!formData.image) {
-                alert('Пожалуйста, выберите изображение для нового товара');
-                return;
+            let resultProduct: Product;
+            if (isEditing) {
+
+                const updateFormData = formData as UpdateProductFormData;
+                if (!editingProduct) throw new Error('Editing product is null');
+
+                const productDataForUpdate: { category: string; title: string; description?: string } = {
+                    category: updateFormData.category,
+                    title: updateFormData.title,
+                    description: updateFormData.description || "",
+                };
+
+                const imageFileOrNull = updateFormData.image === null ? undefined : (updateFormData.image instanceof File ? updateFormData.image : undefined);
+
+                resultProduct = await updateProduct(editingProduct._id, productDataForUpdate, imageFileOrNull);
+                setProducts(products.map(product =>
+                    product._id === editingProduct._id ? resultProduct : product
+                ));
+                alert('Товар успешно обновлен!');
+            } else {
+                const createFormData = formData as CreateProductFormData;
+
+                const productDataForCreate: { category: string; title: string; description?: string; image: File } = {
+                    category: createFormData.category,
+                    title: createFormData.title,
+                    description: createFormData.description || "",
+                    image: createFormData.image!,
+                };
+
+                resultProduct = await createProduct(productDataForCreate, productDataForCreate.image);
+                setProducts([...products, resultProduct]);
+                alert('Товар успешно создан!');
             }
-
-            setActionLoading(true);
-
-            const productData = {
-                category: formData.category,
-                title: formData.title,
-                description: formData.description || "",
-                image: ""
-            };
-
-            const newProduct = await createProduct(productData, formData.image);
-
-            setProducts([...products, newProduct]);
-
-            resetForm();
-            alert('Товар успешно создан!');
+            resetAndCloseModal();
         } catch (err) {
             const errorMessage = err instanceof AxiosError
                 ? err.response?.data?.error
-                : 'Ошибка при создании товара';
-            alert(errorMessage);
-        } finally {
-            setActionLoading(false);
-        }
-    };
-
-    const handleUpdateProduct = async (formData: UpdateProductFormData) => {
-        if (!editingId) return;
-
-        try {
-            setActionLoading(true);
-
-            const productData = {
-                category: formData.category,
-                title: formData.title,
-                description: formData.description || "",
-                image: ""
-            };
-
-            const updatedProduct = await updateProduct(editingId, productData, formData.image || undefined);
-
-            setProducts(products.map(product =>
-                product._id === editingId ? updatedProduct : product
-            ));
-
-            resetForm();
-            alert('Товар успешно обновлен!');
-        } catch (err) {
-            const errorMessage = err instanceof AxiosError
-                ? err.response?.data?.error
-                : 'Ошибка при обновлении товара';
+                : err instanceof Error
+                    ? err.message
+                    : 'Ошибка при сохранении товара';
+            setFetchProductsError(errorMessage);
             alert(errorMessage);
         } finally {
             setActionLoading(false);
@@ -186,25 +228,16 @@ const ProductsClient: React.FC<ProductsClientProps> = ({initialProducts, initial
         try {
             setActionLoading(true);
             await deleteProduct(id);
-
             setProducts(products.filter(product => product._id !== id));
-
             alert('Товар успешно удален!');
         } catch (err) {
             const errorMessage = err instanceof AxiosError
                 ? err.response?.data?.error
                 : 'Ошибка при удалении товара';
+            setFetchProductsError(errorMessage);
             alert(errorMessage);
         } finally {
             setActionLoading(false);
-        }
-    };
-
-    const onSubmit = (formData: CreateProductFormData | UpdateProductFormData) => {
-        if (isAdding) {
-            handleCreateProduct(formData as CreateProductFormData);
-        } else if (editingId) {
-            handleUpdateProduct(formData as UpdateProductFormData);
         }
     };
 
@@ -221,220 +254,262 @@ const ProductsClient: React.FC<ProductsClientProps> = ({initialProducts, initial
     if (fetchProductsError) {
         return (
             <div className="flex items-center justify-center min-h-64">
-                <div className="text-center">
-                    <p className="text-red-600 mb-4">
+                <Alert variant="destructive" className="max-w-md">
+                    <AlertDescription>
                         Ошибка при загрузке продуктов: {fetchProductsError}
-                    </p>
-                    <button
-                        onClick={() => window.location.reload()}
-                        className="ml-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                    >
-                        Попробовать снова
-                    </button>
-                </div>
+                    </AlertDescription>
+                </Alert>
             </div>
         );
     }
 
     return (
         <div className="space-y-6">
-            <div className="flex justify-between items-center">
+            <div className="flex flex-col sm:flex-row sm:justify-between items-center gap-4">
                 <div>
-                    <h1 className="text-2xl font-bold text-gray-900">Управление продуктами</h1>
+                    <h1 className="text-3xl font-bold text-foreground text-center sm:text-left">Управление
+                        продуктами</h1>
+                    <p className="text-muted-foreground mt-1 text-center sm:text-left">Создавайте и редактируйте
+                        товары</p>
                 </div>
-                <button
-                    onClick={handleAdd}
-                    disabled={actionLoading}
-                    className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                    <Plus size={16} />
+                <Button onClick={openCreateModal} disabled={actionLoading} className="flex items-center gap-2 w-full sm:w-auto">
+                    <Plus size="{16}"/>
                     Добавить продукт
-                </button>
+                </Button>
             </div>
 
-            {(isAdding || editingId) && (
-                <div className="bg-white rounded-lg shadow p-6">
-                    <div className="mb-6">
-                        <h2 className="text-xl font-semibold">
-                            {isAdding ? 'Добавить новый продукт' : 'Редактировать продукт'}
-                        </h2>
-                    </div>
 
-                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
-                                    Название *
-                                </label>
-                                <input
-                                    type="text"
-                                    {...register('title')}
-                                    disabled={actionLoading}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
-                                    placeholder="Введите название продукта"
-                                />
-                                {errors.title && (
-                                    <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>
-                                )}
-                            </div>
-
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
-                                    Категория *
-                                </label>
-                                <select
-                                    {...register('category')}
-                                    disabled={actionLoading}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
-                                >
-                                    <option value="">Выберите категорию</option>
-                                    {categories.map((category) => (
-                                        <option key={category._id} value={category._id}>
-                                            {category.title}
-                                        </option>
-                                    ))}
-                                </select>
-                                {errors.category && (
-                                    <p className="text-red-500 text-sm mt-1">{errors.category.message}</p>
-                                )}
-                            </div>
-
-                            <div className="md:col-span-2">
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
-                                    Описание
-                                </label>
-                                <textarea
-                                    {...register('description')}
-                                    rows={3}
-                                    disabled={actionLoading}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
-                                    placeholder="Введите описание продукта"
-                                />
-                                {errors.description && (
-                                    <p className="text-red-500 text-sm mt-1">{errors.description.message}</p>
-                                )}
-                            </div>
-
-                            <div className="md:col-span-2">
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
-                                    Изображение {isAdding ? '*' : ''}
-                                </label>
-                                <div className="space-y-2">
-                                    <input
-                                        ref={fileInputRef}
-                                        type="file"
-                                        accept="image/*"
-                                        onChange={handleImageChange}
-                                        disabled={actionLoading}
-                                        className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 disabled:opacity-50 disabled:cursor-not-allowed"
-                                    />
-
-                                    {imagePreview && (
-                                        <div className="relative">
-                                            <img
-                                                src={imagePreview}
-                                                alt="Предварительный просмотр"
-                                                className="w-32 h-32 object-cover rounded border"
-                                            />
-                                            <button
-                                                type="button"
-                                                onClick={clearImage}
-                                                disabled={actionLoading}
-                                                className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed"
-                                            >
-                                                <X size={12} />
-                                            </button>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="flex gap-2">
-                            <button
-                                type="submit"
-                                disabled={actionLoading}
-                                className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                            >
-                                <Save size={16} />
-                                {actionLoading ? 'Сохранение...' : (isAdding ? 'Создать' : 'Обновить')}
-                            </button>
-
-                            <button
-                                type="button"
-                                onClick={resetForm}
-                                disabled={actionLoading}
-                                className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                            >
-                                <X size={16} />
-                                Отмена
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            )}
-
-            <div className="bg-white rounded-lg shadow">
-                <div className="px-6 py-4 border-b">
-                    <h2 className="text-lg font-semibold">Продукты ({products.length})</h2>
-                </div>
-
+            <CardContent className='px-0'>
                 {products.length === 0 ? (
-                    <div className="p-6 text-center text-gray-500">
-                        Продукты не найдены
+                    <div className="text-center py-8 text-muted-foreground">
+                        <p>Продукты не найдены</p>
+                        <p className="text-sm mt-2">Нажмите "Добавить продукт" для создания первого товара</p>
                     </div>
                 ) : (
-                    <div className="grid gap-6 p-6">
-                        {products.map((product) => (
-                            <div key={product._id} className="border rounded-lg p-6 shadow-sm">
-                                <div className="flex justify-between items-start mb-4">
-                                    <div>
-                                        <h3 className="text-xl font-semibold mb-2">{product.title}</h3>
-                                        <p className="text-gray-600 mb-2">
-                                            Категория: {getCategoryTitle(product.category)}
-                                        </p>
-                                        {product.description && (
-                                            <p className="text-gray-600 line-clamp-3">{product.description}</p>
-                                        )}
-                                    </div>
-                                    <div className="flex gap-2 ml-4">
-                                        <button
-                                            onClick={() => handleEdit(product)}
-                                            disabled={actionLoading}
-                                            className="px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 disabled:opacity-50 disabled:cursor-not-allowed"
-                                        >
-                                            <Pencil size={16} />
-                                        </button>
-                                        <button
-                                            onClick={() => handleDeleteProduct(product._id)}
-                                            disabled={actionLoading}
-                                            className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed"
-                                        >
-                                            <Trash2 size={16} />
-                                        </button>
-                                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {products.map((product, index) => (
+                                <div key={product._id}>
+                                    <Card className="min-w-[300px]">
+                                        <CardContent className="p-6">
+                                            <div className="flex justify-between items-start mb-4">
+                                                <div className="flex-1">
+                                                    <h3 className="text-xl font-semibold mb-2">{product.title}</h3>
+                                                    <div className="flex items-center gap-2 mb-2">
+                                                        <Badge variant="outline">
+                                                            {getCategoryTitle(product.category)}
+                                                        </Badge>
+                                                    </div>
+                                                    {product.description && (
+                                                        <p className="text-muted-foreground line-clamp-3">
+                                                            {product.description}
+                                                        </p>
+                                                    )}
+                                                </div>
+                                                <div className="flex gap-2 ml-4">
+                                                    <Button
+                                                        variant="outline"
+                                                        size="sm"
+                                                        onClick={() => openEditModal(product)}
+                                                        disabled={actionLoading}
+                                                    >
+                                                        <Pencil size={16} />
+                                                    </Button>
+                                                    <Button
+                                                        variant="destructive"
+                                                        size="sm"
+                                                        onClick={() => handleDeleteProduct(product._id)}
+                                                        disabled={actionLoading}
+                                                    >
+                                                        <Trash2 size={16} />
+                                                    </Button>
+                                                </div>
+                                            </div>
+                                            {product.image && (
+                                                <div className="relative w-full h-48 mt-4">
+                                                    <Image
+                                                        src={`${API_BASE_URL}/${product.image}`}
+                                                        fill
+                                                        sizes="100vw"
+                                                        alt={product.title}
+                                                        className="object-cover rounded-lg"
+                                                        onError={(e) => {
+                                                            console.error('Image failed to load:', product.image);
+                                                            console.error('Attempted URL:', `${API_BASE_URL}/${product.image}`);
+                                                            (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=800&h=400&fit=crop';
+                                                        }}
+                                                    />
+                                                </div>
+                                            )}
+                                        </CardContent>
+                                    </Card>
+                                    {index < products.length - 1 && <Separator />}
                                 </div>
-                                {product.image && (
-                                    <div className="relative w-full h-48">
-                                        <Image
-                                            src={`${API_BASE_URL}/${product.image}`}
-                                            fill
-                                            sizes="100vw"
-                                            alt={product.title}
-                                            className="object-cover rounded"
-                                            onError={(e) => {
-                                                console.error('Image failed to load:', product.image);
-                                                console.error('Attempted URL:', `${API_BASE_URL}/${product.image}`);
-                                                (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=800&h=400&fit=crop';
-                                            }}
-                                        />
-                                    </div>
-                                )}
+                            ))}
+                        </div>
+                    )}
+                </CardContent>
+
+
+            <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+                <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto">
+                    <DialogHeader>
+                        <DialogTitle>
+                            {isEditing ? 'Редактировать продукт' : 'Добавить новый продукт'}
+                        </DialogTitle>
+                        <DialogDescription>
+                            {isEditing
+                                ? 'Измените данные продукта и нажмите сохранить.'
+                                : 'Заполните форму для создания нового товара.'
+                            }
+                        </DialogDescription>
+                    </DialogHeader>
+
+                    <Form {...form}>
+                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6" key={formKey}>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <FormField
+                                    control={form.control}
+                                    name="title"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Название *</FormLabel>
+                                            <FormControl>
+                                                <Input
+                                                    placeholder="Название продукта"
+                                                    disabled={actionLoading}
+                                                    {...field}
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+
+                                <FormField
+                                    control={form.control}
+                                    name="category"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Категория *</FormLabel>
+                                            <Select
+                                                onValueChange={field.onChange}
+                                                value={field.value}
+                                                disabled={actionLoading}
+                                            >
+                                                <FormControl>
+                                                    <SelectTrigger>
+                                                        <SelectValue placeholder="Выберите категорию" />
+                                                    </SelectTrigger>
+                                                </FormControl>
+                                                <SelectContent>
+                                                    {categories.map((category) => (
+                                                        <SelectItem key={category._id} value={category._id}>
+                                                            {category.title}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+
+                                <FormField
+                                    control={form.control}
+                                    name="description"
+                                    render={({ field }) => (
+                                        <FormItem className="md:col-span-2">
+                                            <FormLabel>Описание</FormLabel>
+                                            <FormControl>
+                                                <Textarea
+                                                    placeholder="Описание продукта"
+                                                    rows={3}
+                                                    disabled={actionLoading}
+                                                    {...field}
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+
+                                <FormField
+                                    control={form.control}
+                                    name="image"
+                                    render={() => (
+                                        <FormItem className="md:col-span-2">
+                                            <FormLabel>
+                                                Изображение {isEditing ? '' : '*'}
+                                            </FormLabel>
+                                            <FormControl>
+                                                <div className="space-y-4">
+                                                    <Button
+                                                        type="button"
+                                                        variant="outline"
+                                                        onClick={() => fileInputRef.current?.click()}
+                                                        disabled={actionLoading}
+                                                        className="w-full"
+                                                    >
+                                                        {imagePreview ? 'Изменить изображение' : 'Выбрать изображение'}
+                                                    </Button>
+                                                    <Input
+                                                        type="file"
+                                                        accept="image/*"
+                                                        ref={fileInputRef}
+                                                        onChange={handleImageChange}
+                                                        disabled={actionLoading}
+                                                        className="hidden"
+                                                    />
+
+                                                    {imagePreview && (
+                                                        <div className="relative inline-block mt-2">
+                                                            <img
+                                                                src={imagePreview}
+                                                                alt="Предварительный просмотр"
+                                                                className="w-32 h-32 object-cover rounded-lg border"
+                                                            />
+                                                            <Button
+                                                                type="button"
+                                                                variant="destructive"
+                                                                size="sm"
+                                                                onClick={clearImage}
+                                                                disabled={actionLoading}
+                                                                className="absolute -top-2 -right-2 w-6 h-6 rounded-full p-0"
+                                                            >
+                                                                <X size={12} />
+                                                            </Button>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
                             </div>
-                        ))}
-                    </div>
-                )}
-            </div>
+
+                            <DialogFooter className="mt-6 flex justify-end space-x-2">
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    onClick={resetAndCloseModal}
+                                    disabled={actionLoading}
+                                >
+                                    Отмена
+                                </Button>
+                                <Button type="submit" disabled={actionLoading}>
+                                    {actionLoading
+                                        ? 'Сохранение...'
+                                        : isEditing
+                                            ? 'Сохранить изменения'
+                                            : 'Создать продукт'
+                                    }
+                                </Button>
+                            </DialogFooter>
+                        </form>
+                    </Form>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 };

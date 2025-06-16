@@ -1,313 +1,413 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { usePostsStore } from '@/store/postsStore';
-import { CreatePostData, UpdatePostData, Post } from '@/lib/types';
-import { AxiosError } from 'axios';
-import { ModalWindow } from "@/components/ui/modal-window";
-import Loading from "@/components/shared/Loading";
-import { createPost, updatePost, deletePost } from "@/actions/posts";
-import { useForm } from 'react-hook-form';
-import { CreatePostFormData, UpdatePostFormData, createPostSchema, updatePostSchema } from '@/lib/zodSchemas/postSchema';
+import { Plus, Edit2, Trash2 } from 'lucide-react';
+import {useForm, UseFormReturn} from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import {API_BASE_URL} from "@/lib/globalConstants";
+import { usePostsStore } from '@/store/postsStore';
+import { Post, CreatePostData, UpdatePostData } from "@/lib/types";
+import { API_BASE_URL } from "@/lib/globalConstants";
 import Image from "next/image";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Skeleton } from '@/components/ui/skeleton';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog';
+
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from '@/components/ui/form';
+
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import {CreatePostFormData, createPostSchema, UpdatePostFormData, updatePostSchema } from '@/lib/zodSchemas/postSchema';
+import {createPost, deletePost, updatePost} from "@/actions/posts";
 
 interface Props {
     data: Post[];
     error: string | null;
+    isAdmin?: boolean;
 }
 
-const AdminBlogClient: React.FC<Props> = ({ data, error }) => {
+const AdminBlogClient: React.FC<Props> = ({ data, error, isAdmin = true }) => {
     const {
         posts,
+        fetchPostsLoading,
+        fetchPostsError,
         setPosts,
-        setError: setStoreError,
-        setLoading,
-        loading,
-        error: storeError,
-        addPost,
-        updatePost: updatePostInStore,
-        removePost,
-        clearError,
+        setfetchPostsLoading: setLoading,
+        setFetchPostsError: setError
     } = usePostsStore();
 
-    const [isHydrating, setIsHydrating] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingPost, setEditingPost] = useState<Post | null>(null);
+    const [submitting, setSubmitting] = useState(false);
+    const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
 
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-        reset,
-        setValue,
-
-    } = useForm<CreatePostFormData | UpdatePostFormData>({
-        resolver: zodResolver(editingPost ? updatePostSchema : createPostSchema),
+    const createForm = useForm<CreatePostFormData>({
+        resolver: zodResolver(createPostSchema),
         defaultValues: {
             title: '',
             description: '',
-            image: null
         }
     });
 
-    useEffect(() => {
-        if (data) setPosts(data);
-        setStoreError(error);
-        setLoading(false);
-        setIsHydrating(false);
-    }, [data, error, setPosts, setStoreError, setLoading]);
-
-    const resetForm = () => {
-        reset({
+    const updateForm = useForm<UpdatePostFormData>({
+        resolver: zodResolver(updatePostSchema),
+        defaultValues: {
             title: '',
             description: '',
-            image: null
-        });
-        setEditingPost(null);
-    };
+        }
+    });
+
+    const currentForm = (editingPost ? updateForm : createForm) as UseFormReturn<CreatePostFormData | UpdatePostFormData>;
+
+
+    useEffect(() => {
+        if (data) {
+            setPosts(data);
+        }
+        setError(error);
+        setLoading(false);
+    }, [data, error, setPosts, setError, setLoading]);
 
     const openCreateModal = () => {
-        resetForm();
-        clearError();
+        setEditingPost(null);
+        createForm.reset();
+        setImagePreviewUrl(null);
         setIsModalOpen(true);
     };
 
     const openEditModal = (post: Post) => {
         setEditingPost(post);
-        reset({
+        updateForm.reset({
             title: post.title,
             description: post.description,
-            image: null
         });
-        clearError();
+
+        if (post.image) {
+            setImagePreviewUrl(`${API_BASE_URL}/${post.image}`);
+        } else {
+            setImagePreviewUrl(null);
+        }
         setIsModalOpen(true);
     };
 
     const closeModal = () => {
         setIsModalOpen(false);
-        resetForm();
+        setEditingPost(null);
+        createForm.reset();
+        updateForm.reset();
+        setImagePreviewUrl(null);
     };
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0] || null;
-        setValue('image', file);
-    };
-
-    const handleCreatePost = async (formData: CreatePostFormData) => {
+    const onCreateSubmit = async (data: CreatePostFormData) => {
+        setSubmitting(true);
         try {
-            if (!formData.image) {
-                alert('Выберите изображение для поста');
-                return;
-            }
-
-            const postData: CreatePostData = {
-                title: formData.title,
-                description: formData.description,
-                image: formData.image
+            const createData: CreatePostData = {
+                title: data.title,
+                description: data.description,
+                image: data.image
             };
 
-            const result = await createPost(postData);
-            addPost(result.post);
-
+            const result = await createPost(createData);
+            setPosts([result.post, ...posts]);
             closeModal();
-            alert('Пост создан успешно!');
         } catch (err) {
-            const errorMessage =
-                err instanceof AxiosError ? err.response?.data?.error : 'Ошибка при создании поста';
-            alert(errorMessage);
+            setError(err instanceof Error ? err.message : 'Произошла ошибка');
+        } finally {
+            setSubmitting(false);
         }
     };
 
-    const handleUpdatePost = async (formData: UpdatePostFormData) => {
+    const onUpdateSubmit = async (data: UpdatePostFormData) => {
         if (!editingPost) return;
 
+        setSubmitting(true);
         try {
-            const postData: UpdatePostData = {};
+            const updateData: UpdatePostData = {};
+            if (data.title !== editingPost.title) updateData.title = data.title;
+            if (data.description !== editingPost.description) updateData.description = data.description;
+            if (data.image) updateData.image = data.image;
 
-            if (formData.title !== editingPost.title) {
-                postData.title = formData.title;
-            }
-            if (formData.description !== editingPost.description) {
-                postData.description = formData.description;
-            }
-            if (formData.image) {
-                postData.image = formData.image;
-            }
-
-            const result = await updatePost(editingPost._id, postData);
-            updatePostInStore(editingPost._id, result.post);
-
+            const result = await updatePost(editingPost._id, updateData);
+            setPosts(posts.map(p => p._id === editingPost._id ? result.post : p));
             closeModal();
-            alert('Пост обновлен успешно!');
         } catch (err) {
-            const errorMessage =
-                err instanceof AxiosError ? err.response?.data?.error : 'Ошибка при обновлении поста';
-            alert(errorMessage);
+            setError(err instanceof Error ? err.message : 'Произошла ошибка');
+        } finally {
+            setSubmitting(false);
         }
     };
 
-    const handleDeletePost = async (postId: string) => {
-        if (!window.confirm('Вы уверены, что хотите удалить этот пост?')) return;
+    const handleDelete = async (postId: string) => {
+        if (!confirm('Вы уверены, что хотите удалить этот пост?')) {
+            return;
+        }
 
         try {
             await deletePost(postId);
-            removePost(postId);
-
-            alert('Пост удален успешно!');
+            setPosts(posts.filter(p => p._id !== postId));
         } catch (err) {
-            const errorMessage =
-                err instanceof AxiosError ? err.response?.data?.error : 'Ошибка при удалении поста';
-            alert(errorMessage);
+            setError(err instanceof Error ? err.message : 'Произошла ошибка при удалении');
         }
     };
 
-    const onSubmit = (formData: CreatePostFormData | UpdatePostFormData) => {
-        if (editingPost) {
-            handleUpdatePost(formData as UpdatePostFormData);
-        } else {
-            handleCreatePost(formData as CreatePostFormData);
-        }
-    };
-
-    if (isHydrating || loading) {
-        return <Loading />;
+    if (fetchPostsLoading) {
+        return (
+            <div className="container mx-auto px-4 py-8">
+                <div className="text-center mb-12">
+                    <Skeleton className="h-12 w-48 mx-auto" />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {Array.from({ length: 6 }).map((_, i) => (
+                        <Card key={i} className="overflow-hidden">
+                            <Skeleton className="h-48 w-full" />
+                            <CardHeader>
+                                <Skeleton className="h-6 w-3/4" />
+                                <Skeleton className="h-4 w-full" />
+                                <Skeleton className="h-4 w-2/3" />
+                            </CardHeader>
+                            <CardFooter>
+                                <Skeleton className="h-10 w-32 ml-auto" />
+                            </CardFooter>
+                        </Card>
+                    ))}
+                </div>
+            </div>
+        );
     }
 
-    if (storeError) {
+    if (fetchPostsError) {
         return (
-            <div className="text-red-600 text-center p-4">
-                Ошибка при загрузке постов: {storeError}
-                <button
-                    onClick={() => window.location.reload()}
-                    className="ml-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                >
-                    Попробовать снова
-                </button>
+            <div className="container mx-auto px-4 py-8">
+                <Alert variant="destructive" className="max-w-md mx-auto">
+                    <AlertDescription>
+                        {fetchPostsError}
+                    </AlertDescription>
+                </Alert>
             </div>
         );
     }
 
     return (
-        <div className="container mx-auto px-4 py-8">
-            <div className="flex justify-between items-center mb-6">
-                <h1 className="text-3xl font-bold">Управление блогом</h1>
-                <button
-                    onClick={openCreateModal}
-                    className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                >
-                    Создать пост
-                </button>
+        <div className="space-y-6">
+            <div className="flex flex-col sm:flex-row sm:justify-between items-center gap-4">
+                <div>
+                    <h1 className="text-3xl font-bold text-foreground">Управление постами</h1>
+                    <p className="text-muted-foreground mt-1">Создавайте и редактируйте посты</p>
+                </div>
+                {isAdmin && (
+                    <Button onClick={openCreateModal} size="lg" className="flex items-center gap-2 w-full sm:w-auto">
+                        <Plus className="mr-2 h-5 w-5" />
+                        Создать пост
+                    </Button>
+                )}
             </div>
 
-            <div className="grid gap-6">
-                {posts.map((post) => (
-                    <div key={post._id} className="border rounded-lg p-6 shadow-sm">
-                        <div className="flex justify-between items-start mb-4">
-                            <div>
-                                <h3 className="text-xl font-semibold mb-2">{post.title}</h3>
-                                <p className="text-gray-600 line-clamp-3">{post.description}</p>
-                            </div>
-                            <div className="flex gap-2 ml-4">
-                                <button
-                                    onClick={() => openEditModal(post)}
-                                    className="px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600"
-                                >
-                                    Редактировать
-                                </button>
-                                <button
-                                    onClick={() => handleDeletePost(post._id)}
-                                    className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
-                                >
-                                    Удалить
-                                </button>
-                            </div>
-                        </div>
-                        {post.image && (
-                            <div className="relative w-full h-48 rounded overflow-hidden">
+            {posts.length === 0 ? (
+                <div className="text-center">
+                    <Card className="max-w-md mx-auto">
+                        <CardContent className="pt-6">
+                            <p className="text-muted-foreground">Пока нет опубликованных постов</p>
+                        </CardContent>
+                    </Card>
+                </div>
+            ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {posts.map((post) => (
+                        <Card key={post._id} className="overflow-hidden hover:shadow-lg transition-shadow duration-300">
+                            <div className="relative aspect-video">
                                 <Image
                                     src={`${API_BASE_URL}/${post.image}`}
                                     fill
-                                    sizes="(max-width: 768px) 100vw, 800px"
+                                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                     onError={(e) => {
                                         (e.target as HTMLImageElement).src =
-                                            'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=800&h=400&fit=crop';
+                                            'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=400&h=300&fit=crop';
                                     }}
                                     alt={post.title}
                                     className="object-cover"
                                 />
+                                {isAdmin && (
+                                    <div className="absolute top-2 right-2 flex gap-2">
+                                        <Button
+                                            size="sm"
+                                            variant="secondary"
+                                            onClick={() => openEditModal(post)}
+                                            className="h-8 w-8 p-0"
+                                        >
+                                            <Edit2 className="h-4 w-4" />
+                                        </Button>
+                                        <Button
+                                            size="sm"
+                                            variant="destructive"
+                                            onClick={() => handleDelete(post._id)}
+                                            className="h-8 w-8 p-0"
+                                        >
+                                            <Trash2 className="h-4 w-4" />
+                                        </Button>
+                                    </div>
+                                )}
                             </div>
-                        )}
-                    </div>
-                ))}
-            </div>
 
-            {isModalOpen && (
-                <ModalWindow isOpen={isModalOpen} onClose={closeModal}>
-                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                        <h2 className="text-2xl font-bold mb-4">
-                            {editingPost ? 'Редактировать пост' : 'Создать пост'}
-                        </h2>
+                            <CardHeader>
+                                <CardTitle className="line-clamp-2">{post.title}</CardTitle>
+                                <CardDescription className="line-clamp-3">{post.description}</CardDescription>
+                            </CardHeader>
 
-                        <div>
-                            <label className="block text-sm font-medium mb-1">
-                                Заголовок *
-                            </label>
-                            <input
-                                type="text"
-                                {...register('title')}
-                                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            />
-                            {errors.title && (
-                                <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>
-                            )}
-                        </div>
-
-                        <div>
-                            <label className="block text-sm font-medium mb-1">
-                                Описание *
-                            </label>
-                            <textarea
-                                {...register('description')}
-                                rows={4}
-                                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            />
-                            {errors.description && (
-                                <p className="text-red-500 text-sm mt-1">{errors.description.message}</p>
-                            )}
-                        </div>
-
-                        <div>
-                            <label className="block text-sm font-medium mb-1">
-                                Изображение {!editingPost && '*'}
-                            </label>
-                            <input
-                                type="file"
-                                accept="image/*"
-                                onChange={handleFileChange}
-                                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            />
-                        </div>
-
-                        <div className="flex gap-2 pt-4">
-                            <button
-                                type="submit"
-                                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                            >
-                                {editingPost ? 'Обновить' : 'Создать'}
-                            </button>
-                            <button
-                                type="button"
-                                onClick={closeModal}
-                                className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
-                            >
-                                Отмена
-                            </button>
-                        </div>
-                    </form>
-                </ModalWindow>
+                        </Card>
+                    ))}
+                </div>
             )}
+
+            <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+                <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto">
+                    <DialogHeader>
+                        <DialogTitle>
+                            {editingPost ? 'Редактировать пост' : 'Создать новый пост'}
+                        </DialogTitle>
+                        <DialogDescription>
+                            {editingPost
+                                ? 'Внесите изменения в пост и нажмите сохранить'
+                                : 'Заполните форму для создания нового поста'
+                            }
+                        </DialogDescription>
+                    </DialogHeader>
+
+                    <Form {...currentForm}>
+                        <form
+                            onSubmit={
+                                editingPost
+                                    ? updateForm.handleSubmit(onUpdateSubmit)
+                                    : createForm.handleSubmit(onCreateSubmit)
+                            }
+                            className="space-y-6"
+                        >
+
+                            <FormField
+                                control={currentForm.control}
+                                name="title"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Заголовок</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                placeholder="Введите заголовок поста"
+                                                {...field}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                            <FormField
+                                control={currentForm.control}
+                                name="description"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Описание</FormLabel>
+                                        <FormControl>
+                                            <Textarea
+                                                placeholder="Краткое описание поста"
+                                                rows={4}
+                                                {...field}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                            <FormField
+                                control={currentForm.control}
+                                name="image"
+                                render={({ field: { onChange, ...field } }) => (
+                                    <FormItem>
+                                        <FormLabel>Изображение</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                type="file"
+                                                accept="image/*"
+                                                onChange={(e) => {
+                                                    const file = e.target.files?.[0];
+                                                    if (file) {
+                                                        const reader = new FileReader();
+                                                        reader.onloadend = () => {
+                                                            setImagePreviewUrl(reader.result as string);
+                                                        };
+                                                        reader.readAsDataURL(file);
+                                                    } else {
+                                                        setImagePreviewUrl(null);
+                                                    }
+                                                    onChange(file);
+                                                }}
+                                                name={field.name}
+                                                onBlur={field.onBlur}
+                                                ref={field.ref}
+                                            />
+                                        </FormControl>
+                                        {imagePreviewUrl && (
+                                            <div className="mt-2 relative w-32 h-32 overflow-hidden rounded-md">
+                                                <Image
+                                                    src={imagePreviewUrl}
+                                                    alt="Image Preview"
+                                                    fill
+                                                    sizes="100px"
+                                                    className="object-cover"
+                                                />
+                                            </div>
+                                        )}
+                                        {!editingPost && (
+                                            <p className="text-sm text-muted-foreground">
+                                                Выберите изображение для поста
+                                            </p>
+                                        )}
+                                        {editingPost && !imagePreviewUrl && (
+                                            <p className="text-sm text-muted-foreground">
+                                                Оставьте пустым, чтобы сохранить текущее изображение
+                                            </p>
+                                        )}
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                            <DialogFooter>
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    onClick={closeModal}
+                                    disabled={submitting}
+                                >
+                                    Отмена
+                                </Button>
+                                <Button type="submit" disabled={submitting}>
+                                    {submitting
+                                        ? 'Сохранение...'
+                                        : editingPost
+                                            ? 'Сохранить изменения'
+                                            : 'Создать пост'
+                                    }
+                                </Button>
+                            </DialogFooter>
+                        </form>
+                    </Form>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 };

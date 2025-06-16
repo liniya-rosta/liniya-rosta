@@ -20,7 +20,12 @@ export const fetchProductById = async (id: string): Promise<Product> => { // Д�
     }
 };
 
-export const createProduct = async (productData: ProductWithoutId, imageFile?: File): Promise<Product> => { // Добавляем Promise<Product>
+export const createProduct = async (productData: {
+    category: string;
+    title: string;
+    description?: string;
+    image: File
+}, imageFile?: File): Promise<Product> => { // Добавляем Promise<Product>
     try {
         const formData = new FormData();
         formData.append('category', productData.category);

@@ -5,7 +5,6 @@ interface ProductState {
     products: Product[];
     fetchProductsLoading: boolean;
     fetchProductsError: string | null;
-
     setProducts: (products: Product[]) => void;
     setFetchProductsLoading: (loading: boolean) => void;
     setFetchProductsError: (error: string | null) => void;
