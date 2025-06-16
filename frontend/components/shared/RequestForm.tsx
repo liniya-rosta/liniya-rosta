@@ -1,97 +1,135 @@
 'use client'
 
-import React, {useState} from 'react';
-import { toast } from "react-toastify";
+import React from 'react';
+import {useForm} from 'react-hook-form';
+import {zodResolver} from '@hookform/resolvers/zod';
+import {toast} from "react-toastify";
 import {IRequestMutation} from "@/lib/types";
 import {useRequestStore} from "@/store/requestStore";
 import {createRequest} from "@/actions/requestActions";
+import {Button} from "@/components/ui/button";
+import {
+    DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog";
+import {Input} from "@/components/ui/input";
+import {Label} from "@/components/ui/label";
+import {Alert, AlertDescription} from "@/components/ui/alert";
+import {Loader2, AlertCircle} from "lucide-react";
+
+import requestSchema from "@/lib/zodSchemas/requestSchema";
 
 interface Props {
     closeModal: () => void;
 }
 
-const initialState: IRequestMutation = {
-    name: '',
-    email: '',
-    phone: '',
-}
-
 const RequestForm: React.FC<Props> = ({closeModal}) => {
-    const [state, setState] = useState<IRequestMutation>(initialState);
     const {createLoading, createError, errorMessage, setLoading, setError} = useRequestStore();
 
-    const submitFormHandler = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const {
+        register,
+        handleSubmit,
+        formState: {errors},
+        reset,
+    } = useForm<IRequestMutation>({
+        resolver: zodResolver(requestSchema),
+    });
+
+    const onSubmit = async (data: IRequestMutation) => {
+        if (createLoading) return;
+
         setLoading(true);
         setError(null);
 
-        const response = await createRequest(state);
+        const response = await createRequest(data);
+        setLoading(false);
 
         if (response !== null) {
             setError(response);
+        } else {
+            toast.success('Заявка отправлена! Менеджер свяжется с вами.');
+            reset();
+            closeModal();
         }
-
-        setLoading(false);
-        toast.success('Заявка отправлена! Менеджер свяжется с вами.');
-        closeModal();
-        setState(initialState);
-    };
-
-    const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setState(prevState => {
-            return {...prevState, [name]: value};
-        });
     };
 
     return (
-        <form
-            onSubmit={submitFormHandler}
-            className="max-w-md mx-auto p-4 bg-white rounded-2xl shadow-md space-y-4"
-        >
-            <h2 className="text-xl font-semibold text-center">Оставить заявку</h2>
-            {createError && (
-                <div className="flex items-center mt-2 text-red-700 bg-red-100 border border-red-400 rounded-md px-3 py-2">
-                    <p className="text-sm font-medium">{errorMessage}</p>
+        <DialogContent className="sm:max-w-[425px]">
+            <form onSubmit={handleSubmit(onSubmit)} noValidate>
+                <DialogHeader>
+                    <DialogTitle>Оставить заявку</DialogTitle>
+                    <DialogDescription>
+                        Заполните форму, и мы свяжемся с вами в ближайшее время.
+                    </DialogDescription>
+                </DialogHeader>
+
+                <div className="grid gap-4 py-4">
+                    {createError && (
+                        <Alert variant="destructive">
+                            <AlertCircle className="h-4 w-4"/>
+                            <AlertDescription>{errorMessage}</AlertDescription>
+                        </Alert>
+                    )}
+
+                    <div className="grid gap-1">
+                        <Label htmlFor="name">Имя</Label>
+                        <Input
+                            id="name"
+                            {...register("name")}
+                            placeholder="Иван Иванов"
+                            disabled={createLoading}
+                        />
+                        {errors.name && (
+                            <p className="text-sm text-red-600 mt-1">{errors.name.message}</p>
+                        )}
+                    </div>
+
+                    <div className="grid gap-1">
+                        <Label htmlFor="email">Почта</Label>
+                        <Input
+                            id="email"
+                            type="email"
+                            {...register("email")}
+                            placeholder="example@email.com"
+                            disabled={createLoading}
+                        />
+                        {errors.email && (
+                            <p className="text-sm text-red-600 mt-1">{errors.email.message}</p>
+                        )}
+                    </div>
+
+                    <div className="grid gap-1">
+                        <Label htmlFor="phone">Номер телефона</Label>
+                        <Input
+                            id="phone"
+                            type="tel"
+                            {...register("phone")}
+                            placeholder="+996 999 999 999"
+                            disabled={createLoading}
+                        />
+                        {errors.phone && (
+                            <p className="text-sm text-red-600 mt-1">{errors.phone.message}</p>
+                        )}
+                    </div>
                 </div>
-            )}
-            <input
-                type="text"
-                name="name"
-                placeholder="Имя"
-                value={state.name}
-                onChange={inputChangeHandler}
-                required
-                className="w-full p-2 border rounded-xl focus:outline-none focus:ring"
-            />
 
-            <input
-                type="email"
-                name="email"
-                placeholder="Почта"
-                value={state.email}
-                onChange={inputChangeHandler}
-                required
-                className="w-full p-2 border rounded-xl focus:outline-none focus:ring"
-            />
-
-            <input
-                type="tel"
-                name="phone"
-                placeholder="Номер телефона"
-                value={state.phone}
-                onChange={inputChangeHandler}
-                required
-                className="w-full p-2 border rounded-xl focus:outline-none focus:ring"
-            />
-
-            <button
-                type="submit"
-                className="w-full bg-gray-600 text-white py-2 rounded-xl hover:bg-gray-700 transition"
-            >
-               { createLoading && '...'} Отправить
-            </button>
-        </form>
+                <DialogFooter>
+                    <DialogClose asChild>
+                        <Button type="button" variant="outline" disabled={createLoading}>
+                            Отмена
+                        </Button>
+                    </DialogClose>
+                    <Button type="submit" disabled={createLoading}>
+                        {createLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin"/>}
+                        Отправить
+                    </Button>
+                </DialogFooter>
+            </form>
+        </DialogContent>
     );
 };
 

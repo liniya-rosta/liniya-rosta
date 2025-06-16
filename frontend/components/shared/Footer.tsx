@@ -4,10 +4,10 @@ import React, {useEffect, useState} from 'react';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faInstagram, faWhatsapp} from "@fortawesome/free-brands-svg-icons";
 import RequestBtn from "@/components/ui/RequestBtn";
-import {ModalWindow} from "@/components/ui/modal-window";
 import RequestForm from "@/components/shared/RequestForm";
 import {Contact} from '@/lib/types';
 import {fetchContacts} from "@/actions/contacts";
+import {Dialog, DialogTrigger} from "@/components/ui/dialog";
 
 const Footer = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -18,9 +18,6 @@ const Footer = () => {
             .then(setContact)
             .catch((error) => console.error('Ошибка получения контактов:', error));
     }, []);
-
-    const openModal = () => setIsOpen(true);
-    const closeModal = () => setIsOpen(false);
 
     if (!contact) return null;
 
@@ -45,13 +42,14 @@ const Footer = () => {
                         </div>
                     </div>
 
-                    <RequestBtn onClick={openModal}/>
+                    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+                        <DialogTrigger asChild>
+                            <RequestBtn onClick={() => setIsOpen(true)}/>
+                        </DialogTrigger>
+                        <RequestForm closeModal={() => setIsOpen(false)}/>
+                    </Dialog>
                 </div>
             </footer>
-
-            <ModalWindow isOpen={isOpen} onClose={closeModal}>
-                <RequestForm closeModal={closeModal}/>
-            </ModalWindow>
         </>
     );
 };

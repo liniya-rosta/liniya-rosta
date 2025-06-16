@@ -20,8 +20,8 @@ import {Category, PortfolioItemPreview, Product} from '@/lib/types';
 import {useCategoryStore} from "@/store/categoriesStore";
 import Loading from "@/components/shared/Loading";
 import ErrorMsg from "@/components/shared/ErrorMsg";
-import {ModalWindow} from "@/components/ui/modal-window";
 import RequestForm from "@/components/shared/RequestForm";
+import {Dialog, DialogTrigger} from "@/components/ui/dialog";
 
 interface HomePageClientProps {
     categories: Category[];
@@ -60,9 +60,8 @@ const HomePageClient: React.FC<HomePageClientProps> = ({
     } = useProductStore();
 
 
-    const [isModalOpen, setIsModalOpen] = React.useState(false);
-    const openModal = () => setIsModalOpen(true);
-    const closeModal = () => setIsModalOpen(false);
+    const [isModalTopOpen, setIsModalTopOpen] = React.useState(false);
+    const [isModalBottomOpen, setIsModalBottomOpen] = React.useState(false);
 
     const {
         items: storedPortfolioItems,
@@ -101,7 +100,17 @@ const HomePageClient: React.FC<HomePageClientProps> = ({
                     Натяжные потолки, SPC ламинат и монтажные услуги. Сделаем ваш дом стильным и функциональным.
                 </p>
                 <div className="flex gap-4 justify-center flex-wrap">
-                    <Button size="lg" className="min-w-[180px]" onClick={openModal}>Оставить заявку</Button>
+
+                    <Dialog open={isModalTopOpen} onOpenChange={setIsModalTopOpen}>
+                        <DialogTrigger asChild>
+                            <Button size="lg" className="min-w-[180px] cursor-pointer"
+                                    onClick={() => setIsModalTopOpen(true)}>
+                                Оставить заявку
+                            </Button>
+                        </DialogTrigger>
+                        <RequestForm closeModal={() => setIsModalTopOpen(false)}/>
+                    </Dialog>
+
                     <Button
                         variant="outline"
                         size="lg"
@@ -212,7 +221,13 @@ const HomePageClient: React.FC<HomePageClientProps> = ({
                     Свяжитесь с нами — мы проконсультируем и подберём решения под ваш бюджет.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                    <Button variant="secondary" size="lg" onClick={openModal}>Получить консультацию</Button>
+                    <Dialog open={isModalBottomOpen} onOpenChange={setIsModalBottomOpen}>
+                        <DialogTrigger asChild>
+                            <Button variant="secondary" className='cursor-pointer' size="lg"
+                                    onClick={() => setIsModalBottomOpen(true)}>Получить консультацию</Button>
+                        </DialogTrigger>
+                        <RequestForm closeModal={() => setIsModalBottomOpen(false)}/>
+                    </Dialog>
                     <Button
                         variant="outline"
                         size="lg"
@@ -234,10 +249,6 @@ const HomePageClient: React.FC<HomePageClientProps> = ({
                     style={{overflow: 'hidden'}}
                 ></iframe>
             </section>
-
-            <ModalWindow isOpen={isModalOpen} onClose={closeModal}>
-                <RequestForm closeModal={closeModal}/>
-            </ModalWindow>
         </div>
     );
 };
