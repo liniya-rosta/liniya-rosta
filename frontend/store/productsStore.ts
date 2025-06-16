@@ -14,7 +14,6 @@ export const useProductStore = create<ProductState>((set) => ({
     products: [],
     fetchProductsLoading: true,
     fetchProductsError: null,
-
     setProducts: (products) => set({ products }),
     setFetchProductsLoading: (loading) => set({ fetchProductsLoading: loading }),
     setFetchProductsError: (error) => set({ fetchProductsError: error }),
