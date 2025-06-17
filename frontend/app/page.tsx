@@ -1,64 +1,47 @@
 import React from 'react';
 import {fetchCategories} from '@/actions/categories';
 import {fetchProducts} from '@/actions/products';
-import {Category, Product, PortfolioItemPreview} from '@/lib/types';
+import {Category, PortfolioItemPreview, Product} from '@/lib/types';
 import {fetchPortfolioPreviews} from "@/actions/portfolios";
 import HomePageClient from "@/app/(home)/HomeClient";
 
-interface HomePageClientProps {
-    categories: Category[];
-    products: Product[];
-    portfolioItems: PortfolioItemPreview[];
-    categoriesError: string | null;
-    productsError: string | null;
-    portfolioError: string | null;
-}
+export const revalidate = 300;
 
 const HomePage = async () => {
-    let categoriesData: Category[] = [];
-    let productsData: Product[] = [];
-    let portfolioData: PortfolioItemPreview[] = [];
-    let categoriesError: string | null = null;
-    let productsError: string | null = null;
-    let portfolioError: string | null = null;
+    let categories: Category[] = [];
+    let products: Product[] = [];
+    let portfolio: PortfolioItemPreview[] = [];
+    let categoriesError = null;
+    let productsError = null;
+    let portfolioError = null;
 
-    try {
-        categoriesData = await fetchCategories();
-    } catch (e) {
-        if (e instanceof Error) {
-            categoriesError = e.message;
-        } else {
-            categoriesError = 'Неизвестная ошибка на сервере при загрузке категорий.';
-        }
-    }
+    await Promise.all([
+        fetchCategories()
+            .then(data => categories = data)
+            .catch(e => {
+                categoriesError = e instanceof Error ? e.message : String(e);
+            }),
 
-    try {
-        productsData = await fetchProducts();
-    } catch (e) {
-        if (e instanceof Error) {
-            productsError = e.message;
-        } else {
-            productsError = 'Неизвестная ошибка на сервере при загрузке товаров.';
-        }
-    }
+        fetchProducts()
+            .then(data => products = data)
+            .catch(e => {
+                productsError = e instanceof Error ? e.message : String(e);
+            }),
 
-    try {
-        portfolioData = await fetchPortfolioPreviews();
-    } catch (e) {
-        if (e instanceof Error) {
-            portfolioError = e.message;
-        } else {
-            portfolioError = 'Неизвестная ошибка на сервере при загрузке портфолио.';
-        }
-    }
+        fetchPortfolioPreviews()
+            .then(data => portfolio = data)
+            .catch(e => {
+                portfolioError = e instanceof Error ? e.message : String(e);
+            }),
+    ]);
 
-    const initialProps: HomePageClientProps = {
-        categories: categoriesData,
-        products: productsData,
-        portfolioItems: portfolioData,
-        categoriesError: categoriesError,
-        productsError: productsError,
-        portfolioError: portfolioError,
+    const initialProps = {
+        categories,
+        products,
+        portfolioItems: portfolio,
+        categoriesError,
+        productsError,
+        portfolioError,
     };
 
     return (
