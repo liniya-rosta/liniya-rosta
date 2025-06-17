@@ -53,5 +53,5 @@ export interface ContactFields {
 export interface PortfolioUpdate{
     cover?: string;
     description?: string;
-    alt?: string;
+    coverAlt?: string;
 }

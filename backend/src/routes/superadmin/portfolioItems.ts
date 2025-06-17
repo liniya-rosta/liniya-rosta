@@ -68,7 +68,7 @@ portfolioSuperAdminRouter.patch("/:id", portfolioImage.single("cover"), async (r
         }
 
         if (req.body.coverAlt !== undefined) {
-            updateData.alt = req.body.coverAlt;
+            updateData.coverAlt = req.body.coverAlt;
         }
 
         const updatedItem = await PortfolioItem.findByIdAndUpdate(

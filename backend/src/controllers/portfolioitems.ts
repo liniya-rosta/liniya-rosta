@@ -1,6 +1,6 @@
 import {PortfolioItem} from "../models/PortfolioItem";
 import {Request, Response, NextFunction} from "express";
-import mongoose from "mongoose";
+import mongoose, {isValidObjectId} from "mongoose";
 
 export const getPortfolioItems = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -25,7 +25,7 @@ export const getPortfolioItems = async (req: Request, res: Response, next: NextF
             {
                 $project: {
                     cover: 1,
-                    alt: 1,
+                    coverAlt: 1,
                     description: 1,
                     galleryCount: {$size: "$gallery"}
                 }
@@ -42,12 +42,16 @@ export const getPortfolioItemById = async (req: Request, res: Response, next: Ne
     try {
         const {id} = req.params;
 
+        if (!isValidObjectId(id)) {
+            res.status(400).json({error: "Не валидный ID формат"});
+            return
+        }
         const items = await PortfolioItem.aggregate([
             {$match: {_id: new mongoose.Types.ObjectId(id)}},
             {
                 $project: {
                     cover: 1,
-                    alt: 1,
+                    coverAlt: 1,
                     description: 1,
                     gallery: 1,
                     galleryCount: {$size: "$gallery"}
