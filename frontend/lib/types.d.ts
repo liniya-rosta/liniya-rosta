@@ -122,3 +122,11 @@ export interface Laminate {
 
 export type ProductWithoutId = Omit<ProductAdmin, '_id'>;
 
+export interface IRequest {
+    _id: string;
+    name: string;
+    phone: string;
+    email: string;
+    commentOfManager: string;
+    status: string;
+}
