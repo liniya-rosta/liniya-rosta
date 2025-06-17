@@ -1,6 +1,6 @@
 'use client';
 
-import {Mail, Phone, MapPin} from 'lucide-react';
+import {Mail, MapPin, Phone} from 'lucide-react';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faInstagram, faWhatsapp} from '@fortawesome/free-brands-svg-icons';
 import {useContactStore} from '@/store/contactsStore';
@@ -12,7 +12,7 @@ const ContactInfoCard = () => {
     return (
         <section
             aria-labelledby="contact-info-heading"
-            className="bg-white rounded-xl border border-gray-200 shadow-sm"
+            className="bg-white rounded-xl border border-gray-200 shadow-sm flex flex-col h-full"
         >
             <div className="p-6 flex items-center space-x-4">
                 <div className="p-2 bg-blue-100 rounded-lg">
@@ -22,7 +22,8 @@ const ContactInfoCard = () => {
                     Контактная информация
                 </h2>
             </div>
-            <div className="p-6 pt-0">
+
+            <div className="p-6 pt-0 flex-1">
                 <address className="not-italic space-y-6 text-gray-700">
                     <ul className="space-y-4">
                         <li>
@@ -67,46 +68,50 @@ const ContactInfoCard = () => {
                             </a>
                         </li>
                     </ul>
-
-                    <ul className="flex gap-4 mt-6">
-                        <li>
-                            <a
-                                href={contact.instagram}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                aria-label="Instagram"
-                                className="group hover:scale-105 transform transition-all"
-                            >
-                                <div
-                                    className="w-12 h-12 flex items-center justify-center rounded-lg bg-gray-100 hover:bg-gray-200 shadow-sm transition-all">
-                                    <FontAwesomeIcon
-                                        icon={faInstagram}
-                                        className="text-pink-600 group-hover:text-pink-700"
-                                        style={{fontSize: '28px'}}
-                                    />
-                                </div>
-                            </a>
-                        </li>
-                        <li>
-                            <a
-                                href={contact.whatsapp}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                aria-label="WhatsApp"
-                                className="group hover:scale-105 transform transition-all"
-                            >
-                                <div
-                                    className="w-12 h-12 flex items-center justify-center rounded-lg bg-gray-100 hover:bg-gray-200 shadow-sm transition-all">
-                                    <FontAwesomeIcon
-                                        icon={faWhatsapp}
-                                        className="text-green-500 group-hover:text-green-600"
-                                        style={{fontSize: '28px'}}
-                                    />
-                                </div>
-                            </a>
-                        </li>
-                    </ul>
                 </address>
+            </div>
+
+            <div className="p-6 pt-0 border-gray-200">
+                <ul className="flex gap-4">
+                    <li>
+                        <a
+                            href={contact.instagram}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label="Instagram"
+                            className="group hover:scale-105 transform transition-all"
+                        >
+                            <div
+                                className="w-12 h-12 flex items-center justify-center rounded-lg bg-gray-100 hover:bg-gray-200 shadow-sm transition-all"
+                            >
+                                <FontAwesomeIcon
+                                    icon={faInstagram}
+                                    className="text-pink-600 group-hover:text-pink-700"
+                                    style={{fontSize: '28px'}}
+                                />
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a
+                            href={contact.whatsapp}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label="WhatsApp"
+                            className="group hover:scale-105 transform transition-all"
+                        >
+                            <div
+                                className="w-12 h-12 flex items-center justify-center rounded-lg bg-gray-100 hover:bg-gray-200 shadow-sm transition-all"
+                            >
+                                <FontAwesomeIcon
+                                    icon={faWhatsapp}
+                                    className="text-green-500 group-hover:text-green-600"
+                                    style={{fontSize: '28px'}}
+                                />
+                            </div>
+                        </a>
+                    </li>
+                </ul>
             </div>
         </section>
     );
