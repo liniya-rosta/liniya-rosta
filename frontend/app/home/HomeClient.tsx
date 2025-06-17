@@ -20,6 +20,8 @@ import {Category, PortfolioItemPreview, Product} from '@/lib/types';
 import {useCategoryStore} from "@/store/categoriesStore";
 import Loading from "@/components/shared/Loading";
 import ErrorMsg from "@/components/shared/ErrorMsg";
+import RequestForm from "@/components/shared/RequestForm";
+import {Dialog, DialogTrigger} from "@/components/ui/dialog";
 
 interface HomePageClientProps {
     categories: Category[];
@@ -39,8 +41,27 @@ const HomePageClient: React.FC<HomePageClientProps> = ({
                                                            portfolioError
                                                        }) => {
 
-    const categoriesStore = useCategoryStore();
-    const productsStore = useProductStore();
+    const {
+        categories: storedCategories,
+        setCategories,
+        fetchCategoriesLoading,
+        fetchCategoriesError,
+        setFetchCategoriesError,
+        setFetchCategoriesLoading
+    } = useCategoryStore();
+
+    const {
+        products: storedProducts,
+        setProducts,
+        fetchProductsLoading,
+        fetchProductsError,
+        setFetchProductsError,
+        setFetchProductsLoading
+    } = useProductStore();
+
+
+    const [isModalTopOpen, setIsModalTopOpen] = React.useState(false);
+    const [isModalBottomOpen, setIsModalBottomOpen] = React.useState(false);
 
     const {
         items: storedPortfolioItems,
@@ -49,22 +70,22 @@ const HomePageClient: React.FC<HomePageClientProps> = ({
     } = usePortfolioStore();
 
     useEffect(() => {
-        categoriesStore.setCategories(categories);
-        productsStore.setProducts(products);
+        setCategories(categories);
+        setProducts(products);
         setPortfolioPreview(portfolioItems);
 
-        categoriesStore.setFetchCategoriesError(categoriesError);
-        productsStore.setFetchProductsError(productsError);
+        setFetchCategoriesError(categoriesError);
+        setFetchProductsError(productsError);
 
-        categoriesStore.setFetchCategoriesLoading(false);
-        productsStore.setFetchProductsLoading(false);
-    }, [categories, products, portfolioItems, categoriesError, productsError, portfolioError, setPortfolioPreview]);
+        setFetchCategoriesLoading(false);
+        setFetchProductsLoading(false);
+    }, [categories, products, portfolioItems, categoriesError, productsError, portfolioError, setPortfolioPreview, setCategories, setProducts, setFetchCategoriesError, setFetchProductsError, setFetchCategoriesLoading, setFetchProductsLoading]);
 
-    const overallLoading = categoriesStore.fetchCategoriesLoading || productsStore.fetchProductsLoading || portfolioLoading;
-    const overallError = categoriesStore.fetchCategoriesError || productsStore.fetchProductsError || portfolioError;
+    const overallLoading = fetchCategoriesLoading || fetchProductsLoading || portfolioLoading;
+    const overallError = fetchCategoriesError || fetchProductsError || portfolioError;
 
     if (overallLoading) return <Loading/>;
-    if (overallError && (!categoriesStore.categories.length && !productsStore.products.length && !storedPortfolioItems.length)) {
+    if (overallError && (!storedCategories.length && !storedProducts.length && !storedPortfolioItems.length)) {
         return <ErrorMsg error={overallError}/>
     }
 
@@ -79,11 +100,20 @@ const HomePageClient: React.FC<HomePageClientProps> = ({
                     Натяжные потолки, SPC ламинат и монтажные услуги. Сделаем ваш дом стильным и функциональным.
                 </p>
                 <div className="flex gap-4 justify-center flex-wrap">
-                    <Button size="lg" className="min-w-[180px]">Оставить заявку</Button>
+
+                    <Dialog open={isModalTopOpen} onOpenChange={setIsModalTopOpen}>
+                        <DialogTrigger asChild>
+                            <Button size="lg" className="min-w-[180px] cursor-pointer duration-500">
+                                Оставить заявку
+                            </Button>
+                        </DialogTrigger>
+                        <RequestForm closeModal={() => setIsModalTopOpen(false)}/>
+                    </Dialog>
+
                     <Button
                         variant="outline"
                         size="lg"
-                        className="min-w-[180px] border-primary text-primary hover:bg-primary/10"
+                        className="min-w-[180px] border-primary text-primary hover:bg-primary/10 duration-500"
                         asChild
                     >
                         <a href="https://wa.me/996553088988" target="_blank" rel="noopener noreferrer">
@@ -96,10 +126,10 @@ const HomePageClient: React.FC<HomePageClientProps> = ({
 
             <section className="space-y-6" aria-labelledby="categories-heading">
                 <h2 id="categories-heading" className="text-3xl font-bold text-center">Категории продукции</h2>
-                {categoriesStore.fetchCategoriesError && (
-                    <ErrorMsg error={categoriesStore.fetchCategoriesError} label='категорий'/>
+                {fetchCategoriesError && (
+                    <ErrorMsg error={fetchCategoriesError} label='категорий'/>
                 )}
-                {categoriesStore.categories.length > 0 ? (
+                {storedCategories.length > 0 ? (
                     <Swiper
                         slidesPerView={2}
                         spaceBetween={10}
@@ -112,14 +142,14 @@ const HomePageClient: React.FC<HomePageClientProps> = ({
                         modules={[Navigation, Pagination]}
                         className="mySwiper py-4"
                     >
-                        {categoriesStore.categories.map((cat) => (
+                        {storedCategories.map((cat) => (
                             <SwiperSlide key={cat._id}>
                                 <CategoryCard category={cat}/>
                             </SwiperSlide>
                         ))}
                     </Swiper>
                 ) : (
-                    !categoriesStore.fetchCategoriesError && <p className="text-center">Нет категорий</p>
+                    !fetchCategoriesError && <p className="text-center">Нет категорий</p>
                 )}
             </section>
 
@@ -130,10 +160,10 @@ const HomePageClient: React.FC<HomePageClientProps> = ({
                         Все товары →
                     </Link>
                 </div>
-                {productsStore.fetchProductsError && (
-                    <ErrorMsg error={productsStore.fetchProductsError} label='продуктов'/>
+                {fetchProductsError && (
+                    <ErrorMsg error={fetchProductsError} label='продуктов'/>
                 )}
-                {productsStore.products.length > 0 ? (
+                {storedProducts.length > 0 ? (
                     <Swiper
                         slidesPerView={1}
                         spaceBetween={10}
@@ -147,7 +177,7 @@ const HomePageClient: React.FC<HomePageClientProps> = ({
                         modules={[Navigation, Pagination]}
                         className="mySwiper py-4"
                     >
-                        {productsStore.products.map((product) => (
+                        {storedProducts.map((product) => (
                             <SwiperSlide key={product._id}>
                                 <div className="max-w-xs mx-auto md:max-w-none">
                                     <ProductCard product={product}/>
@@ -156,12 +186,12 @@ const HomePageClient: React.FC<HomePageClientProps> = ({
                         ))}
                     </Swiper>
                 ) : (
-                    !productsStore.fetchProductsError && <p className="text-center">Нет продуктов</p>
+                    !fetchProductsError && <p className="text-center">Нет продуктов</p>
                 )}
             </section>
 
             <section className="space-y-6" aria-labelledby="portfolio-heading">
-                <div role="presentation" className="flex justify-between items-center">
+                <div role="presentation" className="flex justify-between items-center mx-auto">
                     <h2 id="portfolio-heading" className="text-3xl font-bold">Наши работы</h2>
                     <Link href="/portfolio" className="text-primary text-sm font-medium hover:underline">
                         Все работы →
@@ -190,11 +220,18 @@ const HomePageClient: React.FC<HomePageClientProps> = ({
                     Свяжитесь с нами — мы проконсультируем и подберём решения под ваш бюджет.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                    <Button variant="secondary" size="lg">Получить консультацию</Button>
+                    <Dialog open={isModalBottomOpen} onOpenChange={setIsModalBottomOpen}>
+                        <DialogTrigger asChild>
+                            <Button variant="secondary" className="cursor-pointer duration-500" size="lg">Получить
+                                консультацию
+                            </Button>
+                        </DialogTrigger>
+                        <RequestForm closeModal={() => setIsModalBottomOpen(false)}/>
+                    </Dialog>
                     <Button
                         variant="outline"
                         size="lg"
-                        className="bg-transparent border-white text-white hover:bg-white/10"
+                        className="bg-transparent border-white text-white hover:bg-white/10 duration-500"
                         asChild
                     >
                         <a href="tel:+996555757513">+996 555 757 513</a>
@@ -202,14 +239,13 @@ const HomePageClient: React.FC<HomePageClientProps> = ({
                 </div>
             </section>
 
-            <section className=" space-y-6 mx-auto bg-white">
+            <section className="space-y-6 mx-auto">
                 <h2 className="text-3xl font-bold text-center from-primary">
                     Наша лента в Instagram
                 </h2>
                 <iframe
                     src="//lightwidget.com/widgets/a5595befc0b75c39ae732dfc56693cbd.html"
-                    className="lightwidget-widget w-full h-[500px] border-none rounded-xl shadow-md transition-opacity duration-700 ease-in-out"
-                    style={{overflow: 'hidden'}}
+                    className="lightwidget-widget w-full h-[400px]"
                 ></iframe>
             </section>
         </div>

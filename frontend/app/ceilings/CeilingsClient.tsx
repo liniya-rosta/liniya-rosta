@@ -1,7 +1,7 @@
 "use client"
 
-import React, { useState, useEffect, useMemo } from 'react';
-import { Search, Phone, MessageCircle, Filter, X } from 'lucide-react';
+import React, {useEffect, useMemo, useState} from 'react';
+import {Filter, MessageCircle, Phone, Search, X} from 'lucide-react';
 import RequestForm from "@/components/shared/RequestForm";
 import { ModalWindow } from '@/components/ui/modal-window';
 import { Category, Product } from "@/lib/types";
@@ -20,9 +20,10 @@ type Props = {
     initialCategories: Category[];
 };
 
-const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories }) => {
+const CeilingsClient: React.FC<Props> = ({initialProducts, initialCategories}) => {
     const [selectedCategory, setSelectedCategory] = useState<string>('all');
     const [showConsultationModal, setShowConsultationModal] = useState<boolean>(false);
+    const [activeProductId, setActiveProductId] = useState<string | null>(null);
     const [searchTerm, setSearchTerm] = useState<string>('');
 
     const {
@@ -85,6 +86,7 @@ const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories })
 
     const closeModal = () => {
         setShowConsultationModal(false);
+
     };
 
     return (
@@ -250,9 +252,11 @@ const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories })
                 </div>
             </div>
 
-            <ModalWindow isOpen={showConsultationModal} onClose={closeModal}>
-                <RequestForm closeModal={closeModal} />
-            </ModalWindow>
+            <Dialog open={!!activeProductId} onOpenChange={(open) => {
+                if (!open) setActiveProductId(null);
+            }}>
+                <RequestForm closeModal={() => setActiveProductId(null)}/>
+            </Dialog>
         </div>
     );
 };

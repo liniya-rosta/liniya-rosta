@@ -6,7 +6,7 @@ import {zodResolver} from '@hookform/resolvers/zod';
 import {useSuperadminContactsStore} from '@/store/superadmin/superadminContactsStore';
 import {updateContact} from '@/actions/superadmin/contacts';
 import {AxiosError} from 'axios';
-import {adminContactSchema} from "@/lib/zodSchemas/adminContactSchems";
+import {adminContactSchema} from "@/lib/zodSchemas/adminContactSchema";
 import {toast} from "react-toastify";
 
 interface Props {

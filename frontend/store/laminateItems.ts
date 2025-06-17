@@ -15,9 +15,8 @@ interface LaminateState {
 export const useLaminateStore = create<LaminateState>((set) => ({
     laminateItems: [],
     oneLaminateItem: null,
-    fetchLaminateLoading: false,
+    fetchLaminateLoading: true,
     fetchLaminateError: null,
-    isFirstLoadDone: false,
 
     setLaminateItems: (data) => {
         set({ laminateItems: data })

@@ -9,7 +9,7 @@ const RequestBtn: React.FC<Props> = ({onClick}) => {
         <>
             <button
                 onClick={onClick}
-                className="mt-4 px-5 py-3 bg-blue-500 text-white rounded-full bg-transparent border border-white hover:animate-pulse">
+                className="mt-4 px-5 py-3 text-white rounded-full bg-transparent border border-white hover:animate-pulse cursor-pointer">
                 Оставить заявку
             </button>
         </>
