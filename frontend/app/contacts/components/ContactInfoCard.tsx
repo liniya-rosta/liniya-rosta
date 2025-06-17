@@ -1,77 +1,73 @@
 'use client';
 
-import {Mail, MapPin, Phone} from 'lucide-react';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faInstagram, faWhatsapp} from '@fortawesome/free-brands-svg-icons';
-import {useContactStore} from '@/store/contactsStore';
+import {Card, CardContent, CardFooter, CardHeader} from "@/components/ui/card";
+import {Mail, MapPin, Phone} from "lucide-react";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faInstagram, faWhatsapp} from "@fortawesome/free-brands-svg-icons";
+import {useContactStore} from "@/store/contactsStore";
 
 const ContactInfoCard = () => {
     const contact = useContactStore(state => state.contact);
     if (!contact) return <p>Данные контактов не загружены</p>;
 
+    const linkClass = "inline-flex items-center space-x-2 group hover:text-blue-600 transition-colors duration-300";
+    const iconClass = "w-5 h-5 text-muted-foreground group-hover:text-blue-600 duration-300";
+
     return (
-        <section
-            aria-labelledby="contact-info-heading"
-            className="bg-white rounded-xl border border-gray-200 shadow-sm flex flex-col h-full"
-        >
-            <div className="p-6 flex items-center space-x-4">
+        <Card className="w-full h-full">
+            <CardHeader className="flex items-center space-x-4">
                 <div className="p-2 bg-blue-100 rounded-lg">
                     <Mail className="h-6 w-6 text-blue-700"/>
                 </div>
-                <h2 id="contact-info-heading" className="text-xl font-semibold text-gray-900">
-                    Контактная информация
-                </h2>
-            </div>
+                <h2 className="text-xl font-semibold">Контактная информация</h2>
+            </CardHeader>
 
-            <div className="p-6 pt-0 flex-1">
-                <address className="not-italic space-y-6 text-gray-700">
-                    <ul className="space-y-4">
+            <CardContent className="space-y-6 text-gray-700">
+                <ul className="space-y-4">
+                    <li>
+                        <a
+                            href={contact.mapLocation}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={linkClass}
+                        >
+                            <MapPin className={iconClass}/>
+                            <span>{contact.location}</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a
+                            href={`tel:${contact.phone1.replace(/\s+/g, '')}`}
+                            className={linkClass}
+                        >
+                            <Phone className={iconClass}/>
+                            <span>{contact.phone1}</span>
+                        </a>
+                    </li>
+                    {contact.phone2 && (
                         <li>
                             <a
-                                href={contact.mapLocation}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="inline-flex items-center space-x-2 group hover:text-blue-600 transition-colors"
+                                href={`tel:${contact.phone2.replace(/\s+/g, '')}`}
+                                className={linkClass}
                             >
-                                <MapPin className="w-5 h-5 text-gray-700 transition-colors group-hover:text-blue-600"/>
-                                <span>{contact.location}</span>
+                                <Phone className={iconClass}/>
+                                <span>{contact.phone2}</span>
                             </a>
                         </li>
-                        <li>
-                            <a
-                                href={`tel:${contact.phone1.replace(/\s+/g, '')}`}
-                                className="inline-flex items-center space-x-2 group hover:text-blue-600 transition-colors"
-                            >
-                                <Phone className="w-5 h-5 text-gray-700 transition-colors group-hover:text-blue-600"/>
-                                <span>{contact.phone1}</span>
-                            </a>
-                        </li>
-                        {contact.phone2 && (
-                            <li>
-                                <a
-                                    href={`tel:${contact.phone2.replace(/\s+/g, '')}`}
-                                    className="inline-flex items-center space-x-2 group hover:text-blue-600 transition-colors"
-                                >
-                                    <Phone
-                                        className="w-5 h-5 text-gray-700 transition-colors group-hover:text-blue-600"/>
-                                    <span>{contact.phone2}</span>
-                                </a>
-                            </li>
-                        )}
-                        <li>
-                            <a
-                                href={`mailto:${contact.email}`}
-                                className="inline-flex items-center space-x-2 group hover:text-blue-600 transition-colors"
-                            >
-                                <Mail className="w-5 h-5 text-gray-700 transition-colors group-hover:text-blue-600"/>
-                                <span>{contact.email}</span>
-                            </a>
-                        </li>
-                    </ul>
-                </address>
-            </div>
+                    )}
+                    <li>
+                        <a
+                            href={`mailto:${contact.email}`}
+                            className={linkClass}
+                        >
+                            <Mail className={iconClass}/>
+                            <span>{contact.email}</span>
+                        </a>
+                    </li>
+                </ul>
+            </CardContent>
 
-            <div className="p-6 pt-0 border-gray-200">
+            <CardFooter className="pt-0">
                 <ul className="flex gap-4">
                     <li>
                         <a
@@ -79,15 +75,14 @@ const ContactInfoCard = () => {
                             target="_blank"
                             rel="noopener noreferrer"
                             aria-label="Instagram"
-                            className="group hover:scale-105 transform transition-all"
+                            className="group transform transition-all duration-500 hover:scale-125 hover:shadow-lg"
                         >
                             <div
-                                className="w-12 h-12 flex items-center justify-center rounded-lg bg-gray-100 hover:bg-gray-200 shadow-sm transition-all"
-                            >
+                                className="w-10 h-10 flex items-center justify-center rounded-md bg-muted hover:bg-muted/70 shadow-sm transition-all duration-500">
                                 <FontAwesomeIcon
                                     icon={faInstagram}
-                                    className="text-pink-600 group-hover:text-pink-700"
-                                    style={{fontSize: '28px'}}
+                                    className="text-pink-600 group-hover:text-pink-800 drop-shadow-md transition-colors duration-500"
+                                    style={{fontSize: '24px'}}
                                 />
                             </div>
                         </a>
@@ -98,22 +93,21 @@ const ContactInfoCard = () => {
                             target="_blank"
                             rel="noopener noreferrer"
                             aria-label="WhatsApp"
-                            className="group hover:scale-105 transform transition-all"
+                            className="group transform transition-all duration-500 hover:scale-110 hover:shadow-lg"
                         >
                             <div
-                                className="w-12 h-12 flex items-center justify-center rounded-lg bg-gray-100 hover:bg-gray-200 shadow-sm transition-all"
-                            >
+                                className="w-10 h-10 flex items-center justify-center rounded-md bg-muted hover:bg-muted/70 shadow-sm transition-all duration-500">
                                 <FontAwesomeIcon
                                     icon={faWhatsapp}
-                                    className="text-green-500 group-hover:text-green-600"
-                                    style={{fontSize: '28px'}}
+                                    className="text-green-500 group-hover:text-green-700 drop-shadow-md transition-colors duration-500"
+                                    style={{fontSize: '24px'}}
                                 />
                             </div>
                         </a>
                     </li>
                 </ul>
-            </div>
-        </section>
+            </CardFooter>
+        </Card>
     );
 };
 

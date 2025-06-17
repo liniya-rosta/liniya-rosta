@@ -14,8 +14,8 @@ import {Navigation, Pagination} from 'swiper/modules';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faWhatsapp} from '@fortawesome/free-brands-svg-icons';
 import {CartPortfolio} from '@/app/portfolio/components/CartPortfolio';
-import CategoryCard from "@/app/home/components/CategoryCard";
-import ProductCard from "@/app/home/components/ProductCard";
+import CategoryCard from "@/app/(home)/components/CategoryCard";
+import ProductCard from "@/app/(home)/components/ProductCard";
 import {Category, PortfolioItemPreview, Product} from '@/lib/types';
 import {useCategoryStore} from "@/store/categoriesStore";
 import Loading from "@/components/shared/Loading";
@@ -103,7 +103,7 @@ const HomePageClient: React.FC<HomePageClientProps> = ({
 
                     <Dialog open={isModalTopOpen} onOpenChange={setIsModalTopOpen}>
                         <DialogTrigger asChild>
-                            <Button size="lg" className="min-w-[180px] cursor-pointer duration-500">
+                            <Button size="lg" className="min-w-[180px] cursor-pointer duration-500 hover:scale-105">
                                 Оставить заявку
                             </Button>
                         </DialogTrigger>
@@ -113,11 +113,11 @@ const HomePageClient: React.FC<HomePageClientProps> = ({
                     <Button
                         variant="outline"
                         size="lg"
-                        className="min-w-[180px] border-primary text-primary hover:bg-primary/10 duration-500"
+                        className="min-w-[180px] border-primary text-primary hover:bg-primary/10 duration-500 hover:scale-105"
                         asChild
                     >
                         <a href="https://wa.me/996553088988" target="_blank" rel="noopener noreferrer">
-                            <FontAwesomeIcon icon={faWhatsapp} className="mr-1"/>
+                            <FontAwesomeIcon icon={faWhatsapp}/>
                             Написать в WhatsApp
                         </a>
                     </Button>
@@ -222,8 +222,8 @@ const HomePageClient: React.FC<HomePageClientProps> = ({
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                     <Dialog open={isModalBottomOpen} onOpenChange={setIsModalBottomOpen}>
                         <DialogTrigger asChild>
-                            <Button variant="secondary" className="cursor-pointer duration-500" size="lg">Получить
-                                консультацию
+                            <Button variant="secondary" className="cursor-pointer duration-500 hover:scale-105" size="lg">
+                                Получить консультацию
                             </Button>
                         </DialogTrigger>
                         <RequestForm closeModal={() => setIsModalBottomOpen(false)}/>
@@ -231,7 +231,7 @@ const HomePageClient: React.FC<HomePageClientProps> = ({
                     <Button
                         variant="outline"
                         size="lg"
-                        className="bg-transparent border-white text-white hover:bg-white/10 duration-500"
+                        className="bg-transparent border-white text-white hover:bg-white/10 duration-500 hover:scale-105"
                         asChild
                     >
                         <a href="tel:+996555757513">+996 555 757 513</a>

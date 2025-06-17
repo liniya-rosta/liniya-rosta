@@ -37,7 +37,7 @@ const ProductCard: React.FC<Props> = ({product}) => {
             <CardFooter className="p-4 pt-0">
                 <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
                     <DialogTrigger asChild>
-                        <Button className="w-full cursor-pointer duration-500">Подробнее</Button>
+                        <Button className="w-full cursor-pointer duration-500 hover:scale-105 hover:bg-primary/80">Подробнее</Button>
                     </DialogTrigger>
                     <RequestForm closeModal={() => setIsModalOpen(false)} />
                 </Dialog>

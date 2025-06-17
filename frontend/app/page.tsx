@@ -3,7 +3,7 @@ import {fetchCategories} from '@/actions/categories';
 import {fetchProducts} from '@/actions/products';
 import {Category, Product, PortfolioItemPreview} from '@/lib/types';
 import {fetchPortfolioPreviews} from "@/actions/portfolios";
-import HomePageClient from "@/app/home/HomeClient";
+import HomePageClient from "@/app/(home)/HomeClient";
 
 interface HomePageClientProps {
     categories: Category[];
