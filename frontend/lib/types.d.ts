@@ -1,8 +1,20 @@
+export  interface GalleryForm {
+    image: File | null,
+    alt: string,
+}
+
+export interface PortfolioMutation {
+    description: string;
+    coverAlt: string;
+    cover: File | null;
+    gallery: GalleryForm[];
+}
+
 export interface PortfolioItemPreview {
     _id: string;
     description: string;
     cover: string;
-    alt:  string;
+    coverAlt:  string;
     galleryCount: string;
 }
 
