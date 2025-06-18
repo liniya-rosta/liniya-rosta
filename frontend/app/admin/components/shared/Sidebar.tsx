@@ -8,6 +8,7 @@ const Sidebar = () => {
         {href: "/admin/blog", label: "Блог"},
         {href: "/admin/admins", label: "Админы"},
         {href: "/admin/contacts", label: "Контакты"},
+        {href: "/admin/portfolio", label: "Портфолио"},
     ];
 
     return (
