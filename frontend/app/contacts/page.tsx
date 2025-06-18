@@ -3,6 +3,8 @@ import {Contact} from "@/lib/types";
 import ContactsClient from "@/app/contacts/ContactsClient";
 import {fetchContacts} from "@/actions/contacts";
 
+export const revalidate = 3600;
+
 const ContactsPage = async () => {
         let contact: Contact | null = null;
         let contactError: string | null = null;
