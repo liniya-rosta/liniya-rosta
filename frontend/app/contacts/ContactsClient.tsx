@@ -15,16 +15,23 @@ interface Props {
 }
 
 const ContactsClient: React.FC<Props> = ({data, error}) => {
-    const {contact, setContact, setFetchError, fetchLoading, setFetchLoading, fetchError} = useContactStore();
+    const {
+        contact,
+        setContact,
+        setFetchContactError,
+        fetchContactLoading,
+        setFetchContactLoading,
+        fetchContactError
+    } = useContactStore();
 
     useEffect(() => {
         if (data) setContact(data);
-        setFetchError(error);
-        setFetchLoading(false);
-    }, [data, error, setContact, setFetchError, setFetchLoading]);
+        setFetchContactError(error);
+        setFetchContactLoading(false);
+    }, [data, error, setContact, setFetchContactError, setFetchContactLoading]);
 
-    if (fetchLoading) return <Loading/>;
-    if (fetchError) return <ErrorMsg error={fetchError} label='контактов'/>
+    if (fetchContactLoading) return <Loading/>;
+    if (fetchContactError) return <ErrorMsg error={fetchContactError} label='контактов'/>
 
     return (
         <div className="container mx-auto px-4 py-8">

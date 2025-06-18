@@ -13,7 +13,8 @@ const CategorySchema = new mongoose.Schema({
             },
             message: "Заголовок категории должен быть уникальным",
         }
-    }
+    },
+    slug: {type: String, unique: true, sparse: true }
 });
 
 const Category = mongoose.model('Category', CategorySchema);

@@ -1,29 +1,32 @@
 import React from 'react';
 import {fetchCategories} from '@/actions/categories';
 import {fetchProducts} from '@/actions/products';
-import {Category, PortfolioItemPreview, Product} from '@/lib/types';
+import {Category, Contact, PortfolioItemPreview, Product} from '@/lib/types';
 import {fetchPortfolioPreviews} from "@/actions/portfolios";
 import HomePageClient from "@/app/(home)/HomeClient";
+import {fetchContacts} from "@/actions/contacts";
 
 export const revalidate = 300;
 
 const HomePage = async () => {
-    let categories: Category[] = [];
-    let products: Product[] = [];
+    let categoriesData: Category[] = [];
+    let productsData: Product[] = [];
     let portfolio: PortfolioItemPreview[] = [];
+    let contactData: Contact | null = null;
     let categoriesError = null;
     let productsError = null;
     let portfolioError = null;
+    let contactError = null;
 
     await Promise.all([
         fetchCategories()
-            .then(data => categories = data)
+            .then(data => categoriesData = data)
             .catch(e => {
                 categoriesError = e instanceof Error ? e.message : String(e);
             }),
 
         fetchProducts()
-            .then(data => products = data)
+            .then(data => productsData = data)
             .catch(e => {
                 productsError = e instanceof Error ? e.message : String(e);
             }),
@@ -33,15 +36,23 @@ const HomePage = async () => {
             .catch(e => {
                 portfolioError = e instanceof Error ? e.message : String(e);
             }),
+
+        fetchContacts()
+            .then(data => contactData = data)
+            .catch(e => {
+                contactError = e instanceof Error ? e.message : String(e);
+            }),
     ]);
 
     const initialProps = {
-        categories,
-        products,
+        categoriesData,
+        productsData,
         portfolioItems: portfolio,
+        contactData,
         categoriesError,
         productsError,
         portfolioError,
+        contactError,
     };
 
     return (

@@ -6,7 +6,6 @@ import Product from "./src/models/Product";
 import Post from "./src/models/Post";
 import {PortfolioItem} from "./src/models/PortfolioItem";
 import RequestFromClient from "./src/models/Request";
-import LaminateItem from "./src/models/LaminateItem";
 import Contact from "./src/models/Contact";
 
 
@@ -21,7 +20,7 @@ const run = async () => {
         await db.dropCollection('posts');
         await db.dropCollection('portfolioitems');
         await db.dropCollection('requests');
-        await db.dropCollection('contacts.ts');
+        await db.dropCollection('contacts');
     } catch (e) {
         console.log('Коллекции отсутствовали, пропуск сброса');
     }
@@ -48,7 +47,7 @@ const run = async () => {
         phone1: "+996700123456",
         phone2: "+996555654321",
         email: "liniyarosta49@gmail.com",
-        whatsapp: "+996700123456",
+        whatsapp: "+996555654321",
         instagram: "https://www.instagram.com/liniya_rosta.kg/",
         mapLocation: "https://2gis.kg/bishkek/firm/70000001094990183?m=74.623804%2C42.890143%2F16",
         workingHours: {
@@ -64,7 +63,7 @@ const run = async () => {
     });
 
 
-    const [lightingTechnology, film] = await Category.create(
+    const [lightingTechnology, film, spatula, ventilationGrilles, spc] = await Category.create(
         {
             title: 'Светотехника',
         },
@@ -77,6 +76,10 @@ const run = async () => {
         {
             title: 'Вентиляционные решетки',
         },
+        {
+            title: "SPC",
+            slug: "spc"
+        }
     );
 
     await Product.create(
@@ -109,6 +112,36 @@ const run = async () => {
             title: 'Пленка ПВХ as;lkdf;sajf',
             description: 'ЛАК:; толщина - 0,18±0,01 мм; ГР/М; плотность - 210 г/м2; ширина полотна - 320 см',
             image: 'test/plenkaPBX.png',
+        },
+        {
+            category: spc,
+            title: 'Тис Альпик',
+            description: 'Размер: 180x1220x4,0/0,3+1ммIXPE',
+            image: 'test/laminate1.JPG',
+        },
+        {
+            category: spc,
+            title: 'Тис Латте',
+            description: 'Размер: 180x1220x4,0/0,3+1ммIXPE',
+            image: 'test/laminate2.JPG',
+        },
+        {
+            category: spc,
+            title: 'Бук Шале',
+            description: 'Размер: 180x1220x4,0/0,3+1ммIXPE',
+            image: 'test/laminate3.JPG',
+        },
+        {
+            category: spc,
+            title: 'Орех Шато',
+            description: 'Размер: 180x1220x4,0/0,3+1ммIXPE',
+            image: 'test/laminate4.JPG',
+        },
+        {
+            category: spc,
+            title: 'Дуб Классик',
+            description: 'Размер: 180x1220x4,0/0,3+1ммIXPE',
+            image: 'test/laminate5.JPG',
         },
     );
 
@@ -209,29 +242,6 @@ const run = async () => {
             name: "Айдана",
             phone: "+996555112233",
             email: 'aidana@gmail.com',
-        },
-    )
-
-    await LaminateItem.create({
-            title: 'Тис Альпик',
-            description: 'Размер: 180x1220x4,0/0,3+1ммIXPE',
-            image: 'test/laminate1.JPG',
-        }, {
-            title: 'Тис Латте',
-            description: 'Размер: 180x1220x4,0/0,3+1ммIXPE',
-            image: 'test/laminate2.JPG',
-        }, {
-            title: 'Бук Шале',
-            description: 'Размер: 180x1220x4,0/0,3+1ммIXPE',
-            image: 'test/laminate3.JPG',
-        }, {
-            title: 'Орех Шато',
-            description: 'Размер: 180x1220x4,0/0,3+1ммIXPE',
-            image: 'test/laminate4.JPG',
-        }, {
-            title: 'Дуб Классик',
-            description: 'Размер: 180x1220x4,0/0,3+1ммIXPE',
-            image: 'test/laminate5.JPG',
         },
     )
     await db.close();

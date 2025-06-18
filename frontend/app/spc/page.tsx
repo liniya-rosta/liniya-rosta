@@ -1,16 +1,23 @@
 import React from 'react';
 import SpcLaminatePage from "@/app/spc/SpcLaminatePage";
-import {fetchLaminateItems} from "@/actions/laminateItems";
-import { Laminate } from "@/lib/types";
+import {Product} from "@/lib/types";
 import AdvantagesLaminate from "@/app/spc/components/AdvantagesLaminate";
 import InfoAboutSpcLaminate from "@/app/spc/components/InfoAboutSpcLaminate";
+import {fetchCategories} from "@/actions/categories";
+import {fetchProducts} from "@/actions/products";
 
 const SpcPage = async () => {
-    let laminateData: Laminate[] | null = null;
+    let laminateData: Product[] | null = null;
     let error: string | null = null;
+    let categoryName: string = '';
 
     try {
-        laminateData = await fetchLaminateItems();
+        const categorySlug = 'spc';
+        const categories = await fetchCategories(categorySlug);
+        const spcCategory = categories[0];
+
+        categoryName = spcCategory.title;
+        laminateData = await fetchProducts(spcCategory._id);
     } catch (e) {
         if (e instanceof Error) {
             error = e.message;
@@ -21,11 +28,11 @@ const SpcPage = async () => {
 
     return (
         <div className="container">
-            <InfoAboutSpcLaminate />
+            <InfoAboutSpcLaminate/>
 
             <AdvantagesLaminate/>
 
-            <SpcLaminatePage initialData={laminateData} error={error}/>
+            <SpcLaminatePage initialData={laminateData} error={error} categoryName={categoryName}/>
         </div>
     );
 };

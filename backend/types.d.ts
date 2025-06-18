@@ -6,11 +6,10 @@ export interface Product {
     image: string | null;
 }
 
-export type ProductWithoutId = Omit<Product, '_id'>;
-
 export interface Category {
     _id: string;
     title: string;
+    slug?: string;
 }
 
 export interface UserFields {
