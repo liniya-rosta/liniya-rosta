@@ -1,6 +1,5 @@
 import {ColumnDef} from "@tanstack/react-table";
 import {PortfolioItemPreview} from "@/lib/types";
-import {Checkbox} from "@/components/ui/checkbox";
 import {API_BASE_URL} from "@/lib/globalConstants";
 import {Tooltip, TooltipContent, TooltipTrigger} from "@/components/ui/tooltip";
 import Image from "next/image";
@@ -16,33 +15,23 @@ import {MoreHorizontal} from "lucide-react";
 import React from "react";
 
 export const getColumns = (
-    onImageClick: (image: { cover: string; alt: string }) => void
+    onImageClick: (image: { cover: string; alt: string }) => void,
+    onDelete: (id: string) => void,
+    onEditCover: (id: string) => void,
+    onGallery: (id: string) => void,
 ): ColumnDef<PortfolioItemPreview>[] => [
     {
-        id: "select",
-        header: ({table}) => (
-            <Checkbox
-                checked={
-                    table.getIsAllPageRowsSelected() ||
-                    (table.getIsSomePageRowsSelected() && "indeterminate")
-                }
-                onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-                aria-label="Select all"
-            />
-        ),
-        cell: ({row}) => (
-            <Checkbox
-                checked={row.getIsSelected()}
-                onCheckedChange={(value) => row.toggleSelected(!!value)}
-                aria-label="Select row"
-            />
-        ),
+        id: "index",
+        header: "№",
+        cell: ({row}) => {
+            return <div className="text-center">{row.index + 1}</div>;
+        },
         enableSorting: false,
         enableHiding: false,
     },
     {
         accessorKey: "coverAlt",
-        header: "Альтернативное название обложки",
+        header: "Альтер-ое название обложки",
         cell: ({row}) => (
             <div className="capitalize">{row.getValue("coverAlt")}</div>
         ),
@@ -107,7 +96,7 @@ export const getColumns = (
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="ghost" className="h-8 w-8 p-0">
-                            <span className="sr-only">Open menu</span>
+                            <span className="sr-only">Открыть меню</span>
                             <MoreHorizontal/>
                         </Button>
                     </DropdownMenuTrigger>
@@ -119,8 +108,15 @@ export const getColumns = (
                             Копировать ID
                         </DropdownMenuItem>
                         <DropdownMenuSeparator/>
-                        <DropdownMenuItem>View customer</DropdownMenuItem>
-                        <DropdownMenuItem>Посмотреть галерею</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => onGallery(payment._id)}>
+                            Посмотреть галерею
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => onEditCover(payment._id)}>
+                            Редактировать
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => onDelete(payment._id)}>
+                            Удалить
+                        </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
             )

@@ -1,19 +1,17 @@
 'use client'
+
 import {useForm, useFieldArray} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {portfolioSchema} from "@/lib/zodSchemas/portfolioSchema";
+import {portfolioSchema} from "@/lib/zodSchemas/portfolio/portfolioSchema";
 import {Input} from "@/components/ui/input";
 import {Button} from "@/components/ui/button";
 import React from "react";
 import {PortfolioMutation} from "@/lib/types";
 import { Plus } from "lucide-react";
-import {createPortfolioAdmin} from "@/actions/portfolios";
+import {createPortfolioSuperAdmin} from "@/actions/portfolios";
+import {useRouter} from "next/navigation";
 
-interface Props {
-    isEdit?: boolean;
-}
-
-const PortfolioForm: React.FC<Props>= () => {
+const PortfolioForm= () => {
     const {register, handleSubmit, setValue, control, trigger, formState: {errors}} = useForm({
             resolver: zodResolver(portfolioSchema),
         });
@@ -22,6 +20,8 @@ const PortfolioForm: React.FC<Props>= () => {
         control,
         name: "gallery",
     });
+
+    const router = useRouter();
 
     const onCoverChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -44,9 +44,8 @@ const PortfolioForm: React.FC<Props>= () => {
 
     const onSubmit = async (data: PortfolioMutation) => {
         try {
-            await createPortfolioAdmin(data)
-            console.log(data)
-
+            await createPortfolioSuperAdmin(data)
+            router.push("/admin/portfolio");
         } catch (e) {
             console.log(e)
         }

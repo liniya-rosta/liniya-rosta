@@ -26,7 +26,7 @@ const PortfolioClient: React.FC<Props> = ({ data }) => {
 
                     return (
                         <Link key={item._id} href={pageUrl}>
-                            <CartPortfolio alt={item.alt} imageSrc={imageUrl} textBtn={"Смотреть все"}/>
+                            <CartPortfolio alt={item.coverAlt} imageSrc={imageUrl} textBtn={"Смотреть все"}/>
                         </Link>
                     );
                 })}

@@ -15,7 +15,7 @@ export interface PortfolioItemPreview {
     description: string;
     cover: string;
     coverAlt:  string;
-    galleryCount: string;
+    galleryCount: number;
 }
 
 export interface GalleryItem {
@@ -26,6 +26,17 @@ export interface GalleryItem {
 
 export interface PortfolioItemDetail extends PortfolioItemPreview {
     gallery: GalleryItem[];
+}
+
+export interface PortfolioEditValues {
+    cover?: File | null;
+    coverAlt?: string;
+    description?: string;
+}
+
+export interface GalleryItemValues{
+    image?: File | null;
+    alt?: string;
 }
 
 export interface Category {

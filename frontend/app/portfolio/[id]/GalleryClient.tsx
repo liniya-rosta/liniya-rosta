@@ -40,7 +40,7 @@ const GalleryClient: React.FC<Props> = ({detailItem}) => {
         if (currentIndex === null) {
             setSelectedItem(null);
         } else if (currentIndex === -1) {
-            setSelectedItem({image: detailItem.cover, _id: detailItem._id, alt: detailItem.alt});
+            setSelectedItem({image: detailItem.cover, _id: detailItem._id, alt: detailItem.coverAlt});
         } else if (gallery && currentIndex >= 0) {
             setSelectedItem(gallery[currentIndex]);
         }
@@ -63,7 +63,7 @@ const GalleryClient: React.FC<Props> = ({detailItem}) => {
                 >
                     <Image
                         src={`${API_BASE_URL}/${detailItem.cover}`}
-                        alt={detailItem.alt}
+                        alt={detailItem.coverAlt}
                         fill
                         priority
                         className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"

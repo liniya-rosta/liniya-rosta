@@ -3,7 +3,9 @@ import React from "react";
 import {fetchPortfolioItems} from "@/actions/portfolios";
 import GalleryClient from './GalleryClient';
 
-type Params = { id: string };
+interface Params {
+    id: string
+}
 
 const GalleryPage = async ({ params }: { params: Params }) => {
     const { id } = params;
