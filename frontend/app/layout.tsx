@@ -1,6 +1,6 @@
-import type {Metadata} from "next";
+// app/layout.tsx
 import "./globals.css";
-import ClientLayout from "@/components/shared/ClientLayout";
+import type {Metadata} from "next";
 import manrope from "@/lib/fonts";
 import {ToastContainer} from "react-toastify";
 
@@ -9,18 +9,11 @@ export const metadata: Metadata = {
     description: "",
 };
 
-export default function RootLayout({children,}: Readonly<{
-    children: React.ReactNode;
-}>) {
-
+export default function RootLayout({children}: { children: React.ReactNode }) {
     return (
         <html lang="ru">
-        <body
-            className={`${manrope.variable} antialiased`}
-        >
-        <div className="min-h-screen flex flex-col">
-            <ClientLayout>{children}</ClientLayout>
-        </div>
+        <body className={`${manrope.variable} antialiased`}>
+        {children}
         <ToastContainer position="top-left" autoClose={500} />
         </body>
         </html>
