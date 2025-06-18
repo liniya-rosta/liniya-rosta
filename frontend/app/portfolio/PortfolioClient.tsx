@@ -7,7 +7,7 @@ import { CartPortfolio } from '@/app/portfolio/components/CartPortfolio';
 import {PortfolioItemPreview} from "@/lib/types";
 import Link from "next/link";
 
-type Props = {
+interface Props {
     data: PortfolioItemPreview[]
 }
 
@@ -26,7 +26,7 @@ const PortfolioClient: React.FC<Props> = ({ data }) => {
 
                     return (
                         <Link key={item._id} href={pageUrl}>
-                            <CartPortfolio imageSrc={imageUrl} textBtn={"Смотреть все"}/>
+                            <CartPortfolio alt={item.coverAlt} imageSrc={imageUrl} textBtn={"Смотреть все"}/>
                         </Link>
                     );
                 })}

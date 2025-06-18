@@ -158,74 +158,40 @@ const run = async () => {
         },
     );
 
-    await PortfolioItem.create(
+    await PortfolioItem.create([
         {
             cover: 'test/IMG_0448.jpg',
+            coverAlt: 'Обложка проекта 1',
             gallery: [
-                {
-                    image: 'test/IMG_0450.jpg',
-                },
-                {
-                    image: 'test/IMG_0451.jpg',
-                },
-                {
-                    image: 'test/IMG_0449.jpg',
-                },
-                {
-                    image: 'test/IMG_0453.jpg',
-                },
-                {
-                    image: 'test/IMG_0454.jpg',
-                },
-                {
-                    image: 'test/IMG_0455.jpg',
-                },
-                {
-                    image: 'test/IMG_0610.jpg',
-                },
-                {
-                    image: 'test/IMG_0611.jpg',
-                },
+                { image: 'test/IMG_0450.jpg', alt: 'Галерея 1 - 1' },
+                { image: 'test/IMG_0451.jpg', alt: 'Галерея 1 - 2' },
+                { image: 'test/IMG_0449.jpg', alt: 'Галерея 1 - 3' },
+                { image: 'test/IMG_0453.jpg', alt: 'Галерея 1 - 4' },
+                { image: 'test/IMG_0454.jpg', alt: 'Галерея 1 - 5' },
+                { image: 'test/IMG_0455.jpg', alt: 'Галерея 1 - 6' },
+                { image: 'test/IMG_0610.jpg', alt: 'Галерея 1 - 7' },
+                { image: 'test/IMG_0611.jpg', alt: 'Галерея 1 - 8' },
             ],
-            description: "Современная гостиная",
+            description: 'Современная гостиная с натяжным потолком',
         },
         {
             cover: 'test/IMG_2687.jpg',
+            coverAlt: 'Обложка проекта 2',
             gallery: [
-                {
-                    image: 'test/IMG_2683.jpg',
-                },
-                {
-                    image: 'test/IMG_2682.jpg',
-                },
-                {
-                    image: 'test/IMG_2688.jpg',
-                },
-                {
-                    image: 'test/IMG_2685.jpg',
-                },
-                {
-                    image: 'test/IMG_2689.jpg',
-                },
-                {
-                    image: 'test/IMG_2690.jpg',
-                },
-                {
-                    image: 'test/IMG_2691.jpg',
-                },
-                {
-                    image: 'test/IMG_2692.jpg',
-                },
-                {
-                    image: 'test/IMG_2683.jpg',
-                },
-                {
-                    image: 'test/IMG_2682.jpg',
-                },
+                { image: 'test/IMG_2683.jpg', alt: 'Галерея 2 - 1' },
+                { image: 'test/IMG_2682.jpg', alt: 'Галерея 2 - 2' },
+                { image: 'test/IMG_2688.jpg', alt: 'Галерея 2 - 3' },
+                { image: 'test/IMG_2685.jpg', alt: 'Галерея 2 - 4' },
+                { image: 'test/IMG_2689.jpg', alt: 'Галерея 2 - 5' },
+                { image: 'test/IMG_2690.jpg', alt: 'Галерея 2 - 6' },
+                { image: 'test/IMG_2691.jpg', alt: 'Галерея 2 - 7' },
+                { image: 'test/IMG_2692.jpg', alt: 'Галерея 2 - 8' },
+                { image: 'test/IMG_2683.jpg', alt: 'Галерея 2 - 9' },
+                { image: 'test/IMG_2682.jpg', alt: 'Галерея 2 - 10' },
             ],
-            description: "Современная гостиная",
+            description: 'Современная гостиная с натяжным потолком',
         }
-    );
+    ]);
 
     await RequestFromClient.create(
         {
@@ -245,7 +211,6 @@ const run = async () => {
         },
     )
     await db.close();
-
 }
 
 
