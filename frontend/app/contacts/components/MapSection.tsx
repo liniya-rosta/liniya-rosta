@@ -2,7 +2,7 @@ import {useContactStore} from "@/store/contactsStore";
 
 const MapSection = () => {
     const contact = useContactStore(state => state.contact);
-    if (!contact || !contact.mapLocation) return null;
+    if (!contact || !contact.linkLocation) return null;
 
     return (
         <section aria-labelledby="map-heading" lang="ru">
@@ -11,7 +11,7 @@ const MapSection = () => {
             </h2>
             <div className="w-full h-[300px] rounded-xl overflow-hidden">
                 <iframe
-                    src={contact.mapLocation}
+                    src={contact.linkLocation}
                     className="w-full h-full border-0"
                     allowFullScreen
                     loading="lazy"

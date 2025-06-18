@@ -1,11 +1,11 @@
 import React from 'react';
 
-const RequestModal = () => {
+const Page = () => {
     return (
         <div>
-            
+
         </div>
     );
 };
 
-export default RequestModal;
+export default Page;
