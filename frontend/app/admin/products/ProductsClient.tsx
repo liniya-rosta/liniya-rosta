@@ -5,16 +5,17 @@ import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { CardContent } from "@/components/ui/card";
-
 import { AxiosError } from "axios";
 import Loading from "@/components/shared/Loading";
-import {useCategoryStore} from "@/store/categoriesStore";
-import {useProductStore} from "@/store/productsStore";
-import {CreateProductFormData, UpdateProductFormData} from "@/lib/zodSchemas/productSchema";
-import {createProduct, deleteProduct, updateProduct} from "@/actions/products";
-import ProductFormModal from "@/app/admin/products/components/ProductFormModal";
-import {Category, Product} from "@/lib/types";
+import { useCategoryStore } from "@/store/categoriesStore";
+import { CreateProductFormData, UpdateProductFormData } from "@/lib/zodSchemas/productSchema";
+import { createProduct, deleteProduct, updateProduct } from "@/actions/products";
+import ProductModal from "@/app/admin/products/components/ProductModal";
 import ProductsTable from "@/app/admin/products/components/ProductsTable";
+import { Category, Product } from "@/lib/types";
+import { toast } from 'react-toastify';
+import {useAdminProductStore} from "@/store/superadmin/superadminProductsStore";
+
 
 interface ProductsClientProps {
     initialProducts: Product[];
@@ -22,28 +23,40 @@ interface ProductsClientProps {
     initialError: string | null;
 }
 
-const ProductsClient: React.FC<ProductsClientProps> = ({initialProducts, initialCategories, initialError,}) => {
+const ProductsClient: React.FC<ProductsClientProps> = ({ initialProducts, initialCategories, initialError }) => {
     const {
         products,
         setProducts,
-        fetchProductsLoading,
-        fetchProductsError,
-        setFetchProductsLoading,
-        setFetchProductsError,
-    } = useProductStore();
+        fetchLoading,
+        createLoading,
+        updateLoading,
+        deleteLoading,
+        fetchError,
+        createError,
+        updateError,
+        setFetchLoading,
+        setCreateLoading,
+        setUpdateLoading,
+        setDeleteLoading,
+        setFetchError,
+        setCreateError,
+        setUpdateError,
+        setDeleteError,
+    } = useAdminProductStore();
 
     const { categories, setCategories } = useCategoryStore();
 
     const [isHydrating, setIsHydrating] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingProduct, setEditingProduct] = useState<Product | null>(null);
-    const [actionLoading, setActionLoading] = useState(false);
+
+    const anyLoading = createLoading || updateLoading || deleteLoading;
 
     useEffect(() => {
         if (initialProducts) setProducts(initialProducts);
         if (initialCategories) setCategories(initialCategories);
-        setFetchProductsError(initialError);
-        setFetchProductsLoading(false);
+        if (initialError) setFetchError(initialError);
+        setFetchLoading(false);
         setIsHydrating(false);
     }, [
         initialProducts,
@@ -51,35 +64,44 @@ const ProductsClient: React.FC<ProductsClientProps> = ({initialProducts, initial
         initialError,
         setProducts,
         setCategories,
-        setFetchProductsError,
-        setFetchProductsLoading,
+        setFetchError,
+        setFetchLoading,
     ]);
 
     const resetAndCloseModal = () => {
         setEditingProduct(null);
         setIsModalOpen(false);
-        setFetchProductsError(null);
+        setCreateError(null);
+        setUpdateError(null);
     };
 
     const openCreateModal = () => {
         setEditingProduct(null);
         setIsModalOpen(true);
-        setFetchProductsError(null);
+        resetErrors();
     };
 
     const openEditModal = (product: Product) => {
         setEditingProduct(product);
         setIsModalOpen(true);
-        setFetchProductsError(null);
+        resetErrors();
+    };
+
+    const resetErrors = () => {
+        setFetchError(null);
+        setCreateError(null);
+        setUpdateError(null);
+        setDeleteError(null);
     };
 
     const onSubmit = async (formData: CreateProductFormData | UpdateProductFormData, isEditingMode: boolean) => {
-        setActionLoading(true);
+        resetErrors();
         try {
             let resultProduct: Product;
             if (isEditingMode) {
+                setUpdateLoading(true);
                 const updateFormData = formData as UpdateProductFormData;
-                if (!editingProduct) throw new Error("Editing product is null");
+                if (!editingProduct) throw new Error("Редактируемый продукт не найден.");
 
                 const productDataForUpdate = {
                     category: updateFormData.category,
@@ -87,12 +109,7 @@ const ProductsClient: React.FC<ProductsClientProps> = ({initialProducts, initial
                     description: updateFormData.description || "",
                 };
 
-                const imageFileOrNull =
-                    updateFormData.image === null
-                        ? undefined
-                        : updateFormData.image instanceof File
-                            ? updateFormData.image
-                            : undefined;
+                const imageFileOrNull = updateFormData.image === null ? undefined : updateFormData.image instanceof File ? updateFormData.image : undefined;
 
                 resultProduct = await updateProduct(
                     editingProduct._id,
@@ -104,8 +121,9 @@ const ProductsClient: React.FC<ProductsClientProps> = ({initialProducts, initial
                         product._id === editingProduct._id ? resultProduct : product
                     )
                 );
-                alert("Товар успешно обновлен!");
+                toast.success("Товар успешно обновлен!");
             } else {
+                setCreateLoading(true);
                 const createFormData = formData as CreateProductFormData;
 
                 const productDataForCreate = {
@@ -120,7 +138,7 @@ const ProductsClient: React.FC<ProductsClientProps> = ({initialProducts, initial
                     productDataForCreate.image
                 );
                 setProducts([...products, resultProduct]);
-                alert("Товар успешно создан!");
+                toast.success("Товар успешно создан!");
             }
             resetAndCloseModal();
         } catch (err) {
@@ -129,42 +147,45 @@ const ProductsClient: React.FC<ProductsClientProps> = ({initialProducts, initial
                     ? err.response?.data?.error
                     : err instanceof Error
                         ? err.message
-                        : "Ошибка при сохранении товара";
-            setFetchProductsError(errorMessage);
-            alert(errorMessage);
+                        : "Неизвестная ошибка при сохранении товара";
+            if (isEditingMode) {
+                setUpdateError(errorMessage);
+            } else {
+                setCreateError(errorMessage);
+            }
+            toast.error(errorMessage);
         } finally {
-            setActionLoading(false);
+            setCreateLoading(false);
+            setUpdateLoading(false);
         }
     };
 
     const handleDeleteProduct = async (id: string) => {
         if (!window.confirm("Вы уверены, что хотите удалить этот товар?")) return;
 
+        resetErrors();
+        setDeleteLoading(true);
         try {
-            setActionLoading(true);
             await deleteProduct(id);
             setProducts(products.filter((product) => product._id !== id));
-            alert("Товар успешно удален!");
+            toast.success("Товар успешно удален!");
         } catch (err) {
-            const errorMessage =
-                err instanceof AxiosError
-                    ? err.response?.data?.error
-                    : "Ошибка при удалении товара";
-            setFetchProductsError(errorMessage);
-            alert(errorMessage);
+            const errorMessage = err instanceof AxiosError ? err.response?.data?.error : "Неизвестная ошибка при удалении товара";
+            setDeleteError(errorMessage);
+            toast.error(errorMessage);
         } finally {
-            setActionLoading(false);
+            setDeleteLoading(false);
         }
     };
 
-    if (isHydrating || fetchProductsLoading) return <Loading />;
+    if (isHydrating || fetchLoading) return <Loading />;
 
-    if (fetchProductsError) {
+    if (fetchError) {
         return (
             <div className="flex items-center justify-center min-h-64">
                 <Alert variant="destructive" className="max-w-md">
                     <AlertDescription>
-                        Ошибка при загрузке продуктов: {fetchProductsError}
+                        Ошибка при загрузке продуктов: {fetchError}
                     </AlertDescription>
                 </Alert>
             </div>
@@ -184,7 +205,7 @@ const ProductsClient: React.FC<ProductsClientProps> = ({initialProducts, initial
                 </div>
                 <Button
                     onClick={openCreateModal}
-                    disabled={actionLoading}
+                    disabled={anyLoading}
                     className="flex items-center gap-2 w-full sm:w-auto"
                 >
                     <Plus size={16} />
@@ -197,7 +218,7 @@ const ProductsClient: React.FC<ProductsClientProps> = ({initialProducts, initial
                     <div className="text-center py-8 text-muted-foreground">
                         <p>Продукты не найдены</p>
                         <p className="text-sm mt-2">
-                            Нажмите "Добавить продукт" для создания первого товара
+                            Нажмите &#34;Добавить продукт&#34; для создания первого товара
                         </p>
                     </div>
                 ) : (
@@ -206,19 +227,21 @@ const ProductsClient: React.FC<ProductsClientProps> = ({initialProducts, initial
                         categories={categories}
                         onEditProduct={openEditModal}
                         onDeleteProduct={handleDeleteProduct}
-                        actionLoading={actionLoading}
+                        actionLoading={anyLoading}
                     />
                 )}
             </CardContent>
 
-            <ProductFormModal
+            <ProductModal
                 isOpen={isModalOpen}
                 onClose={resetAndCloseModal}
                 isEditing={!!editingProduct}
                 editingProduct={editingProduct}
                 categories={categories}
-                actionLoading={actionLoading}
+                loading={createLoading || updateLoading}
                 onSubmit={onSubmit}
+                createError={createError}
+                updateError={updateError}
             />
         </div>
     );

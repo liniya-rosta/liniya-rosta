@@ -2,15 +2,16 @@
 
 import React, { useEffect, useState } from 'react';
 import { Plus } from 'lucide-react';
-import { usePostsStore } from '@/store/postsStore';
 import { Post, CreatePostData, UpdatePostData } from "@/lib/types";
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Card, CardContent } from '@/components/ui/card';
 import {createPost, deletePost, updatePost} from "@/actions/posts";
 import PostsTable from "@/app/admin/blog/components/PostsTable";
-import PostFormModal from "@/app/admin/blog/components/PostFormModal";
+import PostModal from "@/app/admin/blog/components/PostModal";
 import Loading from "@/components/shared/Loading";
+import { toast } from 'react-toastify';
+import { AxiosError } from 'axios';
+import {useAdminPostStore} from "@/store/superadmin/superadminPostsStore";
 
 interface Props {
     data: Post[];
@@ -21,49 +22,71 @@ interface Props {
 const AdminBlogClient: React.FC<Props> = ({ data, error, isAdmin = true }) => {
     const {
         posts,
-        fetchPostsLoading,
-        fetchPostsError,
+        fetchLoading,
+        createLoading,
+        updateLoading,
+        deleteLoading,
+        fetchError,
+        createError,
+        updateError,
         setPosts,
-        setfetchPostsLoading: setLoading,
-        setFetchPostsError: setError
-    } = usePostsStore();
+        setFetchLoading,
+        setCreateLoading,
+        setUpdateLoading,
+        setDeleteLoading,
+        setFetchError,
+        setCreateError,
+        setUpdateError,
+        setDeleteError,
+    } = useAdminPostStore();
 
     const [isHydrating, setIsHydrating] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingPost, setEditingPost] = useState<Post | null>(null);
-    const [actionLoading, setActionLoading] = useState(false);
+
+    const anyLoading = createLoading || updateLoading || deleteLoading;
 
     useEffect(() => {
         if (data) {
             setPosts(data);
         }
-        setError(error);
-        setLoading(false);
+        setFetchError(error);
+        setFetchLoading(false);
         setIsHydrating(false);
-    }, [data, error, setPosts, setError, setLoading]);
+    }, [data, error, setPosts, setFetchError, setFetchLoading]);
+
+    const resetErrors = () => {
+        setFetchError(null);
+        setCreateError(null);
+        setUpdateError(null);
+        setDeleteError(null);
+    };
 
     const openCreateModal = () => {
         setEditingPost(null);
         setIsModalOpen(true);
+        resetErrors();
     };
 
     const openEditModal = (post: Post) => {
         setEditingPost(post);
         setIsModalOpen(true);
+        resetErrors();
     };
 
     const closeModal = () => {
         setIsModalOpen(false);
         setEditingPost(null);
-        setError(null);
+        resetErrors();
     };
 
     const onSubmit = async (formData: CreatePostData | UpdatePostData, isEditingMode: boolean) => {
-        setActionLoading(true);
+        resetErrors();
         try {
             let result: { message: string; post: Post; };
 
             if (isEditingMode) {
+                setUpdateLoading(true);
                 if (!editingPost) throw new Error('Editing post is null');
 
                 const updateData: UpdatePostData = {
@@ -74,21 +97,31 @@ const AdminBlogClient: React.FC<Props> = ({ data, error, isAdmin = true }) => {
 
                 result = await updatePost(editingPost._id, updateData);
                 setPosts(posts.map(p => p._id === editingPost._id ? result.post : p));
-                alert('Пост успешно обновлен!');
+                toast.success('Пост успешно обновлен!');
             } else {
+                setCreateLoading(true);
                 const createData = formData as CreatePostData;
 
                 result = await createPost(createData);
                 setPosts([result.post, ...posts]);
-                alert('Пост успешно создан!');
+                toast.success('Пост успешно создан!');
             }
             closeModal();
         } catch (err) {
-            const errorMessage = err instanceof Error ? err.message : 'Произошла ошибка при сохранении поста';
-            setError(errorMessage);
-            alert(errorMessage);
+            const errorMessage = err instanceof AxiosError
+                ? err.response?.data?.error
+                : err instanceof Error
+                    ? err.message
+                    : 'Произошла ошибка при сохранении поста';
+            if (isEditingMode) {
+                setUpdateError(errorMessage);
+            } else {
+                setCreateError(errorMessage);
+            }
+            toast.error(errorMessage);
         } finally {
-            setActionLoading(false);
+            setCreateLoading(false);
+            setUpdateLoading(false);
         }
     };
 
@@ -96,30 +129,35 @@ const AdminBlogClient: React.FC<Props> = ({ data, error, isAdmin = true }) => {
         if (!confirm('Вы уверены, что хотите удалить этот пост?')) {
             return;
         }
-        setActionLoading(true);
+        resetErrors();
+        setDeleteLoading(true);
         try {
             await deletePost(postId);
             setPosts(posts.filter(p => p._id !== postId));
-            alert('Пост успешно удален!');
+            toast.success('Пост успешно удален!');
         } catch (err) {
-            const errorMessage = err instanceof Error ? err.message : 'Произошла ошибка при удалении';
-            setError(errorMessage);
-            alert(errorMessage);
+            const errorMessage = err instanceof AxiosError
+                ? err.response?.data?.error
+                : err instanceof Error
+                    ? err.message
+                    : 'Произошла ошибка при удалении';
+            setDeleteError(errorMessage);
+            toast.error(errorMessage);
         } finally {
-            setActionLoading(false);
+            setDeleteLoading(false);
         }
     };
 
-    if (isHydrating || fetchPostsLoading) {
+    if (isHydrating || fetchLoading) {
         return <Loading />;
     }
 
-    if (fetchPostsError) {
+    if (fetchError) {
         return (
             <div className="container mx-auto px-4 py-8">
                 <Alert variant="destructive" className="max-w-md mx-auto">
                     <AlertDescription>
-                        Ошибка при загрузке постов: {fetchPostsError}
+                        Ошибка при загрузке постов: {fetchError}
                     </AlertDescription>
                 </Alert>
             </div>
@@ -134,7 +172,7 @@ const AdminBlogClient: React.FC<Props> = ({ data, error, isAdmin = true }) => {
                     <p className="text-muted-foreground mt-1">Создавайте и редактируйте посты</p>
                 </div>
                 {isAdmin && (
-                    <Button onClick={openCreateModal} size="lg" className="flex items-center gap-2 w-full sm:w-auto">
+                    <Button onClick={openCreateModal} size="lg" className="flex items-center gap-2 w-full sm:w-auto" disabled={anyLoading}>
                         <Plus className="mr-2 h-5 w-5" />
                         Создать пост
                     </Button>
@@ -142,28 +180,29 @@ const AdminBlogClient: React.FC<Props> = ({ data, error, isAdmin = true }) => {
             </div>
 
             {posts.length === 0 ? (
-                <div className="text-center">
-                    <Card className="max-w-md mx-auto">
-                        <CardContent className="pt-6">
-                            <p className="text-muted-foreground">Пока нет опубликованных постов</p>
-                        </CardContent>
-                    </Card>
-                </div>
-            ) : (
+                    <div className="text-center py-8 text-muted-foreground">
+                        <p>Посты не найдены</p>
+                        <p className="text-sm mt-2">
+                            Нажмите &#34;Создать пост&#34; для создания первого поста
+                        </p>
+                    </div>
+                ) : (
                 <PostsTable
                     posts={posts}
                     onEditPost={openEditModal}
                     onDeletePost={handleDelete}
-                    actionLoading={actionLoading}
+                    actionLoading={anyLoading}
                 />
             )}
 
-            <PostFormModal
+            <PostModal
                 isOpen={isModalOpen}
                 onClose={closeModal}
                 isEditing={!!editingPost}
                 editingPost={editingPost}
-                actionLoading={actionLoading}
+                actionLoading={createLoading || updateLoading}
+                createError={createError}
+                updateError={updateError}
                 onSubmit={onSubmit}
             />
         </div>
