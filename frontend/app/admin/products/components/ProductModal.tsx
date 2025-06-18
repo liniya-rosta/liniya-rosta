@@ -22,17 +22,7 @@ interface ProductModalProps {
     updateError: string | null;
 }
 
-const ProductModal: React.FC<ProductModalProps> = ({
-                                                       isOpen,
-                                                       onClose,
-                                                       isEditing,
-                                                       editingProduct,
-                                                       categories,
-                                                       loading,
-                                                       onSubmit,
-                                                       createError,
-                                                       updateError,
-                                                   }) => {
+const ProductModal: React.FC<ProductModalProps> = ({isOpen, onClose, isEditing, editingProduct, categories, loading, onSubmit, createError, updateError}) => {
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
             <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto">

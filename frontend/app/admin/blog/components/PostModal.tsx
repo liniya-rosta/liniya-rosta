@@ -20,16 +20,7 @@ interface PostModalProps {
     onSubmit: (formData: CreatePostData | UpdatePostData, isEditingMode: boolean) => void;
 }
 
-const PostModal: React.FC<PostModalProps> = ({
-                                                 isOpen,
-                                                 onClose,
-                                                 isEditing,
-                                                 editingPost,
-                                                 actionLoading,
-                                                 createError,
-                                                 updateError,
-                                                 onSubmit,
-                                             }) => {
+const PostModal: React.FC<PostModalProps> = ({isOpen, onClose, isEditing, editingPost, actionLoading, createError, updateError, onSubmit,}) => {
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
             <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto">
