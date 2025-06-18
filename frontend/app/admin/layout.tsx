@@ -4,8 +4,8 @@ import manrope from "@/lib/fonts";
 import AdminHeader from "@/app/admin/components/shared/AdminHeader";
 
 
-
 export default function AdminLayout({children}: { children: ReactNode }) {
+
     return (
         <html lang="ru">
         <body
