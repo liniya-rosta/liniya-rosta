@@ -12,7 +12,7 @@ const ModalEdit: React.FC<React.PropsWithChildren<Props>> = (
 ) => {
     return (
         <Dialog open={open} onOpenChange={openChange}>
-            <DialogContent className="sm:max-w-md">
+            <DialogContent aria-describedby={undefined} className="sm:max-w-md">
                 <DialogHeader>
                     <DialogTitle>
                         Редактировать {isGallery ? "галерею" : "Портфолио"}

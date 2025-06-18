@@ -12,8 +12,12 @@ import {API_BASE_URL} from "@/lib/globalConstants";
 import Image from "next/image";
 import {useSuperAdminPortfolioStore} from "@/store/superadmin/superAdminPortfolio";
 
-const EditPortfolioItem = () => {
-    const {register, handleSubmit, setValue, watch, formState: {errors}} = useForm({
+interface Props {
+    onSaved: () => void;
+}
+
+const EditPortfolioItem: React.FC<Props> = ({onSaved}) => {
+    const {register, handleSubmit, setValue, formState: {errors}} = useForm({
         resolver: zodResolver(portfolioItemSchema),
     });
 
@@ -40,7 +44,7 @@ const EditPortfolioItem = () => {
             const updated = await fetchPortfolioPreviews();
 
             setPortfolioPreview(updated);
-
+            onSaved()
         } catch (e) {
             console.log(e)
         }
@@ -55,7 +59,6 @@ const EditPortfolioItem = () => {
                         type="text"
                         placeholder="Описание"
                         {...register("description")}
-                        value={watch("description")}
                     />
                     {errors.description && (
                         <p className="text-red-500 text-sm mb-4">{errors.description.message}</p>
@@ -74,7 +77,7 @@ const EditPortfolioItem = () => {
                     )}
                 </div>
 
-                <div>
+                <div className="mb-3">
                     <Input
                         className="mb-3"
                         type="file"
@@ -87,13 +90,17 @@ const EditPortfolioItem = () => {
                     )}
                 </div>
                 {detailItem && (
-                    <Image
-                        src={API_BASE_URL + "/" + detailItem.cover}
-                        alt={detailItem.coverAlt}
-                        width={200}
-                        height={200}
-                        className="object-contain rounded"
-                    />
+                    <>
+                        <p className="mb-3">Предыдущее изображение</p>
+                        <Image
+                            src={API_BASE_URL + "/" + detailItem.cover}
+                            alt={detailItem.coverAlt}
+                            width={200}
+                            height={200}
+                            className="object-contain rounded"
+                        />
+                    </>
+
                 )}
             </div>
 

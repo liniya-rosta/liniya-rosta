@@ -147,8 +147,8 @@ const AdminPortfolioClient: React.FC<Props> = ({data}) => {
                 open={isModalOpenEdit}
                 openChange={() => setIsModalOpenEdit(!isModalOpenEdit)}>
                 {isGalleryEdit ?
-                    <GalleryForm></GalleryForm>
-                    : <PortfolioItemForm/>
+                    <GalleryForm onSaved={()=> setIsModalOpenEdit(!isModalOpenEdit)}/>
+                    : <PortfolioItemForm onSaved={()=> setIsModalOpenEdit(!isModalOpenEdit)}/>
                 }
             </ModalEdit>
 

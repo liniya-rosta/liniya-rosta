@@ -10,8 +10,12 @@ import {API_BASE_URL} from "@/lib/globalConstants";
 import {Button} from "@/components/ui/button";
 import {editGalleryItemSuperAdmin} from "@/actions/portfolios";
 
-const EditGalleryForm = () => {
-    const {register, handleSubmit, setValue, watch, formState: {errors}} = useForm({
+interface Props {
+    onSaved: () => void;
+}
+
+const EditGalleryForm: React.FC<Props> = ({onSaved}) => {
+    const {register, handleSubmit, setValue, formState: {errors}} = useForm({
         resolver: zodResolver(gallerySchema),
     });
 
@@ -33,8 +37,8 @@ const EditGalleryForm = () => {
     const onSubmit = async (data: GalleryItemValues) => {
         try {
             if (!galleryItem) return;
-            await editGalleryItemSuperAdmin({item: data, gallery_id: galleryItem._id})
-
+            await editGalleryItemSuperAdmin({item: data, gallery_id: galleryItem._id});
+            onSaved();
         } catch (e) {
             console.log(e)
         }
@@ -49,15 +53,13 @@ const EditGalleryForm = () => {
                         type="text"
                         placeholder="Описание"
                         {...register("alt")}
-                        value={watch("alt")}
                     />
                     {errors.alt && (
                         <p className="text-red-500 text-sm mb-4">{errors.alt.message}</p>
                     )}
                 </div>
 
-
-                <div>
+                <div className="mb-3">
                     <Input
                         className="mb-3"
                         type="file"
@@ -70,13 +72,16 @@ const EditGalleryForm = () => {
                     )}
                 </div>
                 {galleryItem && (
-                    <Image
-                        src={API_BASE_URL + "/" + galleryItem.image}
-                        alt={galleryItem.alt}
-                        width={200}
-                        height={200}
-                        className="object-contain rounded"
-                    />
+                    <>
+                        <p className="mb-3">Предыдущее изображение</p>
+                        <Image
+                            src={API_BASE_URL + "/" + galleryItem.image}
+                            alt={galleryItem.alt}
+                            width={200}
+                            height={200}
+                            className="object-contain rounded"
+                        />
+                    </>
                 )}
             </div>
             <Button type="submit" className="mr-auto">

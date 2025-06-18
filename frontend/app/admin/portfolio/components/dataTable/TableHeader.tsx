@@ -18,46 +18,52 @@ interface Props {
 
 const CustomTableHeader: React.FC<Props> = ({table}) => {
     return (
-        <div className="flex items-center justify-between gap-4 py-4">
+        <div className="flex justify-between gap-4 py-4 flex-wrap items-center">
             <div>
                 <Input
-                    placeholder="Фильтр по описанию..."
-                    value={(table.getColumn("description")?.getFilterValue() as string) ?? ""}
+                    placeholder="Фильтр по альтер-му названию..."
+                    value={(table.getColumn("coverAlt")?.getFilterValue() as string) ?? ""}
                     onChange={(event) =>
-                        table.getColumn("description")?.setFilterValue(event.target.value)
+                        table.getColumn("coverAlt")?.setFilterValue(event.target.value)
                     }
-                    className="max-w-sm"
+                    className="w-full max-w-2xl min-w-[300px]"
                 />
             </div>
 
-            <Link href="/admin/portfolio/add-portfolio" className="block">
-                <Button variant="outline" className="ml-auto">Создать портфолио</Button>
-            </Link>
+            <div className="flex gap-2">
+                <Link href="/admin/portfolio/add-portfolio">
+                    <Button variant="outline">Создать портфолио</Button>
+                </Link>
 
-            <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                    <Button variant="outline" className="ml-auto">
-                        Колонки <ChevronDown/>
-                    </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                    {table
-                        .getAllColumns()
-                        .filter((column) => column.getCanHide())
-                        .map((column) => (
-                            <DropdownMenuCheckboxItem
-                                key={column.id}
-                                className="capitalize"
-                                checked={column.getIsVisible()}
-                                onCheckedChange={(value) =>
-                                    column.toggleVisibility(!!value)
-                                }
-                            >
-                                {column.id}
-                            </DropdownMenuCheckboxItem>
-                        ))}
-                </DropdownMenuContent>
-            </DropdownMenu>
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="outline">
+                            Колонки <ChevronDown />
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                        {table
+                            .getAllColumns()
+                            .filter((column) => column.getCanHide())
+                            .map((column) => (
+                                <DropdownMenuCheckboxItem
+                                    key={column.id}
+                                    className="capitalize"
+                                    checked={column.getIsVisible()}
+                                    onCheckedChange={(value) =>
+                                        column.toggleVisibility(!!value)
+                                    }
+                                >
+                                    {
+                                        typeof column.columnDef.header === "function"
+                                            ? column.columnDef.header()?.props?.children ?? column.id
+                                            : column.columnDef.header
+                                    }
+                                </DropdownMenuCheckboxItem>
+                            ))}
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            </div>
         </div>
     )
 }

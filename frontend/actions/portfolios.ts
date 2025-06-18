@@ -47,7 +47,6 @@ export const editPortfolioItemSuperAdmin = async (
     {item, id} : {item: PortfolioEditValues, id: string}
 ) => {
     const formData = new FormData();
-    console.log(item)
 
     if (item.cover) {
         formData.append("cover", item.cover);
