@@ -3,64 +3,61 @@
 import React, {useEffect} from 'react';
 import {Navigation, Pagination} from "swiper/modules";
 import {Swiper, SwiperSlide} from "swiper/react";
-import {useLaminateStore} from "@/store/laminateItems";
 import LaminateCard from "@/app/(public)/spc/components/LaminateCard";
 import Loading from "@/components/shared/Loading";
-import {Laminate} from "@/lib/types";
+import {Product} from "@/lib/types";
+import {useProductStore} from "@/store/productsStore";
 
 interface Props {
-    initialData: Laminate[] | null;
+    initialData: Product[] | null;
     error: string | null;
+    categoryName: string;
 }
 
-const SpcLaminatePage: React.FC<Props> = ({initialData, error}) => {
+const SpcLaminatePage: React.FC<Props> = ({initialData, error, categoryName}) => {
     const {
-        laminateItems,
-        setLaminateItems,
-        setLaminateLoading,
-        fetchLaminateLoading,
-        fetchLaminateError,
-        setFetchLaminateError,
-    } = useLaminateStore()
+        products,
+        setProducts,
+        fetchProductsLoading,
+        setFetchProductsLoading,
+        fetchProductsError,
+        setFetchProductsError,
+    } = useProductStore();
 
     useEffect(() => {
-        if (initialData) setLaminateItems(initialData)
-        setLaminateLoading(false);
-        setFetchLaminateError(error);
-    }, [setLaminateItems,
-        setLaminateLoading,
-        setFetchLaminateError,
-        initialData,
-        error]);
+        if (initialData) setProducts(initialData);
+        setFetchProductsLoading(false);
+        setFetchProductsError(error);
+    }, [initialData, error, setProducts, setFetchProductsLoading, setFetchProductsError]);
 
     return (
         <div className="mb-[55px]">
-                <h3 className="text-[28px] mb-10 text-center">Каталог</h3>
-                <Swiper
-                    slidesPerView={1}
-                    navigation
-                    pagination={{clickable: true}}
-                    modules={[Navigation, Pagination]}
-                    className="mySwiper py-4"
-                >
-                    {fetchLaminateLoading ? (
-                        <SwiperSlide>
-                            <Loading/>
+            <h3 className="text-[28px] mb-10 text-center">Каталог {categoryName ? `${categoryName}` : ''}</h3>
+            <Swiper
+                slidesPerView={1}
+                navigation
+                pagination={{clickable: true}}
+                modules={[Navigation, Pagination]}
+                className="mySwiper py-4"
+            >
+                {fetchProductsLoading ? (
+                    <SwiperSlide>
+                        <Loading/>
+                    </SwiperSlide>
+                ) : fetchProductsError ? (
+                    <SwiperSlide>
+                        <h4>Ошибка загрузки: {fetchProductsError}</h4>
+                    </SwiperSlide>
+                ) : (
+                    products.map(item => (
+                        <SwiperSlide key={item._id}>
+                            <LaminateCard title={item.title} image={item.image} description={item.description}/>
                         </SwiperSlide>
-                    ) : fetchLaminateError ? (
-                        <SwiperSlide>
-                            <h4>{fetchLaminateError}</h4>
-                        </SwiperSlide>
-                    ) : (
-                        laminateItems.map(item => (
-                            <SwiperSlide key={item._id}>
-                                <LaminateCard title={item.title} image={item.image} description={item.description}/>
-                            </SwiperSlide>
-                        ))
-                    )}
+                    ))
+                )}
 
-                </Swiper>
-            </div>
+            </Swiper>
+        </div>
     );
 };
 
