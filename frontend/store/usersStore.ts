@@ -16,7 +16,7 @@ const useUserStore = create<UserState>()(
             user: null,
             accessToken: null,
             setUser: (user) => set({ user }),
-            setLogout: () => set({ user: null }),
+            setLogout: () => set({ user: null, accessToken: null }),
             setAccessToken: (accessToken) => set({ accessToken }),
         }),
         {
