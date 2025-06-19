@@ -39,8 +39,8 @@ const ProductsSection = () => {
                     className="mySwiper py-4"
                 >
                     {products.map((product) => (
-                        <SwiperSlide key={product._id}>
-                            <div className="max-w-xs mx-auto md:max-w-none">
+                        <SwiperSlide key={product._id} className="h-full flex">
+                            <div className="h-full pb-10">
                                 <ProductCard product={product}/>
                             </div>
                         </SwiperSlide>

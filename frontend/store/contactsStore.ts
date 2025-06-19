@@ -3,18 +3,18 @@ import {Contact} from '@/lib/types';
 
 interface ContactState {
     contact: Contact | null;
-    fetchLoading: boolean;
-    fetchError: string | null;
+    fetchContactLoading: boolean;
+    fetchContactError: string | null;
     setContact: (contact: Contact) => void;
-    setFetchLoading: (loading: boolean) => void;
-    setFetchError: (error: string | null) => void;
+    setFetchContactLoading: (loading: boolean) => void;
+    setFetchContactError: (error: string | null) => void;
 }
 
 export const useContactStore = create<ContactState>((set) => ({
     contact: null,
-    fetchLoading: true,
-    fetchError: null,
+    fetchContactLoading: true,
+    fetchContactError: null,
     setContact: (contact) => set({contact}),
-    setFetchLoading: (loading) => set({fetchLoading: loading}),
-    setFetchError: (error) => set({fetchError: error})
+    setFetchContactLoading: (loading) => set({fetchContactLoading: loading}),
+    setFetchContactError: (error) => set({fetchContactError: error})
 }));

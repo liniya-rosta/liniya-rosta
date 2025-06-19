@@ -6,7 +6,7 @@ import {usePortfolioStore} from "@/store/portfolioItemStore";
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
-import {Category, PortfolioItemPreview, Product} from '@/lib/types';
+import {Category, Contact, PortfolioItemPreview, Product} from '@/lib/types';
 import {useCategoryStore} from "@/store/categoriesStore";
 import Loading from "@/components/shared/Loading";
 import ErrorMsg from "@/components/shared/ErrorMsg";
@@ -16,27 +16,31 @@ import ProductsSection from "@/app/(home)/components/ProductsSection";
 import PortfolioSection from "@/app/(home)/components/PortfolioSection";
 import InstagramSection from "@/app/(home)/components/InstagramSection";
 import ConsultationSection from "@/app/(home)/components/ConsultationSection";
+import {useContactStore} from "@/store/contactsStore";
 
 interface HomePageClientProps {
-    categories: Category[];
-    products: Product[];
+    categoriesData: Category[];
+    productsData: Product[];
     portfolioItems: PortfolioItemPreview[];
+    contactData: Contact | null,
     categoriesError: string | null;
     productsError: string | null;
     portfolioError: string | null;
+    contactError: string | null;
 }
 
 const HomePageClient: React.FC<HomePageClientProps> = ({
-                                                           categories,
-                                                           products,
+                                                           categoriesData,
+                                                           productsData,
                                                            portfolioItems,
+                                                           contactData,
                                                            categoriesError,
                                                            productsError,
-                                                           portfolioError
+                                                           portfolioError,
+                                                           contactError,
                                                        }) => {
 
     const {
-        categories: storedCategories,
         setCategories,
         fetchCategoriesLoading,
         fetchCategoriesError,
@@ -45,7 +49,6 @@ const HomePageClient: React.FC<HomePageClientProps> = ({
     } = useCategoryStore();
 
     const {
-        products: storedProducts,
         setProducts,
         fetchProductsLoading,
         fetchProductsError,
@@ -53,32 +56,39 @@ const HomePageClient: React.FC<HomePageClientProps> = ({
         setFetchProductsLoading
     } = useProductStore();
 
+    const {
+        setContact,
+        setFetchContactError,
+        fetchContactLoading,
+        setFetchContactLoading,
+        fetchContactError
+    } = useContactStore();
 
     const {
-        items: storedPortfolioItems,
         setPortfolioPreview,
         fetchLoading: portfolioLoading,
     } = usePortfolioStore();
 
     useEffect(() => {
-        setCategories(categories);
-        setProducts(products);
+        setCategories(categoriesData);
+        setProducts(productsData);
         setPortfolioPreview(portfolioItems);
+        if (contactData) setContact(contactData);
 
         setFetchCategoriesError(categoriesError);
         setFetchProductsError(productsError);
+        setFetchContactError(contactError);
 
         setFetchCategoriesLoading(false);
         setFetchProductsLoading(false);
-    }, [categories, products, portfolioItems, categoriesError, productsError, portfolioError, setPortfolioPreview, setCategories, setProducts, setFetchCategoriesError, setFetchProductsError, setFetchCategoriesLoading, setFetchProductsLoading]);
+        setFetchContactLoading(false);
+    }, [categoriesData, productsData, portfolioItems, categoriesError, productsError, portfolioError, setPortfolioPreview, setCategories, setProducts, setFetchCategoriesError, setFetchProductsError, setFetchCategoriesLoading, setFetchProductsLoading, contactData, setContact, setFetchContactError, contactError, setFetchContactLoading]);
 
-    const overallLoading = fetchCategoriesLoading || fetchProductsLoading || portfolioLoading;
-    const overallError = fetchCategoriesError || fetchProductsError || portfolioError;
+    const overallLoading = fetchCategoriesLoading || fetchProductsLoading || portfolioLoading || fetchContactLoading || fetchContactLoading;
+    const overallError = fetchCategoriesError || fetchProductsError || portfolioError || fetchContactError;
 
     if (overallLoading) return <Loading/>;
-    if (overallError && (!storedCategories.length && !storedProducts.length && !storedPortfolioItems.length)) {
-        return <ErrorMsg error={overallError}/>
-    }
+    if (overallError) return <ErrorMsg error={overallError}/>
 
     return (
         <div className="container mx-auto px-4 py-8 space-y-16">
