@@ -7,7 +7,7 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import {UserForm} from "@/lib/types";
 import {login} from "@/actions/users";
 import useUserStore from "@/store/usersStore";
-import useAuthStore from "@/store/authStore";
+
 import {userLoginSchema} from "@/lib/zodSchemas/userSchema";
 import {useRouter} from "next/navigation";
 
@@ -23,8 +23,7 @@ const LoginForm = () => {
         });
     const router = useRouter();
 
-    const {setUser} = useUserStore();
-    const { setAccessToken} = useAuthStore();
+    const {setUser, setAccessToken} = useUserStore();
 
     const onSubmit = async (data: UserForm) => {
         try {
