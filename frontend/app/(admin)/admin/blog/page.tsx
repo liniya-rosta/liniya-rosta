@@ -1,7 +1,7 @@
 import React from "react";
-import { Post } from "@/lib/types";
-import AdminBlogClient from "@/app/admin/blog/AdminBlogClient";
-import { fetchPosts } from "@/actions/posts";
+import {Post} from "@/lib/types";
+import {fetchPosts} from "@/actions/posts";
+import AdminBlogClient from "@/app/(admin)/admin/blog/AdminBlogClient";
 
 const AdminBlogPage = async () => {
     let posts: Post[] = [];

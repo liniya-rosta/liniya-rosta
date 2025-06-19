@@ -14,16 +14,23 @@ interface ContactProps {
 }
 
 const FooterContent: React.FC<ContactProps> = ({contactData, contactError}) => {
-    const {contact, setContact, setFetchError, fetchLoading, setFetchLoading, fetchError} = useContactStore();
+    const {
+        contact,
+        setContact,
+        setFetchContactError,
+        fetchContactLoading,
+        setFetchContactLoading,
+        fetchContactError
+    } = useContactStore();
 
     useEffect(() => {
         if (contactData) setContact(contactData);
-        setFetchError(contactError);
-        setFetchLoading(false);
-    }, [contactData, contactError, setContact, setFetchError, setFetchLoading]);
+        setFetchContactError(contactError);
+        setFetchContactLoading(false);
+    }, [contactData, contactError, setContact, setFetchContactError, setFetchContactLoading]);
 
-    if (fetchLoading) return <Loading/>;
-    if (fetchError) return <ErrorMsg error={fetchError} label='контактов'/>
+    if (fetchContactLoading) return <Loading/>;
+    if (fetchContactError) return <ErrorMsg error={fetchContactError} label='контактов'/>
 
     return (
         contact &&
