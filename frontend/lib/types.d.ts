@@ -128,5 +128,7 @@ export interface IRequest {
     phone: string;
     email: string;
     commentOfManager: string;
-    status: string;
+    status: "Новая" | "В работе" | "Завершена" | "Отклонена";
+    createdAt: string;
+    updatedAt: string;
 }

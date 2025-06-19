@@ -1,12 +1,11 @@
 import React from 'react';
-import RequestsTable from "@/app/admin/requests/RequestsTable";
+import RequestsPage from "@/app/admin/requests/components/RequestsPage";
 
-const Page = () => {
-
+const Page =  () => {
 
     return (
         <div>
-            <RequestsTable />
+            <RequestsPage />
         </div>
     );
 };
