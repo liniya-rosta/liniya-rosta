@@ -1,353 +1,210 @@
-'use client'
+'use client';
 
-import React, { useState, useEffect } from 'react';
-import {
-    fetchPosts,
-    createPost,
-    updatePost,
-    deletePost,
-} from '@/actions/posts';
-import {CreatePostData, Post, UpdatePostData} from "@/lib/types";
-import {AxiosError} from "axios";
+import React, { useEffect, useState } from 'react';
+import { Plus } from 'lucide-react';
+import { Post, CreatePostData, UpdatePostData } from "@/lib/types";
+import { Button } from '@/components/ui/button';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import {createPost, deletePost, updatePost} from "@/actions/posts";
+import PostsTable from "@/app/admin/blog/components/PostsTable";
+import PostModal from "@/app/admin/blog/components/PostModal";
+import Loading from "@/components/shared/Loading";
+import { toast } from 'react-toastify';
+import { AxiosError } from 'axios';
+import {useAdminPostStore} from "@/store/superadmin/superadminPostsStore";
 
-const AdminBlogClient: React.FC = () => {
-    const [posts, setPosts] = useState<Post[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+interface Props {
+    data: Post[];
+    error: string | null;
+    isAdmin?: boolean;
+}
+
+const AdminBlogClient: React.FC<Props> = ({ data, error, isAdmin = true }) => {
+    const {
+        posts,
+        fetchLoading,
+        createLoading,
+        updateLoading,
+        deleteLoading,
+        fetchError,
+        createError,
+        updateError,
+        setPosts,
+        setFetchLoading,
+        setCreateLoading,
+        setUpdateLoading,
+        setDeleteLoading,
+        setFetchError,
+        setCreateError,
+        setUpdateError,
+        setDeleteError,
+    } = useAdminPostStore();
+
+    const [isHydrating, setIsHydrating] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingPost, setEditingPost] = useState<Post | null>(null);
-    const [formData, setFormData] = useState({
-        title: '',
-        description: '',
-        image: null as File | null
-    });
 
-    const loadPosts = async () => {
-        try {
-            setLoading(true);
-            const data = await fetchPosts();
-            setPosts(data);
-        } catch (err) {
-            let errorMessage = 'Ошибка при загрузке постов';
-            if (err instanceof AxiosError) {
-                errorMessage = err.response?.data?.error || errorMessage;
-            }
-            setError(errorMessage);
-            console.error(err);
-        } finally {
-            setLoading(false);
-        }
-    };
+    const anyLoading = createLoading || updateLoading || deleteLoading;
 
     useEffect(() => {
-        void loadPosts();
-    }, []);
+        if (data) {
+            setPosts(data);
+        }
+        setFetchError(error);
+        setFetchLoading(false);
+        setIsHydrating(false);
+    }, [data, error, setPosts, setFetchError, setFetchLoading]);
 
-    const resetForm = () => {
-        setFormData({
-            title: '',
-            description: '',
-            image: null
-        });
-        setEditingPost(null);
+    const resetErrors = () => {
+        setFetchError(null);
+        setCreateError(null);
+        setUpdateError(null);
+        setDeleteError(null);
     };
 
     const openCreateModal = () => {
-        resetForm();
+        setEditingPost(null);
         setIsModalOpen(true);
+        resetErrors();
     };
 
     const openEditModal = (post: Post) => {
         setEditingPost(post);
-        setFormData({
-            title: post.title,
-            description: post.description,
-            image: null
-        });
         setIsModalOpen(true);
+        resetErrors();
     };
 
     const closeModal = () => {
         setIsModalOpen(false);
-        resetForm();
+        setEditingPost(null);
+        resetErrors();
     };
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }));
-    };
-
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0] || null;
-        setFormData(prev => ({
-            ...prev,
-            image: file
-        }));
-    };
-
-    const handleCreatePost = async () => {
+    const onSubmit = async (formData: CreatePostData | UpdatePostData, isEditingMode: boolean) => {
+        resetErrors();
         try {
-            if (!formData.image) return;
+            let result: { message: string; post: Post; };
 
-            const postData: CreatePostData = {
-                title: formData.title,
-                description: formData.description,
-                image: formData.image
-            };
+            if (isEditingMode) {
+                setUpdateLoading(true);
+                if (!editingPost) throw new Error('Editing post is null');
 
-            await createPost(postData);
-            await loadPosts();
-            closeModal();
-            alert('Пост создан успешно!');
-        } catch (err) {
-            let errorMessage = 'Ошибка при создании поста';
-            if (err instanceof AxiosError) {
-                errorMessage = err.response?.data?.error || errorMessage;
+                const updateData: UpdatePostData = {
+                    title: formData.title,
+                    description: formData.description,
+                    image: (formData as UpdatePostData).image,
+                };
+
+                result = await updatePost(editingPost._id, updateData);
+                setPosts(posts.map(p => p._id === editingPost._id ? result.post : p));
+                toast.success('Пост успешно обновлен!');
+            } else {
+                setCreateLoading(true);
+                const createData = formData as CreatePostData;
+
+                result = await createPost(createData);
+                setPosts([result.post, ...posts]);
+                toast.success('Пост успешно создан!');
             }
-            alert(errorMessage);
+            closeModal();
+        } catch (err) {
+            const errorMessage = err instanceof AxiosError
+                ? err.response?.data?.error
+                : err instanceof Error
+                    ? err.message
+                    : 'Произошла ошибка при сохранении поста';
+            if (isEditingMode) {
+                setUpdateError(errorMessage);
+            } else {
+                setCreateError(errorMessage);
+            }
+            toast.error(errorMessage);
+        } finally {
+            setCreateLoading(false);
+            setUpdateLoading(false);
         }
     };
 
-    const handleUpdatePost = async () => {
-        if (!editingPost) return;
-
-        try {
-            const postData: UpdatePostData = {};
-
-            if (formData.title !== editingPost.title) {
-                postData.title = formData.title;
-            }
-            if (formData.description !== editingPost.description) {
-                postData.description = formData.description;
-            }
-            if (formData.image) {
-                postData.image = formData.image;
-            }
-
-            await updatePost(editingPost._id, postData);
-            await loadPosts();
-            closeModal();
-            alert('Пост обновлен успешно!');
-        } catch (err) {
-            let errorMessage = 'Ошибка при обновлении поста';
-            if (err instanceof AxiosError) {
-                errorMessage = err.response?.data?.error || errorMessage;
-            }
-            alert(errorMessage);
-        }
-    };
-
-    const handleDeletePost = async (postId: string) => {
-        if (!window.confirm('Вы уверены, что хотите удалить этот пост?')) {
+    const handleDelete = async (postId: string) => {
+        if (!confirm('Вы уверены, что хотите удалить этот пост?')) {
             return;
         }
-
+        resetErrors();
+        setDeleteLoading(true);
         try {
             await deletePost(postId);
-            await loadPosts();
-            alert('Пост удален успешно!');
+            setPosts(posts.filter(p => p._id !== postId));
+            toast.success('Пост успешно удален!');
         } catch (err) {
-            let errorMessage = 'Ошибка при удалении поста';
-            if (err instanceof AxiosError) {
-                errorMessage = err.response?.data?.error || errorMessage;
-            }
-            alert(errorMessage);
+            const errorMessage = err instanceof AxiosError
+                ? err.response?.data?.error
+                : err instanceof Error
+                    ? err.message
+                    : 'Произошла ошибка при удалении';
+            setDeleteError(errorMessage);
+            toast.error(errorMessage);
+        } finally {
+            setDeleteLoading(false);
         }
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-
-        if (!formData.title.trim() || !formData.description.trim()) {
-            alert('Заполните все обязательные поля');
-            return;
-        }
-
-        if (!editingPost && !formData.image) {
-            alert('Выберите изображение для поста');
-            return;
-        }
-
-        if (editingPost) {
-            void handleUpdatePost();
-        } else {
-            void handleCreatePost();
-        }
-    };
-
-    if (loading) {
-        return (
-            <div className="flex justify-center items-center min-h-[400px]">
-                <div className="text-lg">Загрузка...</div>
-            </div>
-        );
+    if (isHydrating || fetchLoading) {
+        return <Loading />;
     }
 
-    if (error) {
+    if (fetchError) {
         return (
-            <div className="text-red-600 text-center p-4">
-                {error}
-                <button
-                    onClick={loadPosts}
-                    className="ml-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                >
-                    Попробовать снова
-                </button>
+            <div className="container mx-auto px-4 py-8">
+                <Alert variant="destructive" className="max-w-md mx-auto">
+                    <AlertDescription>
+                        Ошибка при загрузке постов: {fetchError}
+                    </AlertDescription>
+                </Alert>
             </div>
         );
     }
 
     return (
-        <div className="p-6">
-            <div className="flex justify-between items-center mb-6">
-                <h1 className="text-2xl font-bold">Управление постами блога</h1>
-                <button
-                    onClick={openCreateModal}
-                    className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors"
-                >
-                    Создать пост
-                </button>
+        <div className="space-y-6">
+            <div className="flex flex-col sm:flex-row sm:justify-between items-center gap-4">
+                <div>
+                    <h1 className="text-3xl font-bold text-foreground">Управление постами</h1>
+                    <p className="text-muted-foreground mt-1">Создавайте и редактируйте посты</p>
+                </div>
+                {isAdmin && (
+                    <Button onClick={openCreateModal} size="lg" className="flex items-center gap-2 w-full sm:w-auto" disabled={anyLoading}>
+                        <Plus className="mr-2 h-5 w-5" />
+                        Создать пост
+                    </Button>
+                )}
             </div>
 
             {posts.length === 0 ? (
-                <div className="text-center py-8 text-gray-500">
-                    Посты не найдены
-                </div>
-            ) : (
-                <div className="overflow-x-auto">
-                    <table className="w-full border-collapse border border-gray-300">
-                        <thead>
-                        <tr className="bg-gray-100">
-                            <th className="border border-gray-300 px-4 py-2 text-left">Изображение</th>
-                            <th className="border border-gray-300 px-4 py-2 text-left">Заголовок</th>
-                            <th className="border border-gray-300 px-4 py-2 text-left">Описание</th>
-                            <th className="border border-gray-300 px-4 py-2 text-center">Действия</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {posts.map((post) => (
-                            <tr key={post._id} className="hover:bg-gray-50">
-                                <td className="border border-gray-300 px-4 py-2">
-                                    <img
-                                        src={post.image}
-                                        alt={post.title}
-                                        className="w-16 h-16 object-cover rounded"
-                                    />
-                                </td>
-                                <td className="border border-gray-300 px-4 py-2 font-medium">
-                                    {post.title}
-                                </td>
-                                <td className="border border-gray-300 px-4 py-2">
-                                    <div className="max-w-xs truncate" title={post.description}>
-                                        {post.description}
-                                    </div>
-                                </td>
-                                <td className="border border-gray-300 px-4 py-2">
-                                    <div className="flex space-x-2 justify-center">
-                                        <button
-                                            onClick={() => openEditModal(post)}
-                                            className="px-3 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600 transition-colors"
-                                        >
-                                            Редактировать
-                                        </button>
-                                        <button
-                                            onClick={() => handleDeletePost(post._id)}
-                                            className="px-3 py-1 bg-red-500 text-white text-sm rounded hover:bg-red-600 transition-colors"
-                                        >
-                                            Удалить
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        ))}
-                        </tbody>
-                    </table>
-                </div>
-            )}
-
-            {isModalOpen && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
-                        <h2 className="text-xl font-bold mb-4">
-                            {editingPost ? 'Редактировать пост' : 'Создать новый пост'}
-                        </h2>
-
-                        <form onSubmit={handleSubmit}>
-                            <div className="mb-4">
-                                <label htmlFor="title" className="block text-sm font-medium mb-2">
-                                    Заголовок *
-                                </label>
-                                <input
-                                    type="text"
-                                    id="title"
-                                    name="title"
-                                    value={formData.title}
-                                    onChange={handleInputChange}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    required
-                                />
-                            </div>
-
-                            <div className="mb-4">
-                                <label htmlFor="description" className="block text-sm font-medium mb-2">
-                                    Описание *
-                                </label>
-                                <textarea
-                                    id="description"
-                                    name="description"
-                                    value={formData.description}
-                                    onChange={handleInputChange}
-                                    rows={4}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    required
-                                />
-                            </div>
-
-                            <div className="mb-6">
-                                <label htmlFor="image" className="block text-sm font-medium mb-2">
-                                    Изображение {!editingPost && '*'}
-                                </label>
-                                <input
-                                    type="file"
-                                    id="image"
-                                    accept="image/*"
-                                    onChange={handleFileChange}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                />
-                                {editingPost && (
-                                    <div className="mt-2 text-sm text-gray-600">
-                                        Текущее изображение:
-                                        <img
-                                            src={editingPost.image}
-                                            alt="Текущее"
-                                            className="w-16 h-16 object-cover rounded mt-1"
-                                        />
-                                    </div>
-                                )}
-                            </div>
-
-                            <div className="flex space-x-4">
-                                <button
-                                    type="submit"
-                                    className="flex-1 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
-                                >
-                                    {editingPost ? 'Обновить' : 'Создать'}
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={closeModal}
-                                    className="flex-1 px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors"
-                                >
-                                    Отмена
-                                </button>
-                            </div>
-                        </form>
+                    <div className="text-center py-8 text-muted-foreground">
+                        <p>Посты не найдены</p>
+                        <p className="text-sm mt-2">
+                            Нажмите &#34;Создать пост&#34; для создания первого поста
+                        </p>
                     </div>
-                </div>
+                ) : (
+                <PostsTable
+                    posts={posts}
+                    onEditPost={openEditModal}
+                    onDeletePost={handleDelete}
+                    actionLoading={anyLoading}
+                />
             )}
+
+            <PostModal
+                isOpen={isModalOpen}
+                onClose={closeModal}
+                isEditing={!!editingPost}
+                editingPost={editingPost}
+                actionLoading={createLoading || updateLoading}
+                createError={createError}
+                updateError={updateError}
+                onSubmit={onSubmit}
+            />
         </div>
     );
 };

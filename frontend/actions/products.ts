@@ -1,6 +1,6 @@
 import axiosAPI from '@/lib/axiosAPI';
-import {Product, ProductWithoutId} from '@/lib/types';
-import {isAxiosError} from "axios";
+import { Product, ProductWithoutId } from '@/lib/types';
+import { isAxiosError } from "axios";
 
 export const fetchProducts = async (categoryId?: string) => {
     const url = categoryId ? `/products?category=${categoryId}` : '/products';
@@ -8,7 +8,7 @@ export const fetchProducts = async (categoryId?: string) => {
     return res.data;
 };
 
-export const fetchProductById = async (id: string) => {
+export const fetchProductById = async (id: string): Promise<Product> => { // Добавляем Promise<Product>
     try {
         const res = await axiosAPI.get<Product>(`/products/${id}`);
         return res.data;
@@ -20,7 +20,12 @@ export const fetchProductById = async (id: string) => {
     }
 };
 
-export const createProduct = async (productData: ProductWithoutId, imageFile?: File) => {
+export const createProduct = async (productData: {
+    category: string;
+    title: string;
+    description?: string;
+    image: File
+}, imageFile?: File): Promise<Product> => { // Добавляем Promise<Product>
     try {
         const formData = new FormData();
         formData.append('category', productData.category);
@@ -48,7 +53,7 @@ export const createProduct = async (productData: ProductWithoutId, imageFile?: F
     }
 };
 
-export const updateProduct = async (id: string, productData: Partial<ProductWithoutId>, imageFile?: File) => {
+export const updateProduct = async (id: string, productData: Partial<ProductWithoutId>, imageFile?: File): Promise<Product> => { // Добавляем Promise<Product>
     try {
         const formData = new FormData();
 
@@ -85,7 +90,7 @@ export const updateProduct = async (id: string, productData: Partial<ProductWith
     }
 };
 
-export const deleteProduct = async (id: string) => {
+export const deleteProduct = async (id: string): Promise<string> => { // Добавляем Promise<string>
     try {
         const res = await axiosAPI.delete<{ message: string }>(`/superadmin/products/${id}`);
         return res.data.message;

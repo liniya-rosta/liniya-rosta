@@ -1,24 +1,48 @@
 "use client"
 
-import React, {useEffect, useMemo, useState} from 'react';
-import {Filter, MessageCircle, Phone, Search, X} from 'lucide-react';
+import React, { useEffect, useMemo, useState, useCallback } from 'react';
+import { Filter, MessageCircle, Phone, Search, X } from 'lucide-react';
 import RequestForm from "@/components/shared/RequestForm";
-import {Category, Product} from "@/lib/types";
-import {Dialog, DialogTrigger} from "@/components/ui/dialog";
-import {Button} from "@/components/ui/button";
+import { ModalWindow } from '@/components/ui/modal-window';
+import { Dialog } from '@/components/ui/dialog';
+import { Category, Product } from "@/lib/types";
+import { useCategoryStore } from "@/store/categoriesStore";
+import { useProductStore } from "@/store/productsStore";
+import { API_BASE_URL } from "@/lib/globalConstants";
+import Image from "next/image";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
+import { Skeleton } from '@/components/ui/skeleton';
 
 type Props = {
     initialProducts: Product[];
     initialCategories: Category[];
 };
 
-const CeilingsClient: React.FC<Props> = ({initialProducts, initialCategories}) => {
+const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories }) => {
     const [selectedCategory, setSelectedCategory] = useState<string>('all');
     const [showConsultationModal, setShowConsultationModal] = useState<boolean>(false);
-    const [activeProductId, setActiveProductId] = useState<string | null>(null);
     const [searchTerm, setSearchTerm] = useState<string>('');
-    const [products, setProducts] = useState<Product[]>(initialProducts);
-    const [loading, setLoading] = useState<boolean>(false);
+
+    const {
+        products,
+        fetchProductsLoading,
+        setProducts,
+        setFetchProductsLoading
+    } = useProductStore();
+
+    const {
+        categories,
+        setCategories
+    } = useCategoryStore();
+
+    useEffect(() => {
+        setProducts(initialProducts);
+        setCategories(initialCategories);
+        setFetchProductsLoading(false);
+    }, [initialProducts, initialCategories, setProducts, setCategories, setFetchProductsLoading]);
 
     useEffect(() => {
         const fetchFilteredProducts = async () => {
@@ -28,18 +52,17 @@ const CeilingsClient: React.FC<Props> = ({initialProducts, initialCategories}) =
             }
 
             try {
-                setLoading(true);
                 const filteredProducts = initialProducts.filter(product =>
                     product.category?._id === selectedCategory
                 );
                 setProducts(filteredProducts);
-            } finally {
-                setLoading(false);
+            } catch (error) {
+                console.error('Error filtering products:', error);
             }
         };
 
         void fetchFilteredProducts();
-    }, [selectedCategory, initialProducts]);
+    }, [selectedCategory, initialProducts, setProducts]);
 
     const filteredProducts = useMemo(() => {
         return products.filter(product =>
@@ -57,155 +80,234 @@ const CeilingsClient: React.FC<Props> = ({initialProducts, initialCategories}) =
         return counts;
     }, [initialProducts]);
 
-    const getImageUrl = (imagePath?: string) => {
-        if (!imagePath) return null;
-        return imagePath.startsWith('http') ? imagePath : `/${imagePath}`;
-    };
+    const openConsultationModal = useCallback(() => {
+        setShowConsultationModal(true);
+    }, []);
+
+    const closeConsultationModal = useCallback(() => {
+        setShowConsultationModal(false);
+    }, []);
+
+    const handleProductConsultation = useCallback(() => {
+        setShowConsultationModal(true);
+    }, []);
+
+    const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchTerm(e.target.value);
+    }, []);
+
+    const handleCategoryChange = useCallback((categoryId: string) => {
+        setSelectedCategory(categoryId);
+    }, []);
+
+    const resetFilters = useCallback(() => {
+        setSelectedCategory('all');
+        setSearchTerm('');
+    }, []);
+
+    const handleImageError = useCallback((e: React.SyntheticEvent<HTMLImageElement>) => {
+        (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop';
+    }, []);
+
+    const renderSkeleton = () => (
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            {Array.from({ length: 6 }).map((_, i) => (
+                <Card key={i} className="overflow-hidden">
+                    <Skeleton className="h-48 w-full" />
+                    <CardHeader>
+                        <Skeleton className="h-6 w-3/4" />
+                        <Skeleton className="h-4 w-full" />
+                        <Skeleton className="h-4 w-1/2" />
+                    </CardHeader>
+                    <CardFooter>
+                        <Skeleton className="h-10 w-full" />
+                    </CardFooter>
+                </Card>
+            ))}
+        </div>
+    );
+
+    const renderEmptyState = () => (
+        <Card className="text-center p-12">
+            <CardContent className="space-y-4">
+                <Search className="h-12 w-12 mx-auto text-muted-foreground" />
+                <CardTitle>Товары не найдены</CardTitle>
+                <CardDescription>
+                    Попробуйте изменить критерии поиска или фильтры
+                </CardDescription>
+                {(searchTerm || selectedCategory !== 'all') && (
+                    <Button onClick={resetFilters} variant="outline">
+                        Сбросить все фильтры
+                    </Button>
+                )}
+            </CardContent>
+        </Card>
+    );
+
+    const renderProductCard = (product: Product) => (
+        <Card key={product._id} className="overflow-hidden hover:shadow-lg transition-shadow">
+            <div className="relative w-full h-48">
+                <Image
+                    src={`${API_BASE_URL}/${product.image}`}
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    onError={handleImageError}
+                    alt={product.title || 'Product image'}
+                    className="object-cover"
+                    priority={false}
+                />
+            </div>
+            <CardHeader>
+                <CardTitle className="text-lg line-clamp-2">{product.title}</CardTitle>
+                <CardDescription className="line-clamp-2">
+                    {product.description}
+                </CardDescription>
+                <Badge variant="outline" className="w-fit">
+                    {product.category?.title || 'Без категории'}
+                </Badge>
+            </CardHeader>
+            <CardFooter>
+                <Button
+                    onClick={() => handleProductConsultation()}
+                    className="w-full"
+                >
+                    Консультация по товару
+                </Button>
+            </CardFooter>
+        </Card>
+    );
+
+    const renderCategoryFilter = (category: Category) => (
+        <div
+            key={category._id}
+            onClick={() => handleCategoryChange(category._id)}
+            className={`cursor-pointer p-3 rounded-lg transition-colors ${
+                selectedCategory === category._id
+                    ? 'bg-primary text-primary-foreground'
+                    : 'hover:bg-muted'
+            }`}
+        >
+            <div className="flex justify-between items-center">
+                <span>{category.title}</span>
+                <Badge variant="secondary">{categoryCounts[category._id] || 0}</Badge>
+            </div>
+        </div>
+    );
 
     return (
-        <div className="min-h-screen bg-gray-50">
-            <div className="bg-white shadow-sm border-b">
+        <div className="min-h-screen bg-background">
+            <div className="border-b bg-card">
                 <div className="max-w-7xl mx-auto px-4 py-6 flex flex-col md:flex-row justify-between gap-4">
                     <div>
-                        <h1 className="text-3xl font-bold text-gray-900">Натяжные потолки</h1>
-                        <p className="text-gray-600 mt-1">Все необходимое для создания идеального потолка</p>
+                        <h1 className="text-3xl font-bold text-foreground">Натяжные потолки</h1>
+                        <p className="text-muted-foreground mt-1">Все необходимое для создания идеального потолка</p>
                     </div>
                     <div className="flex gap-3">
-                        <Dialog open={showConsultationModal} onOpenChange={setShowConsultationModal}>
-                            <DialogTrigger asChild>
-                                <Button variant="secondary"
-                                        className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 flex items-center gap-2"
-                                        size="lg">
-                                    <Phone size={18}/>
-                                    Консультация</Button>
-                            </DialogTrigger>
-                            <RequestForm closeModal={() => setShowConsultationModal(false)}/>
-                        </Dialog>
-                        <a href="https://wa.me/996552088988" target="_blank" rel="noopener noreferrer"
-                           className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 flex items-center gap-2">
-                            <MessageCircle size={18}/>
-                            WhatsApp
-                        </a>
+                        <Button onClick={openConsultationModal} className="gap-2">
+                            <Phone className="h-4 w-4" />
+                            Консультация
+                        </Button>
+                        <Button asChild variant="secondary" className="gap-2">
+                            <a href="https://wa.me/996552088988" target="_blank" rel="noopener noreferrer">
+                                <MessageCircle className="h-4 w-4" />
+                                WhatsApp
+                            </a>
+                        </Button>
                     </div>
                 </div>
             </div>
 
             <div className="max-w-7xl mx-auto px-4 py-8 flex flex-col lg:flex-row gap-8">
-                <div className="lg:w-80 sticky top-4 h-fit">
-                    <div className="bg-white rounded-lg shadow-sm p-6">
-                        <h2 className="text-xl font-semibold flex items-center gap-2 mb-4">
-                            <Filter size={20}/>
-                            Категории
-                        </h2>
-                        <div className="relative mb-6">
-                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-                                    size={20}/>
-                            <input
-                                type="text"
-                                placeholder="Поиск товаров..."
-                                value={searchTerm}
-                                onChange={e => setSearchTerm(e.target.value)}
-                                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <div
-                                onClick={() => setSelectedCategory('all')}
-                                className={`cursor-pointer p-3 rounded-lg transition ${selectedCategory === 'all' ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'hover:bg-gray-50'}`}
-                            >
-                                <div className="flex justify-between items-center">
-                                    <span>Все товары</span>
-                                    <span
-                                        className="text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded-full">{initialProducts.length}</span>
-                                </div>
+                <div className="lg:w-80">
+                    <Card className="sticky top-4">
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2">
+                                <Filter className="h-5 w-5" />
+                                Категории
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-6">
+                            <div className="relative">
+                                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+                                <Input
+                                    type="text"
+                                    placeholder="Поиск товаров..."
+                                    value={searchTerm}
+                                    onChange={handleSearchChange}
+                                    className="pl-10"
+                                />
+                                {searchTerm && (
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() => setSearchTerm('')}
+                                        className="absolute right-1 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0"
+                                    >
+                                        <X className="h-3 w-3" />
+                                    </Button>
+                                )}
                             </div>
-                            {initialCategories.map(cat => (
+
+                            <div className="space-y-2">
                                 <div
-                                    key={cat._id}
-                                    onClick={() => setSelectedCategory(cat._id)}
-                                    className={`cursor-pointer p-3 rounded-lg transition ${selectedCategory === cat._id ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'hover:bg-gray-50'}`}
+                                    onClick={() => handleCategoryChange('all')}
+                                    className={`cursor-pointer p-3 rounded-lg transition-colors ${
+                                        selectedCategory === 'all'
+                                            ? 'bg-primary text-primary-foreground'
+                                            : 'hover:bg-muted'
+                                    }`}
                                 >
                                     <div className="flex justify-between items-center">
-                                        <span>{cat.title}</span>
-                                        <span
-                                            className="text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded-full">{categoryCounts[cat._id] || 0}</span>
+                                        <span>Все товары</span>
+                                        <Badge variant="secondary">{initialProducts.length}</Badge>
                                     </div>
                                 </div>
-                            ))}
-                        </div>
-                    </div>
+                                {categories.map(renderCategoryFilter)}
+                            </div>
+                        </CardContent>
+                    </Card>
                 </div>
 
                 <div className="flex-1">
                     <div className="flex justify-between items-center mb-6">
-                        <p className="text-gray-600">Найдено товаров: <strong>{filteredProducts.length}</strong></p>
+                        <p className="text-muted-foreground">
+                            Найдено товаров: <span className="font-semibold text-foreground">{filteredProducts.length}</span>
+                        </p>
                         {selectedCategory !== 'all' && (
-                            <button onClick={() => setSelectedCategory('all')}
-                                    className="text-blue-600 hover:text-blue-700 text-sm flex items-center gap-1">
-                                <X size={16}/>
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => setSelectedCategory('all')}
+                                className="gap-1"
+                            >
+                                <X className="h-4 w-4" />
                                 Сбросить фильтр
-                            </button>
+                            </Button>
                         )}
                     </div>
 
-                    {loading ? (
-                        <div className="flex justify-center items-center py-12">
-                            <div className="animate-spin h-12 w-12 border-b-2 border-blue-600 rounded-full"></div>
-                        </div>
+                    {fetchProductsLoading ? (
+                        renderSkeleton()
                     ) : filteredProducts.length > 0 ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                            {filteredProducts.map(product => {
-                                const imageUrl = getImageUrl(product.image);
-                                return (
-                                    <div key={product._id}
-                                         className="bg-white rounded-lg shadow-sm hover:shadow-md transition">
-                                        {imageUrl && (
-                                            <img
-                                                src={imageUrl}
-                                                onError={e => {
-                                                    (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop';
-                                                }}
-                                                alt={product.title}
-                                                className="w-full h-48 object-cover rounded-t-lg"
-                                            />
-                                        )}
-                                        <div className="p-4">
-                                            <h3 className="font-semibold text-lg text-gray-900 mb-2">{product.title}</h3>
-                                            <p className="text-gray-600 text-sm line-clamp-2 mb-3">{product.description}</p>
-                                            <div className="mb-3">
-                                                <span
-                                                    className="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded">{product.category?.title || 'Без категории'}</span>
-                                            </div>
-                                            <Button
-                                                variant="secondary"
-                                                className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
-                                                size="lg"
-                                                onClick={() => setActiveProductId(product._id)}
-                                            >
-                                                <Phone size={18}/>
-                                                Консультация по товару
-                                            </Button>
-
-                                        </div>
-                                    </div>
-                                );
-                            })}
+                            {filteredProducts.map(renderProductCard)}
                         </div>
                     ) : (
-                        <div className="text-center py-12">
-                            <Search size={48} className="mx-auto text-gray-400 mb-4"/>
-                            <h3 className="text-lg font-medium text-gray-900 mb-2">Товары не найдены</h3>
-                            <p className="text-gray-600">Попробуйте изменить критерии поиска или фильтры</p>
-                        </div>
+                        renderEmptyState()
                     )}
                 </div>
             </div>
 
-            <Dialog open={!!activeProductId} onOpenChange={(open) => {
-                if (!open) setActiveProductId(null);
-            }}>
-                <RequestForm closeModal={() => setActiveProductId(null)}/>
-            </Dialog>
+            {showConsultationModal && (
+                <ModalWindow
+                    isOpen={showConsultationModal}
+                    onClose={closeConsultationModal}
+                >
+                    <Dialog open={true} onOpenChange={closeConsultationModal}>
+                        <RequestForm closeModal={closeConsultationModal} />
+                    </Dialog>
+                </ModalWindow>
+            )}
         </div>
     );
 };
