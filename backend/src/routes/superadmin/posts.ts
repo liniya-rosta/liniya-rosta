@@ -16,7 +16,7 @@ postsSuperAdminRouter.post("/", postImage.single("image"), async (req, res, next
         const post = new Post({
             title: title.trim(),
             description: description.trim(),
-            image: `/post/${req.file.filename}`,
+            image: `post/${req.file.filename}`,
         });
 
         await post.save();
@@ -61,7 +61,7 @@ postsSuperAdminRouter.patch("/:id", postImage.single("image"), async (req, res, 
 
         if (title) post.title = title.trim();
         if (description) post.description = description.trim();
-        if (req.file) post.image = `/post/${req.file.filename}`;
+        if (req.file) post.image = `post/${req.file.filename}`;
 
         await post.save();
         res.send({message: "Пост обновлен успешно", post});

@@ -3,112 +3,118 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
-import { Post } from '@/lib/types';
-import {fetchPostById} from "@/actions/posts";
+import { usePostsStore } from "@/store/postsStore";
+import { Post } from "@/lib/types";
+import Loading from "@/components/shared/Loading";
+import { API_BASE_URL } from "@/lib/globalConstants";
+import Image from "next/image";
 
-type Props = {
-    postId: string;
-};
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Separator } from '@/components/ui/separator';
+import { Terminal } from 'lucide-react';
 
-const PostClient: React.FC<Props> = ({ postId }) => {
+interface Props {
+    data: Post | null;
+    error: string | null;
+}
+
+const PostClient: React.FC<Props> = ({ data, error }) => {
     const router = useRouter();
-    const [post, setPost] = useState<Post | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
 
-    const getImageUrl = (imagePath?: string) => {
-        if (!imagePath) return null;
-        return imagePath.startsWith('http') ? imagePath : `/${imagePath}`;
-    };
+    const {
+        setFetchPostsError,
+        fetchPostsLoading,
+        setfetchPostsLoading,
+        fetchPostsError: storeError
+    } = usePostsStore();
+
+    const [isHydrating, setIsHydrating] = useState(true);
 
     useEffect(() => {
-        const loadPost = async () => {
-            try {
-                setLoading(true);
-                const fetchedPost = await fetchPostById(postId);
-                setPost(fetchedPost);
-            } catch (err) {
-                setError('Ошибка при загрузке поста');
-                console.error('Error fetching post:', err);
-            } finally {
-                setLoading(false);
-            }
-        };
+        setFetchPostsError(error);
+        setfetchPostsLoading(false);
+        setIsHydrating(false);
+    }, [data, error, setFetchPostsError, setfetchPostsLoading]);
 
-        if (postId) {
-            void loadPost();
-        }
-    }, [postId]);
+    if (isHydrating || fetchPostsLoading) return <Loading />;
 
-    if (loading) {
+    if (storeError) {
         return (
-            <div className="flex justify-center items-center min-h-screen">
-                <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-500"></div>
+            <div className="container mx-auto px-4 py-8 flex justify-center items-center min-h-[calc(100vh-100px)]">
+                <Alert variant="destructive" className="max-w-md">
+                    <Terminal className="h-4 w-4" />
+                    <AlertTitle>Ошибка!</AlertTitle>
+                    <AlertDescription>
+                        Ошибка при загрузке поста: {storeError}
+                    </AlertDescription>
+                </Alert>
             </div>
         );
     }
 
-    if (error) {
+    if (!data) {
         return (
-            <div className="flex justify-center items-center min-h-screen">
-                <div className="text-red-500 text-xl">{error}</div>
-            </div>
-        );
-    }
-
-    if (!post) {
-        return (
-            <div className="flex justify-center items-center min-h-screen">
-                <div className="text-gray-500 text-xl">Пост не найден</div>
+            <div className="container mx-auto px-4 py-8 flex justify-center items-center min-h-[calc(100vh-100px)]">
+                <Card className="max-w-md w-full">
+                    <CardContent className="pt-6 text-center">
+                        <p className="text-muted-foreground text-lg">Пост не найден.</p>
+                        <Button onClick={() => router.push('/blog')} className="mt-4">
+                            Вернуться к блогу
+                        </Button>
+                    </CardContent>
+                </Card>
             </div>
         );
     }
 
     return (
         <div className="max-w-4xl mx-auto px-4 py-8">
-            <button
+            <Button
+                variant="ghost"
                 onClick={() => router.back()}
-                className="flex items-center gap-2 text-blue-600 hover:text-blue-700 mb-6 transition-colors"
+                className="mb-6 pl-0 text-muted-foreground hover:text-foreground"
             >
-                <ArrowLeft size={20} />
+                <ArrowLeft className="mr-2 h-4 w-4" />
                 Вернуться к блогу
-            </button>
+            </Button>
 
-            <article className="bg-white rounded-lg shadow-lg overflow-hidden">
-                <div className="aspect-w-16 aspect-h-9">
-                    <img
-                        src={getImageUrl(post.image) || 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=800&h=400&fit=crop'}
+            <Card className="overflow-hidden">
+                <div className="relative aspect-video md:aspect-[2/1] w-full">
+                    <Image
+                        src={`${API_BASE_URL}/${data.image}`}
+                        fill
+                        sizes="(max-width: 768px) 100vw, 1200px"
                         onError={(e) => {
-                            (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=800&h=400&fit=crop';
+                            (e.target as HTMLImageElement).src =
+                                'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=800&h=400&fit=crop';
                         }}
-                        alt={post.title}
-                        className="w-full h-64 md:h-96 object-cover"
+                        alt={data.title}
+                        className="object-cover"
                     />
                 </div>
 
-                <div className="p-8">
-                    <h1 className="text-4xl font-bold text-gray-900 mb-6">
-                        {post.title}
-                    </h1>
-
-                    <div className="prose prose-lg max-w-none">
-                        <p className="text-gray-700 leading-relaxed text-lg">
-                            {post.description}
-                        </p>
+                <CardHeader className="space-y-4 pt-6 pb-4">
+                    <CardTitle className="text-4xl font-extrabold leading-tight text-foreground">{data.title}</CardTitle>
+                    <div className="prose prose-lg max-w-none text-muted-foreground">
+                        <p className="leading-relaxed text-lg">{data.description}</p>
                     </div>
+                </CardHeader>
 
-                    <div className="mt-8 pt-6 border-t border-gray-200">
-                        <div className="flex justify-between items-center">
-                            <button
-                                onClick={() => router.push('/blog')}
-                                className="text-blue-600 hover:text-blue-700 font-medium"
-                            >
-                                ← Все посты
-                            </button>
-                        </div>
+                <CardContent className="pt-4 pb-6">
+                    <Separator className="my-6" />
+                    <div className="flex justify-between items-center">
+                        <Button
+                            variant="outline"
+                            onClick={() => router.push('/blog')}
+                            className="text-muted-foreground hover:text-foreground"
+                        >
+                            ← Все посты
+                        </Button>
                     </div>
-                </div>
-            </article>
+                </CardContent>
+            </Card>
         </div>
     );
 };
