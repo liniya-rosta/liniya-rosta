@@ -2,10 +2,11 @@ import express from "express";
 import {PortfolioItem} from "../../models/PortfolioItem";
 import {portfolioImage} from "../../middleware/multer";
 import {Error, Types} from "mongoose";
+import {PortfolioUpdate} from "../../../types";
 
-const portfolioItemsSuperAdminRouter = express.Router();
+const portfolioSuperAdminRouter = express.Router();
 
-portfolioItemsSuperAdminRouter.post("/", portfolioImage.fields([
+portfolioSuperAdminRouter.post("/", portfolioImage.fields([
     {name: "cover", maxCount: 1},
     {name: "gallery"}
 ]), async (req, res, next) => {
@@ -22,15 +23,18 @@ portfolioItemsSuperAdminRouter.post("/", portfolioImage.fields([
             return;
         }
 
-        const galleryImages = galleryFiles.map(file => ({
+        const alts: string[] = Array.isArray(req.body.alt) ? req.body.alt : [req.body.alt];
+
+        const gallery = galleryFiles.map((file, i) => ({
             image: "portfolio/" + file.filename,
+            alt: alts[i],
         }));
 
         const newItem = new PortfolioItem({
             cover: coverFile ? "portfolio/" + coverFile.filename : null,
-            gallery: galleryImages,
+            gallery,
             description: req.body.description,
-
+            coverAlt: req.body.coverAlt,
         });
 
         await newItem.save();
@@ -44,7 +48,7 @@ portfolioItemsSuperAdminRouter.post("/", portfolioImage.fields([
     }
 });
 
-portfolioItemsSuperAdminRouter.patch("/:id", portfolioImage.single("cover"), async (req, res, next) => {
+portfolioSuperAdminRouter.patch("/:id", portfolioImage.single("cover"), async (req, res, next) => {
     try {
         const {id} = req.params;
 
@@ -53,7 +57,7 @@ portfolioItemsSuperAdminRouter.patch("/:id", portfolioImage.single("cover"), asy
             return;
         }
 
-        const updateData: Partial<{ cover: string; description: string }> = {};
+        const updateData: PortfolioUpdate = {};
 
         if (req.file) {
             updateData.cover = "portfolio/" + req.file.filename;
@@ -63,14 +67,18 @@ portfolioItemsSuperAdminRouter.patch("/:id", portfolioImage.single("cover"), asy
             updateData.description = req.body.description;
         }
 
+        if (req.body.coverAlt !== undefined) {
+            updateData.coverAlt = req.body.coverAlt;
+        }
+
         const updatedItem = await PortfolioItem.findByIdAndUpdate(
             id,
             updateData,
-            { new: true, runValidators: true }
-        );
+            {new: true, runValidators: true}
+        ).select("-gallery");
 
         if (!updatedItem) {
-            res.status(404).send({ message: "Элемент не найден" });
+            res.status(404).send({message: "Элемент не найден"});
             return;
         }
 
@@ -84,39 +92,43 @@ portfolioItemsSuperAdminRouter.patch("/:id", portfolioImage.single("cover"), asy
     }
 });
 
-portfolioItemsSuperAdminRouter.patch("/gallery/:id", portfolioImage.fields([
+portfolioSuperAdminRouter.patch("/gallery/:galleryId", portfolioImage.fields([
     {name: "gallery", maxCount: 1}
 ]), async (req, res, next) => {
     try {
-        const {id} = req.params;
+        const {galleryId} = req.params;
 
-        if (!Types.ObjectId.isValid(id)) {
+        if (!Types.ObjectId.isValid(galleryId)) {
             res.status(400).send({error: "Неверный формат ID элемента галереи"});
             return;
         }
 
         const files = req.files as { [fieldname: string]: Express.Multer.File[] };
         const file = files.gallery?.[0];
+        const newAlt = req.body.alt;
 
-        if (!file) {
-            res.status(400).send({error: "Файл изображения не загружен"});
+        const updateFields: any = {};
+        if (file) {
+            updateFields["gallery.$.image"] = "portfolio/" + file.filename;
+        }
+        if (newAlt) {
+            updateFields["gallery.$.alt"] = newAlt;
+        }
+
+        if (Object.keys(updateFields).length === 0) {
+            res.status(400).send({message: "Нет данных для обновления"});
             return;
         }
 
-        const item = await PortfolioItem.findOne({"gallery._id": id});
-
+        const item = await PortfolioItem.findOne({"gallery._id": galleryId});
         if (!item) {
             res.status(404).send({message: "Элемент галереи не найден"});
             return;
         }
 
         const updated = await PortfolioItem.updateOne(
-            {"gallery._id": id},
-            {
-                $set: {
-                    "gallery.$.image": file ? "portfolio/" + file.filename : null,
-                },
-            }
+            {"gallery._id": galleryId},
+            {$set: updateFields}
         );
 
         if (updated.modifiedCount === 0) {
@@ -124,14 +136,14 @@ portfolioItemsSuperAdminRouter.patch("/gallery/:id", portfolioImage.fields([
             return;
         }
 
-        const refreshed = await PortfolioItem.findById(item._id);
+        const refreshed = await PortfolioItem.findOne({"gallery._id": galleryId});
         res.send(refreshed);
     } catch (e) {
         next(e);
     }
 });
 
-portfolioItemsSuperAdminRouter.delete("/:id", async (req, res, next) => {
+portfolioSuperAdminRouter.delete("/:id", async (req, res, next) => {
     try {
         const {id} = req.params;
 
@@ -153,17 +165,17 @@ portfolioItemsSuperAdminRouter.delete("/:id", async (req, res, next) => {
     }
 });
 
-portfolioItemsSuperAdminRouter.delete("/gallery/:id", async (req, res, next) => {
+portfolioSuperAdminRouter.delete("/gallery/:id", async (req, res, next) => {
     try {
         const {id} = req.params;
 
         const updated = await PortfolioItem.updateOne(
-            { "gallery._id": id },
-            { $pull: { gallery: { _id: id } } }
+            {"gallery._id": id},
+            {$pull: {gallery: {_id: id}}}
         );
 
         if (updated.modifiedCount === 0) {
-            res.status(404).send({ message: "Элемент галереи не найден или уже удалён" });
+            res.status(404).send({message: "Элемент галереи не найден или уже удалён"});
             return;
         }
 
@@ -173,4 +185,4 @@ portfolioItemsSuperAdminRouter.delete("/gallery/:id", async (req, res, next) => 
     }
 });
 
-export default portfolioItemsSuperAdminRouter;
+export default portfolioSuperAdminRouter;

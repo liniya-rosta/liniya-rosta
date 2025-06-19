@@ -1,5 +1,4 @@
 import express from "express";
-import {PortfolioItem} from "../models/PortfolioItem";
 import {getPortfolioItemById, getPortfolioItems} from "../controllers/portfolioitems";
 
 const portfolioItemRouter = express.Router();

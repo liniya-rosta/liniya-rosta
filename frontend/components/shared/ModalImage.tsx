@@ -8,10 +8,11 @@ interface Props {
     onClose?: () => void;
     handlePrev?: () => void;
     handleNext?: () => void;
+    isNavigable?: boolean;
 }
 
 export const ModalImage: React.FC<React.PropsWithChildren<Props>> = (
-    {className, children, onClose, isOpen, handlePrev, handleNext }) => {
+    {className, children, onClose, isOpen, handlePrev, handleNext, isNavigable }) => {
     const [showHint, setShowHint] = useState<boolean>(true);
 
     if (!isOpen) return null;
@@ -25,28 +26,31 @@ export const ModalImage: React.FC<React.PropsWithChildren<Props>> = (
                 className="bg-white px-6 py-12 rounded-lg max-w-[90%] max-h-[90%] relative"
                 onClick={(e) => e.stopPropagation()}
             >
-
                 <BtnClose
                     onClick={onClose}
                     className="absolute top-2 right-2 font-bold text-black bg-transparent z-20"
                 />
 
                 <div className="relative max-w-[90vw] max-h-[90vh] mx-auto">
-                    <div
-                        onClick={handlePrev}
-                        className="absolute inset-y-0 left-0 w-1/2 z-10 cursor-pointer group"
-                    >
-                    </div>
+                    {isNavigable && (
+                        <>
+                            <div
+                                onClick={handlePrev}
+                                className="absolute inset-y-0 left-0 w-1/2 z-10 cursor-pointer group"
+                            />
+                            <div
+                                onClick={handleNext}
+                                className="absolute inset-y-0 right-0 w-1/2 z-10 cursor-pointer group"
+                            />
+                        </>
+                    )}
+
                     <div className="relative z-0">
                         {children}
                     </div>
-                    <div
-                        onClick={handleNext}
-                        className="absolute inset-y-0 right-0 w-1/2 z-10 cursor-pointer group"
-                    >
-                    </div>
                 </div>
-                {showHint && (
+
+                {isNavigable && showHint && (
                     <div
                         onClick={() => setShowHint(false)}
                         className="z-30 absolute bottom-[1rem] left-1/2 -translate-x-1/2 bg-white px-4 py-2 rounded-md shadow-md text-sm text-gray-700 cursor-pointer transition-opacity hover:opacity-80"

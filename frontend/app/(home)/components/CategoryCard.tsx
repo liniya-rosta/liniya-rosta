@@ -1,13 +1,12 @@
-// src/components/CategoryCard.jsx
 import React from 'react';
-import { Card, CardContent } from '@/components/ui/card';
+import {Card, CardContent} from '@/components/ui/card';
 import {Category} from "@/lib/types";
 
 interface Props {
     category: Category;
 }
 
-const CategoryCard: React.FC<Props> = ({ category }) => (
+const CategoryCard: React.FC<Props> = ({category}) => (
     <Card className="hover:shadow-lg transition-shadow h-full flex flex-col justify-between">
         <CardContent className="p-6 flex flex-col items-center gap-2 flex-grow justify-center">
             <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
