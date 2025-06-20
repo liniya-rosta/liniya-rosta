@@ -29,7 +29,7 @@ productsSuperAdminRouter.post("/", productImage.single("image"), async (req, res
             category,
             title: title.trim(),
             description: description ? description.trim() : null,
-            image: `/product/${req.file.filename}`,
+            image: `product/${req.file.filename}`,
         });
 
         await product.save();
@@ -86,7 +86,7 @@ productsSuperAdminRouter.patch("/:id", productImage.single("image"), async (req,
         if (category) product.category = category;
         if (title) product.title = title.trim();
         if (description !== undefined) product.description = description;
-        if (req.file) product.image = `/product/${req.file.filename}`;
+        if (req.file) product.image = `product/${req.file.filename}`;
 
         await product.save();
         res.send({message: "Продукт обновлен успешно", product});

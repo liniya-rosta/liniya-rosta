@@ -1,5 +1,5 @@
-import {create} from 'zustand';
-import {Category} from '@/lib/types';
+import { create } from 'zustand';
+import { Category } from '@/lib/types';
 
 interface CategoryState {
     categories: Category[];

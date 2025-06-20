@@ -1,9 +1,20 @@
 import Category from "../models/Category";
 import { Request, Response, NextFunction } from 'express';
 
-export const getCategories = async (_req: Request, res: Response, next: NextFunction) => {
+export const getCategories = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const categories = await Category.find();
+        const slug = req.query.slug as string;
+        const filter: { slug?: string } = {};
+
+        if (slug) filter.slug = slug;
+
+        const categories = await Category.find(filter);
+
+        if (slug && categories.length === 0) {
+            res.status(404).json({message: `Категория с slug "${slug}" не найдена`});
+            return;
+        }
+
         res.send(categories);
     } catch (e) {
         next(e);

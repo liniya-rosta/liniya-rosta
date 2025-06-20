@@ -6,11 +6,10 @@ export interface Product {
     image: string | null;
 }
 
-export type ProductWithoutId = Omit<Product, '_id'>;
-
 export interface Category {
     _id: string;
     title: string;
+    slug?: string;
 }
 
 export interface UserFields {
@@ -48,4 +47,10 @@ export interface ContactFields {
     linkLocation: string;
     instagram: string;
     whatsapp: string;
+}
+
+export interface PortfolioUpdate{
+    cover?: string;
+    description?: string;
+    coverAlt?: string;
 }

@@ -17,16 +17,7 @@ export const usePortfolioStore = create<PortfolioState>((set) => ({
     detailItem: null,
     galleryItem: null,
     fetchLoading: false,
-
-    setPortfolioPreview: (data) => {
-        set({ items: data })
-    },
-
-    setPortfolioItemDetail: (data) => {
-        set({ detailItem: data })
-    },
-
-    setGalleryItem: (data) => {
-        set({ galleryItem: data })
-    },
+    setPortfolioPreview: (data) => set({ items: data }),
+    setPortfolioItemDetail: (data) => set({ detailItem: data }),
+    setGalleryItem: (data) => set({ galleryItem: data }),
 }));
