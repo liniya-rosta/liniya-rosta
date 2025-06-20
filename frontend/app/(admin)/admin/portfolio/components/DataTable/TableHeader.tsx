@@ -16,6 +16,16 @@ interface Props {
     table: TanStackTable<PortfolioItemPreview>,
 }
 
+const columnLabels: Record<string, string> = {
+    index: "№",
+    coverAlt: "Альтер-ое название обложки",
+    description: "Описание",
+    galleryCount: "Кол-во изображений",
+    cover: "Обложка",
+    actions: "Меню",
+};
+
+
 const CustomTableHeader: React.FC<Props> = ({table}) => {
     return (
         <div className="flex justify-between gap-4 py-4 flex-wrap items-center">
@@ -31,7 +41,7 @@ const CustomTableHeader: React.FC<Props> = ({table}) => {
             </div>
 
             <div className="flex gap-2">
-                <Link href="/frontend/app/(admin)/admin/portfolio/add-portfolio">
+                <Link href="/admin/portfolio/add-portfolio">
                     <Button variant="outline">Создать портфолио</Button>
                 </Link>
 
@@ -54,11 +64,7 @@ const CustomTableHeader: React.FC<Props> = ({table}) => {
                                         column.toggleVisibility(!!value)
                                     }
                                 >
-                                    {
-                                        typeof column.columnDef.header === "function"
-                                            ? column.columnDef.header()?.props?.children ?? column.id
-                                            : column.columnDef.header
-                                    }
+                                    {columnLabels[column.id] ?? column.id}
                                 </DropdownMenuCheckboxItem>
                             ))}
                     </DropdownMenuContent>

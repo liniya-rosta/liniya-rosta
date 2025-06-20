@@ -8,13 +8,20 @@ import {Button} from "@/components/ui/button";
 import React from "react";
 import {PortfolioMutation} from "@/lib/types";
 import { Plus } from "lucide-react";
-import {createPortfolioSuperAdmin} from "@/actions/portfolios";
 import {useRouter} from "next/navigation";
+import { createPortfolio } from "@/actions/superadmin/portfolios";
+import {useSuperAdminPortfolioStore} from "@/store/superadmin/superAdminPortfolio";
+import {isAxiosError} from "axios";
+import {toast} from "react-toastify";
+import FormErrorMessage from "@/components/ui/FormErrorMessage";
+import ButtonLoading from "@/components/ui/ButtonLoading";
 
 const PortfolioForm= () => {
-    const {register, handleSubmit, setValue, control, trigger, formState: {errors}} = useForm({
-            resolver: zodResolver(portfolioSchema),
-        });
+    const {
+        register, handleSubmit, setValue, control, trigger, formState: {errors, isDirty}
+    } = useForm({resolver: zodResolver(portfolioSchema),});
+
+    const {createLoading, setPortfolioCreateLoading} = useSuperAdminPortfolioStore();
 
     const { fields, append, remove } = useFieldArray({
         control,
@@ -44,10 +51,25 @@ const PortfolioForm= () => {
 
     const onSubmit = async (data: PortfolioMutation) => {
         try {
-            await createPortfolioSuperAdmin(data)
+            setPortfolioCreateLoading(true)
+            await createPortfolio(data)
             router.push("/admin/portfolio");
-        } catch (e) {
-            console.log(e)
+        } catch (error) {
+            let errorMessage = "Неизвестная ошибка при создании портфолио";
+            if (isAxiosError(error) && error.response) {
+                errorMessage = error.response.data.error;
+            } else if (error instanceof Error) {
+                errorMessage = error.message;
+            }
+
+            toast.error(errorMessage, {
+                autoClose: 3000,
+                position: "top-center",
+                pauseOnHover: true,
+                draggable: true,
+            });
+        } finally {
+            setPortfolioCreateLoading(false);
         }
     };
 
@@ -59,10 +81,11 @@ const PortfolioForm= () => {
                         className="mb-3"
                         type="text"
                         placeholder="Описание"
+                        disabled={createLoading}
                         {...register("description")}
                     />
                     {errors.description && (
-                        <p className="text-red-500 text-sm mb-4">{errors.description.message}</p>
+                        <FormErrorMessage>{errors.description.message}</FormErrorMessage>
                     )}
                 </div>
 
@@ -71,10 +94,11 @@ const PortfolioForm= () => {
                         className="mb-3"
                         type="text"
                         placeholder="Алтернативное название обложки"
+                        disabled={createLoading}
                         {...register("coverAlt")}
                     />
                     {errors.coverAlt && (
-                        <p className="text-red-500 text-sm mb-4">{errors.coverAlt.message}</p>
+                        <FormErrorMessage>{errors.coverAlt.message}</FormErrorMessage>
                     )}
                 </div>
 
@@ -83,11 +107,12 @@ const PortfolioForm= () => {
                         className="mb-3"
                         type="file"
                         placeholder="Обложка"
+                        disabled={createLoading}
                         onChange={onCoverChange}
                         accept="image/*"
                     />
                     {errors.cover && (
-                        <p className="text-red-500 text-sm">{errors.cover.message}</p>
+                        <FormErrorMessage>{errors.cover.message}</FormErrorMessage>
                     )}
                 </div>
             </div>
@@ -99,6 +124,7 @@ const PortfolioForm= () => {
                     variant="outline"
                     size="sm"
                     onClick={() => append({ alt: "", image: null })}
+                    disabled={createLoading}
                     className="flex items-center gap-1 mb-4"
                 >
                     <Plus className="w-4 h-4" />
@@ -112,30 +138,34 @@ const PortfolioForm= () => {
                                 type="text"
                                 placeholder="Альтернативное название изображения"
                                 {...register(`gallery.${index}.alt`)}
+                                disabled={createLoading}
                                 onChange={(e) => handleAltChange(index, e.target.value)}
                                 className="mb-3"
                             />
                             {errors.gallery?.[index]?.alt && (
-                                <p className="text-red-500 text-sm">
+                                <FormErrorMessage>
                                     {errors.gallery[index]?.alt?.message}
-                                </p>
+                                </FormErrorMessage>
                             )}
 
                             <Input
                                 type="file"
                                 accept="image/*"
+                                disabled={createLoading}
                                 onChange={(e) => onGalleryChange(index, e)}
                             />
                             {errors.gallery?.[index]?.image && (
-                                <p className="text-red-500 text-sm">
+                                <FormErrorMessage>
                                     {errors.gallery[index]?.image?.message}
-                                </p>
+                                </FormErrorMessage>
                             )}
 
                             <Button
                                 type="button"
                                 variant="destructive"
                                 size="sm"
+                                disabled={createLoading}
+                                className="ml-auto block"
                                 onClick={() => remove(index)}
                             >
                                 Удалить
@@ -145,9 +175,12 @@ const PortfolioForm= () => {
                 </div>
             </div>
 
-            <Button type="submit" className="mr-auto">
-               Создать
-            </Button>
+
+            {createLoading ? <ButtonLoading className="ml-auto"/>
+                : <Button type="submit" className="ml-auto block px-8" disabled={!isDirty}>
+                    Создать
+                </Button>
+            }
         </form>
     )
 

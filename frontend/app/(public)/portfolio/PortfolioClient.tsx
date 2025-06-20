@@ -6,20 +6,24 @@ import {API_BASE_URL} from "@/lib/globalConstants";
 import { CartPortfolio } from '@/app/(public)/portfolio/components/CartPortfolio';
 import {PortfolioItemPreview} from "@/lib/types";
 import Link from "next/link";
+import Loading from "@/components/shared/Loading";
 
 interface Props {
     data: PortfolioItemPreview[]
 }
 
 const PortfolioClient: React.FC<Props> = ({ data }) => {
-    const {items, setPortfolioPreview} = usePortfolioStore();
+    const {items, setPortfolioPreview, fetchLoadingPortfolio, setPortfolioLoading} = usePortfolioStore();
 
     useEffect(() => {
-        setPortfolioPreview(data)
-    }, [setPortfolioPreview, data]);
+        setPortfolioPreview(data);
+        setPortfolioLoading(false);
+    }, [setPortfolioPreview, data, setPortfolioLoading]);
+
+    if (fetchLoadingPortfolio) return <Loading/>;
 
     return (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 mb-15">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 mb-15">
                 {items.map((item) => {
                     const imageUrl = API_BASE_URL + "/" + item.cover;
                     const pageUrl = "/portfolio/" + item._id;

@@ -66,7 +66,8 @@ const HomePageClient: React.FC<HomePageClientProps> = ({
 
     const {
         setPortfolioPreview,
-        fetchLoading: portfolioLoading,
+        fetchLoadingPortfolio: portfolioLoading,
+        setPortfolioLoading,
     } = usePortfolioStore();
 
     useEffect(() => {
@@ -82,7 +83,8 @@ const HomePageClient: React.FC<HomePageClientProps> = ({
         setFetchCategoriesLoading(false);
         setFetchProductsLoading(false);
         setFetchContactLoading(false);
-    }, [categoriesData, productsData, portfolioItems, categoriesError, productsError, portfolioError, setPortfolioPreview, setCategories, setProducts, setFetchCategoriesError, setFetchProductsError, setFetchCategoriesLoading, setFetchProductsLoading, contactData, setContact, setFetchContactError, contactError, setFetchContactLoading]);
+        setPortfolioLoading(false);
+    }, [categoriesData, productsData, portfolioItems, categoriesError, productsError, portfolioError, setPortfolioPreview, setCategories, setProducts, setFetchCategoriesError, setFetchProductsError, setFetchCategoriesLoading, setFetchProductsLoading, contactData, setContact, setFetchContactError, contactError, setFetchContactLoading, setPortfolioLoading]);
 
     const overallLoading = fetchCategoriesLoading || fetchProductsLoading || portfolioLoading || fetchContactLoading || fetchContactLoading;
     const overallError = fetchCategoriesError || fetchProductsError || portfolioError || fetchContactError;

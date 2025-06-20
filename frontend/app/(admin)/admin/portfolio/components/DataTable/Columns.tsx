@@ -16,7 +16,7 @@ import React from "react";
 
 export const getColumns = (
     onImageClick: (image: { cover: string; alt: string }) => void,
-    onDelete: (id: string) => void,
+    onRequestDelete: (id: string, cover: string) => void,
     onEditCover: (id: string) => void,
     onGallery: (id: string) => void,
 ): ColumnDef<PortfolioItemPreview>[] => [
@@ -74,6 +74,7 @@ export const getColumns = (
                                 src={imageUrl}
                                 alt="Обложка"
                                 fill
+                                priority
                                 className="object-cover"
                                 sizes="64px"
                             />
@@ -101,7 +102,7 @@ export const getColumns = (
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Действия</DropdownMenuLabel>
+                        <DropdownMenuLabel>Меню</DropdownMenuLabel>
                         <DropdownMenuItem
                             onClick={() => navigator.clipboard.writeText(payment._id)}
                         >
@@ -114,7 +115,7 @@ export const getColumns = (
                         <DropdownMenuItem onClick={() => onEditCover(payment._id)}>
                             Редактировать
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => onDelete(payment._id)}>
+                        <DropdownMenuItem onClick={() => onRequestDelete(payment._id, payment.cover)}>
                             Удалить
                         </DropdownMenuItem>
                     </DropdownMenuContent>

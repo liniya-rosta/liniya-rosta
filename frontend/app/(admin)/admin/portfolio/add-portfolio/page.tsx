@@ -6,7 +6,9 @@ const AddPortfolio = async () => {
             <div className="my-20 ">
                 <div className="mx-auto w-[80%]">
                     <h2 className="font-bold text-3xl mb-5 text-center">Создать портфолио</h2>
-                    <PortfolioForm/>
+                    <div className="max-w-4xl mx-auto">
+                        <PortfolioForm/>
+                    </div>
                 </div>
             </div>
         </div>
