@@ -1,9 +1,11 @@
 import React from 'react';
+import RequestsPage from "@/app/(admin)/admin/requests/components/RequestsPage";
 
-const Page = () => {
+const Page =  () => {
+
     return (
         <div>
-            Заявки
+            <RequestsPage />
         </div>
     );
 };
