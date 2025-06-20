@@ -4,7 +4,7 @@ import Image from "next/image";
 
 const InfoAboutSpcLaminate = () => {
     return (
-        <div className="flex items-center -mt-8 mb-18">
+        <div className="flex items-center mb-18">
             <div className="w-[40%]">
                 <h2 className="text-2xl pb-3">Что такое SPC Ламинат?</h2>
                 <p>
