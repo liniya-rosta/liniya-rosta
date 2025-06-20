@@ -1,28 +1,28 @@
 'use client';
 
 import React from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { toast } from 'react-toastify';
-import { Loader2, AlertCircle } from 'lucide-react';
+import {useForm} from 'react-hook-form';
+import {zodResolver} from '@hookform/resolvers/zod';
+import {toast} from 'react-toastify';
+import {Loader2, AlertCircle} from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import {Button} from '@/components/ui/button';
+import {Input} from '@/components/ui/input';
+import {Label} from '@/components/ui/label';
+import {Alert, AlertDescription} from '@/components/ui/alert';
 
-import { IRequestMutation } from '@/lib/types';
-import { useRequestStore } from '@/store/requestStore';
-import { createRequest } from '@/actions/requestActions';
+import {IRequestMutation} from '@/lib/types';
+import {useRequestStore} from '@/store/requestStore';
+import {createRequest} from '@/actions/requestActions';
 import requestSchema from '@/lib/zodSchemas/requestSchema';
 
-const ServiceForm = () => {
-    const { createLoading, createError, errorMessage, setLoading, setError } = useRequestStore();
+const ServicesForm = () => {
+    const {createLoading, createError, errorMessage, setLoading, setError} = useRequestStore();
 
     const {
         register,
         handleSubmit,
-        formState: { errors },
+        formState: {errors},
         reset,
     } = useForm<IRequestMutation>({
         resolver: zodResolver(requestSchema),
@@ -47,7 +47,7 @@ const ServiceForm = () => {
     };
 
     return (
-        <div className="bg-white rounded-lg p-8 shadow-lg max-w-md w-full">
+        <div className="bg-white rounded-lg p-8 shadow-lg max-w-md w-full my-6">
 
             <div className="mb-6 text-center">
                 <h2 className="text-2xl font-semibold">Услуги с выездом на дом</h2>
@@ -59,7 +59,7 @@ const ServiceForm = () => {
             <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4">
                 {createError && (
                     <Alert variant="destructive">
-                        <AlertCircle className="h-4 w-4" />
+                        <AlertCircle className="h-4 w-4"/>
                         <AlertDescription>{errorMessage}</AlertDescription>
                     </Alert>
                 )}
@@ -68,7 +68,7 @@ const ServiceForm = () => {
                     <Label htmlFor="name">Имя</Label>
                     <Input
                         id="name"
-                        placeholder="Ваше имя"
+                        placeholder="Вася Пупкин"
                         disabled={createLoading}
                         {...register('name')}
                         aria-invalid={errors.name ? 'true' : 'false'}
@@ -94,7 +94,7 @@ const ServiceForm = () => {
                     <Input
                         id="phone"
                         type="tel"
-                        placeholder="+996 999 999 999"
+                        placeholder="+996999999999"
                         disabled={createLoading}
                         {...register('phone')}
                         aria-invalid={errors.phone ? 'true' : 'false'}
@@ -104,10 +104,10 @@ const ServiceForm = () => {
 
                 <Button
                     type="submit"
-                    className="w-full bg-yellow-400 hover:bg-yellow-500"
+                    className="w-full bg-yellow-400 hover:bg-yellow-600 cursor-pointer duration-500"
                     disabled={createLoading}
                 >
-                    {createLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    {createLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin"/>}
                     Отправить
                 </Button>
             </form>
@@ -115,4 +115,4 @@ const ServiceForm = () => {
     );
 };
 
-export default ServiceForm;
+export default ServicesForm;

@@ -20,7 +20,7 @@ const Footer = async () => {
 
     return (
         <>
-            <footer className="p-10 bg-gray-800 mt-8 text-white">
+            <footer className="p-10 bg-gray-800 mt-10 text-white">
                 <div className="flex flex-wrap items-center justify-between w-full container mx-auto">
                     <FooterContent contactData={contactData} contactError={contactError}/>
                     <FooterBtn/>

@@ -1,10 +1,10 @@
 import React from 'react';
 import {Check} from "lucide-react";
 
-const ServiceContent = () => {
+const ServicesTitle = () => {
     return (
         <div className="max-w-lg text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.85)]">
-            <h1 className="text-4xl font-bold mb-6">
+            <h1 className="text-4xl font-bold mb-8">
                 Линия роста —{' '}
                 <span className="text-yellow-400">мы работаем</span>,{' '}
                 <span className="text-white/90">вы отдыхаете.</span>
@@ -18,7 +18,7 @@ const ServiceContent = () => {
                     'Уникальная технология производства натяжных потолков',
                     'Идеальный SPC ламинат'].map((text) => (
                     <li key={text} className="flex items-center space-x-3">
-                        <Check className="w-6 h-6 text-yellow-400 flex-shrink-0" />
+                        <Check className="w-6 h-6 text-yellow-400 flex-shrink-0"/>
                         <span>{text}</span>
                     </li>
                 ))}
@@ -27,4 +27,4 @@ const ServiceContent = () => {
     );
 };
 
-export default ServiceContent;
+export default ServicesTitle;
