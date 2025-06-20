@@ -48,11 +48,12 @@ export const editGalleryItem = async ({item, gallery_id}: {
     const formData = new FormData();
 
     if (item.image) {
-        formData.append("gallery", item.image);
+        formData.append("image", item.image);
     }
 
     if (item.alt) {
-        formData.append("gallery", item.alt);
+        console.log(item.alt)
+        formData.append("alt", item.alt);
     }
 
     await axiosAPI.patch("superadmin/portfolio/gallery/" + gallery_id, formData);

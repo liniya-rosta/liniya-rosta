@@ -1,10 +1,15 @@
 import { Loader2Icon } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import {cn} from "@/lib/utils";
 
-const ButtonLoading = ()=> {
+interface Props {
+    className?: string
+}
+
+const ButtonLoading: React.FC<Props> = ({className})=> {
     return (
         <Button size="sm" disabled>
-            <Loader2Icon className="animate-spin" />
+            <Loader2Icon className={cn("animate-spin", className)} />
             Загрузка
         </Button>
     )

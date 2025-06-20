@@ -6,7 +6,7 @@ export const fetchPortfolioPreviews = async () => {
     return response.data;
 }
 
-export const fetchPortfolioItems = async (item_id: string) => {
+export const fetchPortfolioItem = async (item_id: string) => {
     const response = await axiosAPI<PortfolioItemDetail>("/portfolio-items/" + item_id);
     return response.data;
 }

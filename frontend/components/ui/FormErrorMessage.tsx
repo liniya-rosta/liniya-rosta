@@ -5,7 +5,7 @@ interface Props {
     className?: string
 }
 
-const FormErrorMessage:  React.FC<PropsWithChildren<Props>> = ({children, className}) => {
+const FormErrorMessage: React.FC<PropsWithChildren<Props>> = ({children, className}) => {
     return (
         <p className={cn("text-red-500 text-sm mb-4", className)}>{children}</p>
     )

@@ -9,38 +9,81 @@ import Image from "next/image";
 import {API_BASE_URL} from "@/lib/globalConstants";
 import {Button} from "@/components/ui/button";
 import { editGalleryItem } from "@/actions/superadmin/portfolios";
+import ButtonLoading from "@/components/ui/ButtonLoading";
+import {isAxiosError} from "axios";
+import {toast} from "react-toastify";
+import {Tooltip, TooltipContent, TooltipTrigger} from "@/components/ui/tooltip";
+import {fetchPortfolioItem} from "@/actions/portfolios";
 
 interface Props {
     onSaved: () => void;
 }
 
 const GalleryEditForm: React.FC<Props> = ({onSaved}) => {
-    const {register, handleSubmit, setValue, formState: {errors}} = useForm({
+    const {register, handleSubmit, setValue, reset, formState: {errors, isDirty}} = useForm({
         resolver: zodResolver(gallerySchema),
     });
 
-    const {galleryItem} = useSuperAdminPortfolioStore();
+    const {
+        galleryItem,
+        editLoading,
+        detailItem,
+        setPortfolioEditLoading,
+        setPortfolioItemDetail,
+    } = useSuperAdminPortfolioStore();
 
     useEffect(() => {
         if (galleryItem) {
-            setValue("alt", galleryItem.alt);
+            reset({
+                alt: galleryItem.alt,
+            });
         }
-    }, [galleryItem, setValue]);
+    }, [galleryItem, reset]);
 
 
     const onChangeFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
-        setValue("image", file);
+        setValue("image", file, { shouldDirty: true });
     };
 
     const onSubmit = async (data: GalleryItemValues) => {
+        if (!galleryItem) return;
+
         try {
-            if (!galleryItem) return;
+            setPortfolioEditLoading(true);
             await editGalleryItem({item: data, gallery_id: galleryItem._id});
+
+
+            toast.success("Вы успешно обновили элемент галереи", {
+                autoClose: 3000,
+                position: "top-center",
+                pauseOnHover: true,
+                draggable: true,
+            });
+
+            if(detailItem) {
+                const updated = await fetchPortfolioItem(detailItem._id);
+                setPortfolioItemDetail(updated);
+            }
+
             onSaved();
-        } catch (e) {
-            console.log(e)
+        } catch (error) {
+            let errorMessage = "Неизвестная ошибка при редактировании элемента галереи";
+            if (isAxiosError(error) && error.response) {
+                errorMessage = error.response.data.error;
+            } else if (error instanceof Error) {
+                errorMessage = error.message;
+            }
+
+            toast.error(errorMessage, {
+                autoClose: 3000,
+                position: "top-center",
+                pauseOnHover: true,
+                draggable: true,
+            });
+        } finally {
+            setPortfolioEditLoading(false);
         }
     };
 
@@ -51,6 +94,7 @@ const GalleryEditForm: React.FC<Props> = ({onSaved}) => {
                     <Input
                         className="mb-3"
                         type="text"
+                        disabled={editLoading}
                         placeholder="Описание"
                         {...register("alt")}
                     />
@@ -63,6 +107,7 @@ const GalleryEditForm: React.FC<Props> = ({onSaved}) => {
                     <Input
                         className="mb-3"
                         type="file"
+                        disabled={editLoading}
                         placeholder="Обложка"
                         onChange={onChangeFile}
                         accept="image/*"
@@ -74,19 +119,31 @@ const GalleryEditForm: React.FC<Props> = ({onSaved}) => {
                 {galleryItem && (
                     <>
                         <p className="mb-3">Предыдущее изображение</p>
-                        <Image
-                            src={API_BASE_URL + "/" + galleryItem.image}
-                            alt={galleryItem.alt}
-                            width={200}
-                            height={200}
-                            className="object-contain rounded"
-                        />
+                        <div className="relative w-[200px] h-[200px]">
+                            <Image
+                                src={API_BASE_URL + "/" + galleryItem.image}
+                                alt={galleryItem.alt}
+                                fill
+                                sizes="(max-width: 768px) 100vw, 200px"
+                                className="object-contain rounded"
+                            />
+                        </div>
                     </>
                 )}
             </div>
-            <Button type="submit" className="mr-auto">
-                Сохранить
-            </Button>
+
+            {editLoading ? <ButtonLoading/>
+                :<Tooltip>
+                    <TooltipTrigger asChild>
+                        <div className="inline-block">
+                            <Button type="submit" className="mr-auto" disabled={!isDirty}>
+                                Сохранить
+                            </Button>
+                        </div>
+                    </TooltipTrigger>
+                    {!isDirty && <TooltipContent>Вы ничего не изменили</TooltipContent>}
+                </Tooltip>
+            }
         </form>
     )
 };

@@ -14,13 +14,16 @@ import {useSuperAdminPortfolioStore} from "@/store/superadmin/superAdminPortfoli
 import { editPortfolioItem } from "@/actions/superadmin/portfolios";
 import FormErrorMessage from "@/components/ui/FormErrorMessage";
 import ButtonLoading from "@/components/ui/ButtonLoading";
+import {isAxiosError} from "axios";
+import {toast} from "react-toastify";
+import {Tooltip, TooltipContent, TooltipTrigger} from "@/components/ui/tooltip";
 
 interface Props {
     onSaved: () => void;
 }
 
 const PortfolioEditForm: React.FC<Props> = ({onSaved}) => {
-    const {register, handleSubmit, setValue, formState: {errors}} = useForm({
+    const {register, handleSubmit, setValue, reset, formState: {errors, isDirty}} = useForm({
         resolver: zodResolver(portfolioItemSchema),
     });
 
@@ -33,29 +36,50 @@ const PortfolioEditForm: React.FC<Props> = ({onSaved}) => {
 
     useEffect(() => {
         if (detailItem) {
-            setValue("description", detailItem.description);
-            setValue("coverAlt", detailItem.coverAlt);
+            reset({
+                description: detailItem.description,
+                coverAlt: detailItem.coverAlt,
+            });
         }
-    }, [detailItem, setValue]);
+    }, [detailItem, reset]);
 
 
     const onCoverChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
-        setValue("cover", file);
+        setValue("cover", file, { shouldDirty: true });
     };
 
     const onSubmit = async (data: PortfolioEditValues) => {
+        if (!detailItem) return;
         try {
-            if (!detailItem) return;
+
             setPortfolioEditLoading(true);
             await editPortfolioItem({item: data, id: detailItem._id});
             const updated = await fetchPortfolioPreviews();
 
             setPortfolioPreview(updated);
             onSaved()
-        } catch (e) {
-            console.log(e)
+            toast.success("Вы успешно обновили портфолио", {
+                autoClose: 3000,
+                position: "top-center",
+                pauseOnHover: true,
+                draggable: true,
+            });
+        } catch (error) {
+            let errorMessage = "Неизвестная ошибка при редактировании портфолио";
+            if (isAxiosError(error) && error.response) {
+                errorMessage = error.response.data.error;
+            } else if (error instanceof Error) {
+                errorMessage = error.message;
+            }
+
+            toast.error(errorMessage, {
+                autoClose: 3000,
+                position: "top-center",
+                pauseOnHover: true,
+                draggable: true,
+            });
         } finally {
             setPortfolioEditLoading(false);
         }
@@ -69,6 +93,7 @@ const PortfolioEditForm: React.FC<Props> = ({onSaved}) => {
                         className="mb-3"
                         type="text"
                         placeholder="Описание"
+                        disabled={editLoading}
                         {...register("description")}
                     />
                     {errors.description && (
@@ -80,6 +105,7 @@ const PortfolioEditForm: React.FC<Props> = ({onSaved}) => {
                     <Input
                         className="mb-3"
                         type="text"
+                        disabled={editLoading}
                         placeholder="Алтернативное название обложки"
                         {...register("coverAlt")}
                     />
@@ -93,6 +119,7 @@ const PortfolioEditForm: React.FC<Props> = ({onSaved}) => {
                         className="mb-3"
                         type="file"
                         placeholder="Обложка"
+                        disabled={editLoading}
                         onChange={onCoverChange}
                         accept="image/*"
                     />
@@ -103,22 +130,31 @@ const PortfolioEditForm: React.FC<Props> = ({onSaved}) => {
                 {detailItem && (
                     <>
                         <p className="mb-3">Предыдущее изображение</p>
-                        <Image
-                            src={API_BASE_URL + "/" + detailItem.cover}
-                            alt={detailItem.coverAlt}
-                            width={200}
-                            height={200}
-                            className="object-contain rounded"
-                        />
+                        <div className="relative w-[200px] h-[200px]">
+                            <Image
+                                src={API_BASE_URL + "/" + detailItem.cover}
+                                alt={detailItem.coverAlt}
+                                fill
+                                sizes="(max-width: 768px) 100vw, 200px"
+                                className="object-contain rounded"
+                            />
+                        </div>
                     </>
 
                 )}
             </div>
 
             {editLoading ? <ButtonLoading/>
-                :<Button type="submit" className="mr-auto">
-                    Сохранить
-                </Button>
+                : <Tooltip>
+                    <TooltipTrigger asChild>
+                        <div className="inline-block">
+                            <Button type="submit" className="mr-auto" disabled={!isDirty}>
+                                Сохранить
+                            </Button>
+                        </div>
+                    </TooltipTrigger>
+                    {!isDirty && <TooltipContent>Вы ничего не изменили</TooltipContent>}
+                </Tooltip>
             }
         </form>
     )

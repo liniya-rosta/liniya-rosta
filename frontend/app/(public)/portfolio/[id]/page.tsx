@@ -1,7 +1,6 @@
 import React from "react";
 
-export const dynamicParams = true;
-import {fetchPortfolioItems} from "@/actions/portfolios";
+import {fetchPortfolioItem} from "@/actions/portfolios";
 import GalleryClient from './GalleryClient';
 import {isAxiosError} from "axios";
 
@@ -15,7 +14,7 @@ const GalleryPage = async ({params}: { params: Promise<Params> }) => {
 
     try {
         const {id} = await params;
-        detailItem = await fetchPortfolioItems(id);
+        detailItem = await fetchPortfolioItem(id);
     } catch (error) {
         if (isAxiosError(error)) {
             errorMessage = error.response?.data?.error || "Ошибка при загрузке галереи";

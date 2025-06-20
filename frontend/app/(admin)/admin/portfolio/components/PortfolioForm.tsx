@@ -18,7 +18,7 @@ import ButtonLoading from "@/components/ui/ButtonLoading";
 
 const PortfolioForm= () => {
     const {
-        register, handleSubmit, setValue, control, trigger, formState: {errors}
+        register, handleSubmit, setValue, control, trigger, formState: {errors, isDirty}
     } = useForm({resolver: zodResolver(portfolioSchema),});
 
     const {createLoading, setPortfolioCreateLoading} = useSuperAdminPortfolioStore();
@@ -165,6 +165,7 @@ const PortfolioForm= () => {
                                 variant="destructive"
                                 size="sm"
                                 disabled={createLoading}
+                                className="ml-auto block"
                                 onClick={() => remove(index)}
                             >
                                 Удалить
@@ -174,8 +175,9 @@ const PortfolioForm= () => {
                 </div>
             </div>
 
-            {createLoading ? <ButtonLoading/>
-                : <Button type="submit" className="mr-auto">
+
+            {createLoading ? <ButtonLoading className="ml-auto"/>
+                : <Button type="submit" className="ml-auto block px-8" disabled={!isDirty}>
                     Создать
                 </Button>
             }
