@@ -8,7 +8,6 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import {Category, Contact, PortfolioItemPreview, Product} from '@/lib/types';
 import {useCategoryStore} from "@/store/categoriesStore";
-import Loading from "@/components/shared/Loading/Loading";
 import ErrorMsg from "@/components/shared/ErrorMsg";
 import HeroSection from "@/app/(public)/(home)/components/HeroSection";
 import CategoriesSection from "@/app/(public)/(home)/components/CategoriesSection";
@@ -17,6 +16,7 @@ import PortfolioSection from "@/app/(public)/(home)/components/PortfolioSection"
 import InstagramSection from "@/app/(public)/(home)/components/InstagramSection";
 import ConsultationSection from "@/app/(public)/(home)/components/ConsultationSection";
 import {useContactStore} from "@/store/contactsStore";
+import LoadingFullScreen from "@/components/shared/Loading/LoadingFullScreen";
 
 interface HomePageClientProps {
     categoriesData: Category[];
@@ -89,7 +89,7 @@ const HomePageClient: React.FC<HomePageClientProps> = ({
     const overallLoading = fetchCategoriesLoading || fetchProductsLoading || portfolioLoading || fetchContactLoading || fetchContactLoading;
     const overallError = fetchCategoriesError || fetchProductsError || portfolioError || fetchContactError;
 
-    if (overallLoading) return <Loading/>;
+    if (overallLoading) return <LoadingFullScreen/>;
     if (overallError) return <ErrorMsg error={overallError}/>
 
     return (
