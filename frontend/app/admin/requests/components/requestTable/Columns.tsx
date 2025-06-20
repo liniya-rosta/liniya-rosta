@@ -1,12 +1,7 @@
 import {ColumnDef} from "@tanstack/react-table"
 import {IRequest} from "@/lib/types";
-
-const statusLabels: Record<string, string> = {
-    new: "Новая",
-    in_progress: "В работе",
-    done: "Завершена",
-    rejected: "Отклонена",
-}
+import {Button} from "@/components/ui/button";
+import {ArrowUpDown} from "lucide-react";
 
 export const columns: ColumnDef<IRequest>[] = [
     {
@@ -35,28 +30,53 @@ export const columns: ColumnDef<IRequest>[] = [
     },
     {
         accessorKey: "status",
-        header: "Статус",
+        header: () => (
+            <>
+                Статус
+            </>
+        ),
         cell: ({ row }) => {
             const status = row.getValue("status") as string
             return (
                 <span className={`font-medium ${
-                    status === 'Новая' ? 'text-blue-500' :
+                    status === 'Новая' ? 'text-green-600' :
                         status === 'В работе' ? 'text-yellow-500' :
-                            status === 'Завершена' ? 'text-green-600' :
+                            status === 'Завершена' ? 'text-blue-500' :
                                 status === 'Отклонена' ? 'text-red-500' :
                                     ''
                 }`}>
-          {statusLabels[status] ?? status}
+          {status}
         </span>
+            )
+        },
+        filterFn: "equals"
+    },
+    {
+        accessorKey: "createdAt",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                >
+                    Дата создания
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
             )
         },
     },
     {
-        accessorKey: "createdAt",
-        header: "Дата создания",
-    },
-    {
         accessorKey: "updatedAt",
-        header: "Дата обновления",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                >
+                    Дата обновления
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            )
+        },
     },
 ]

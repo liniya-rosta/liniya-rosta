@@ -1,21 +1,25 @@
 "use client"
 
+import * as React from "react"
 import {
-    ColumnDef,
+    ColumnDef, ColumnFiltersState,
     flexRender,
-    getCoreRowModel,
+    getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, SortingState,
     useReactTable,
 } from "@tanstack/react-table"
 
 import {
     Table,
     TableBody,
-    TableCell,
+    TableCell, TableFooter,
     TableHead,
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
 import Loading from '@/components/shared/Loading'
+import TablePagination from "@/app/admin/requests/components/requestTable/TablePagination";
+import {useState} from "react";
+import StatusFilter from "@/app/admin/requests/components/requestTable/StatusFilter";
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
@@ -30,19 +34,47 @@ export const DataTable = <TData, TValue>({
                                              error,
                                              loading,
                                          }: DataTableProps<TData, TValue>) => {
+    const [sorting, setSorting] = React.useState<SortingState>([])
+    const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
     const table = useReactTable({
         data,
         columns,
         getCoreRowModel: getCoreRowModel(),
+        getPaginationRowModel: getPaginationRowModel(),
+        onSortingChange: setSorting,
+        getSortedRowModel: getSortedRowModel(),
+        getFilteredRowModel: getFilteredRowModel(),
+        onColumnFiltersChange: setColumnFilters,
+        state: {
+            pagination: {
+                pageSize: 20,
+                pageIndex: 0,
+
+            },
+            sorting,
+            columnFilters,
+        },
     })
 
+    const statusColumn = table.getColumn("status");
 
     return (
         <div className="rounded-md border p-2">
             <Table>
                 <TableHeader>
+                    <TableRow
+                        className="hover:bg-transparent">
+                        <TableCell colSpan={columns.length}>
+                            <div className="flex justify-between items-center gap-4">
+                                {statusColumn && <StatusFilter column={statusColumn}/>}
+                                <TablePagination<TData> table={table}/>
+                            </div>
+                        </TableCell>
+                    </TableRow>
                     {table.getHeaderGroups().map((headerGroup) => (
-                        <TableRow key={headerGroup.id}>
+                        <TableRow
+                            className="hover:bg-transparent"
+                            key={headerGroup.id}>
                             {headerGroup.headers.map((header) => (
                                 <TableHead key={header.id}>
                                     {header.isPlaceholder
@@ -72,6 +104,7 @@ export const DataTable = <TData, TValue>({
                     ) : table.getRowModel().rows?.length ? (
                         table.getRowModel().rows.map((row) => (
                             <TableRow
+                                className="odd:bg-white even:bg-gray-50 hover:bg-blue-50 cursor-pointer"
                                 key={row.id}
                                 data-state={row.getIsSelected() && "selected"}
                             >
@@ -90,6 +123,15 @@ export const DataTable = <TData, TValue>({
                         </TableRow>
                     )}
                 </TableBody>
+                <TableFooter>
+                    <TableRow>
+                        <TableCell colSpan={columns.length}>
+                            <div className="flex justify-end">
+                                <TablePagination<TData> table={table}/>
+                            </div>
+                        </TableCell>
+                    </TableRow>
+                </TableFooter>
             </Table>
         </div>
     )
