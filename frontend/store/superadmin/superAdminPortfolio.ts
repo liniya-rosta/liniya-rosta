@@ -6,14 +6,19 @@ interface PortfolioState {
     gallery: GalleryItem[];
     detailItem: PortfolioItemDetail | null;
     galleryItem: GalleryItem | null;
-    fetchLoading: boolean;
+    fetchPortfolioLoading: boolean;
     createLoading: boolean;
-    updateLoading: boolean;
+    editLoading: boolean;
+    deleteLoading: boolean;
 
     setPortfolioPreview: (data: PortfolioItemPreview[]) => void;
     setGallery: (data: GalleryItem[]) => void;
     setPortfolioItemDetail: (data: PortfolioItemDetail) => void;
     setGalleryItem: (data: GalleryItem) => void;
+    setPortfolioFetchLoading: (loading: boolean) => void;
+    setPortfolioCreateLoading: (loading: boolean) => void;
+    setPortfolioDeleteLoading: (loading: boolean) => void;
+    setPortfolioEditLoading: (loading: boolean) => void;
 }
 
 export const useSuperAdminPortfolioStore = create<PortfolioState>((set) => ({
@@ -21,11 +26,17 @@ export const useSuperAdminPortfolioStore = create<PortfolioState>((set) => ({
     gallery: [],
     detailItem: null,
     galleryItem: null,
-    fetchLoading: false,
+    fetchPortfolioLoading: true,
     createLoading: false,
-    updateLoading: false,
-    setPortfolioPreview: (data) => set({ items: data }),
-    setGallery: (data) => set({ gallery: data }),
-    setPortfolioItemDetail: (data) => set({ detailItem: data }),
-    setGalleryItem: (data) => set({ galleryItem: data }),
+    editLoading: false,
+    deleteLoading: false,
+
+    setPortfolioPreview: data => set({ items: data }),
+    setGallery:data => set({ gallery: data }),
+    setPortfolioItemDetail: data => set({ detailItem: data }),
+    setGalleryItem: data => set({ galleryItem: data }),
+    setPortfolioFetchLoading: loading => set({fetchPortfolioLoading: loading}),
+    setPortfolioCreateLoading: loading => set({createLoading: loading}),
+    setPortfolioDeleteLoading: loading => set({deleteLoading: loading}),
+    setPortfolioEditLoading: loading => set({editLoading: loading}),
 }));

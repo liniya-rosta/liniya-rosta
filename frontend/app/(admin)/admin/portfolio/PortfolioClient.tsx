@@ -1,6 +1,6 @@
 'use client'
 
-import {PortfolioItemDetail, PortfolioItemPreview} from "@/lib/types";
+import {PortfolioItemPreview} from "@/lib/types";
 import {
     ColumnFiltersState,
     getCoreRowModel,
@@ -12,22 +12,22 @@ import {
     VisibilityState,
 } from "@tanstack/react-table"
 import React, {useEffect, useState} from "react";
-import {getColumns} from "@/app/(admin)/admin/portfolio/components/dataTable/Columns";
-import CustomTable from "@/app/(admin)/admin/portfolio/components/dataTable/Table";
+import {getColumns} from "@/app/(admin)/admin/portfolio/components/DataTable/Columns";
+import CustomTable from "@/app/(admin)/admin/portfolio/components/DataTable/Table";
 import ModalCover from "@/app/(admin)/admin/portfolio/components/ModalCover";
-import CustomTableHeader from "@/app/(admin)/admin/portfolio/components/dataTable/TableHeader";
-import CustomTableFooter from "@/app/(admin)/admin/portfolio/components/dataTable/TableFooter";
-import {
-    deleteGalleryItemSuperAdmin,
-    deletePortfolioSuperAdmin, fetchGalleryItem,
+import CustomTableHeader from "@/app/(admin)/admin/portfolio/components/DataTable/TableHeader";
+import CustomTableFooter from "@/app/(admin)/admin/portfolio/components/DataTable/TableFooter";
+import {fetchGalleryItem,
     fetchPortfolioItems,
     fetchPortfolioPreviews
 } from "@/actions/portfolios";
 import ModalEdit from "@/app/(admin)/admin/portfolio/components/ModelEdit/ModalEdit";
-import PortfolioItemForm from "@/app/(admin)/admin/portfolio/components/ModelEdit/PortfolioItemForm";
 import {useSuperAdminPortfolioStore} from "@/store/superadmin/superAdminPortfolio";
 import ModalGallery from "@/app/(admin)/admin/portfolio/components/ModalGallery";
-import GalleryForm from "@/app/(admin)/admin/portfolio/components/ModelEdit/GalleryForm";
+import {deleteGalleryItem, deletePortfolio } from "@/actions/superadmin/portfolios";
+import DataSkeleton from "@/components/shared/DataSkeleton";
+import PortfolioEditForm from "@/app/(admin)/admin/portfolio/components/ModelEdit/PortfolioEditForm";
+import GalleryEditForm from "@/app/(admin)/admin/portfolio/components/ModelEdit/GalleryEditForm";
 
 interface Props {
     data: PortfolioItemPreview[];
@@ -43,36 +43,46 @@ const AdminPortfolioClient: React.FC<Props> = ({data}) => {
     const [isModalOpenEdit, setIsModalOpenEdit] = useState(false);
     const [isModalOpenGallery, setIsModalOpenGallery] = useState(false);
 
-    const [selectedCover, setSelectedCover] = useState<PortfolioItemDetail | null>(null);
+    const [selectedCover, setSelectedCover] = useState<{ cover: string; alt: string } | null>(null);
     const [isGalleryEdit, setGalleryEdit] = useState<boolean>(false);
 
     const {
         gallery,
         items,
+        fetchPortfolioLoading,
+        deleteLoading,
         setPortfolioItemDetail,
         setGallery,
         setGalleryItem,
-        setPortfolioPreview
+        setPortfolioPreview,
+        setPortfolioFetchLoading,
+        setPortfolioDeleteLoading
     } = useSuperAdminPortfolioStore();
 
     useEffect(() => {
         setPortfolioPreview(data);
-    }, [data, setPortfolioPreview]);
+        setPortfolioFetchLoading(false);
+    }, [data, setPortfolioPreview, setPortfolioFetchLoading]);
 
     const onDeletePortfolio = async (id: string) => {
         try {
-            await deletePortfolioSuperAdmin(id);
+            await deletePortfolio(id);
             await fetchPortfolioPreviews();
+            setPortfolioDeleteLoading(true)
         } catch (e) {
             console.error(e);
+        } finally {
+            setPortfolioDeleteLoading(false)
         }
     };
 
     const onDeleteGalleryItem = async (gallery_id: string) => {
         try {
-            await deleteGalleryItemSuperAdmin(gallery_id)
+            await deleteGalleryItem(gallery_id)
         } catch (e) {
             console.error(e);
+        } finally {
+
         }
     }
 
@@ -94,7 +104,6 @@ const AdminPortfolioClient: React.FC<Props> = ({data}) => {
         setGalleryEdit(true);
         setIsModalOpenEdit(true);
     };
-
 
     const table = useReactTable<PortfolioItemPreview>({
         data: items,
@@ -123,6 +132,8 @@ const AdminPortfolioClient: React.FC<Props> = ({data}) => {
         },
     });
 
+    if (fetchPortfolioLoading) return <DataSkeleton/>
+
     return (
         <div>
            <CustomTableHeader table={table}/>
@@ -137,18 +148,17 @@ const AdminPortfolioClient: React.FC<Props> = ({data}) => {
                 <ModalCover
                     open={isModalOpenCover}
                     openChange={() => setIsModalOpenCover(!isModalOpenCover)}
-                    alt={selectedCover.coverAlt}
+                    alt={selectedCover.alt}
                     image={selectedCover.cover}
                 />
             }
-
 
             <ModalEdit
                 open={isModalOpenEdit}
                 openChange={() => setIsModalOpenEdit(!isModalOpenEdit)}>
                 {isGalleryEdit ?
-                    <GalleryForm onSaved={()=> setIsModalOpenEdit(!isModalOpenEdit)}/>
-                    : <PortfolioItemForm onSaved={()=> setIsModalOpenEdit(!isModalOpenEdit)}/>
+                    <GalleryEditForm onSaved={()=> setIsModalOpenEdit(!isModalOpenEdit)}/>
+                    : <PortfolioEditForm onSaved={()=> setIsModalOpenEdit(!isModalOpenEdit)}/>
                 }
             </ModalEdit>
 

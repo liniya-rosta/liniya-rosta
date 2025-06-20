@@ -10,6 +10,7 @@ import useUserStore from "@/store/usersStore";
 
 import {userLoginSchema} from "@/lib/zodSchemas/userSchema";
 import {useRouter} from "next/navigation";
+import FormErrorMessage from "@/components/ui/FormErrorMessage";
 
 const LoginForm = () => {
     const {register, handleSubmit, formState: {errors}} = useForm(
@@ -46,7 +47,7 @@ const LoginForm = () => {
                     {...register("email")}
                 />
                 {errors.email && (
-                    <p className="text-red-500 text-sm">{errors.email.message}</p>
+                    <FormErrorMessage>{errors.email.message}</FormErrorMessage>
                 )}
             </div>
 
@@ -58,7 +59,7 @@ const LoginForm = () => {
                     {...register("password")}
                 />
                 {errors.password && (
-                    <p className="text-red-500 text-sm">{errors.password.message}</p>
+                    <FormErrorMessage>{errors.password.message}</FormErrorMessage>
                 )}
             </div>
 
@@ -70,7 +71,7 @@ const LoginForm = () => {
                     {...register("confirmPassword")}
                 />
                 {errors.confirmPassword && (
-                    <p className="text-red-500 text-sm">{errors.confirmPassword.message}</p>
+                    <FormErrorMessage>{errors.confirmPassword.message}</FormErrorMessage>
                 )}
             </div>
 

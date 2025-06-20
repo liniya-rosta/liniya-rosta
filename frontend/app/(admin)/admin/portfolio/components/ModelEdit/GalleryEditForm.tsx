@@ -8,13 +8,13 @@ import {Input} from "@/components/ui/input";
 import Image from "next/image";
 import {API_BASE_URL} from "@/lib/globalConstants";
 import {Button} from "@/components/ui/button";
-import {editGalleryItemSuperAdmin} from "@/actions/portfolios";
+import { editGalleryItem } from "@/actions/superadmin/portfolios";
 
 interface Props {
     onSaved: () => void;
 }
 
-const EditGalleryForm: React.FC<Props> = ({onSaved}) => {
+const GalleryEditForm: React.FC<Props> = ({onSaved}) => {
     const {register, handleSubmit, setValue, formState: {errors}} = useForm({
         resolver: zodResolver(gallerySchema),
     });
@@ -37,7 +37,7 @@ const EditGalleryForm: React.FC<Props> = ({onSaved}) => {
     const onSubmit = async (data: GalleryItemValues) => {
         try {
             if (!galleryItem) return;
-            await editGalleryItemSuperAdmin({item: data, gallery_id: galleryItem._id});
+            await editGalleryItem({item: data, gallery_id: galleryItem._id});
             onSaved();
         } catch (e) {
             console.log(e)
@@ -91,4 +91,4 @@ const EditGalleryForm: React.FC<Props> = ({onSaved}) => {
     )
 };
 
-export default EditGalleryForm;
+export default GalleryEditForm;

@@ -7,21 +7,29 @@ import {PortfolioEditValues} from "@/lib/types";
 import {Input} from "@/components/ui/input";
 import {Button} from "@/components/ui/button";
 import React, {useEffect} from "react";
-import {editPortfolioItemSuperAdmin, fetchPortfolioPreviews} from "@/actions/portfolios";
+import {fetchPortfolioPreviews} from "@/actions/portfolios";
 import {API_BASE_URL} from "@/lib/globalConstants";
 import Image from "next/image";
 import {useSuperAdminPortfolioStore} from "@/store/superadmin/superAdminPortfolio";
+import { editPortfolioItem } from "@/actions/superadmin/portfolios";
+import FormErrorMessage from "@/components/ui/FormErrorMessage";
+import ButtonLoading from "@/components/ui/ButtonLoading";
 
 interface Props {
     onSaved: () => void;
 }
 
-const EditPortfolioItem: React.FC<Props> = ({onSaved}) => {
+const PortfolioEditForm: React.FC<Props> = ({onSaved}) => {
     const {register, handleSubmit, setValue, formState: {errors}} = useForm({
         resolver: zodResolver(portfolioItemSchema),
     });
 
-    const {detailItem, setPortfolioPreview} = useSuperAdminPortfolioStore();
+    const {
+        detailItem,
+        editLoading,
+        setPortfolioPreview,
+        setPortfolioEditLoading
+    } = useSuperAdminPortfolioStore();
 
     useEffect(() => {
         if (detailItem) {
@@ -40,13 +48,16 @@ const EditPortfolioItem: React.FC<Props> = ({onSaved}) => {
     const onSubmit = async (data: PortfolioEditValues) => {
         try {
             if (!detailItem) return;
-            await editPortfolioItemSuperAdmin({item: data, id: detailItem._id});
+            setPortfolioEditLoading(true);
+            await editPortfolioItem({item: data, id: detailItem._id});
             const updated = await fetchPortfolioPreviews();
 
             setPortfolioPreview(updated);
             onSaved()
         } catch (e) {
             console.log(e)
+        } finally {
+            setPortfolioEditLoading(false);
         }
     };
 
@@ -61,7 +72,7 @@ const EditPortfolioItem: React.FC<Props> = ({onSaved}) => {
                         {...register("description")}
                     />
                     {errors.description && (
-                        <p className="text-red-500 text-sm mb-4">{errors.description.message}</p>
+                        <FormErrorMessage>{errors.description.message}</FormErrorMessage>
                     )}
                 </div>
 
@@ -73,7 +84,7 @@ const EditPortfolioItem: React.FC<Props> = ({onSaved}) => {
                         {...register("coverAlt")}
                     />
                     {errors.coverAlt && (
-                        <p className="text-red-500 text-sm mb-4">{errors.coverAlt.message}</p>
+                        <FormErrorMessage>{errors.coverAlt.message}</FormErrorMessage>
                     )}
                 </div>
 
@@ -86,7 +97,7 @@ const EditPortfolioItem: React.FC<Props> = ({onSaved}) => {
                         accept="image/*"
                     />
                     {errors.cover && (
-                        <p className="text-red-500 text-sm">{errors.cover.message}</p>
+                        <FormErrorMessage>{errors.cover.message}</FormErrorMessage>
                     )}
                 </div>
                 {detailItem && (
@@ -104,11 +115,13 @@ const EditPortfolioItem: React.FC<Props> = ({onSaved}) => {
                 )}
             </div>
 
-            <Button type="submit" className="mr-auto">
-                Сохранить
-            </Button>
+            {editLoading ? <ButtonLoading/>
+                :<Button type="submit" className="mr-auto">
+                    Сохранить
+                </Button>
+            }
         </form>
     )
 }
 
-export default EditPortfolioItem;
+export default PortfolioEditForm;

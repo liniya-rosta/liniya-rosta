@@ -6,13 +6,22 @@ import {API_BASE_URL} from "@/lib/globalConstants";
 import Image from "next/image";
 import {GalleryItem, PortfolioItemDetail} from "@/lib/types";
 import {ModalImage} from "@/components/shared/ModalImage";
+import Loading from "@/components/shared/Loading";
+import GalleryCard from '../components/GalleryCard';
+import {toast} from "react-toastify";
 
 type Props = {
-    detailItem: PortfolioItemDetail
+    detailItem?: PortfolioItemDetail | null,
+    error: string | null,
 };
 
-const GalleryClient: React.FC<Props> = ({detailItem}) => {
-    const {setPortfolioItemDetail} = usePortfolioStore();
+const GalleryClient: React.FC<Props> = ({detailItem, error=null}) => {
+    const {
+        fetchLoadingPortfolio,
+        setPortfolioItemDetail,
+        setPortfolioLoading
+    } = usePortfolioStore();
+
     const gallery = detailItem?.gallery;
     const [selectedItem, setSelectedItem] = useState<GalleryItem | null>(null);
     const [currentIndex, setCurrentIndex] = useState<number | null>(null);
@@ -33,67 +42,60 @@ const GalleryClient: React.FC<Props> = ({detailItem}) => {
     };
 
     useEffect(() => {
-        setPortfolioItemDetail(detailItem);
-    }, [setPortfolioItemDetail, detailItem]);
-
-    useEffect(() => {
-        if (currentIndex === null) {
-            setSelectedItem(null);
-        } else if (currentIndex === -1) {
-            setSelectedItem({image: detailItem.cover, _id: detailItem._id, alt: detailItem.coverAlt});
-        } else if (gallery && currentIndex >= 0) {
-            setSelectedItem(gallery[currentIndex]);
+        if (error) {
+            toast.error(error, {
+                autoClose: 3000,
+                position: "top-center",
+                pauseOnHover: true,
+                draggable: true,
+            });
         }
-    }, [currentIndex, gallery, detailItem]);
 
+        if (detailItem) {
+            setPortfolioItemDetail(detailItem);
+            if (currentIndex === null) {
+                setSelectedItem(null);
+            } else if (currentIndex === -1) {
+                setSelectedItem({image: detailItem.cover, _id: detailItem._id, alt: detailItem.coverAlt});
+            } else if (gallery && currentIndex >= 0) {
+                setSelectedItem(gallery[currentIndex]);
+            }
+        }
+
+        setPortfolioLoading(false)
+    }, [setPortfolioItemDetail, detailItem, setPortfolioLoading, error, currentIndex, gallery]);
+
+
+    if (!detailItem) return  <p className="text-center">Галерея пуста</p>
+    if (fetchLoadingPortfolio) return <Loading/>
 
     return (
         <div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                <a
-                    key={detailItem._id}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    href={`${API_BASE_URL}/${detailItem.cover}`}
-                    onClick={(e) => {
-                        e.preventDefault();
-                        handleOpen(-1)
-                    }}
-                    className="block relative aspect-[3/4] sm:aspect-[3/2] sm:col-span-2 col-span-1 w-full overflow-hidden group cursor-pointer rounded-2xl hover:shadow-xl transition"
-                >
-                    <Image
-                        src={`${API_BASE_URL}/${detailItem.cover}`}
-                        alt={detailItem.coverAlt}
-                        fill
-                        priority
-                        className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
-                        sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
-                    />
-                </a>
+
+                <GalleryCard
+                    imageUrl={`${API_BASE_URL}/${detailItem.cover}`}
+                    alt={detailItem.coverAlt}
+                    handleOpen={handleOpen}
+                    index={-1}
+                    id={detailItem._id}
+                    className="aspect-[3/4] sm:aspect-[3/2] sm:col-span-2 col-span-1 w-full overflow-hidden group cursor-pointer rounded-2xl hover:shadow-xl transition"
+                    classNameImage="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
+                />
 
                 {gallery?.map((item, index) => {
                     const imageUrl = `${API_BASE_URL}/${item.image}`;
                     return (
-                        <a
+                        <GalleryCard
                             key={item._id}
-                            href={imageUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            onClick={(e) => {
-                                e.preventDefault();
-                                handleOpen(index);
-                            }}
-                            className="block relative aspect-[3/4] w-full overflow-hidden group cursor-pointer rounded-2xl hover:shadow-xl transition"
-                        >
-                            <Image
-                                src={imageUrl}
-                                alt={item.alt}
-                                fill
-                                priority
-                                className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
-                                sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
-                            />
-                        </a>
+                            index={index}
+                            id={item._id}
+                            imageUrl={imageUrl}
+                            handleOpen={handleOpen}
+                            alt={item.alt}
+                            className="aspect-[3/4] w-full overflow-hidden group cursor-pointer rounded-2xl hover:shadow-xl transition"
+                            classNameImage="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
+                        />
                     );
                 })}
             </div>
