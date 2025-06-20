@@ -116,13 +116,13 @@ portfolioSuperAdminRouter.patch("/gallery/:galleryId", portfolioImage.fields([
         }
 
         if (Object.keys(updateFields).length === 0) {
-            res.status(400).send({message: "Нет данных для обновления"});
+            res.status(400).send({error: "Нет данных для обновления"});
             return;
         }
 
         const item = await PortfolioItem.findOne({"gallery._id": galleryId});
         if (!item) {
-            res.status(404).send({message: "Элемент галереи не найден"});
+            res.status(404).send({error: "Элемент галереи не найден"});
             return;
         }
 
@@ -132,7 +132,7 @@ portfolioSuperAdminRouter.patch("/gallery/:galleryId", portfolioImage.fields([
         );
 
         if (updated.modifiedCount === 0) {
-            res.status(400).send({message: "Обновление не выполнено"});
+            res.status(400).send({error: "Обновление не выполнено"});
             return;
         }
 
@@ -155,7 +155,7 @@ portfolioSuperAdminRouter.delete("/:id", async (req, res, next) => {
         const item = await PortfolioItem.findByIdAndDelete(id)
 
         if (!item) {
-            res.status(404).send({message: "Элемент галереи не найден"});
+            res.status(404).send({error: "Элемент галереи не найден"});
             return;
         }
 
@@ -175,7 +175,7 @@ portfolioSuperAdminRouter.delete("/gallery/:id", async (req, res, next) => {
         );
 
         if (updated.modifiedCount === 0) {
-            res.status(404).send({message: "Элемент галереи не найден или уже удалён"});
+            res.status(404).send({error: "Элемент галереи не найден или уже удалён"});
             return;
         }
 
