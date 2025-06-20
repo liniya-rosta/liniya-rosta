@@ -6,7 +6,7 @@ import MapSection from "@/app/(public)/contacts/components/MapSection";
 import {Contact} from "@/lib/types";
 import {useEffect} from "react";
 import {useContactStore} from "@/store/contactsStore";
-import Loading from "@/components/shared/Loading";
+import Loading from "@/components/shared/Loading/Loading";
 import ErrorMsg from "@/components/shared/ErrorMsg";
 
 interface Props {

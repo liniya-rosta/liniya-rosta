@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
 import { usePostsStore } from "@/store/postsStore";
 import { Post } from "@/lib/types";
-import Loading from "@/components/shared/Loading";
+import Loading from "@/components/shared/Loading/Loading";
 import { API_BASE_URL } from "@/lib/globalConstants";
 import Image from "next/image";
 

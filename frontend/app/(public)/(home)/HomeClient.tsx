@@ -8,7 +8,7 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import {Category, Contact, PortfolioItemPreview, Product} from '@/lib/types';
 import {useCategoryStore} from "@/store/categoriesStore";
-import Loading from "@/components/shared/Loading";
+import Loading from "@/components/shared/Loading/Loading";
 import ErrorMsg from "@/components/shared/ErrorMsg";
 import HeroSection from "@/app/(public)/(home)/components/HeroSection";
 import CategoriesSection from "@/app/(public)/(home)/components/CategoriesSection";

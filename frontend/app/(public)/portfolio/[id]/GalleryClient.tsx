@@ -6,7 +6,7 @@ import {API_BASE_URL} from "@/lib/globalConstants";
 import Image from "next/image";
 import {GalleryItem, PortfolioItemDetail} from "@/lib/types";
 import {ModalImage} from "@/components/shared/ModalImage";
-import Loading from "@/components/shared/Loading";
+import Loading from "@/components/shared/Loading/Loading";
 import GalleryCard from '../components/GalleryCard';
 import {toast} from "react-toastify";
 
