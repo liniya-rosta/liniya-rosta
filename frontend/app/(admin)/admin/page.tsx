@@ -1,5 +1,5 @@
 import React from 'react';
-import RequestsPage from "@/app/admin/requests/components/RequestsPage";
+import RequestsPage from "@/app/(admin)/admin/requests/components/RequestsPage";
 
 const Page =  () => {
 

@@ -4,8 +4,8 @@ import React, {useEffect} from 'react';
 import {IRequest} from "@/lib/types";
 import {fetchAllRequests} from "@/actions/superadmin/requests";
 import {useAdminRequestsStore} from "@/store/superadmin/adminRequestsStore";
-import {DataTable} from "@/app/admin/requests/components/requestTable/Data-table";
-import {columns} from "@/app/admin/requests/components/requestTable/Columns";
+import {DataTable} from "@/app/(admin)/admin/requests/components/requestTable/Data-table";
+import {columns} from "@/app/(admin)/admin/requests/components/requestTable/Columns";
 import dayjs from "dayjs";
 
 const RequestsPage = () => {

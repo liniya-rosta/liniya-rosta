@@ -18,9 +18,9 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import Loading from '@/components/shared/Loading'
-import TablePagination from "@/app/admin/requests/components/requestTable/TablePagination";
+import TablePagination from "@/app/(admin)/admin/requests/components/requestTable/TablePagination";
 import {useState} from "react";
-import StatusFilter from "@/app/admin/requests/components/requestTable/StatusFilter";
+import StatusFilter from "@/app/(admin)/admin/requests/components/requestTable/StatusFilter";
 import ColumnVisibility from "./ColumnVisibility"
 import {Input} from "@/components/ui/input";
 
