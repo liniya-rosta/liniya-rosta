@@ -2,10 +2,11 @@
 
 import * as React from "react"
 import {
-    ColumnDef, ColumnFiltersState,
+    ColumnDef,
+    ColumnFiltersState,
     flexRender,
     getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, SortingState,
-    useReactTable,
+    useReactTable, VisibilityState,
 } from "@tanstack/react-table"
 
 import {
@@ -20,6 +21,8 @@ import Loading from '@/components/shared/Loading'
 import TablePagination from "@/app/admin/requests/components/requestTable/TablePagination";
 import {useState} from "react";
 import StatusFilter from "@/app/admin/requests/components/requestTable/StatusFilter";
+import ColumnVisibility from "./ColumnVisibility"
+import {Input} from "@/components/ui/input";
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
@@ -36,6 +39,9 @@ export const DataTable = <TData, TValue>({
                                          }: DataTableProps<TData, TValue>) => {
     const [sorting, setSorting] = React.useState<SortingState>([])
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+    const [columnVisibility, setColumnVisibility] =
+        React.useState<VisibilityState>({})
+
     const table = useReactTable({
         data,
         columns,
@@ -45,6 +51,7 @@ export const DataTable = <TData, TValue>({
         getSortedRowModel: getSortedRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
         onColumnFiltersChange: setColumnFilters,
+        onColumnVisibilityChange: setColumnVisibility,
         state: {
             pagination: {
                 pageSize: 20,
@@ -53,6 +60,7 @@ export const DataTable = <TData, TValue>({
             },
             sorting,
             columnFilters,
+            columnVisibility,
         },
     })
 
@@ -67,6 +75,17 @@ export const DataTable = <TData, TValue>({
                         <TableCell colSpan={columns.length}>
                             <div className="flex justify-between items-center gap-4">
                                 {statusColumn && <StatusFilter column={statusColumn}/>}
+                                <div className="flex items-center py-4">
+                                    <Input
+                                        placeholder="Поиск по имени"
+                                        value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+                                        onChange={(event) =>
+                                            table.getColumn("name")?.setFilterValue(event.target.value)
+                                        }
+                                        className="max-w-sm"
+                                    />
+                                </div>
+                                <ColumnVisibility table={table}/>
                                 <TablePagination<TData> table={table}/>
                             </div>
                         </TableCell>

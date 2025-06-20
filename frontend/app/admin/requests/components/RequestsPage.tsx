@@ -26,7 +26,7 @@ const RequestsPage = () => {
                     createdAt: dayjs(item.createdAt).format('DD-MM-YYYY HH:mm'),
                     updatedAt: dayjs(item.updatedAt).format('DD-MM-YYYY HH:mm'),
                 }));
-                setRequests(data);
+                setRequests(data.reverse());
                 setFetchAllLoading(false);
             } catch (e) {
                error = e instanceof Error ? e.message : 'Произошла ошибка при получении заявок';

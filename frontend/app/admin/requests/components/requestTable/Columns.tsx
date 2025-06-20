@@ -15,6 +15,7 @@ export const columns: ColumnDef<IRequest>[] = [
         </span>
             )
         },
+        filterFn: "includesString",
     },
     {
         accessorKey: "phone",
