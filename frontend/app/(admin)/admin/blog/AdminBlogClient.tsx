@@ -8,7 +8,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import {createPost, deletePost, updatePost} from "@/actions/posts";
 import PostsTable from "@/app/(admin)/admin/blog/components/PostsTable";
 import PostModal from "@/app/(admin)/admin/blog/components/PostModal";
-import Loading from "@/components/shared/Loading";
+import Loading from "@/components/shared/Loading/Loading";
 import { toast } from 'react-toastify';
 import { AxiosError } from 'axios';
 import {useAdminPostStore} from "@/store/superadmin/superadminPostsStore";

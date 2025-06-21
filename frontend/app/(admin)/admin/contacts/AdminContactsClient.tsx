@@ -2,7 +2,7 @@
 
 import React, {useEffect} from 'react';
 import {Contact} from '@/lib/types';
-import Loading from '@/components/shared/Loading';
+import Loading from '@/components/shared/Loading/Loading';
 import ErrorMsg from '@/components/shared/ErrorMsg';
 import AdminContactForm from './components/AdminContactForm';
 import {useSuperadminContactsStore} from "@/store/superadmin/superadminContactsStore";
@@ -29,7 +29,7 @@ const AdminContactsClient: React.FC<Props> = ({data, error}) => {
         setFetchError(error);
         setFetchLoading(false);
         setUpdateLoading(false);
-    }, [data, error, setContact, setFetchError, setFetchLoading]);
+    }, [data, error, setContact, setFetchError, setFetchLoading, setUpdateLoading]);
 
     if (fetchLoading) return <Loading/>;
     if (fetchError) return <ErrorMsg error={fetchError} label="контактов"/>;
