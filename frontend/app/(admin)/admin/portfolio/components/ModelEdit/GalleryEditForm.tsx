@@ -9,7 +9,7 @@ import Image from "next/image";
 import {API_BASE_URL} from "@/lib/globalConstants";
 import {Button} from "@/components/ui/button";
 import { editGalleryItem } from "@/actions/superadmin/portfolios";
-import ButtonLoading from "@/components/ui/ButtonLoading";
+import LoaderIcon from "@/components/ui/LoaderIcon";
 import {isAxiosError} from "axios";
 import {toast} from "react-toastify";
 import {Tooltip, TooltipContent, TooltipTrigger} from "@/components/ui/tooltip";
@@ -55,12 +55,7 @@ const GalleryEditForm: React.FC<Props> = ({onSaved}) => {
             await editGalleryItem({item: data, gallery_id: galleryItem._id});
 
 
-            toast.success("Вы успешно обновили элемент галереи", {
-                autoClose: 3000,
-                position: "top-center",
-                pauseOnHover: true,
-                draggable: true,
-            });
+            toast.success("Вы успешно обновили элемент галереи");
 
             if(detailItem) {
                 const updated = await fetchPortfolioItem(detailItem._id);
@@ -76,12 +71,7 @@ const GalleryEditForm: React.FC<Props> = ({onSaved}) => {
                 errorMessage = error.message;
             }
 
-            toast.error(errorMessage, {
-                autoClose: 3000,
-                position: "top-center",
-                pauseOnHover: true,
-                draggable: true,
-            });
+            toast.error(errorMessage);
         } finally {
             setPortfolioEditLoading(false);
         }
@@ -132,18 +122,18 @@ const GalleryEditForm: React.FC<Props> = ({onSaved}) => {
                 )}
             </div>
 
-            {editLoading ? <ButtonLoading/>
-                :<Tooltip>
+
+                <Tooltip>
                     <TooltipTrigger asChild>
                         <div className="inline-block">
-                            <Button type="submit" className="mr-auto" disabled={!isDirty}>
+                            <Button type="submit" className="mr-auto" disabled={!isDirty || editLoading}>
+                                {editLoading && <LoaderIcon/>}
                                 Сохранить
                             </Button>
                         </div>
                     </TooltipTrigger>
                     {!isDirty && <TooltipContent>Вы ничего не изменили</TooltipContent>}
                 </Tooltip>
-            }
         </form>
     )
 };

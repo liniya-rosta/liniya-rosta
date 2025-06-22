@@ -7,12 +7,13 @@ import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
-    DropdownMenuLabel, DropdownMenuSeparator,
+    DropdownMenuLabel,
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 import {Button} from "@/components/ui/button";
-import {MoreHorizontal} from "lucide-react";
+import {ArrowUpDown, MoreHorizontal} from "lucide-react";
 import React from "react";
+import {Checkbox} from "@/components/ui/checkbox";
 
 export const getColumns = (
     onImageClick: (image: { cover: string; alt: string }) => void,
@@ -21,17 +22,46 @@ export const getColumns = (
     onGallery: (id: string) => void,
 ): ColumnDef<PortfolioItemPreview>[] => [
     {
+        id: "select",
+        header: ({ table }) => (
+            <Checkbox
+                checked={table.getIsAllRowsSelected()}
+                onCheckedChange={(value) => table.toggleAllRowsSelected(!!value)}
+                aria-label="Выбрать все"
+            />
+        ),
+        cell: ({ row }) => (
+            <Checkbox
+                checked={row.getIsSelected()}
+                onCheckedChange={(value) => row.toggleSelected(!!value)}
+                aria-label="Выбрать строку"
+            />
+        ),
+        enableSorting: false,
+        enableHiding: false,
+    },
+    {
         id: "index",
         header: "№",
         cell: ({row}) => {
-            return <div className="text-center">{row.index + 1}</div>;
+            return <div>{row.index + 1}</div>;
         },
         enableSorting: false,
         enableHiding: false,
     },
     {
         accessorKey: "coverAlt",
-        header: "Альтер-ое название обложки",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                >
+                    Альтер-ое название обложки
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            );
+        },
         cell: ({row}) => (
             <div className="capitalize">{row.getValue("coverAlt")}</div>
         ),
@@ -39,13 +69,18 @@ export const getColumns = (
     {
         accessorKey: "description",
         header: "Описание",
-        cell: ({row}) => (
-            <div className="capitalize">{row.getValue("description")}</div>
-        ),
+        cell: ({ row }) => {
+            const value = row.getValue("description") as string | undefined;
+            return (
+                <div className="capitalize">
+                    {value?.trim() ? value : <span className="text-muted-foreground italic">Нет описания</span>}
+                </div>
+            );
+        },
     },
     {
         accessorKey: "galleryCount",
-        header: () => <div className="text-right">Кол-во изображений</div>,
+        header: () => <div className="text-center">Кол-во изображений</div>,
         cell: ({row}) => {
             const count = row.getValue<number>("galleryCount");
             return (
@@ -103,12 +138,6 @@ export const getColumns = (
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Меню</DropdownMenuLabel>
-                        <DropdownMenuItem
-                            onClick={() => navigator.clipboard.writeText(payment._id)}
-                        >
-                            Копировать ID
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator/>
                         <DropdownMenuItem onClick={() => onGallery(payment._id)}>
                             Посмотреть галерею
                         </DropdownMenuItem>

@@ -1,7 +1,7 @@
 'use client';
 
 import {Button} from "@/components/ui/button";
-import ButtonLoading from "@/components/ui/ButtonLoading";
+import LoaderIcon from "@/components/ui/LoaderIcon";
 
 import React, {PropsWithChildren} from "react";
 import {
@@ -33,7 +33,6 @@ const ConfirmDialog: React.FC<PropsWithChildren<Props>> = ({
                                                      }) => {
     return (
         <AlertDialog
-            aria-describedby={undefined}
             open={open}
             onOpenChange={onOpenChange}
         >
@@ -50,9 +49,9 @@ const ConfirmDialog: React.FC<PropsWithChildren<Props>> = ({
                         <Button variant="outline">Отмена</Button>
                     </AlertDialogCancel>
                     <AlertDialogAction asChild>
-                        {loading ? <ButtonLoading/>
-                            : <Button onClick={onConfirm}>Подтвердить</Button>
-                        }
+                        <Button onClick={onConfirm}>
+                            {loading && <LoaderIcon/>}Подтвердить
+                        </Button>
                     </AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
