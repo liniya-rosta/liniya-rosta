@@ -17,7 +17,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import Loading from '@/components/shared/Loading/Loading'
+import Loading from '@/components/ui/Loading/Loading'
 import TablePagination from "@/app/(admin)/admin/requests/components/requestTable/TablePagination";
 import {useState} from "react";
 import StatusFilter from "@/app/(admin)/admin/requests/components/requestTable/StatusFilter";

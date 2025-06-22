@@ -21,7 +21,7 @@ import {CustomTable, getColumns, CustomTableHeader, TablePagination} from "@/app
 import ModalCover from "@/app/(admin)/admin/portfolio/components/ModalCover";
 import {ModalEdit, PortfolioEditForm, GalleryEditForm} from "@/app/(admin)/admin/portfolio/components/ModelEdit";
 import ModalGallery from "@/app/(admin)/admin/portfolio/components/ModalGallery";
-import DataSkeleton from "@/components/shared/Loading/DataSkeleton";
+import DataSkeleton from "@/components/ui/Loading/DataSkeleton";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import Link from "next/link";
 import {Button} from "@/components/ui/button";

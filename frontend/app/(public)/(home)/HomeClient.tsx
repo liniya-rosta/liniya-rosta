@@ -8,7 +8,7 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import {Category, Contact, PortfolioItemPreview, Product} from '@/lib/types';
 import {useCategoryStore} from "@/store/categoriesStore";
-import ErrorMsg from "@/components/shared/ErrorMsg";
+import ErrorMsg from "@/components/ui/ErrorMsg";
 import HeroSection from "@/app/(public)/(home)/components/HeroSection";
 import CategoriesSection from "@/app/(public)/(home)/components/CategoriesSection";
 import ProductsSection from "@/app/(public)/(home)/components/ProductsSection";
@@ -16,7 +16,7 @@ import PortfolioSection from "@/app/(public)/(home)/components/PortfolioSection"
 import InstagramSection from "@/app/(public)/(home)/components/InstagramSection";
 import ConsultationSection from "@/app/(public)/(home)/components/ConsultationSection";
 import {useContactStore} from "@/store/contactsStore";
-import LoadingFullScreen from "@/components/shared/Loading/LoadingFullScreen";
+import LoadingFullScreen from "@/components/ui/Loading/LoadingFullScreen";
 
 interface HomePageClientProps {
     categoriesData: Category[];

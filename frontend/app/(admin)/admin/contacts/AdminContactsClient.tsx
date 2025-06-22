@@ -2,8 +2,8 @@
 
 import React, {useEffect} from 'react';
 import {Contact} from '@/lib/types';
-import Loading from '@/components/shared/Loading/Loading';
-import ErrorMsg from '@/components/shared/ErrorMsg';
+import Loading from '@/components/ui/Loading/Loading';
+import ErrorMsg from '@/components/ui/ErrorMsg';
 import AdminContactForm from './components/AdminContactForm';
 import {useSuperadminContactsStore} from "@/store/superadmin/superadminContactsStore";
 

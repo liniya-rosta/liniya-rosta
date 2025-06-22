@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from "next/link";
-import ErrorMsg from "@/components/shared/ErrorMsg";
+import ErrorMsg from "@/components/ui/ErrorMsg";
 import {Swiper, SwiperSlide} from "swiper/react";
 import {Navigation, Pagination} from "swiper/modules";
 import ProductCard from "@/app/(public)/(home)/components/ProductCard";

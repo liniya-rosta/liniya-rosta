@@ -5,7 +5,7 @@ import {usePathname, useRouter} from "next/navigation";
 import Sidebar from "@/app/(admin)/admin/components/shared/Sidebar";
 import AdminHeader from "@/app/(admin)/admin/components/shared/AdminHeader";
 import useUserStore from "@/store/usersStore";
-import LoadingFullScreen from "@/components/shared/Loading/LoadingFullScreen";
+import LoadingFullScreen from "@/components/ui/Loading/LoadingFullScreen";
 
 export default function AdminLayout({children}: { children: React.ReactNode }) {
     const router = useRouter();

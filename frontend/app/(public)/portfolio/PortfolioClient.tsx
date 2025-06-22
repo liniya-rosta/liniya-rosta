@@ -6,7 +6,7 @@ import {API_BASE_URL} from "@/lib/globalConstants";
 import { CartPortfolio } from '@/app/(public)/portfolio/components/CartPortfolio';
 import {PortfolioItemPreview} from "@/lib/types";
 import Link from "next/link";
-import Loading from "@/components/shared/Loading/Loading";
+import Loading from "@/components/ui/Loading/Loading";
 
 interface Props {
     data: PortfolioItemPreview[] | null;
