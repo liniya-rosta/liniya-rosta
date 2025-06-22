@@ -6,10 +6,12 @@ interface UserState {
     user: User | null;
     accessToken: string | null;
     hasHydrated: boolean;
+    loading: boolean;
     setUser: (user: User | null) => void;
     setAccessToken: (token: string | null) => void;
     setLogout: () => void;
     setHasHydrated: (v: boolean) => void;
+    setLoading: (loading: boolean) => void;
 }
 
 const useUserStore = create<UserState>()(
@@ -18,10 +20,12 @@ const useUserStore = create<UserState>()(
             user: null,
             accessToken: null,
             hasHydrated: false,
+            loading: false,
             setUser: (user) => set({ user }),
             setAccessToken: (token) => set({ accessToken: token }),
             setLogout: () => set({ user: null, accessToken: null }),
             setHasHydrated: (v) => set({ hasHydrated: v }),
+            setLoading: (loading) => set({ loading }),
         }),
         {
             name: "user",

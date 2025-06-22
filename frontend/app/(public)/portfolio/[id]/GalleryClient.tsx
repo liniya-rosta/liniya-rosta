@@ -8,7 +8,6 @@ import {GalleryItem, PortfolioItemDetail} from "@/lib/types";
 import {ModalImage} from "@/components/shared/ModalImage";
 import Loading from "@/components/shared/Loading/Loading";
 import GalleryCard from '../components/GalleryCard';
-import {toast} from "react-toastify";
 
 type Props = {
     detailItem?: PortfolioItemDetail | null,
@@ -42,15 +41,6 @@ const GalleryClient: React.FC<Props> = ({detailItem, error=null}) => {
     };
 
     useEffect(() => {
-        if (error) {
-            toast.error(error, {
-                autoClose: 3000,
-                position: "top-center",
-                pauseOnHover: true,
-                draggable: true,
-            });
-        }
-
         if (detailItem) {
             setPortfolioItemDetail(detailItem);
             if (currentIndex === null) {
@@ -68,6 +58,14 @@ const GalleryClient: React.FC<Props> = ({detailItem, error=null}) => {
 
     if (!detailItem) return  <p className="text-center">Галерея пуста</p>
     if (fetchLoadingPortfolio) return <Loading/>
+
+    if (error) {
+        return (
+            <div className="text-center py-10 text-destructive text-lg">
+                <p>Ошибка загрузки: {error}</p>
+            </div>
+        );
+    }
 
     return (
         <div>

@@ -7,7 +7,7 @@ interface Props {
     table: TanStackTable<PortfolioItemPreview>,
 }
 
-const CustomTableFooter: React.FC<Props> = ({table}) => {
+const TablePagination: React.FC<Props> = ({table}) => {
     return (
         <div className="flex items-center justify-end space-x-2 py-4">
             <div className="space-x-2">
@@ -32,4 +32,4 @@ const CustomTableFooter: React.FC<Props> = ({table}) => {
     )
 }
 
-export default CustomTableFooter
+export default TablePagination

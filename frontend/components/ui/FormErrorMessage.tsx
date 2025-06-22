@@ -9,5 +9,5 @@ const FormErrorMessage: React.FC<PropsWithChildren<Props>> = ({children, classNa
     return (
         <p className={cn("text-red-500 text-sm mb-4", className)}>{children}</p>
     )
-}
+};
 export default FormErrorMessage

@@ -11,6 +11,10 @@ import useUserStore from "@/store/usersStore";
 import {userLoginSchema} from "@/lib/zodSchemas/userSchema";
 import {useRouter} from "next/navigation";
 import FormErrorMessage from "@/components/ui/FormErrorMessage";
+import {isAxiosError} from "axios";
+import {toast} from "react-toastify";
+import LoaderIcon from "@/components/ui/LoaderIcon";
+import React from "react";
 
 const LoginForm = () => {
     const {register, handleSubmit, formState: {errors}} = useForm(
@@ -24,16 +28,31 @@ const LoginForm = () => {
         });
     const router = useRouter();
 
-    const {setUser, setAccessToken} = useUserStore();
+    const {
+        setUser,
+        setAccessToken,
+        loading,
+        setLoading
+    } = useUserStore();
 
     const onSubmit = async (data: UserForm) => {
         try {
             const user = await login(data);
             setUser(user.user);
             setAccessToken(user.accessToken);
+            setLoading(true);
             router.push("/admin");
-        } catch (e) {
-            console.log(e)
+        } catch (error) {
+            let errorMessage = "Неизвестная ошибка при входе в систему";
+            if (isAxiosError(error) && error.response) {
+                errorMessage = error.response.data.error;
+            } else if (error instanceof Error) {
+                errorMessage = error.message;
+            }
+
+            toast.error(errorMessage);
+        } finally {
+            setLoading(false);
         }
 
     };
@@ -75,8 +94,8 @@ const LoginForm = () => {
                 )}
             </div>
 
-            <Button type="submit" className="w-full">
-                Войти
+            <Button type="submit" className="w-full" disabled={loading}>
+                {loading && <LoaderIcon/>} Войти
             </Button>
         </form>
 

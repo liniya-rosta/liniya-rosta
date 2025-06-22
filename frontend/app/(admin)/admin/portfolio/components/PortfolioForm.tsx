@@ -14,7 +14,7 @@ import {useSuperAdminPortfolioStore} from "@/store/superadmin/superAdminPortfoli
 import {isAxiosError} from "axios";
 import {toast} from "react-toastify";
 import FormErrorMessage from "@/components/ui/FormErrorMessage";
-import ButtonLoading from "@/components/ui/ButtonLoading";
+import LoaderIcon from "@/components/ui/LoaderIcon";
 
 const PortfolioForm= () => {
     const {
@@ -62,12 +62,7 @@ const PortfolioForm= () => {
                 errorMessage = error.message;
             }
 
-            toast.error(errorMessage, {
-                autoClose: 3000,
-                position: "top-center",
-                pauseOnHover: true,
-                draggable: true,
-            });
+            toast.error(errorMessage);
         } finally {
             setPortfolioCreateLoading(false);
         }
@@ -175,12 +170,9 @@ const PortfolioForm= () => {
                 </div>
             </div>
 
-
-            {createLoading ? <ButtonLoading className="ml-auto"/>
-                : <Button type="submit" className="ml-auto block px-8" disabled={!isDirty}>
-                    Создать
-                </Button>
-            }
+            <Button type="submit" className="ml-auto px-8" disabled={!isDirty || createLoading}>
+                {createLoading && <LoaderIcon/>} Создать
+            </Button>
         </form>
     )
 

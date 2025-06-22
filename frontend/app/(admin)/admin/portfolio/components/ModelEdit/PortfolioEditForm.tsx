@@ -11,9 +11,9 @@ import {fetchPortfolioPreviews} from "@/actions/portfolios";
 import {API_BASE_URL} from "@/lib/globalConstants";
 import Image from "next/image";
 import {useSuperAdminPortfolioStore} from "@/store/superadmin/superAdminPortfolio";
-import { editPortfolioItem } from "@/actions/superadmin/portfolios";
+import {editPortfolioItem} from "@/actions/superadmin/portfolios";
 import FormErrorMessage from "@/components/ui/FormErrorMessage";
-import ButtonLoading from "@/components/ui/ButtonLoading";
+import LoaderIcon from "@/components/ui/LoaderIcon";
 import {isAxiosError} from "axios";
 import {toast} from "react-toastify";
 import {Tooltip, TooltipContent, TooltipTrigger} from "@/components/ui/tooltip";
@@ -47,7 +47,7 @@ const PortfolioEditForm: React.FC<Props> = ({onSaved}) => {
     const onCoverChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
-        setValue("cover", file, { shouldDirty: true });
+        setValue("cover", file, {shouldDirty: true});
     };
 
     const onSubmit = async (data: PortfolioEditValues) => {
@@ -60,12 +60,7 @@ const PortfolioEditForm: React.FC<Props> = ({onSaved}) => {
 
             setPortfolioPreview(updated);
             onSaved()
-            toast.success("Вы успешно обновили портфолио", {
-                autoClose: 3000,
-                position: "top-center",
-                pauseOnHover: true,
-                draggable: true,
-            });
+            toast.success("Вы успешно обновили портфолио");
         } catch (error) {
             let errorMessage = "Неизвестная ошибка при редактировании портфолио";
             if (isAxiosError(error) && error.response) {
@@ -74,12 +69,7 @@ const PortfolioEditForm: React.FC<Props> = ({onSaved}) => {
                 errorMessage = error.message;
             }
 
-            toast.error(errorMessage, {
-                autoClose: 3000,
-                position: "top-center",
-                pauseOnHover: true,
-                draggable: true,
-            });
+            toast.error(errorMessage);
         } finally {
             setPortfolioEditLoading(false);
         }
@@ -144,18 +134,18 @@ const PortfolioEditForm: React.FC<Props> = ({onSaved}) => {
                 )}
             </div>
 
-            {editLoading ? <ButtonLoading/>
-                : <Tooltip>
-                    <TooltipTrigger asChild>
-                        <div className="inline-block">
-                            <Button type="submit" className="mr-auto" disabled={!isDirty}>
-                                Сохранить
-                            </Button>
-                        </div>
-                    </TooltipTrigger>
-                    {!isDirty && <TooltipContent>Вы ничего не изменили</TooltipContent>}
-                </Tooltip>
-            }
+            <Tooltip>
+                <TooltipTrigger asChild>
+                    <div className="inline-block">
+                        <Button type="submit" className="mr-auto" disabled={!isDirty || editLoading}>
+                            {editLoading && <LoaderIcon/>}
+                            Сохранить
+                        </Button>
+                    </div>
+                </TooltipTrigger>
+                {!isDirty && <TooltipContent>Вы ничего не изменили</TooltipContent>}
+            </Tooltip>
+
         </form>
     )
 }

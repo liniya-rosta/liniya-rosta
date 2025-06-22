@@ -1,5 +1,4 @@
 import {Input} from "@/components/ui/input";
-import Link from "next/link";
 import {Button} from "@/components/ui/button";
 import {
     DropdownMenu,
@@ -11,9 +10,12 @@ import {ChevronDown} from "lucide-react";
 import React from "react";
 import {Table as TanStackTable} from "@tanstack/react-table";
 import {PortfolioItemPreview} from "@/lib/types";
+import {useSuperAdminPortfolioStore} from "@/store/superadmin/superAdminPortfolio";
 
 interface Props {
     table: TanStackTable<PortfolioItemPreview>,
+    showConfirm: (value: boolean) => void;
+    setGalleryDelete: (value: boolean) => void;
 }
 
 const columnLabels: Record<string, string> = {
@@ -25,8 +27,9 @@ const columnLabels: Record<string, string> = {
     actions: "Меню",
 };
 
+const CustomTableHeader: React.FC<Props> = ({table, showConfirm, setGalleryDelete}) => {
+    const { selectedToDelete } = useSuperAdminPortfolioStore()
 
-const CustomTableHeader: React.FC<Props> = ({table}) => {
     return (
         <div className="flex justify-between gap-4 py-4 flex-wrap items-center">
             <div>
@@ -41,9 +44,14 @@ const CustomTableHeader: React.FC<Props> = ({table}) => {
             </div>
 
             <div className="flex gap-2">
-                <Link href="/admin/portfolio/add-portfolio">
-                    <Button variant="outline">Создать портфолио</Button>
-                </Link>
+                    <Button
+                        variant="outline"
+                        disabled={!selectedToDelete || selectedToDelete.length < 1}
+                        onClick={() => {
+                            setGalleryDelete(false);
+                            showConfirm(true);
+                        }}
+                    >Удалить выбранные {selectedToDelete?.length} элементы</Button>
 
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -58,7 +66,6 @@ const CustomTableHeader: React.FC<Props> = ({table}) => {
                             .map((column) => (
                                 <DropdownMenuCheckboxItem
                                     key={column.id}
-                                    className="capitalize"
                                     checked={column.getIsVisible()}
                                     onCheckedChange={(value) =>
                                         column.toggleVisibility(!!value)

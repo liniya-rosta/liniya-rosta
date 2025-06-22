@@ -5,19 +5,38 @@ import useUserStore from "@/store/usersStore";
 import Link from "next/link";
 import {logout} from "@/actions/users";
 import {useRouter} from "next/navigation";
+import {toast} from "react-toastify";
 
 const AdminHeader = () => {
-    const { user, setLogout } = useUserStore();
+    const {
+        user,
+        setLogout,
+        loading,
+        setLoading
+    } = useUserStore();
     const [menuOpen, setMenuOpen] = useState(false);
     const router = useRouter();
 
     const toggleMenu = () => setMenuOpen((prev) => !prev);
 
     const handleLogout = async () => {
-        setLogout();
-        await logout();
-        router.push("/admin/login");
-        setMenuOpen(false);
+        try {
+            setLoading(true);
+            setLogout();
+            await logout();
+            router.push("/admin/login");
+            setMenuOpen(false);
+        } catch (error) {
+            let errorMessage = "Неизвестная ошибка при выходе из системы";
+            if (error instanceof Error) {
+                errorMessage = error.message;
+            }
+
+            toast.error(errorMessage);
+        } finally {
+            setLoading(false);
+        }
+
     };
 
     return (
@@ -52,6 +71,7 @@ const AdminHeader = () => {
                         <button
                             onClick={handleLogout}
                             className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                            disabled={loading}
                         >
                             Выйти
                         </button>

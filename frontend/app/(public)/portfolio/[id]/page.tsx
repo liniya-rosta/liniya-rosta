@@ -16,17 +16,21 @@ const GalleryPage = async ({params}: { params: Promise<Params> }) => {
         const {id} = await params;
         detailItem = await fetchPortfolioItem(id);
     } catch (error) {
-        if (isAxiosError(error)) {
-            errorMessage = error.response?.data?.error || "Ошибка при загрузке галереи";
+        if (isAxiosError(error) && error.response) {
+            errorMessage = error.response.data.error;
+        } else if (error instanceof Error) {
+            errorMessage = error.message;
         } else {
-            errorMessage = "Неизвестная ошибка при загрузке галереи";
+            errorMessage = "Неизвестная ошибка при загрузке  галереи";
         }
     }
 
     return (
         <main className="container mx-auto px-4">
-            <h1 className="text-3xl font-bold mb-4 text-center">Галерея</h1>
-            <p className="mb-8 text-lg text-muted-foreground text-center">{detailItem?.description}</p>
+            <h1 className="text-3xl font-bold text-foreground">
+                Галерея
+            </h1>
+            <p className="mb-8 text-lg text-muted-foreground">{detailItem?.description}</p>
             <GalleryClient detailItem={detailItem} error={errorMessage}/>
         </main>
     );
