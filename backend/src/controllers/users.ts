@@ -1,5 +1,5 @@
 import User, {generateAccessToken, generateRefreshToken, JWT_REFRESH_SECRET, JWT_SECRET} from "../models/User";
-import { Request, Response, NextFunction } from "express";
+import {Request, Response, NextFunction} from "express";
 import {RequestWithUser} from "../middleware/authAdmin";
 import jwt from "jsonwebtoken";
 
@@ -117,3 +117,45 @@ export const refreshToken = async (req: Request, res: Response, _next: NextFunct
         res.status(403).send({error: "Недействительный или истёкший refresh-токен"});
     }
 }
+
+export const editProfile = async (req: RequestWithUser, res: Response, next: NextFunction) => {
+    try {
+        const {password, email, confirmPassword, displayName} = req.body;
+
+        const user = await User.findById(req.user?._id);
+        if (!user) {
+            res.status(404).send({error: "Пользователь не найден"});
+            return;
+        }
+
+        if (password && confirmPassword !== password) {
+            res.status(400).send({error: "Пароли не совпадают"});
+            return;
+        }
+        if (password) user.password = password;
+
+
+        if (email && email !== user.email) {
+            const existing = await User.findOne({email});
+            if (existing) {
+                res.status(400).send({error: "Email уже используется другим пользователем"});
+                return;
+            }
+            user.email = email;
+        }
+
+        if (displayName) user.displayName = displayName;
+        await user.save();
+
+        res.send({
+            message: "Профиль успешно обновлён",
+            user: {
+                _id: user._id,
+                email: user.email,
+                displayName: user.displayName,
+            },
+        });
+    } catch (e) {
+        next(e);
+    }
+};
