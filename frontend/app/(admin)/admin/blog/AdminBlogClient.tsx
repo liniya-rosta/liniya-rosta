@@ -1,16 +1,16 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { Plus } from 'lucide-react';
-import { Post, CreatePostData, UpdatePostData } from "@/lib/types";
-import { Button } from '@/components/ui/button';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import React, {useEffect, useState} from 'react';
+import {Plus} from 'lucide-react';
+import {Post, CreatePostData, UpdatePostData} from "@/lib/types";
+import {Button} from '@/components/ui/button';
+import {Alert, AlertDescription} from '@/components/ui/alert';
 import {createPost, deletePost, updatePost} from "@/actions/posts";
 import PostsTable from "@/app/(admin)/admin/blog/components/PostsTable";
 import PostModal from "@/app/(admin)/admin/blog/components/PostModal";
 import Loading from "@/components/ui/Loading/Loading";
-import { toast } from 'react-toastify';
-import { AxiosError } from 'axios';
+import {toast} from 'react-toastify';
+import {AxiosError} from 'axios';
 import {useAdminPostStore} from "@/store/superadmin/superadminPostsStore";
 
 interface Props {
@@ -19,7 +19,7 @@ interface Props {
     isAdmin?: boolean;
 }
 
-const AdminBlogClient: React.FC<Props> = ({ data, error, isAdmin = true }) => {
+const AdminBlogClient: React.FC<Props> = ({data, error, isAdmin = true}) => {
     const {
         posts,
         fetchLoading,
@@ -149,18 +149,16 @@ const AdminBlogClient: React.FC<Props> = ({ data, error, isAdmin = true }) => {
     };
 
     if (isHydrating || fetchLoading) {
-        return <Loading />;
+        return <Loading/>;
     }
 
     if (fetchError) {
         return (
-            <div className="container mx-auto px-4 py-8">
-                <Alert variant="destructive" className="max-w-md mx-auto">
-                    <AlertDescription>
-                        Ошибка при загрузке постов: {fetchError}
-                    </AlertDescription>
-                </Alert>
-            </div>
+            <Alert variant="destructive" className="max-w-md mx-auto">
+                <AlertDescription>
+                    Ошибка при загрузке постов: {fetchError}
+                </AlertDescription>
+            </Alert>
         );
     }
 
@@ -172,21 +170,22 @@ const AdminBlogClient: React.FC<Props> = ({ data, error, isAdmin = true }) => {
                     <p className="text-muted-foreground mt-1">Создавайте и редактируйте посты</p>
                 </div>
                 {isAdmin && (
-                    <Button onClick={openCreateModal} size="lg" className="flex items-center gap-2 w-full sm:w-auto" disabled={anyLoading}>
-                        <Plus className="mr-2 h-5 w-5" />
+                    <Button onClick={openCreateModal} size="lg" className="flex items-center gap-2 w-full sm:w-auto"
+                            disabled={anyLoading}>
+                        <Plus className="mr-2 h-5 w-5"/>
                         Создать пост
                     </Button>
                 )}
             </div>
 
             {posts.length === 0 ? (
-                    <div className="text-center py-8 text-muted-foreground">
-                        <p>Посты не найдены</p>
-                        <p className="text-sm mt-2">
-                            Нажмите &#34;Создать пост&#34; для создания первого поста
-                        </p>
-                    </div>
-                ) : (
+                <div className="text-center py-8 text-muted-foreground">
+                    <p>Посты не найдены</p>
+                    <p className="text-sm mt-2">
+                        Нажмите &#34;Создать пост&#34; для создания первого поста
+                    </p>
+                </div>
+            ) : (
                 <PostsTable
                     posts={posts}
                     onEditPost={openEditModal}

@@ -9,6 +9,7 @@ import {AxiosError} from 'axios';
 import {adminContactSchema} from "@/lib/zodSchemas/adminContactSchema";
 import {toast} from "react-toastify";
 import {Input} from "@/components/ui/input";
+import {Textarea} from "@/components/ui/textarea";
 import {Label} from "@/components/ui/label";
 import {Button} from "@/components/ui/button";
 import {Card, CardContent} from "@/components/ui/card";
@@ -96,21 +97,29 @@ const AdminContactForm: React.FC<Props> = ({contact}) => {
     };
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className="max-w-3xl mx-auto space-y-6">
-            <Card className="mt-13">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            <Card className="mt-3">
                 <CardContent className="p-6 space-y-6">
-                    <h1 className="text-2xl font-semibold text-gray-800">Редактирование контакта</h1>
-
                     {Object.entries(fieldLabels).map(([field, label]) => (
                         <div key={field} className="space-y-1">
                             <Label htmlFor={field}>{label}</Label>
-                            <Input
-                                id={field}
-                                {...register(field as keyof ContactFormData)}
-                                placeholder={`Введите ${label.toLowerCase()}`}
-                                disabled={isLoading}
-                                className={errors[field as keyof ContactFormData] ? "border-red-500" : ""}
-                            />
+                            {field === "linkLocation" ? (
+                                <Textarea
+                                    id={field}
+                                    {...register(field as keyof ContactFormData)}
+                                    placeholder={`Введите ${label.toLowerCase()}`}
+                                    disabled={isLoading}
+                                    className={errors[field as keyof ContactFormData] ? "border-red-500" : ""}
+                                />
+                            ) : (
+                                <Input
+                                    id={field}
+                                    {...register(field as keyof ContactFormData)}
+                                    placeholder={`Введите ${label.toLowerCase()}`}
+                                    disabled={isLoading}
+                                    className={errors[field as keyof ContactFormData] ? "border-red-500" : ""}
+                                />
+                            )}
                             {errors[field as keyof ContactFormData] && (
                                 <p className="text-sm text-red-600">
                                     {String(errors[field as keyof ContactFormData]?.message)}

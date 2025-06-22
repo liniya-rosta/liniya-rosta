@@ -25,11 +25,9 @@ const Burger: React.FC<BurgerProps> = ({navItems, isAdmin}) => {
             <Sheet>
                 <SheetTrigger asChild>
                     <Button
-                        variant="ghost"
-                        size="icon"
-                        className="text-white hover:bg-white/10 rounded-full cursor-pointer"
+                        className="text-white p-3 rounded-md bg-white/10 hover:bg-white/20 transition cursor-pointer"
                     >
-                        <Menu className="w-6 h-6"/>
+                        <Menu className="w-7 h-7"/>
                     </Button>
                 </SheetTrigger>
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import {Category, Product} from "@/lib/types";
-import { fetchProducts } from "@/actions/products";
+import {fetchProducts} from "@/actions/products";
 import {fetchCategories} from "@/actions/categories";
 import ProductsClient from "@/app/(admin)/admin/products/ProductsClient";
 
@@ -34,17 +34,14 @@ const AdminProductsPage = async () => {
     const combinedError = productsError || categoriesError;
 
     return (
-        <div className="min-h-screen bg-gray-50 py-8">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="rounded-lg">
-                    <ProductsClient
-                        initialProducts={products}
-                        initialCategories={categories}
-                        initialError={combinedError}
-                    />
-                </div>
-            </div>
+        <div className="container mx-auto px-4">
+            <ProductsClient
+                initialProducts={products}
+                initialCategories={categories}
+                initialError={combinedError}
+            />
         </div>
+
     );
 };
 

@@ -35,7 +35,10 @@ const AdminContactsClient: React.FC<Props> = ({data, error}) => {
     if (fetchError) return <ErrorMsg error={fetchError} label="контактов"/>;
 
     return (
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto px-4">
+            <h1 className="text-3xl font-bold text-foreground text-center sm:text-left">
+                Управление контактной информацией
+            </h1>
             {contact && <AdminContactForm contact={contact}/>}
         </div>
     );
