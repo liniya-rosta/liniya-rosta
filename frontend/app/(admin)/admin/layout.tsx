@@ -2,7 +2,6 @@
 
 import {useEffect, useState} from "react";
 import {usePathname, useRouter} from "next/navigation";
-import Sidebar from "@/app/(admin)/admin/components/shared/Sidebar";
 import AdminHeader from "@/app/(admin)/admin/components/shared/AdminHeader";
 import useUserStore from "@/store/usersStore";
 import LoadingFullScreen from "@/components/ui/Loading/LoadingFullScreen";
@@ -10,6 +9,7 @@ import LoadingFullScreen from "@/components/ui/Loading/LoadingFullScreen";
 export default function AdminLayout({children}: { children: React.ReactNode }) {
     const router = useRouter();
     const pathname = usePathname();
+    const isLogin = pathname === "/admin/login";
 
     const {user, accessToken, hasHydrated} = useUserStore();
     const [authorized, setAuthorized] = useState(false);
@@ -33,9 +33,8 @@ export default function AdminLayout({children}: { children: React.ReactNode }) {
 
     return (
         <div className="min-h-screen flex flex-col">
-            <AdminHeader/>
+            {!isLogin && <AdminHeader/>}
             <div className="flex flex-1">
-                <Sidebar/>
                 <main className="flex-grow">{children}</main>
             </div>
         </div>

@@ -1,11 +1,12 @@
 "use client"
 
-import { useState } from "react";
+import {useState} from "react";
 import useUserStore from "@/store/usersStore";
 import Link from "next/link";
 import {logout} from "@/actions/users";
 import {useRouter} from "next/navigation";
 import {toast} from "react-toastify";
+import Burger from "@/components/ui/Burger";
 
 const AdminHeader = () => {
     const {
@@ -16,6 +17,15 @@ const AdminHeader = () => {
     } = useUserStore();
     const [menuOpen, setMenuOpen] = useState(false);
     const router = useRouter();
+
+    const navItems = [
+        {href: "/admin", label: "Заявки"},
+        {href: "/admin/products", label: "Товары"},
+        {href: "/admin/blog", label: "Блог"},
+        {href: "/admin/admins", label: "Админы"},
+        {href: "/admin/contacts", label: "Контакты"},
+        {href: "/admin/portfolio", label: "Портфолио"},
+    ];
 
     const toggleMenu = () => setMenuOpen((prev) => !prev);
 
@@ -41,7 +51,7 @@ const AdminHeader = () => {
 
     return (
         <header className="w-full bg-gray-800 text-white px-6 py-4 flex justify-between items-center shadow">
-            <div className="text-lg font-semibold">Админ-панель</div>
+            <Burger navItems={navItems} isAdmin/>
             <div className="relative">
                 {
                     user ?
@@ -57,7 +67,7 @@ const AdminHeader = () => {
                                 strokeWidth={2}
                                 viewBox="0 0 24 24"
                             >
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7"/>
                             </svg>
                         </button>
                         : <Link

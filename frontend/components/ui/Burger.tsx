@@ -5,7 +5,7 @@ import {Menu} from "lucide-react";
 import {DialogTitle} from "@radix-ui/react-dialog";
 import {VisuallyHidden} from "@radix-ui/react-visually-hidden";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import {usePathname} from "next/navigation";
 
 interface NavItem {
     href: string;
@@ -14,13 +14,14 @@ interface NavItem {
 
 interface BurgerProps {
     navItems: NavItem[];
+    isAdmin?: boolean;
 }
 
-const Burger: React.FC<BurgerProps> = ({navItems}) => {
+const Burger: React.FC<BurgerProps> = ({navItems, isAdmin}) => {
     const pathname = usePathname();
 
     return (
-        <div className="flex justify-end md:hidden">
+        <div className={`flex justify-end ${isAdmin ? '' : 'md:hidden'}`}>
             <Sheet>
                 <SheetTrigger asChild>
                     <Button
@@ -45,7 +46,7 @@ const Burger: React.FC<BurgerProps> = ({navItems}) => {
                     </p>
 
                     <ul className="space-y-2 mt-5">
-                        {navItems.map(({ href, label }) => {
+                        {navItems.map(({href, label}) => {
                             const isActive = pathname === href;
 
                             return (
