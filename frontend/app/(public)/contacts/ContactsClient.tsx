@@ -6,8 +6,8 @@ import MapSection from "@/app/(public)/contacts/components/MapSection";
 import {Contact} from "@/lib/types";
 import {useEffect} from "react";
 import {useContactStore} from "@/store/contactsStore";
-import ErrorMsg from "@/components/shared/ErrorMsg";
-import LoadingFullScreen from "@/components/shared/Loading/LoadingFullScreen";
+import ErrorMsg from "@/components/ui/ErrorMsg";
+import LoadingFullScreen from "@/components/ui/Loading/LoadingFullScreen";
 
 interface Props {
     data: Contact | null;

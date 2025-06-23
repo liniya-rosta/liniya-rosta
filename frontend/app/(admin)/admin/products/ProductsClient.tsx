@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { CardContent } from "@/components/ui/card";
 import { AxiosError } from "axios";
-import Loading from "@/components/shared/Loading/Loading";
+import Loading from "@/components/ui/Loading/Loading";
 import { useCategoryStore } from "@/store/categoriesStore";
 import { CreateProductFormData, UpdateProductFormData } from "@/lib/zodSchemas/productSchema";
 import { createProduct, deleteProduct, updateProduct } from "@/actions/products";

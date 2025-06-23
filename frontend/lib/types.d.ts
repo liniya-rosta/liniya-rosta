@@ -1,4 +1,4 @@
-export  interface GalleryForm {
+export interface GalleryForm {
     image: File | null,
     alt: string,
 }
@@ -14,7 +14,7 @@ export interface PortfolioItemPreview {
     _id: string;
     description: string;
     cover: string;
-    coverAlt:  string;
+    coverAlt: string;
     galleryCount: number;
 }
 
@@ -34,7 +34,7 @@ export interface PortfolioEditValues {
     description?: string;
 }
 
-export interface GalleryItemValues{
+export interface GalleryItemValues {
     image?: File | null;
     alt?: string;
 }
@@ -110,6 +110,12 @@ export interface UserForm {
     email: string;
     password: string;
     confirmPassword: string;
+}
+
+export interface EditProfileForm {
+    displayName?: string;
+    email?: string;
+    password?: string;
 }
 
 export interface Post {

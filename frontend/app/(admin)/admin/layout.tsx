@@ -1,15 +1,16 @@
 'use client';
 
+import React from "react";
 import {useEffect, useState} from "react";
 import {usePathname, useRouter} from "next/navigation";
-import Sidebar from "@/app/(admin)/admin/components/shared/Sidebar";
 import AdminHeader from "@/app/(admin)/admin/components/shared/AdminHeader";
 import useUserStore from "@/store/usersStore";
-import LoadingFullScreen from "@/components/shared/Loading/LoadingFullScreen";
+import LoadingFullScreen from "@/components/ui/Loading/LoadingFullScreen";
 
 export default function AdminLayout({children}: { children: React.ReactNode }) {
     const router = useRouter();
     const pathname = usePathname();
+    const isLogin = pathname === "/admin/login";
 
     const {user, accessToken, hasHydrated} = useUserStore();
     const [authorized, setAuthorized] = useState(false);
@@ -19,24 +20,40 @@ export default function AdminLayout({children}: { children: React.ReactNode }) {
 
         const isLoginPage = pathname === "/admin/login";
         const isNotLoggedIn = !accessToken || !user;
-        const isNotAdmin = user?.role !== "superadmin";
 
-        if (!isLoginPage && (isNotLoggedIn || isNotAdmin)) {
+        if (isNotLoggedIn && !isLoginPage) {
             router.replace("/admin/login");
             setAuthorized(false);
-        } else {
+            return;
+        }
+
+        const role = user?.role;
+        if (role === "superadmin") {
             setAuthorized(true);
+        } else if (role === "admin") {
+            if (pathname === "/admin") {
+                setAuthorized(true);
+            } else {
+                router.replace("/admin");
+                setAuthorized(false);
+            }
+        } else {
+            if (!isLoginPage) {
+                router.replace("/admin/login");
+                setAuthorized(false);
+            }
         }
     }, [hasHydrated, user, accessToken, pathname, router]);
 
-    if (!hasHydrated || !authorized) return <LoadingFullScreen/>;
+    if (!authorized && pathname !== "/admin/login") {
+        return <LoadingFullScreen/>;
+    }
 
     return (
         <div className="min-h-screen flex flex-col">
-            <AdminHeader/>
+            {!isLogin && <AdminHeader/>}
             <div className="flex flex-1">
-                <Sidebar/>
-                <main className="flex-grow">{children}</main>
+                <main className="flex-grow container mx-auto px-4">{children}</main>
             </div>
         </div>
     );

@@ -1,82 +1,27 @@
-"use client"
-
-import { useState } from "react";
+import Burger from "@/components/ui/Burger";
+import ProfileDropdown from "@/app/(admin)/admin/components/shared/ProfileDropdown";
 import useUserStore from "@/store/usersStore";
-import Link from "next/link";
-import {logout} from "@/actions/users";
-import {useRouter} from "next/navigation";
-import {toast} from "react-toastify";
 
 const AdminHeader = () => {
-    const {
-        user,
-        setLogout,
-        loading,
-        setLoading
-    } = useUserStore();
-    const [menuOpen, setMenuOpen] = useState(false);
-    const router = useRouter();
+    const {user} = useUserStore();
+    const isSuperadmin = user?.role === "superadmin";
 
-    const toggleMenu = () => setMenuOpen((prev) => !prev);
-
-    const handleLogout = async () => {
-        try {
-            setLoading(true);
-            setLogout();
-            await logout();
-            router.push("/admin/login");
-            setMenuOpen(false);
-        } catch (error) {
-            let errorMessage = "Неизвестная ошибка при выходе из системы";
-            if (error instanceof Error) {
-                errorMessage = error.message;
-            }
-
-            toast.error(errorMessage);
-        } finally {
-            setLoading(false);
-        }
-
-    };
+    const navItems = [
+        {href: "/admin", label: "Заявки"},
+        {href: "/admin/products", label: "Товары"},
+        {href: "/admin/blog", label: "Блог"},
+        {href: "/admin/admins", label: "Админы"},
+        {href: "/admin/contacts", label: "Контакты"},
+        {href: "/admin/portfolio", label: "Портфолио"},
+    ];
 
     return (
-        <header className="w-full bg-gray-800 text-white px-6 py-4 flex justify-between items-center shadow">
-            <div className="text-lg font-semibold">Админ-панель</div>
-            <div className="relative">
-                {
-                    user ?
-                        <button
-                            onClick={toggleMenu}
-                            className="flex items-center gap-2 bg-gray-700 px-4 py-2 rounded hover:bg-gray-600 transition"
-                        >
-                            <span>Привет, {user.displayName}</span>
-                            <svg
-                                className={`w-4 h-4 transition-transform ${menuOpen ? "rotate-180" : ""}`}
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth={2}
-                                viewBox="0 0 24 24"
-                            >
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                            </svg>
-                        </button>
-                        : <Link
-                            href="/admin/login"
-                            className="bg-gray-700 px-4 py-2 rounded hover:bg-gray-600 transition"
-                        >Войти</Link>
-                }
-
-                {menuOpen && (
-                    <div className="absolute right-0 mt-2 w-40 bg-white text-gray-800 rounded shadow-lg z-10">
-                        <button
-                            onClick={handleLogout}
-                            className="block w-full text-left px-4 py-2 hover:bg-gray-100"
-                            disabled={loading}
-                        >
-                            Выйти
-                        </button>
-                    </div>
-                )}
+        <header className="w-full bg-gray-800 text-white px-4 py-4 shadow mb-8">
+            <div className={`container mx-auto flex items-center ${
+                isSuperadmin ? "justify-between" : "justify-end"
+            }`}>
+                {isSuperadmin && <Burger navItems={navItems} isAdmin/>}
+                <ProfileDropdown/>
             </div>
         </header>
     );
