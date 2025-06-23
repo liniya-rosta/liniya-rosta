@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, {useEffect} from 'react';
 import {useForm} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {toast} from 'react-toastify';
@@ -19,8 +19,8 @@ import {Loader2} from 'lucide-react';
 import {profileSchema} from '@/lib/zodSchemas/profileSchema';
 import {editProfile} from '@/actions/users';
 import {EditProfileForm} from "@/lib/types";
-import {useEffect} from "react";
 import useUserStore from '@/store/usersStore';
+import {AxiosError} from "axios";
 
 interface Props {
     closeModal: () => void;
@@ -67,18 +67,22 @@ const ProfileForm: React.FC<Props> = ({closeModal}) => {
             reset();
             closeModal();
         } catch (e) {
-            const message = e?.response?.data?.error || 'Ошибка при обновлении профиля.';
+            let message = 'Ошибка при обновлении профиля.';
+
+            if (e instanceof AxiosError) {
+                message = e.response?.data?.error || message;
+            }
+
             toast.error(message);
 
             if (message.toLowerCase().includes('пароль')) {
-                setError('password', {message});
+                setError('password', { message });
             } else if (message.toLowerCase().includes('email')) {
-                setError('email', {message});
+                setError('email', { message });
             } else if (message.toLowerCase().includes('имя')) {
-                setError('displayName', {message});
-            } else {
-                toast.error(message);
+                setError('displayName', { message });
             }
+
             console.error(e);
         }
     };

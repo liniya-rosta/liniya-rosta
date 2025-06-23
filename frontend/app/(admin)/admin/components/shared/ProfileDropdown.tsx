@@ -28,7 +28,9 @@ const ProfileDropdown = () => {
         <>
             <DropdownMenu>
                 <DropdownMenuTrigger
-                    className="px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-600 duration-500 cursor-pointer">
+                    className="px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-600 duration-500 cursor-pointer"
+                    aria-label="Открыть меню профиля"
+                >
                     Привет, {user.displayName}
                 </DropdownMenuTrigger>
 
@@ -48,7 +50,9 @@ const ProfileDropdown = () => {
                 <ProfileForm closeModal={() => setIsOpen(false)}/>
             </Dialog>
 
-            <ExitConfirm open={showLogoutConfirm} onClose={() => setShowLogoutConfirm(false)}/>
+            <Dialog open={showLogoutConfirm} onOpenChange={setShowLogoutConfirm}>
+                <ExitConfirm onClose={() => setShowLogoutConfirm(false)}/>
+            </Dialog>
         </>
     );
 };

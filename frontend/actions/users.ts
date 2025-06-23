@@ -1,5 +1,5 @@
 import axiosAPI from "@/lib/axiosAPI";
-import {UserForm} from "@/lib/types";
+import {EditProfileForm, UserForm} from "@/lib/types";
 
 export const login = async (data: UserForm) => {
     try {
