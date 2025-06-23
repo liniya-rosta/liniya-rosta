@@ -35,7 +35,7 @@ export default function AdminLayout({children}: { children: React.ReactNode }) {
         <div className="min-h-screen flex flex-col">
             {!isLogin && <AdminHeader/>}
             <div className="flex flex-1">
-                <main className="flex-grow">{children}</main>
+                <main className="flex-grow container mx-auto px-4">{children}</main>
             </div>
         </div>
     );

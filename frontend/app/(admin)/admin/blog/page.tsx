@@ -18,7 +18,7 @@ const AdminBlogPage = async () => {
     }
 
     return (
-        <div className="container mx-auto px-4">
+        <div>
             <AdminBlogClient
                 data={posts}
                 error={postsError}

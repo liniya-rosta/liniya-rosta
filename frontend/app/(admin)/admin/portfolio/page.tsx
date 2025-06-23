@@ -21,9 +21,9 @@ const AdminPortfolioPage = async () => {
     }
 
     return (
-        <main className="container mx-auto px-4">
+        <div>
             <AdminPortfolioClient data={portfolioData} error={errorMessage}/>
-        </main>
+        </div>
     )
 };
 

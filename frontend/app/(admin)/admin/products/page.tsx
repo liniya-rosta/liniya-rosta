@@ -34,7 +34,7 @@ const AdminProductsPage = async () => {
     const combinedError = productsError || categoriesError;
 
     return (
-        <div className="container mx-auto px-4">
+        <div>
             <ProductsClient
                 initialProducts={products}
                 initialCategories={categories}

@@ -120,33 +120,39 @@ export const refreshToken = async (req: Request, res: Response, _next: NextFunct
 
 export const editProfile = async (req: RequestWithUser, res: Response, next: NextFunction) => {
     try {
-        const {password, email, confirmPassword, displayName} = req.body;
-
+        const {password, email, displayName} = req.body;
         const user = await User.findById(req.user?._id);
         if (!user) {
             res.status(404).send({error: "Пользователь не найден"});
             return;
         }
 
-        if (password && confirmPassword !== password) {
-            res.status(400).send({error: "Пароли не совпадают"});
-            return;
+        if (typeof password === 'string' && password.trim()) {
+            const trimmed = password.trim();
+            user.password = trimmed;
+            user.confirmPassword = trimmed;
         }
-        if (password) user.password = password;
 
-
-        if (email && email !== user.email) {
-            const existing = await User.findOne({email});
-            if (existing) {
-                res.status(400).send({error: "Email уже используется другим пользователем"});
-                return;
+        if (typeof email === 'string') {
+            const trimmed = email.trim();
+            if (trimmed && trimmed !== user.email) {
+                const exists = await User.findOne({email: trimmed});
+                if (exists) {
+                    res.status(400).send({error: "Email уже используется"});
+                    return;
+                }
+                user.email = trimmed;
             }
-            user.email = email;
         }
 
-        if (displayName) user.displayName = displayName;
-        await user.save();
+        if (typeof displayName === 'string') {
+            const trimmed = displayName.trim();
+            if (trimmed) {
+                user.displayName = trimmed;
+            }
+        }
 
+        await user.save();
         res.send({
             message: "Профиль успешно обновлён",
             user: {

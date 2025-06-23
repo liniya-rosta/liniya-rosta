@@ -29,3 +29,8 @@ export const logout = async () => {
         console.log(e);
     }
 }
+
+export const editProfile = async (data: EditProfileForm) => {
+    const response = await axiosAPI.patch('/users/profile', data);
+    return response.data;
+};

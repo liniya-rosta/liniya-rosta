@@ -9,7 +9,14 @@ import {columns} from "@/app/(admin)/admin/requests/components/requestTable/Colu
 import dayjs from "dayjs";
 
 const RequestsPage = () => {
-    const {requests, setRequests, fetchAllError, fetchAllLoading, setFetchAllError,setFetchAllLoading} = useAdminRequestsStore()
+    const {
+        requests,
+        setRequests,
+        fetchAllError,
+        fetchAllLoading,
+        setFetchAllError,
+        setFetchAllLoading
+    } = useAdminRequestsStore()
 
     useEffect(() => {
         let fetchData: IRequest[] = []
@@ -29,8 +36,8 @@ const RequestsPage = () => {
                 setRequests(data.reverse());
                 setFetchAllLoading(false);
             } catch (e) {
-               error = e instanceof Error ? e.message : 'Произошла ошибка при получении заявок';
-               setFetchAllError(error)
+                error = e instanceof Error ? e.message : 'Произошла ошибка при получении заявок';
+                setFetchAllError(error)
             } finally {
                 setFetchAllLoading(false);
             }
@@ -39,8 +46,8 @@ const RequestsPage = () => {
     }, [setRequests, setFetchAllLoading, setFetchAllError]);
 
     return (
-        <div className={`m-[20px]`}>
-            <DataTable columns={columns} data={requests} error={fetchAllError} loading={fetchAllLoading} />
+        <div>
+            <DataTable columns={columns} data={requests} error={fetchAllError} loading={fetchAllLoading}/>
         </div>
     );
 };
