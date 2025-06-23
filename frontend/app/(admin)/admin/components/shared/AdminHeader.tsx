@@ -1,7 +1,11 @@
 import Burger from "@/components/ui/Burger";
 import ProfileDropdown from "@/app/(admin)/admin/components/shared/ProfileDropdown";
+import useUserStore from "@/store/usersStore";
 
 const AdminHeader = () => {
+    const {user} = useUserStore();
+    const isSuperadmin = user?.role === "superadmin";
+
     const navItems = [
         {href: "/admin", label: "Заявки"},
         {href: "/admin/products", label: "Товары"},
@@ -13,8 +17,10 @@ const AdminHeader = () => {
 
     return (
         <header className="w-full bg-gray-800 text-white px-4 py-4 shadow mb-8">
-            <div className="container mx-auto flex justify-between items-center">
-                <Burger navItems={navItems} isAdmin/>
+            <div className={`container mx-auto flex items-center ${
+                isSuperadmin ? "justify-between" : "justify-end"
+            }`}>
+                {isSuperadmin && <Burger navItems={navItems} isAdmin/>}
                 <ProfileDropdown/>
             </div>
         </header>

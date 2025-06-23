@@ -1,5 +1,6 @@
 'use client';
 
+import React from "react";
 import {useEffect, useState} from "react";
 import {usePathname, useRouter} from "next/navigation";
 import AdminHeader from "@/app/(admin)/admin/components/shared/AdminHeader";
@@ -19,17 +20,34 @@ export default function AdminLayout({children}: { children: React.ReactNode }) {
 
         const isLoginPage = pathname === "/admin/login";
         const isNotLoggedIn = !accessToken || !user;
-        const isNotAdmin = user?.role !== "superadmin";
 
-        if (!isLoginPage && (isNotLoggedIn || isNotAdmin)) {
+        if (isNotLoggedIn && !isLoginPage) {
             router.replace("/admin/login");
             setAuthorized(false);
-        } else {
+            return;
+        }
+
+        const role = user?.role;
+        if (role === "superadmin") {
             setAuthorized(true);
+        } else if (role === "admin") {
+            if (pathname === "/admin") {
+                setAuthorized(true);
+            } else {
+                router.replace("/admin");
+                setAuthorized(false);
+            }
+        } else {
+            if (!isLoginPage) {
+                router.replace("/admin/login");
+                setAuthorized(false);
+            }
         }
     }, [hasHydrated, user, accessToken, pathname, router]);
 
-    if (!hasHydrated || !authorized) return <LoadingFullScreen/>;
+    if (!authorized && pathname !== "/admin/login") {
+        return <LoadingFullScreen/>;
+    }
 
     return (
         <div className="min-h-screen flex flex-col">
