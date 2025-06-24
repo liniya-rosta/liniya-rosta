@@ -4,7 +4,7 @@ import mongoose, {isValidObjectId} from "mongoose";
 
 export const getPortfolioItems = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const {galleryId} = req.query;
+        const { galleryId, limit = 10, page = 1 } = req.query;
 
         if (galleryId) {
             const item = await PortfolioItem.findOne(
@@ -21,18 +21,33 @@ export const getPortfolioItems = async (req: Request, res: Response, next: NextF
             return;
         }
 
-        const items = await PortfolioItem.aggregate([
-            {
-                $project: {
-                    cover: 1,
-                    coverAlt: 1,
-                    description: 1,
-                    galleryCount: {$size: "$gallery"}
+        const parsedLimit = Math.max(1, parseInt(limit as string));
+        const parsedPage = Math.max(1, parseInt(page as string));
+        const skip = (parsedPage - 1) * parsedLimit;
+
+        const [items, totalCount] = await Promise.all([
+            PortfolioItem.aggregate([
+                { $skip: skip },
+                { $limit: parsedLimit },
+                {
+                    $project: {
+                        cover: 1,
+                        coverAlt: 1,
+                        description: 1,
+                        galleryCount: { $size: "$gallery" }
+                    }
                 }
-            }
+            ]),
+            PortfolioItem.countDocuments()
         ]);
 
-        res.send(items);
+        res.send({
+            items,
+            total: totalCount,
+            page: parsedPage,
+            pageSize: parsedLimit,
+            totalPages: Math.ceil(totalCount / parsedLimit),
+        });
     } catch (err) {
         next(err);
     }
