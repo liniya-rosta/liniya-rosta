@@ -7,7 +7,6 @@ import {PortfolioEditValues} from "@/lib/types";
 import {Input} from "@/components/ui/input";
 import {Button} from "@/components/ui/button";
 import React, {useEffect} from "react";
-import {fetchPortfolioPreviews} from "@/actions/portfolios";
 import {API_BASE_URL} from "@/lib/globalConstants";
 import Image from "next/image";
 import {useSuperAdminPortfolioStore} from "@/store/superadmin/superAdminPortfolio";
@@ -20,9 +19,10 @@ import {Tooltip, TooltipContent, TooltipTrigger} from "@/components/ui/tooltip";
 
 interface Props {
     onSaved: () => void;
+    updatePaginationAndData: () => void;
 }
 
-const PortfolioEditForm: React.FC<Props> = ({onSaved}) => {
+const PortfolioEditForm: React.FC<Props> = ({onSaved, updatePaginationAndData}) => {
     const {register, handleSubmit, setValue, reset, formState: {errors, isDirty}} = useForm({
         resolver: zodResolver(portfolioItemSchema),
     });
@@ -30,8 +30,7 @@ const PortfolioEditForm: React.FC<Props> = ({onSaved}) => {
     const {
         detailItem,
         editLoading,
-        setPortfolioPreview,
-        setPortfolioEditLoading
+        setPortfolioEditLoading,
     } = useSuperAdminPortfolioStore();
 
     useEffect(() => {
@@ -52,13 +51,12 @@ const PortfolioEditForm: React.FC<Props> = ({onSaved}) => {
 
     const onSubmit = async (data: PortfolioEditValues) => {
         if (!detailItem) return;
-        try {
 
+        try {
             setPortfolioEditLoading(true);
             await editPortfolioItem({item: data, id: detailItem._id});
-            const updated = await fetchPortfolioPreviews();
 
-            setPortfolioPreview(updated);
+            await updatePaginationAndData();
             onSaved()
             toast.success("Вы успешно обновили портфолио");
         } catch (error) {

@@ -2,7 +2,7 @@ import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {useSuperAdminPortfolioStore} from "@/store/superadmin/superAdminPortfolio";
 import React, {useEffect} from "react";
-import {GalleryItemValues} from "@/lib/types";
+import {GalleryEditValues} from "@/lib/types";
 import {gallerySchema} from "@/lib/zodSchemas/portfolio/gallerySchema";
 import {Input} from "@/components/ui/input";
 import Image from "next/image";
@@ -47,7 +47,7 @@ const GalleryEditForm: React.FC<Props> = ({onSaved}) => {
         setValue("image", file, { shouldDirty: true });
     };
 
-    const onSubmit = async (data: GalleryItemValues) => {
+    const onSubmit = async (data: GalleryEditValues) => {
         if (!galleryItem) return;
 
         try {

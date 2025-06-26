@@ -1,4 +1,4 @@
-import {GalleryItem, PortfolioItemDetail, PortfolioItemPreview} from "@/lib/types";
+import {GalleryItem, PaginationMeta, PortfolioItemDetail, PortfolioItemPreview} from "@/lib/types";
 import {create} from "zustand/react";
 
 interface PortfolioState {
@@ -6,11 +6,13 @@ interface PortfolioState {
     detailItem: PortfolioItemDetail | null;
     galleryItem: GalleryItem | null;
     fetchLoadingPortfolio: boolean;
+    paginationPortfolio: PaginationMeta | null;
 
     setPortfolioPreview: (data: PortfolioItemPreview[]) => void;
     setPortfolioItemDetail: (data: PortfolioItemDetail) => void;
     setGalleryItem: (data: GalleryItem) => void;
     setPortfolioLoading: (loading: boolean) => void;
+    setPaginationPortfolio: (data: PaginationMeta) => void;
 }
 
 export const usePortfolioStore = create<PortfolioState>((set) => ({
@@ -19,8 +21,10 @@ export const usePortfolioStore = create<PortfolioState>((set) => ({
     galleryItem: null,
     fetchLoadingPortfolio: true,
     fetchErrorPortfolio: null,
+    paginationPortfolio: null,
     setPortfolioPreview: (data) => set({ items: data }),
     setPortfolioItemDetail: (data) => set({ detailItem: data }),
     setGalleryItem: (data) => set({ galleryItem: data }),
-    setPortfolioLoading: (loading) => set({fetchLoadingPortfolio: loading}),
+    setPortfolioLoading: (loading) => set({ fetchLoadingPortfolio: loading }),
+    setPaginationPortfolio: (data) => set({ paginationPortfolio: data }),
 }));

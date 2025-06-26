@@ -28,15 +28,22 @@ export interface PortfolioItemDetail extends PortfolioItemPreview {
     gallery: GalleryItem[];
 }
 
-export interface PortfolioEditValues {
-    cover?: File | null;
-    coverAlt?: string;
-    description?: string;
+type PortfolioEditValues = Partial<PortfolioMutation>;
+type GalleryEditValues = Partial<GalleryForm>;
+
+interface PaginationMeta {
+    total: number;
+    page: number;
+    pageSize: number;
+    totalPages: number;
 }
 
-export interface GalleryItemValues {
-    image?: File | null;
-    alt?: string;
+export interface PaginatedPortfolioResponse {
+    items: PortfolioItemPreview[],
+    total: number;
+    page: number;
+    pageSize: number;
+    totalPages: number;
 }
 
 export interface Category {

@@ -1,5 +1,5 @@
 import axiosAPI from "@/lib/axiosAPI";
-import {GalleryItemValues, PortfolioEditValues, PortfolioMutation} from "@/lib/types";
+import {GalleryEditValues, PortfolioEditValues, PortfolioMutation} from "@/lib/types";
 
 export const createPortfolio = async (item: PortfolioMutation) => {
     const formData = new FormData();
@@ -42,7 +42,7 @@ export const editPortfolioItem = async (
 }
 
 export const editGalleryItem = async ({item, gallery_id}: {
-    item: GalleryItemValues,
+    item: GalleryEditValues,
     gallery_id: string,
 }) => {
     const formData = new FormData();

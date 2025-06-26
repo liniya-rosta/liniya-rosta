@@ -1,14 +1,15 @@
 import {fetchPortfolioPreviews} from "@/actions/portfolios";
 import AdminPortfolioClient from "@/app/(admin)/admin/portfolio/PortfolioClient";
-import {PortfolioItemPreview} from "@/lib/types";
+import {PaginatedPortfolioResponse} from "@/lib/types";
 import {isAxiosError} from "axios";
 
 const AdminPortfolioPage = async () => {
     let errorMessage: string | null = null;
-    let portfolioData: PortfolioItemPreview[] | null = null;
+    let portfolioData: PaginatedPortfolioResponse | null = null;
+    const limit = "8";
 
     try {
-        portfolioData = await fetchPortfolioPreviews();
+        portfolioData = await fetchPortfolioPreviews(limit);
 
     } catch (error) {
         if (isAxiosError(error) && error.response) {
