@@ -1,6 +1,6 @@
 export interface GalleryForm {
     image: File | null,
-    alt: string,
+    alt?: string,
 }
 
 export interface PortfolioMutation {
@@ -38,12 +38,8 @@ interface PaginationMeta {
     totalPages: number;
 }
 
-export interface PaginatedPortfolioResponse {
+export interface PaginatedPortfolioResponse extends PaginationMeta{
     items: PortfolioItemPreview[],
-    total: number;
-    page: number;
-    pageSize: number;
-    totalPages: number;
 }
 
 export interface Category {

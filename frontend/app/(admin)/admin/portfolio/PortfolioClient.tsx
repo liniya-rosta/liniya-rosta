@@ -3,7 +3,7 @@
 import React, {useEffect, useState} from "react";
 import {isAxiosError} from "axios";
 import {toast} from "react-toastify";
-import {PaginatedPortfolioResponse, PortfolioItemPreview} from "@/lib/types";
+import {PortfolioItemPreview} from "@/lib/types";
 import {useSuperAdminPortfolioStore} from "@/store/superadmin/superAdminPortfolio";
 import {fetchGalleryItem, fetchPortfolioItem, fetchPortfolioPreviews} from "@/actions/portfolios";
 import {deleteGalleryItem, deletePortfolio } from "@/actions/superadmin/portfolios";
@@ -18,7 +18,7 @@ import {
     VisibilityState,
 } from "@tanstack/react-table"
 import {CustomTable, getColumns, CustomTableHeader, TablePagination} from "@/app/(admin)/admin/portfolio/components/DataTable";
-import ModalCover from "@/app/(admin)/admin/portfolio/components/ModalCover";
+import ImageModal from "@/app/(admin)/admin/portfolio/components/ImageModal";
 import {ModalEdit, PortfolioEditForm, GalleryEditForm} from "@/app/(admin)/admin/portfolio/components/ModelEdit";
 import ModalGallery from "@/app/(admin)/admin/portfolio/components/ModalGallery";
 import DataSkeleton from "@/components/ui/Loading/DataSkeleton";
@@ -29,18 +29,18 @@ import {Plus} from "lucide-react";
 import ErrorMsg from "@/components/ui/ErrorMsg";
 
 interface Props {
-    data: PaginatedPortfolioResponse | null;
     error?: string | null;
+    limit?: string;
 }
 
-const AdminPortfolioClient: React.FC<Props> = ({data, error}) => {
+const AdminPortfolioClient: React.FC<Props> = ({ error, limit = "10"}) => {
     const [sorting, setSorting] = useState<SortingState>([]);
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
     const [rowSelection, setRowSelection] = useState({});
     const [pagination, setPagination] = useState({
         pageIndex: 0,
-        pageSize: 10,
+        pageSize: Number(limit),
     });
 
     const [isModalOpenCover, setIsModalOpenCover] = useState(false);
@@ -68,12 +68,21 @@ const AdminPortfolioClient: React.FC<Props> = ({data, error}) => {
         setPaginationPortfolio,
     } = useSuperAdminPortfolioStore();
 
-     const updatePaginationAndData = async () => {
+     const updatePaginationAndData = async (searchValue = "", searchField = "coverAlt") => {
        try {
            setPortfolioFetchLoading(true);
+           const filters = {
+               coverAlt: "",
+               description: "",
+           };
+           if (searchField === "coverAlt") filters.coverAlt = searchValue;
+           if (searchField === "description") filters.description = searchValue;
+
            const data = await fetchPortfolioPreviews(
                pagination.pageSize.toString(),
-               (pagination.pageIndex + 1).toString()
+               (pagination.pageIndex + 1).toString(),
+               filters.coverAlt,
+               filters.description
            );
            setPortfolioPreview(data.items);
            setPaginationPortfolio({
@@ -96,21 +105,6 @@ const AdminPortfolioClient: React.FC<Props> = ({data, error}) => {
            setPortfolioFetchLoading(false)
        }
     };
-
-    useEffect(() => {
-        if (data) {
-            setPortfolioPreview(data.items);
-            setPaginationPortfolio({
-                total: data.total,
-                page: data.page,
-                totalPages: data.totalPages,
-                pageSize: data.pageSize,
-            });
-            setPortfolioFetchLoading(false);
-        }
-
-        setPortfolioFetchLoading(false);
-    }, [data]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -139,10 +133,16 @@ const AdminPortfolioClient: React.FC<Props> = ({data, error}) => {
         setSelectedToDelete(selectedRows.map(row => row.original._id));
     }, [rowSelection]);
 
+    useEffect(() => {
+        setRowSelection({});
+    }, [pagination.pageIndex]);
+
     const handleDelete = async (id: string, isGallery: boolean) => {
         try {
             setShowConfirm(false);
             setPortfolioDeleteLoading(true);
+
+            const isLastItem = items.length === 1 && pagination.pageIndex > 0;
 
             if (isGallery) {
                 await deleteGalleryItem(id);
@@ -152,7 +152,14 @@ const AdminPortfolioClient: React.FC<Props> = ({data, error}) => {
                 }
             } else {
                 await deletePortfolio(id);
-                 await updatePaginationAndData();
+                if (isLastItem) {
+                    setPagination((prev) => ({
+                        ...prev,
+                        pageIndex: prev.pageIndex - 1,
+                    }));
+                } else {
+                    await updatePaginationAndData();
+                }
             }
 
             toast.success(isGallery ? "Элемент галереи удален" : "Портфолио удалено");
@@ -262,21 +269,22 @@ const AdminPortfolioClient: React.FC<Props> = ({data, error}) => {
        try {
            setShowConfirm(false);
            setPortfolioDeleteLoading(true);
-           console.log("delete")
            if (!isGalleryDelete) {
+               const isLastPage = items.length === selectedToDelete.length && pagination.pageIndex > 0;
+
                await Promise.all(
                    selectedToDelete.map((id) => deletePortfolio(id))
                );
-               const updatedLength = await updatePaginationAndData();
-               console.log(updatedLength);
 
-               if (pagination.pageIndex > 0 && updatedLength === 0) {
+               if (isLastPage) {
                    setPagination((prev) => ({
                        ...prev,
                        pageIndex: prev.pageIndex - 1,
                    }));
-
+                   setRowSelection({});
+               } else {
                    await updatePaginationAndData();
+                   setRowSelection({});
                }
 
            } else {
@@ -307,6 +315,11 @@ const AdminPortfolioClient: React.FC<Props> = ({data, error}) => {
        }
     }
 
+    const handleFilterChange = (column: string, value: string) => {
+        void updatePaginationAndData(value, column);
+    };
+
+
     if (fetchPortfolioLoading) return <DataSkeleton/>
     if (error) return <ErrorMsg error={error}/>
 
@@ -323,8 +336,8 @@ const AdminPortfolioClient: React.FC<Props> = ({data, error}) => {
                 </div>
                 <Link href="/admin/portfolio/add-portfolio" >
                     <Button className="flex items-center gap-2 w-full sm:w-auto">
-                        Создать портфолио
                         <Plus size={16} />
+                        Создать портфолио
                     </Button>
                 </Link>
             </div>
@@ -333,6 +346,7 @@ const AdminPortfolioClient: React.FC<Props> = ({data, error}) => {
                table={table}
                showConfirm={setShowConfirm}
                setGalleryDelete={setGalleryDelete}
+               onFilterChange={handleFilterChange}
            />
             <div className="rounded-md border">
                 <CustomTable table={table}/>
@@ -340,7 +354,7 @@ const AdminPortfolioClient: React.FC<Props> = ({data, error}) => {
             <TablePagination table={table}/>
 
             {selectedCover &&
-                <ModalCover
+                <ImageModal
                     open={isModalOpenCover}
                     openChange={() => setIsModalOpenCover(!isModalOpenCover)}
                     alt={selectedCover.alt || "Изображение портфолио"}

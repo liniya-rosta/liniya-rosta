@@ -14,7 +14,7 @@ export const createPortfolio = async (item: PortfolioMutation) => {
     item.gallery.forEach((galleryItem) => {
         if (galleryItem.image instanceof File) {
             formData.append("gallery", galleryItem.image);
-            formData.append("alt", galleryItem.alt);
+            formData.append("alt", galleryItem.alt || "Элемент галереи");
         }
     });
 
