@@ -127,9 +127,7 @@ const AdminBlogClient: React.FC<Props> = ({data, error, isAdmin = true}) => {
     };
 
     const handleDelete = async (postId: string) => {
-        if (!confirm('Вы уверены, что хотите удалить этот пост?')) {
-            return;
-        }
+
         resetErrors();
         setDeleteLoading(true);
         try {

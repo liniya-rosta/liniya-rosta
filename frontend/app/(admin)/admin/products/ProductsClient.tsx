@@ -160,7 +160,6 @@ const ProductsClient: React.FC<ProductsClientProps> = ({ initialProducts, initia
     };
 
     const handleDeleteProduct = async (id: string) => {
-        if (!window.confirm("Вы уверены, что хотите удалить этот товар?")) return;
 
         resetErrors();
         setDeleteLoading(true);
