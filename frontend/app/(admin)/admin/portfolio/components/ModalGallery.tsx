@@ -75,8 +75,9 @@ const ModalGallery: React.FC<Props> = ({open, openChange, isOpenModalEdit, onReq
                             return (
                                 <Card
                                     key={item._id}
-                                    className={`w-full h-full flex flex-col cursor-pointer transition 
-                                    ${isSelected ? "ring-2 ring-primary" : ""}`}
+                                    className={`w-full h-full flex flex-col transition
+                                        ${selectionMode ? "cursor-pointer" : ""}
+                                        ${isSelected ? "ring-2 ring-primary" : ""}`}
                                     onClick={() => {
                                         if (selectionMode) toggleSelect(item._id);
                                     }}
@@ -84,7 +85,7 @@ const ModalGallery: React.FC<Props> = ({open, openChange, isOpenModalEdit, onReq
                                     <a
                                         href={imageUrl}
                                         onClick={(e) => e.preventDefault()}
-                                        className="block relative w-full h-48 rounded-t overflow-hidden"
+                                        className={`block relative w-full h-48 rounded-t overflow-hidden  ${selectionMode ? "cursor-pointer" : "cursor-default"}`}
                                     >
                                         {selectionMode && (
                                             <div className="absolute z-10 top-2 left-2">
