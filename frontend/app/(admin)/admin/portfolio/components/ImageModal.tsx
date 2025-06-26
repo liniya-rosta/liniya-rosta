@@ -11,8 +11,9 @@ interface Props {
     image: string;
 }
 
-const ModalCover: React.FC<Props> = ({open, openChange, alt, image}) => {
-    const imageUrl = API_BASE_URL + "/" + image;
+const ImageModal: React.FC<Props> = ({open, openChange, alt, image}) => {
+    const imageUrl = image.startsWith("blob:") ? image : API_BASE_URL + "/" + image;
+
     return (
         <Dialog open={open} onOpenChange={openChange}>
             <DialogContent aria-describedby={undefined}>
@@ -38,4 +39,4 @@ const ModalCover: React.FC<Props> = ({open, openChange, alt, image}) => {
     )
 }
 
-export default ModalCover;
+export default ImageModal;

@@ -9,7 +9,7 @@ export const portfolioSchema = z.object({
     gallery: z
         .array(
             z.object({
-                alt: z.string().min(1, "Альтернативное название обложки обязательно"),
+                alt: z.string().optional(),
                 image: z.instanceof(File, {message: "Добавьте изображение"}).nullable(),
             })
         )

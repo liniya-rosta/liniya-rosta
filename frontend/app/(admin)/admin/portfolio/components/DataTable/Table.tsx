@@ -32,6 +32,7 @@ const CustomTable: React.FC<Props> = ({table}) => {
                         <TableRow
                             key={row.id}
                             data-state={row.getIsSelected() && "selected"}
+                            className="odd:bg-white even:bg-gray-50"
                         >
                             {row.getVisibleCells().map((cell) => (
                                 <TableCell key={cell.id}>

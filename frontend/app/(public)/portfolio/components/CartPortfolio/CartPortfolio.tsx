@@ -16,7 +16,7 @@ export const CartPortfolio: React.FC<Props> = (
     return (
         <div
             className={cn(
-                "relative w-full max-w-[340px] aspect-[3/4] overflow-hidden duration-300 group p-4 border border-gray-200 dark:border-white/10 shadow-md hover:shadow-xl transition-all",
+                "relative w-full max-w-[340px] rounded-xl aspect-[3/4] overflow-hidden duration-300 group p-4 border border-gray-200 dark:border-white/10 shadow-md hover:shadow-xl transition-all",
                 className
             )}>
 

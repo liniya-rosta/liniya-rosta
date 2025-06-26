@@ -2,7 +2,7 @@ import mongoose, {Schema} from "mongoose";
 
 const GalleryItemSchema = new Schema({
     image: {type: String, required: true},
-    alt: {type: String, required: true, maxLength: 150},
+    alt: {type: String, default: null, maxLength: 150},
 });
 
 const PortfolioItemSchema = new mongoose.Schema({

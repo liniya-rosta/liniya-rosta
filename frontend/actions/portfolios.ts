@@ -1,8 +1,19 @@
-import {GalleryItem, PortfolioItemDetail, PortfolioItemPreview} from "@/lib/types";
+import {GalleryItem, PaginatedPortfolioResponse, PortfolioItemDetail} from "@/lib/types";
 import axiosAPI from "@/lib/axiosAPI";
 
-export const fetchPortfolioPreviews = async () => {
-    const response = await axiosAPI<PortfolioItemPreview[]>("/portfolio-items");
+export const fetchPortfolioPreviews = async (
+    limit?: string, page?: string, coverAlt?: string, description?: string) => {
+    const params = new URLSearchParams();
+
+    if (page) params.append("page", page);
+    if (limit) params.append("limit", limit);
+    if (coverAlt) params.append("coverAlt", coverAlt);
+    if (description) params.append("description", description);
+
+    const response = await axiosAPI<PaginatedPortfolioResponse>(
+        `/portfolio-items${params.toString() ? `?${params.toString()}` : ""}`
+    );
+
     return response.data;
 }
 

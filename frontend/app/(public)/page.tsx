@@ -32,7 +32,7 @@ const HomePage = async () => {
             }),
 
         fetchPortfolioPreviews()
-            .then(data => portfolio = data)
+            .then(data => portfolio = data.items)
             .catch(e => {
                 portfolioError = e instanceof Error ? e.message : String(e);
             }),

@@ -6,8 +6,9 @@ import {API_BASE_URL} from "@/lib/globalConstants";
 import Image from "next/image";
 import {GalleryItem, PortfolioItemDetail} from "@/lib/types";
 import {ModalImage} from "@/components/shared/ModalImage";
-import Loading from "@/components/ui/Loading/Loading";
 import GalleryCard from '../components/GalleryCard';
+import ErrorMsg from "@/components/ui/ErrorMsg";
+import LoadingFullScreen from "@/components/ui/Loading/LoadingFullScreen";
 
 type Props = {
     detailItem?: PortfolioItemDetail | null,
@@ -57,15 +58,8 @@ const GalleryClient: React.FC<Props> = ({detailItem, error=null}) => {
 
 
     if (!detailItem) return  <p className="text-center">Галерея пуста</p>
-    if (fetchLoadingPortfolio) return <Loading/>
-
-    if (error) {
-        return (
-            <div className="text-center py-10 text-destructive text-lg">
-                <p>Ошибка загрузки: {error}</p>
-            </div>
-        );
-    }
+    if (fetchLoadingPortfolio) return <LoadingFullScreen/>
+    if (error) return <ErrorMsg error={error}/>
 
     return (
         <div>
@@ -81,21 +75,27 @@ const GalleryClient: React.FC<Props> = ({detailItem, error=null}) => {
                     classNameImage="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
                 />
 
-                {gallery?.map((item, index) => {
-                    const imageUrl = `${API_BASE_URL}/${item.image}`;
-                    return (
-                        <GalleryCard
-                            key={item._id}
-                            index={index}
-                            id={item._id}
-                            imageUrl={imageUrl}
-                            handleOpen={handleOpen}
-                            alt={item.alt}
-                            className="aspect-[3/4] w-full overflow-hidden group cursor-pointer rounded-2xl hover:shadow-xl transition"
-                            classNameImage="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
-                        />
-                    );
-                })}
+                {gallery && gallery.length > 0 ? (
+                    gallery.map((item, index) => {
+                        const imageUrl = `${API_BASE_URL}/${item.image}`;
+                        return (
+                            <GalleryCard
+                                key={item._id}
+                                index={index}
+                                id={item._id}
+                                imageUrl={imageUrl}
+                                handleOpen={handleOpen}
+                                alt={item.alt}
+                                className="aspect-[3/4] w-full overflow-hidden group cursor-pointer rounded-2xl hover:shadow-xl transition"
+                                classNameImage="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
+                            />
+                        );
+                    })
+                )
+                    :<div className="flex justify-center items-center min-h-[200px]">
+                        <p className="text-muted-foreground text-lg">Галерея пуста</p>
+                    </div>
+                }
             </div>
 
             {selectedItem && (

@@ -66,71 +66,77 @@ const ModalGallery: React.FC<Props> = ({open, openChange, isOpenModalEdit, onReq
                     </div>
                 </DialogHeader>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-h-[70vh] overflow-y-auto p-2">
-                    {detailItem?.gallery.map((item) => {
-                        const imageUrl = API_BASE_URL + "/" + item.image;
-                        const isSelected = selectedToDelete.includes(item._id);
+                {detailItem && detailItem.gallery.length > 0 ? (
+                    <div className={`grid grid-cols-1 md:grid-cols-${detailItem.gallery.length > 1 ? "2" : "1"} gap-6 max-h-[70vh] overflow-y-auto p-2`}>
+                        {detailItem.gallery.map((item) => {
+                            const imageUrl = API_BASE_URL + "/" + item.image;
+                            const isSelected = selectedToDelete.includes(item._id);
 
-                        return (
-                            <Card
-                                key={item._id}
-                                className={`w-full h-full flex flex-col cursor-pointer transition 
-                                    ${isSelected ? "ring-2 ring-primary" : ""}`}
-                                onClick={() => {
-                                    if (selectionMode) toggleSelect(item._id);
-                                }}
-                            >
-                                <a
-                                    href={imageUrl}
-                                    onClick={(e) => e.preventDefault()}
-                                    className="block relative w-full h-48 rounded-t overflow-hidden"
+                            return (
+                                <Card
+                                    key={item._id}
+                                    className={`w-full h-full flex flex-col transition
+                                        ${selectionMode ? "cursor-pointer" : ""}
+                                        ${isSelected ? "ring-2 ring-primary" : ""}`}
+                                    onClick={() => {
+                                        if (selectionMode) toggleSelect(item._id);
+                                    }}
                                 >
-                                    {selectionMode && (
-                                        <div className="absolute z-10 top-2 left-2">
-                                            <Checkbox
-                                                checked={isSelected}
-                                                onCheckedChange={() => toggleSelect(item._id)}
-                                            />
-                                        </div>
-                                    )}
-                                    <Image
-                                        src={imageUrl}
-                                        alt={item.alt}
-                                        fill
-                                        className="object-cover"
-                                        sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
-                                    />
-                                </a>
-
-                                <CardContent className="flex-1">
-                                    <div className="text-sm text-gray-700 line-clamp-2">{item.alt}</div>
-                                </CardContent>
-
-                                <CardFooter className="flex justify-between gap-2">
-                                    <Button
-                                        variant="outline"
-                                        size="sm"
-                                        onClick={() => isOpenModalEdit(item._id)}
-                                        disabled={selectionMode}
+                                    <a
+                                        href={imageUrl}
+                                        onClick={(e) => e.preventDefault()}
+                                        className={`block relative w-full h-48 rounded-t overflow-hidden  ${selectionMode ? "cursor-pointer" : "cursor-default"}`}
                                     >
-                                        Редактировать
-                                    </Button>
-                                    <Button
-                                        variant="destructive"
-                                        size="sm"
-                                        onClick={() => {
-                                            setSelectedToDelete([item._id]);
-                                            onRequestDelete()
-                                        }}
-                                        disabled={selectionMode}
-                                    >
-                                        Удалить
-                                    </Button>
-                                </CardFooter>
-                            </Card>
-                        );
-                    })}
-                </div>
+                                        {selectionMode && (
+                                            <div className="absolute z-10 top-2 left-2">
+                                                <Checkbox
+                                                    checked={isSelected}
+                                                    onCheckedChange={() => toggleSelect(item._id)}
+                                                />
+                                            </div>
+                                        )}
+                                        <Image
+                                            src={imageUrl}
+                                            alt={item.alt}
+                                            fill
+                                            className="object-cover"
+                                            sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
+                                        />
+                                    </a>
+
+                                    <CardContent className="flex-1">
+                                        <div className="text-sm text-gray-700 line-clamp-2">{item.alt}</div>
+                                    </CardContent>
+
+                                    <CardFooter className="flex justify-between gap-2">
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            onClick={() => isOpenModalEdit(item._id)}
+                                            disabled={selectionMode}
+                                        >
+                                            Редактировать
+                                        </Button>
+                                        <Button
+                                            variant="destructive"
+                                            size="sm"
+                                            onClick={() => {
+                                                setSelectedToDelete([item._id]);
+                                                onRequestDelete()
+                                            }}
+                                            disabled={selectionMode}
+                                        >
+                                            Удалить
+                                        </Button>
+                                    </CardFooter>
+                                </Card>
+                            );
+                        })}
+                    </div>
+                )
+                    : <p>Нет изображений в галереи</p>
+                }
+
             </DialogContent>
         </Dialog>
     )
