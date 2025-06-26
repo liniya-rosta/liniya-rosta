@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { CardContent } from "@/components/ui/card";
 import { AxiosError } from "axios";
-import Loading from "@/components/ui/Loading/Loading";
 import { useCategoryStore } from "@/store/categoriesStore";
 import { CreateProductFormData, UpdateProductFormData } from "@/lib/zodSchemas/productSchema";
 import { createProduct, deleteProduct, updateProduct } from "@/actions/products";
@@ -15,7 +14,7 @@ import ProductsTable from "@/app/(admin)/admin/products/components/ProductsTable
 import { Category, Product } from "@/lib/types";
 import { toast } from 'react-toastify';
 import {useAdminProductStore} from "@/store/superadmin/superadminProductsStore";
-
+import DataSkeleton from "@/components/ui/Loading/DataSkeleton";
 
 interface ProductsClientProps {
     initialProducts: Product[];
@@ -178,7 +177,25 @@ const ProductsClient: React.FC<ProductsClientProps> = ({ initialProducts, initia
         }
     };
 
-    if (isHydrating || fetchLoading) return <Loading />;
+    const handleDeleteSelectedProducts = async (ids: string[]) => {
+        resetErrors();
+        setDeleteLoading(true);
+        try {
+            for (const id of ids) {
+                await deleteProduct(id);
+            }
+            setProducts(products.filter((product) => !ids.includes(product._id)));
+            toast.success("Выбранные товары успешно удалены!");
+        } catch (err) {
+            const errorMessage = err instanceof AxiosError ? err.response?.data?.error : "Неизвестная ошибка при удалении выбранных товаров";
+            setDeleteError(errorMessage);
+            toast.error(errorMessage);
+        } finally {
+            setDeleteLoading(false);
+        }
+    };
+
+    if (isHydrating || fetchLoading) return <DataSkeleton />;
 
     if (fetchError) {
         return (
@@ -214,7 +231,7 @@ const ProductsClient: React.FC<ProductsClientProps> = ({ initialProducts, initia
             </div>
 
             <CardContent className="px-0">
-                {products.length === 0 ? (
+                {products.length === 0 && !fetchLoading ? (
                     <div className="text-center py-8 text-muted-foreground">
                         <p>Продукты не найдены</p>
                         <p className="text-sm mt-2">
@@ -227,6 +244,7 @@ const ProductsClient: React.FC<ProductsClientProps> = ({ initialProducts, initia
                         categories={categories}
                         onEditProduct={openEditModal}
                         onDeleteProduct={handleDeleteProduct}
+                        onDeleteSelectedProducts={handleDeleteSelectedProducts}
                         actionLoading={anyLoading}
                     />
                 )}

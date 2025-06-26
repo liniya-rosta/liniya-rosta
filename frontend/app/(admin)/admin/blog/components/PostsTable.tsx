@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import React from 'react';
 import {
@@ -32,23 +32,42 @@ import {
 import { ChevronDown } from "lucide-react";
 import { Post } from "@/lib/types";
 import { getPostTableColumns } from "./PostTableColumns";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
 
 interface PostsTableProps {
     posts: Post[];
     onEditPost: (post: Post) => void;
     onDeletePost: (id: string) => void;
+    onDeleteSelectedPosts: (ids: string[]) => void;
     actionLoading: boolean;
 }
 
-const PostsTable: React.FC<PostsTableProps> = ({posts, onEditPost, onDeletePost, actionLoading,}) => {
+const PostsTable: React.FC<PostsTableProps> = ({posts, onEditPost, onDeletePost, onDeleteSelectedPosts, actionLoading,}) => {
     const [sorting, setSorting] = React.useState<SortingState>([]);
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
     const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
     const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({});
 
+    const [showConfirmDialog, setShowConfirmDialog] = React.useState(false);
+    const [idsToDelete, setIdsToDelete] = React.useState<string[]>([]);
+
+    const columnLabels: Record<string, string> = {
+        "выбрать": "Выбрать",
+        "image": "Изображение",
+        "title": "Заголовок",
+        "description": "Описание",
+    };
+
     const columns = React.useMemo(
-        () => getPostTableColumns(onEditPost, onDeletePost, actionLoading),
-        [onEditPost, onDeletePost, actionLoading]
+        () => getPostTableColumns(
+            onEditPost,
+            (id: string) => {
+                setIdsToDelete([id]);
+                setShowConfirmDialog(true);
+            },
+            actionLoading
+        ),
+        [onEditPost, actionLoading]
     );
 
     const table = useReactTable({
@@ -70,17 +89,58 @@ const PostsTable: React.FC<PostsTableProps> = ({posts, onEditPost, onDeletePost,
         },
     });
 
+    const handleBulkDelete = () => {
+        const selectedIds = table.getSelectedRowModel().rows.map(row => row.original._id);
+        if (selectedIds.length > 0) {
+            setIdsToDelete(selectedIds);
+            setShowConfirmDialog(true);
+        }
+    };
+
+    const confirmDeletion = () => {
+        if (idsToDelete.length > 1) {
+            onDeleteSelectedPosts(idsToDelete);
+            table.toggleAllRowsSelected(false);
+        } else if (idsToDelete.length === 1) {
+            onDeletePost(idsToDelete[0]);
+        }
+        setShowConfirmDialog(false);
+        setIdsToDelete([]);
+    };
+
+    const confirmDialogTitle = idsToDelete.length > 1
+        ? `Удалить выбранные ${idsToDelete.length} постов?`
+        : "Удалить пост?";
+
+
     return (
         <div className="w-full">
-            <div className="flex items-center py-4">
+            <div className="flex items-center py-4 flex-wrap gap-2">
                 <Input
-                    placeholder="Фильтр по названию..."
+                    placeholder="Фильтр по заголовку..."
                     value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
                     onChange={(event) =>
                         table.getColumn("title")?.setFilterValue(event.target.value)
                     }
-                    className="max-w-sm"
+                    className="max-w-sm flex-1"
                 />
+                <Input
+                    placeholder="Фильтр по описанию..."
+                    value={(table.getColumn("description")?.getFilterValue() as string) ?? ""}
+                    onChange={(event) =>
+                        table.getColumn("description")?.setFilterValue(event.target.value)
+                    }
+                    className="max-w-sm flex-1"
+                />
+
+                <Button
+                    disabled={actionLoading || table.getFilteredSelectedRowModel().rows.length === 0}
+                    onClick={handleBulkDelete}
+                    variant='outline'
+                >
+                    Удалить выбранные {table.getFilteredSelectedRowModel().rows.length} элементы
+                </Button>
+
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="outline" className="ml-auto">
@@ -101,21 +161,21 @@ const PostsTable: React.FC<PostsTableProps> = ({posts, onEditPost, onDeletePost,
                                             column.toggleVisibility(value)
                                         }
                                     >
-                                        {column.id}
+                                        {columnLabels[column.id] ?? column.id}
                                     </DropdownMenuCheckboxItem>
                                 );
                             })}
                     </DropdownMenuContent>
                 </DropdownMenu>
             </div>
-            <div className="rounded-md border">
+            <div className="rounded-md border overflow-x-auto">
                 <Table>
                     <TableHeader>
                         {table.getHeaderGroups().map((headerGroup) => (
                             <TableRow key={headerGroup.id}>
                                 {headerGroup.headers.map((header) => {
                                     return (
-                                        <TableHead key={header.id}>
+                                        <TableHead key={header.id} className="min-w-[100px]">
                                             {header.isPlaceholder
                                                 ? null
                                                 : flexRender(
@@ -170,7 +230,7 @@ const PostsTable: React.FC<PostsTableProps> = ({posts, onEditPost, onDeletePost,
                         onClick={() => table.previousPage()}
                         disabled={!table.getCanPreviousPage()}
                     >
-                        Предыдущая
+                        Назад
                     </Button>
                     <Button
                         variant="outline"
@@ -178,10 +238,19 @@ const PostsTable: React.FC<PostsTableProps> = ({posts, onEditPost, onDeletePost,
                         onClick={() => table.nextPage()}
                         disabled={!table.getCanNextPage()}
                     >
-                        Следующая
+                        Далее
                     </Button>
                 </div>
             </div>
+
+            <ConfirmDialog
+                open={showConfirmDialog}
+                onOpenChange={setShowConfirmDialog}
+                title={confirmDialogTitle}
+                onConfirm={confirmDeletion}
+                loading={actionLoading}
+            >
+            </ConfirmDialog>
         </div>
     );
 };
