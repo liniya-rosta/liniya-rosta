@@ -27,6 +27,7 @@ export const getPortfolioItems = async (req: Request, res: Response, next: NextF
 
         const [items, totalCount] = await Promise.all([
             PortfolioItem.aggregate([
+                { $sort: { _id: -1 } },
                 { $skip: skip },
                 { $limit: parsedLimit },
                 {
