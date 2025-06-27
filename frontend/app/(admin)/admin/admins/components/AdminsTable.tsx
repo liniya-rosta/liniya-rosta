@@ -18,9 +18,11 @@ const AdminsTable = () => {
     } = useSuperadminAdminsStore();
 
     return (
-        <div className="rounded-md border p-2">
+        <div className="rounded-md border p-2 mt-3">
+
             {editAdminError && <ErrorMsg error={editAdminError} label='админов'/>}
             {deleteAdminError && <ErrorMsg error={deleteAdminError} label='админов'/>}
+
             <div className="w-full overflow-x-auto">
                 <Table className="min-w-[600px]">
                     <TableHeader>
@@ -31,11 +33,12 @@ const AdminsTable = () => {
                             <TableHead>Действия</TableHead>
                         </TableRow>
                     </TableHeader>
+
                     <TableBody>
                         {admins.length > 0 ? (
-                            admins.map((admin) => (
+                            admins.map((admin, index) => (
                                 <TableRow
-                                    key={admin._id}
+                                    key={admin._id ?? index}
                                     className="odd:bg-white even:bg-gray-50 hover:bg-blue-50"
                                 >
                                     <TableCell>{admin.email}</TableCell>

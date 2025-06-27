@@ -7,7 +7,7 @@ export const getAllAdmins = async () => {
 }
 
 export const createAdmin = async (data: AdminForm) => {
-    const res = await axiosAPI.post<{ message: string; user: User }>("/superadmin/admins", data);
+    const res = await axiosAPI.post("/superadmin/admins", data);
     return res.data;
 };
 

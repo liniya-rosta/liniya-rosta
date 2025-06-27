@@ -14,6 +14,8 @@ interface AdminsState {
     deleteAdminLoading: boolean;
     deleteAdminError: string | null;
 
+    createAdminError: string | null;
+
     setAdmins: (admins: User[]) => void;
     setAdminsLoading: (loading: boolean) => void;
     setAdminsError: (error: string | null) => void;
@@ -25,6 +27,8 @@ interface AdminsState {
     setDeleteAdmin: (user: User | null) => void;
     setDeleteAdminLoading: (loading: boolean) => void;
     setDeleteAdminError: (error: string | null) => void;
+
+    setCreateAdminError: (error: string | null) => void;
 }
 
 export const useSuperadminAdminsStore = create<AdminsState>((set) => ({
@@ -40,6 +44,8 @@ export const useSuperadminAdminsStore = create<AdminsState>((set) => ({
     deleteAdminLoading: false,
     deleteAdminError: null,
 
+    createAdminError: null,
+
     setAdmins: (admins) => set({admins}),
     setAdminsLoading: (loading) => set({adminsLoading: loading}),
     setAdminsError: (error) => set({adminsError: error}),
@@ -51,4 +57,6 @@ export const useSuperadminAdminsStore = create<AdminsState>((set) => ({
     setDeleteAdminLoading: (loading) => set({deleteAdminLoading: loading}),
     setDeleteAdminError: (error) => set({deleteAdminError: error}),
     setDeleteAdmin: (admin) => set({deleteAdmin: admin}),
+
+    setCreateAdminError: (error) => set({createAdminError: error}),
 }));
