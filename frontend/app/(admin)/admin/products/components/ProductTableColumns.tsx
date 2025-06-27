@@ -118,6 +118,19 @@ export const getProductTableColumns = (
             },
         },
         {
+            accessorKey: "description",
+            header: "Описание",
+            cell: ({ row }) => {
+                const description = row.getValue("description") as string;
+                return (
+                    <div className="max-w-[200px] truncate" title={description}>
+                        {description || "Нет описания"}
+                    </div>
+                );
+            },
+            filterFn: "includesString",
+        },
+        {
             id: "действия",
             enableHiding: false,
             cell: ({ row }) => {

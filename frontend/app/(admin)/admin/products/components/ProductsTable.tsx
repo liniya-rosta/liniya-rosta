@@ -57,6 +57,7 @@ const ProductsTable: React.FC<ProductsTableProps> = ({products, categories, onEd
         "выбрать": "Выбрать",
         "image": "Изображение",
         "title": "Название",
+        "description": "Описание",
         "category": "Категория",
     };
 
