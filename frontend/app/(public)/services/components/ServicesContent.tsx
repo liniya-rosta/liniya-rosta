@@ -1,6 +1,7 @@
 import React from 'react';
 import {Home, Layers, Sun} from 'lucide-react';
 import ServiceContentCard from "@/app/(public)/services/components/ServiceContentCard";
+import {useServiceStore} from "@/store/serviceStore";
 
 const services = [
     {
@@ -21,6 +22,8 @@ const services = [
 ];
 
 const ServicesContent = () => {
+    const {allServices} =useServiceStore();
+
     return (
         <section className="bg-gray-100 py-16 px-6">
             <div className="max-w-4xl mx-auto">
@@ -35,6 +38,11 @@ const ServicesContent = () => {
                 <div className="grid gap-8 grid-cols-1 md:grid-cols-3">
                     {services.map(({title, description, icon}) => (
                         <ServiceContentCard key={title} title={title} description={description} icon={icon}/>
+                    ))}
+                </div>
+                <div className="grid gap-8 grid-cols-1 md:grid-cols-3 mt-8">
+                    {allServices.map(({title, description}) => (
+                        <ServiceContentCard key={title} title={title} description={description}/>
                     ))}
                 </div>
             </div>

@@ -8,7 +8,7 @@ import RequestForm from "@/components/shared/RequestForm";
 interface Props {
     title: string;
     description: string;
-    icon: React.ReactNode;
+    icon?: React.ReactNode;
 }
 
 const ServiceContentCard: React.FC<Props> = ({title, description, icon}) => {

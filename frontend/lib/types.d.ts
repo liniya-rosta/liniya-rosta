@@ -160,3 +160,14 @@ export interface IRequest {
     createdAt: string;
     updatedAt: string;
 }
+
+export interface Service {
+    _id: string;
+    title: string;
+    description: string;
+}
+
+export interface ServiceResponse {
+    items: Service[];
+    total: number;
+}
