@@ -21,8 +21,15 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import {
     DropdownMenu,
     DropdownMenuCheckboxItem,
@@ -42,6 +49,8 @@ interface PostsTableProps {
     actionLoading: boolean;
 }
 
+type FilterType = 'title' | 'description';
+
 const PostsTable: React.FC<PostsTableProps> = ({posts, onEditPost, onDeletePost, onDeleteSelectedPosts, actionLoading,}) => {
     const [sorting, setSorting] = React.useState<SortingState>([]);
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
@@ -50,6 +59,10 @@ const PostsTable: React.FC<PostsTableProps> = ({posts, onEditPost, onDeletePost,
 
     const [showConfirmDialog, setShowConfirmDialog] = React.useState(false);
     const [idsToDelete, setIdsToDelete] = React.useState<string[]>([]);
+
+    const [activeFilterType, setActiveFilterType] = React.useState<FilterType>('title');
+    const [filterValue, setFilterValue] = React.useState<string>('');
+    const [filteredPosts, setFilteredPosts] = React.useState<Post[]>(posts);
 
     const columnLabels: Record<string, string> = {
         "выбрать": "Выбрать",
@@ -70,8 +83,37 @@ const PostsTable: React.FC<PostsTableProps> = ({posts, onEditPost, onDeletePost,
         [onEditPost, actionLoading]
     );
 
+    React.useEffect(() => {
+        if (filterValue) {
+            const lowercasedFilterValue = filterValue.toLowerCase();
+            const newFilteredPosts = posts.filter(post => {
+                if (activeFilterType === 'title') {
+                    return post.title.toLowerCase().includes(lowercasedFilterValue);
+                }
+                if (activeFilterType === 'description') {
+                    return post.description.toLowerCase().includes(lowercasedFilterValue);
+                }
+                return true;
+            });
+            setFilteredPosts(newFilteredPosts);
+        } else {
+            setFilteredPosts(posts);
+        }
+    }, [posts, activeFilterType, filterValue]);
+
+    const getFilterPlaceholder = () => {
+        switch (activeFilterType) {
+            case 'title':
+                return 'Фильтр по названию';
+            case 'description':
+                return 'Фильтр по описанию';
+            default:
+                return 'Введите значение для фильтра';
+        }
+    };
+
     const table = useReactTable({
-        data: posts,
+        data: filteredPosts,
         columns,
         onSortingChange: setSorting,
         onColumnFiltersChange: setColumnFilters,
@@ -112,25 +154,27 @@ const PostsTable: React.FC<PostsTableProps> = ({posts, onEditPost, onDeletePost,
         ? `Удалить выбранные ${idsToDelete.length} постов?`
         : "Удалить пост?";
 
-
     return (
         <div className="w-full">
             <div className="flex items-center py-4 flex-wrap gap-2">
+                <Select value={activeFilterType} onValueChange={(value: FilterType) => {
+                    setActiveFilterType(value);
+                    setFilterValue('');
+                }}>
+                    <SelectTrigger className="w-[180px]">
+                        <SelectValue placeholder="Выберите фильтр"/>
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="title">По названию</SelectItem>
+                        <SelectItem value="description">По описанию</SelectItem>
+                    </SelectContent>
+                </Select>
+
                 <Input
-                    placeholder="Фильтр по заголовку..."
-                    value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
-                    onChange={(event) =>
-                        table.getColumn("title")?.setFilterValue(event.target.value)
-                    }
-                    className="max-w-sm flex-1"
-                />
-                <Input
-                    placeholder="Фильтр по описанию..."
-                    value={(table.getColumn("description")?.getFilterValue() as string) ?? ""}
-                    onChange={(event) =>
-                        table.getColumn("description")?.setFilterValue(event.target.value)
-                    }
-                    className="max-w-sm flex-1"
+                    placeholder={getFilterPlaceholder()}
+                    value={filterValue}
+                    onChange={(e) => setFilterValue(e.target.value)}
+                    className="flex-grow max-w-sm"
                 />
 
                 <Button
@@ -143,8 +187,8 @@ const PostsTable: React.FC<PostsTableProps> = ({posts, onEditPost, onDeletePost,
 
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <Button variant="outline" className="ml-auto">
-                            Столбцы <ChevronDown className="ml-2 h-4 w-4" />
+                        <Button variant="outline">
+                            Столбцы <ChevronDown className="ml-2 h-4 w-5" />
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">

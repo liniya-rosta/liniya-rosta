@@ -13,7 +13,6 @@ import {AxiosError} from 'axios';
 import {useAdminPostStore} from "@/store/superadmin/superadminPostsStore";
 import DataSkeleton from "@/components/ui/Loading/DataSkeleton";
 
-
 interface Props {
     data: Post[];
     error: string | null;
@@ -127,7 +126,6 @@ const AdminBlogClient: React.FC<Props> = ({data, error, isAdmin = true}) => {
     };
 
     const handleDelete = async (postId: string) => {
-
         resetErrors();
         setDeleteLoading(true);
         try {
@@ -164,7 +162,6 @@ const AdminBlogClient: React.FC<Props> = ({data, error, isAdmin = true}) => {
             setDeleteLoading(false);
         }
     };
-
 
     if (isHydrating || fetchLoading) {
         return <DataSkeleton/>;
@@ -226,5 +223,6 @@ const AdminBlogClient: React.FC<Props> = ({data, error, isAdmin = true}) => {
         </div>
     );
 };
+
 
 export default AdminBlogClient;
