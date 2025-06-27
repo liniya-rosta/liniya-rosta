@@ -115,6 +115,11 @@ export interface UserForm {
     confirmPassword: string;
 }
 
+export interface AdminForm extends UserForm {
+    displayName?: string;
+    role?: "admin" | "superadmin";
+}
+
 export interface EditProfileForm {
     displayName?: string;
     email?: string;
