@@ -22,8 +22,8 @@ const services = [
 
 const ServicesContent = () => {
     return (
-        <section className="bg-gray-100 py-16 px-6">
-            <div className="max-w-4xl mx-auto">
+        <section className="bg-gray-100 py-16">
+            <div className="container mx-auto p-4">
                 <div className="text-center mb-12">
                     <h2 className="text-4xl font-bold text-gray-900 mb-4">Наши услуги</h2>
                     <p className="text-gray-600">
