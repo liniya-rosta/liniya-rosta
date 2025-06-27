@@ -16,7 +16,7 @@ export const editAdminRole = async (id: string, role: "admin" | "superadmin") =>
     return res.data;
 };
 
-export const deleteAdmin = async (id: string) => {
+export const removeAdmin = async (id: string) => {
     const res = await axiosAPI.delete<{ message: string }>(`/superadmin/admins/${id}`);
     return res.data;
 };

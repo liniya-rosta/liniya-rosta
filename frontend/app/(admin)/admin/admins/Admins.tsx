@@ -3,6 +3,9 @@
 import React, {useEffect} from 'react';
 import {useSuperadminAdminsStore} from "@/store/superadmin/superadminAdminsStore";
 import {User} from "@/lib/types";
+import LoadingFullScreen from "@/components/ui/Loading/LoadingFullScreen";
+import ErrorMsg from "@/components/ui/ErrorMsg";
+import AdminsTable from "@/app/(admin)/admin/admins/components/AdminsTable";
 
 interface Props {
     data: User[] | null;
@@ -10,9 +13,7 @@ interface Props {
 }
 
 const Admins: React.FC<Props> = ({data, error}) => {
-
     const {
-        admins,
         setAdmins,
 
         adminsLoading,
@@ -26,19 +27,15 @@ const Admins: React.FC<Props> = ({data, error}) => {
         if (data) setAdmins(data);
         setAdminsError(error);
         setAdminsLoading(false);
+    }, [data, error, setAdmins, setAdminsError, setAdminsLoading]);
 
-    }, [data, error]);
-
+    if (adminsLoading) return <LoadingFullScreen/>;
+    if (adminsError) return <ErrorMsg error={adminsError} label="админов"/>;
 
     return (
-        <div>
-            {
-                admins.map(admin => (
-                    <p key={admin._id}>{admin.email}</p>
-                ))
-            }
-
-        </div>
+        <>
+            <AdminsTable/>
+        </>
     );
 };
 
