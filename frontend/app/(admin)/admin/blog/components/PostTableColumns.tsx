@@ -24,7 +24,7 @@ export const getPostTableColumns = (
 ): ColumnDef<Post>[] => {
     return [
         {
-            id: 'выбрать',
+            id: 'select',
             header: ({ table }) => (
                 <Checkbox
                     checked={

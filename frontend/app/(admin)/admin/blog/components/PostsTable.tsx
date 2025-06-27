@@ -65,7 +65,7 @@ const PostsTable: React.FC<PostsTableProps> = ({posts, onEditPost, onDeletePost,
     const [filteredPosts, setFilteredPosts] = React.useState<Post[]>(posts);
 
     const columnLabels: Record<string, string> = {
-        "выбрать": "Выбрать",
+        "select": "Выбрать",
         "image": "Изображение",
         "title": "Заголовок",
         "description": "Описание",
