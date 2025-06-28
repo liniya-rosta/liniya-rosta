@@ -146,8 +146,23 @@ export interface IRequest {
     name: string;
     phone: string;
     email: string;
-    commentOfManager: string;
+    commentOfManager?: string;
     status: "Новая" | "В работе" | "Завершена" | "Отклонена";
     createdAt: string;
     updatedAt: string;
+}
+
+export interface RequestMutation {
+    name: string;
+    phone: string;
+    email: string;
+    commentOfManager?: string;
+    status: "Новая" | "В работе" | "Завершена" | "Отклонена";
+}
+
+export interface FetchRequestsResponse {
+    data: IRequest[];
+    currentPage: number;
+    totalPages: number;
+    totalItems: number;
 }

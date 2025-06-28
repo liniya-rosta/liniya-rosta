@@ -2,20 +2,21 @@ import React from 'react';
 import {DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger} from "@/components/ui/dropdown-menu"
 import {Button} from "@/components/ui/button";
 import {Table} from "@tanstack/react-table";
+import {IRequest} from "@/lib/types";
 
-interface Props<TData> {
-    table: Table<TData>;
+interface Props {
+    table: Table<IRequest>;
 }
 
-const ColumnVisibility = <TData,>({table}: Props<TData>) => {
+const ColumnVisibility: React.FC<Props> = ({table}) => {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="ml-auto">
+                <Button variant="outline">
                     Колонки
                 </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent>
                 {table
                     .getAllColumns()
                     .filter(
@@ -33,7 +34,7 @@ const ColumnVisibility = <TData,>({table}: Props<TData>) => {
                             >
                                 {typeof column.columnDef.header === 'string'
                                     ? column.columnDef.header
-                                    : column.id}
+                                    : (column.columnDef.meta as { title: string })?.title}
                             </DropdownMenuCheckboxItem>
                         )
                     })}

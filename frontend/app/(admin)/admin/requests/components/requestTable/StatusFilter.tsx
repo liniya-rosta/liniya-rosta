@@ -1,4 +1,3 @@
-import {Column} from "@tanstack/react-table";
 import * as React from "react";
 import {
     Select,
@@ -7,26 +6,23 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+import {useAdminRequestsStore} from "@/store/superadmin/adminRequestsStore";
 
 
-interface Props<TData> {
-    column: Column<TData, unknown>;
-}
-
-const StatusFilter = <TData, >({column}: Props<TData>) => {
-    const currentValue = column.getFilterValue() as string | undefined
+const StatusFilter = () => {
+    const {setStatus, status} = useAdminRequestsStore();
 
     return (
         <div className="flex items-center gap-2">
             <span className="text-sm whitespace-nowrap">Фильтр по статусу:</span>
             <Select
-                value={currentValue ?? "all"}
+                value={status || "all"}
                 onValueChange={(value) => {
-                    column.setFilterValue(value === "all" ? undefined : value)
+                    setStatus(value === "all" ? undefined : value)
                 }}
             >
                 <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Все"/>
+                    <SelectValue placeholder="Все" />
                 </SelectTrigger>
                 <SelectContent>
                     <SelectItem value="all">Все</SelectItem>
@@ -37,8 +33,7 @@ const StatusFilter = <TData, >({column}: Props<TData>) => {
                 </SelectContent>
             </Select>
         </div>
-    )
+    );
 };
-
 
 export default StatusFilter;
