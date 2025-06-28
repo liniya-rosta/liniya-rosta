@@ -25,11 +25,27 @@ productsSuperAdminRouter.post("/", productImage.single("image"), async (req, res
             return;
         }
 
+        const parsedImages = req.body.images ? JSON.parse(req.body.images) : [];
+        const parsedCharacteristics = req.body.characteristics ? JSON.parse(req.body.characteristics) : [];
+
         const product = new Product({
             category,
             title: title.trim(),
-            description: description ? description.trim() : null,
-            image: `product/${req.file.filename}`,
+            description: description?.trim() || null,
+            cover: {
+                url: `product/${req.file.filename}`,
+                alt: req.body.coverAlt || null,
+            },
+            images: parsedImages,
+            characteristics: parsedCharacteristics,
+            sale: {
+                isOnSale: req.body.isOnSale === 'true',
+                label: req.body.saleLabel || null,
+            },
+            icon: {
+                url: req.body.iconUrl,
+                alt: req.body.iconAlt || null,
+            },
         });
 
         await product.save();
@@ -86,8 +102,48 @@ productsSuperAdminRouter.patch("/:id", productImage.single("image"), async (req,
         if (category) product.category = category;
         if (title) product.title = title.trim();
         if (description !== undefined) product.description = description;
-        if (req.file) product.image = `product/${req.file.filename}`;
 
+        if (req.body.images) {
+            try {
+                product.images = JSON.parse(req.body.images);
+            } catch {
+                res.status(400).send({error: "Некорректный формат images"});
+                return;
+            }
+        }
+
+        if (req.body.characteristics) {
+            try {
+                product.characteristics = JSON.parse(req.body.characteristics);
+            } catch {
+                res.status(400).send({error: "Некорректный формат characteristics"});
+                return;
+            }
+        }
+
+        if (!product.sale) {
+            product.sale = {isOnSale: false, label: ''};
+        }
+
+        if (req.body.isOnSale !== undefined) {
+            product.sale.isOnSale = req.body.isOnSale === 'true';
+        }
+
+        if (req.body.saleLabel !== undefined) {
+            product.sale.label = typeof req.body.saleLabel === 'string' ? req.body.saleLabel : '';
+        }
+
+        if (req.body.iconUrl !== undefined || req.body.iconAlt !== undefined) {
+            product.icon = {
+                url: req.body.iconUrl || '',
+                alt: typeof req.body.iconAlt === 'string' ? req.body.iconAlt : '',
+            };
+        }
+
+        if (req.file) product.cover = {
+            url: `product/${req.file.filename}`,
+            alt: typeof req.body.coverAlt === 'string' ? req.body.coverAlt : '',
+        };
         await product.save();
         res.send({message: "Продукт обновлен успешно", product});
     } catch (e) {

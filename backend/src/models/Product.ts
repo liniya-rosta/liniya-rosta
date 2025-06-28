@@ -4,7 +4,7 @@ import Category from "./Category";
 const Schema = mongoose.Schema;
 
 const ImageItemSchema = new Schema({
-    image: {type: String, required: true},
+    url: {type: String, required: true},
     alt: {type: String, default: null, maxLength: 150},
 });
 
@@ -50,6 +50,10 @@ const ProductSchema = new Schema({
         isOnSale: {type: Boolean, required: true, default: false},
         label: {type: String, default: null, maxLength: 150}
     },
+    icon: {
+        url: {type: String},
+        alt: {type: String, default: null, maxLength: 150},
+    }
 });
 
 
