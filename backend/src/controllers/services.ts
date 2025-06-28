@@ -1,17 +1,11 @@
 import {Request, Response, NextFunction} from "express";
 import Service from "../models/Service";
+import {Types} from "mongoose";
 
 export const getServices = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { title } = req.query as { title?: string };
-        const filter: { title?: { $regex: string; $options: string } } = {};
-
-        if (title) {
-            filter.title = { $regex: title, $options: "i" };
-        }
-
         const total = await Service.countDocuments();
-        const services = await Service.find(filter);
+        const services = await Service.find();
 
         res.send({
             items: services,
@@ -21,3 +15,25 @@ export const getServices = async (req: Request, res: Response, next: NextFunctio
         next(error);
     }
 };
+
+export const getServiceByID = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { id } = req.params;
+
+        if (!Types.ObjectId.isValid(id)) {
+            res.status(400).send({error: "Неверный формат ID услуг"});
+            return
+        }
+
+        const service = await Service.findById(id);
+
+        if (!service) {
+            res.status(404).send({error: "Услуга не найдена"});
+            return
+        }
+
+        res.send(service);
+    } catch (error) {
+        next(error);
+    }
+}
