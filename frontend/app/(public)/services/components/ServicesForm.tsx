@@ -81,7 +81,7 @@ const ServicesForm = () => {
                     <Input
                         id="email"
                         type="email"
-                        placeholder="example@mail.com"
+                        placeholder="example@email.com"
                         disabled={createLoading}
                         {...register('email')}
                         aria-invalid={errors.email ? 'true' : 'false'}

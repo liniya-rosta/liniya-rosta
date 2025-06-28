@@ -1,5 +1,5 @@
 import axiosAPI from "@/lib/axiosAPI";
-import {UserForm} from "@/lib/types";
+import {EditProfileForm, UserForm} from "@/lib/types";
 
 export const login = async (data: UserForm) => {
     try {
@@ -29,3 +29,8 @@ export const logout = async () => {
         console.log(e);
     }
 }
+
+export const editProfile = async (data: EditProfileForm) => {
+    const response = await axiosAPI.patch('/users/profile', data);
+    return response.data;
+};

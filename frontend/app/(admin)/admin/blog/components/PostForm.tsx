@@ -67,8 +67,7 @@ const PostForm: React.FC<PostFormProps> = ({isEditing, editingPost, actionLoadin
         form.clearErrors();
     }, [isEditing, editingPost, form]);
 
-    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>, fieldOnChange: (...event: any[]) => void) => {
-        const file = e.target.files?.[0];
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>, fieldOnChange: (file: File | undefined) => void) => {        const file = e.target.files?.[0];
         if (file) {
             const reader = new FileReader();
             reader.onloadend = () => {

@@ -4,7 +4,7 @@ import React, {useEffect} from 'react';
 import {Navigation, Pagination} from "swiper/modules";
 import {Swiper, SwiperSlide} from "swiper/react";
 import LaminateCard from "@/app/(public)/spc/components/LaminateCard";
-import Loading from "@/components/shared/Loading";
+import Loading from "@/components/ui/Loading/Loading";
 import {Product} from "@/lib/types";
 import {useProductStore} from "@/store/productsStore";
 

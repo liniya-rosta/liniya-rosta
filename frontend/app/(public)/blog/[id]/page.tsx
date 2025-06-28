@@ -1,7 +1,7 @@
 import React from 'react';
 import { Post } from "@/lib/types";
 import { fetchPostById } from "@/actions/posts";
-import PostClient from "@/app/blog/[id]/PostClient";
+import PostClient from "@/app/(public)/blog/[id]/PostClient";
 
 type Params = { id: string };
 

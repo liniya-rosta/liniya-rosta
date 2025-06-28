@@ -19,9 +19,9 @@ const PortfolioSection = () => {
                 </Link>
             </div>
             {storedPortfolioItems && storedPortfolioItems.length > 0 ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                     {storedPortfolioItems.map((item) => (
-                        <Link key={item._id} href={`/frontend/app/(public)/portfolio/${item._id}`}>
+                        <Link key={item._id} href={`/portfolio/${item._id}`}>
                             <CartPortfolio
                                 textBtn={"Смотреть все"}
                                 imageSrc={`${API_BASE_URL}/${item.cover}`}

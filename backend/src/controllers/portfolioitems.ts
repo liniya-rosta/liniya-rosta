@@ -1,10 +1,10 @@
 import {PortfolioItem} from "../models/PortfolioItem";
 import {Request, Response, NextFunction} from "express";
-import mongoose, {isValidObjectId} from "mongoose";
+import mongoose, {isValidObjectId, PipelineStage} from "mongoose";
 
 export const getPortfolioItems = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const {galleryId} = req.query;
+        const { galleryId, limit = 10, page = 1, description, coverAlt } = req.query;
 
         if (galleryId) {
             const item = await PortfolioItem.findOne(
@@ -21,18 +21,47 @@ export const getPortfolioItems = async (req: Request, res: Response, next: NextF
             return;
         }
 
-        const items = await PortfolioItem.aggregate([
+        const parsedLimit = Math.max(1, parseInt(limit as string));
+        const parsedPage = Math.max(1, parseInt(page as string));
+        const skip = (parsedPage - 1) * parsedLimit;
+
+        const matchStage: Record<string, any> = {};
+
+        if (description && typeof description === "string") {
+            matchStage.description = { $regex: description, $options: "i" };
+        }
+
+        if (coverAlt && typeof coverAlt === "string") {
+            matchStage.coverAlt = { $regex: coverAlt, $options: "i" };
+        }
+
+        const aggregationPipeline = [
+            Object.keys(matchStage).length > 0 ? { $match: matchStage } : null,
+            { $sort: { _id: -1 } },
+            { $skip: skip },
+            { $limit: parsedLimit },
             {
                 $project: {
                     cover: 1,
                     coverAlt: 1,
                     description: 1,
-                    galleryCount: {$size: "$gallery"}
+                    galleryCount: { $size: "$gallery" }
                 }
             }
+        ].filter(Boolean) as PipelineStage[];
+
+        const [items, totalCount] = await Promise.all([
+            PortfolioItem.aggregate(aggregationPipeline),
+            PortfolioItem.countDocuments(matchStage)
         ]);
 
-        res.send(items);
+        res.send({
+            items,
+            total: totalCount,
+            page: parsedPage,
+            pageSize: parsedLimit,
+            totalPages: Math.ceil(totalCount / parsedLimit),
+        });
     } catch (err) {
         next(err);
     }

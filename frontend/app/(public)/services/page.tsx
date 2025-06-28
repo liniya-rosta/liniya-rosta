@@ -5,7 +5,7 @@ import ServicesContent from "@/app/(public)/services/components/ServicesContent"
 
 export default function ServicePage() {
     return (
-        <section className="min-h-screen bg-white">
+        <section className="min-h-screen bg-white -mt-8">
             <div
                 className="w-full min-h-[560px] md:h-[560px] bg-black/50 bg-[url('/images/services/main-service.JPG')] bg-cover bg-center bg-blend-overlay mb-10">
                 <div

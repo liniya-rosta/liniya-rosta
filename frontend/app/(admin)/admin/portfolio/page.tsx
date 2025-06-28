@@ -1,12 +1,12 @@
-import {fetchPortfolioPreviews} from "@/actions/portfolios";
 import AdminPortfolioClient from "@/app/(admin)/admin/portfolio/PortfolioClient";
 
 const AdminPortfolioPage = async () => {
-    const portfolioData = await fetchPortfolioPreviews();
+    const limit = "10";
+
     return (
-        <div className="container mx-auto px-8">
-            <AdminPortfolioClient data={portfolioData}/>
-        </div>
+        <>
+            <AdminPortfolioClient limit={limit}/>
+        </>
     )
 };
 

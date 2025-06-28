@@ -1,26 +1,29 @@
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {useSuperAdminPortfolioStore} from "@/store/superadmin/superAdminPortfolio";
-import React, {useEffect} from "react";
-import {GalleryItemValues} from "@/lib/types";
+import React, {useEffect, useState} from "react";
+import {GalleryEditValues} from "@/lib/types";
 import {gallerySchema} from "@/lib/zodSchemas/portfolio/gallerySchema";
 import {Input} from "@/components/ui/input";
 import Image from "next/image";
 import {API_BASE_URL} from "@/lib/globalConstants";
 import {Button} from "@/components/ui/button";
 import { editGalleryItem } from "@/actions/superadmin/portfolios";
-import ButtonLoading from "@/components/ui/ButtonLoading";
+import LoaderIcon from "@/components/ui/LoaderIcon";
 import {isAxiosError} from "axios";
 import {toast} from "react-toastify";
 import {Tooltip, TooltipContent, TooltipTrigger} from "@/components/ui/tooltip";
 import {fetchPortfolioItem} from "@/actions/portfolios";
+import {Eye} from "lucide-react";
+import {Label} from "@/components/ui/label";
+import ImageModal from "@/app/(admin)/admin/portfolio/components/ImageModal";
 
 interface Props {
     onSaved: () => void;
 }
 
 const GalleryEditForm: React.FC<Props> = ({onSaved}) => {
-    const {register, handleSubmit, setValue, reset, formState: {errors, isDirty}} = useForm({
+    const {register, handleSubmit, setValue, reset, control, formState: {errors, isDirty}} = useForm({
         resolver: zodResolver(gallerySchema),
     });
 
@@ -31,6 +34,15 @@ const GalleryEditForm: React.FC<Props> = ({onSaved}) => {
         setPortfolioEditLoading,
         setPortfolioItemDetail,
     } = useSuperAdminPortfolioStore();
+
+    const [previewImage, setPreviewImage] = useState<{ url: string; alt: string }>({url: "", alt: ""});
+    const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+
+    const showImagePreview = (file: File, alt = "") => {
+        const localUrl = URL.createObjectURL(file);
+        setPreviewImage({url: localUrl, alt});
+        setIsPreviewOpen(true);
+    };
 
     useEffect(() => {
         if (galleryItem) {
@@ -47,7 +59,7 @@ const GalleryEditForm: React.FC<Props> = ({onSaved}) => {
         setValue("image", file, { shouldDirty: true });
     };
 
-    const onSubmit = async (data: GalleryItemValues) => {
+    const onSubmit = async (data: GalleryEditValues) => {
         if (!galleryItem) return;
 
         try {
@@ -55,12 +67,7 @@ const GalleryEditForm: React.FC<Props> = ({onSaved}) => {
             await editGalleryItem({item: data, gallery_id: galleryItem._id});
 
 
-            toast.success("Вы успешно обновили элемент галереи", {
-                autoClose: 3000,
-                position: "top-center",
-                pauseOnHover: true,
-                draggable: true,
-            });
+            toast.success("Вы успешно обновили элемент галереи");
 
             if(detailItem) {
                 const updated = await fetchPortfolioItem(detailItem._id);
@@ -76,12 +83,7 @@ const GalleryEditForm: React.FC<Props> = ({onSaved}) => {
                 errorMessage = error.message;
             }
 
-            toast.error(errorMessage, {
-                autoClose: 3000,
-                position: "top-center",
-                pauseOnHover: true,
-                draggable: true,
-            });
+            toast.error(errorMessage);
         } finally {
             setPortfolioEditLoading(false);
         }
@@ -90,12 +92,13 @@ const GalleryEditForm: React.FC<Props> = ({onSaved}) => {
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
             <div className="border-b border-b-gray-500 py-3 mb-4">
-                <div>
+                <div className="mb-4">
+                    <Label htmlFor="alt" className="mb-2">Альтернативное название изображения</Label>
                     <Input
-                        className="mb-3"
+                        id="alt"
+                        className="mb-2"
                         type="text"
                         disabled={editLoading}
-                        placeholder="Описание"
                         {...register("alt")}
                     />
                     {errors.alt && (
@@ -104,18 +107,35 @@ const GalleryEditForm: React.FC<Props> = ({onSaved}) => {
                 </div>
 
                 <div className="mb-3">
-                    <Input
-                        className="mb-3"
-                        type="file"
-                        disabled={editLoading}
-                        placeholder="Обложка"
-                        onChange={onChangeFile}
-                        accept="image/*"
-                    />
+                    <div className="flex items-center gap-3 mb-2">
+                        <Label htmlFor="image" className="mb-2">Изображение</Label>
+                        <Input
+                            id="image"
+                            type="file"
+                            disabled={editLoading}
+                            onChange={onChangeFile}
+                            accept="image/*"
+                        />
+                        <Button
+                            type="button"
+                            variant="outline"
+                            disabled={editLoading}
+                            onClick={() => {
+                                const file = control._formValues.gallery.image;
+                                if (file instanceof File) {
+                                    showImagePreview(file, control._formValues.gallery.alt);
+                                }
+                            }}
+                        >
+                            <Eye className="w-4 h-4" /> Посмотреть изображение
+                        </Button>
+
+                    </div>
                     {errors.image && (
                         <p className="text-red-500 text-sm mb-4">{errors.image.message}</p>
                     )}
                 </div>
+
                 {galleryItem && (
                     <>
                         <p className="mb-3">Предыдущее изображение</p>
@@ -132,18 +152,25 @@ const GalleryEditForm: React.FC<Props> = ({onSaved}) => {
                 )}
             </div>
 
-            {editLoading ? <ButtonLoading/>
-                :<Tooltip>
+
+                <Tooltip>
                     <TooltipTrigger asChild>
                         <div className="inline-block">
-                            <Button type="submit" className="mr-auto" disabled={!isDirty}>
+                            <Button type="submit" className="mr-auto" disabled={!isDirty || editLoading}>
+                                {editLoading && <LoaderIcon/>}
                                 Сохранить
                             </Button>
                         </div>
                     </TooltipTrigger>
                     {!isDirty && <TooltipContent>Вы ничего не изменили</TooltipContent>}
                 </Tooltip>
-            }
+
+            <ImageModal
+                open={isPreviewOpen}
+                openChange={() => setIsPreviewOpen(false)}
+                image={previewImage.url}
+                alt={previewImage.alt || "Предпросмотр изображения"}
+            />
         </form>
     )
 };

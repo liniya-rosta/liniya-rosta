@@ -1,6 +1,6 @@
-export  interface GalleryForm {
+export interface GalleryForm {
     image: File | null,
-    alt: string,
+    alt?: string,
 }
 
 export interface PortfolioMutation {
@@ -14,7 +14,7 @@ export interface PortfolioItemPreview {
     _id: string;
     description: string;
     cover: string;
-    coverAlt:  string;
+    coverAlt: string;
     galleryCount: number;
 }
 
@@ -28,15 +28,18 @@ export interface PortfolioItemDetail extends PortfolioItemPreview {
     gallery: GalleryItem[];
 }
 
-export interface PortfolioEditValues {
-    cover?: File | null;
-    coverAlt?: string;
-    description?: string;
+type PortfolioEditValues = Partial<PortfolioMutation>;
+type GalleryEditValues = Partial<GalleryForm>;
+
+interface PaginationMeta {
+    total: number;
+    page: number;
+    pageSize: number;
+    totalPages: number;
 }
 
-export interface GalleryItemValues{
-    image?: File | null;
-    alt?: string;
+export interface PaginatedPortfolioResponse extends PaginationMeta{
+    items: PortfolioItemPreview[],
 }
 
 export interface Category {
@@ -110,6 +113,17 @@ export interface UserForm {
     email: string;
     password: string;
     confirmPassword: string;
+}
+
+export interface AdminForm extends UserForm {
+    displayName?: string;
+    role?: "admin" | "superadmin";
+}
+
+export interface EditProfileForm {
+    displayName?: string;
+    email?: string;
+    password?: string;
 }
 
 export interface Post {

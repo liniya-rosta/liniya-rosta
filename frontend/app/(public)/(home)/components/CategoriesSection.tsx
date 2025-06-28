@@ -1,5 +1,5 @@
 import React from 'react';
-import ErrorMsg from "@/components/shared/ErrorMsg";
+import ErrorMsg from "@/components/ui/ErrorMsg";
 import {Swiper, SwiperSlide} from "swiper/react";
 import {Navigation, Pagination} from "swiper/modules";
 import CategoryCard from "@/app/(public)/(home)/components/CategoryCard";

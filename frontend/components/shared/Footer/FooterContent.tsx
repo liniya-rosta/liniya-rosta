@@ -5,8 +5,8 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faInstagram, faWhatsapp} from "@fortawesome/free-brands-svg-icons";
 import {useContactStore} from "@/store/contactsStore";
 import {Contact} from "@/lib/types";
-import Loading from "@/components/shared/Loading";
-import ErrorMsg from "@/components/shared/ErrorMsg";
+import Loading from "@/components/ui/Loading/Loading";
+import ErrorMsg from "@/components/ui/ErrorMsg";
 
 interface ContactProps {
     contactData: Contact | null;

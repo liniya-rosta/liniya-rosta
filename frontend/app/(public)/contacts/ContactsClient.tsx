@@ -6,8 +6,8 @@ import MapSection from "@/app/(public)/contacts/components/MapSection";
 import {Contact} from "@/lib/types";
 import {useEffect} from "react";
 import {useContactStore} from "@/store/contactsStore";
-import Loading from "@/components/shared/Loading";
-import ErrorMsg from "@/components/shared/ErrorMsg";
+import ErrorMsg from "@/components/ui/ErrorMsg";
+import LoadingFullScreen from "@/components/ui/Loading/LoadingFullScreen";
 
 interface Props {
     data: Contact | null;
@@ -30,7 +30,7 @@ const ContactsClient: React.FC<Props> = ({data, error}) => {
         setFetchContactLoading(false);
     }, [data, error, setContact, setFetchContactError, setFetchContactLoading]);
 
-    if (fetchContactLoading) return <Loading/>;
+    if (fetchContactLoading) return <LoadingFullScreen/>;
     if (fetchContactError) return <ErrorMsg error={fetchContactError} label='контактов'/>
 
     return (
