@@ -34,7 +34,7 @@ export const getProductTableColumns = (
 
     return [
         {
-            id: "select",
+            id: "выбрать",
             header: ({ table }) => (
                 <Checkbox
                     checked={
@@ -42,14 +42,14 @@ export const getProductTableColumns = (
                         (table.getIsSomePageRowsSelected() && "indeterminate")
                     }
                     onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-                    aria-label="Select all"
+                    aria-label="Выбрать все"
                 />
             ),
             cell: ({ row }) => (
                 <Checkbox
                     checked={row.getIsSelected()}
                     onCheckedChange={(value) => row.toggleSelected(!!value)}
-                    aria-label="Select row"
+                    aria-label="Выбрать строку"
                 />
             ),
             enableSorting: false,
@@ -61,7 +61,7 @@ export const getProductTableColumns = (
             cell: ({ row }) => {
                 const imageUrl = row.original.image;
                 return imageUrl ? (
-                    <div className="w-16 h-16 relative">
+                    <div className="w-16 h-16 relative flex-shrink-0">
                         <Image
                             src={`${API_BASE_URL}/${imageUrl}`}
                             alt={row.original.title}
@@ -75,7 +75,7 @@ export const getProductTableColumns = (
                         />
                     </div>
                 ) : (
-                    <div className="w-16 h-16 bg-muted rounded-md flex items-center justify-center text-xs text-muted-foreground">
+                    <div className="w-16 h-16 bg-muted rounded-md flex items-center justify-center text-xs text-muted-foreground flex-shrink-0">
                         Нет фото
                     </div>
                 );
@@ -95,8 +95,9 @@ export const getProductTableColumns = (
                 );
             },
             cell: ({ row }) => (
-                <div className="font-medium">{row.getValue("title")}</div>
+                <div className="font-medium min-w-[150px]">{row.getValue("title")}</div>
             ),
+            filterFn: "includesString",
         },
         {
             accessorKey: "category",
@@ -107,24 +108,30 @@ export const getProductTableColumns = (
                 </Badge>
             ),
             filterFn: (row, id, value) => {
+                if (!value) return true;
+
                 const categoryId =
                     typeof row.original.category === "object"
                         ? row.original.category._id
                         : row.original.category;
-                return value.includes(categoryId);
+                return categoryId === value;
             },
         },
         {
             accessorKey: "description",
             header: "Описание",
-            cell: ({ row }) => (
-                <div className="line-clamp-2 max-w-xs text-sm text-muted-foreground">
-                    {row.getValue("description")}
-                </div>
-            ),
+            cell: ({ row }) => {
+                const description = row.getValue("description") as string;
+                return (
+                    <div className="max-w-[200px] truncate" title={description}>
+                        {description || "Нет описания"}
+                    </div>
+                );
+            },
+            filterFn: "includesString",
         },
         {
-            id: "actions",
+            id: "действия",
             enableHiding: false,
             cell: ({ row }) => {
                 const product = row.original;

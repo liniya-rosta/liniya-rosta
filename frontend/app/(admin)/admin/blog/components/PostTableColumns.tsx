@@ -32,14 +32,14 @@ export const getPostTableColumns = (
                         (table.getIsSomePageRowsSelected() && 'indeterminate')
                     }
                     onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-                    aria-label="Select all"
+                    aria-label="Выбрать все"
                 />
             ),
             cell: ({ row }) => (
                 <Checkbox
                     checked={row.getIsSelected()}
                     onCheckedChange={(value) => row.toggleSelected(!!value)}
-                    aria-label="Select row"
+                    aria-label="Выбрать строку"
                 />
             ),
             enableSorting: false,
@@ -65,7 +65,7 @@ export const getPostTableColumns = (
                         />
                     </div>
                 ) : (
-                    <div className="w-16 h-16 bg-muted rounded-md flex items-center justify-center text-xs text-muted-foreground text-center">
+                    <div className="w-16 h-16 bg-muted rounded-md flex items-center justify-center text-xs text-muted-foreground text-center flex-shrink-0">
                         Нет фото
                     </div>
                 );
@@ -85,18 +85,20 @@ export const getPostTableColumns = (
                 );
             },
             cell: ({ row }) => <div className="font-medium max-w-[200px] truncate">{row.getValue('title')}</div>,
+            filterFn: 'includesString',
         },
         {
             accessorKey: 'description',
             header: 'Описание',
             cell: ({ row }) => (
-                <div className="line-clamp-2 max-w-sm text-sm text-muted-foreground">
+                <div className="line-clamp-2 max-w-sm text-sm text-muted-foreground min-w-[250px]">
                     {row.getValue('description')}
                 </div>
             ),
+            filterFn: 'includesString',
         },
         {
-            id: 'actions',
+            id: 'действия',
             enableHiding: false,
             cell: ({ row }) => {
                 const post = row.original;

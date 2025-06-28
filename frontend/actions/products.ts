@@ -8,7 +8,7 @@ export const fetchProducts = async (categoryId?: string) => {
     return res.data;
 };
 
-export const fetchProductById = async (id: string): Promise<Product> => { // Добавляем Promise<Product>
+export const fetchProductById = async (id: string): Promise<Product> => {
     try {
         const res = await axiosAPI.get<Product>(`/products/${id}`);
         return res.data;
@@ -25,7 +25,7 @@ export const createProduct = async (productData: {
     title: string;
     description?: string;
     image: File
-}, imageFile?: File): Promise<Product> => { // Добавляем Promise<Product>
+}, imageFile?: File): Promise<Product> => {
     try {
         const formData = new FormData();
         formData.append('category', productData.category);
@@ -90,7 +90,7 @@ export const updateProduct = async (id: string, productData: Partial<ProductWith
     }
 };
 
-export const deleteProduct = async (id: string): Promise<string> => { // Добавляем Promise<string>
+export const deleteProduct = async (id: string): Promise<string> => {
     try {
         const res = await axiosAPI.delete<{ message: string }>(`/superadmin/products/${id}`);
         return res.data.message;
