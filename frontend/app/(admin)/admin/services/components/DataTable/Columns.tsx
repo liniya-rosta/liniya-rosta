@@ -1,8 +1,4 @@
 import {ColumnDef} from "@tanstack/react-table";
-import {PortfolioItemPreview} from "@/lib/types";
-import {API_BASE_URL} from "@/lib/globalConstants";
-import {Tooltip, TooltipContent, TooltipTrigger} from "@/components/ui/tooltip";
-import Image from "next/image";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -14,13 +10,12 @@ import {Button} from "@/components/ui/button";
 import {ArrowUpDown, MoreHorizontal} from "lucide-react";
 import React from "react";
 import {Checkbox} from "@/components/ui/checkbox";
+import {Service} from "@/lib/types";
 
 export const getColumns = (
-    onImageClick: (image: { cover: string; alt: string }) => void,
     onRequestDelete: (id: string) => void,
-    onEditCover: (id: string) => void,
-    onGallery: (id: string) => void,
-): ColumnDef<PortfolioItemPreview>[] => [
+    onEdit: (id: string) => void,
+): ColumnDef<Service>[] => [
     {
         id: "select",
         header: ({ table }) => (
@@ -50,20 +45,20 @@ export const getColumns = (
         enableHiding: false,
     },
     {
-        accessorKey: "coverAlt",
+        accessorKey: "title",
         header: ({ column }) => {
             return (
                 <Button
                     variant="ghost"
                     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                 >
-                    Альтер-ое название обложки
+                    Название услуги
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
             );
         },
         cell: ({row}) => (
-            <div className="capitalize">{row.getValue("coverAlt")}</div>
+            <div className="capitalize">{row.getValue("title")}</div>
         ),
     },
     {
@@ -75,50 +70,6 @@ export const getColumns = (
                 <div className="capitalize">
                     {value?.trim() ? value : <span className="text-muted-foreground italic">Нет описания</span>}
                 </div>
-            );
-        },
-    },
-    {
-        accessorKey: "galleryCount",
-        header: () => <div className="text-center">Кол-во изображений</div>,
-        cell: ({row}) => {
-            const count = row.getValue<number>("galleryCount");
-            return (
-                <div className="text-center font-medium">
-                    {count}
-                </div>
-            );
-        }
-    },
-    {
-        accessorKey: "cover",
-        header: "Обложка",
-        cell: ({row}) => {
-            const cover: string = row.getValue("cover");
-            const alt: string = row.getValue("coverAlt");
-            const imageUrl = `${API_BASE_URL}/${cover}`;
-
-            return (
-                <Tooltip>
-                    <TooltipTrigger asChild>
-                        <div
-                            className="relative w-16 h-16 rounded overflow-hidden cursor-pointer"
-                            onClick={() => onImageClick({cover, alt})}
-                        >
-                            <Image
-                                src={imageUrl}
-                                alt="Обложка"
-                                fill
-                                priority
-                                className="object-cover"
-                                sizes="64px"
-                            />
-                        </div>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                        <p>Нажмите чтобы просмотреть изображение</p>
-                    </TooltipContent>
-                </Tooltip>
             );
         },
     },
@@ -138,10 +89,7 @@ export const getColumns = (
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Меню</DropdownMenuLabel>
-                        <DropdownMenuItem onClick={() => onGallery(payment._id)}>
-                            Посмотреть галерею
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => onEditCover(payment._id)}>
+                        <DropdownMenuItem onClick={() => onEdit(payment._id)}>
                             Редактировать
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => onRequestDelete(payment._id)}>

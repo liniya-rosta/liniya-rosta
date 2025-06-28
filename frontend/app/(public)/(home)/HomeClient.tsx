@@ -93,19 +93,37 @@ const HomePageClient: React.FC<HomePageClientProps> = ({
     if (overallError) return <ErrorMsg error={overallError}/>
 
     return (
-        <div className="container mx-auto px-4 py-8 space-y-16">
-            <HeroSection/>
+        <>
+            <div className="relative w-full h-[300px] md:h-[400px] bg-cover bg-center mb-8"
+                 style={{ backgroundImage: "url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=80')" }}>
+                <div className="absolute inset-0 bg-black/70" />
 
-            <CategoriesSection/>
+                <div className="container mx-auto absolute inset-0  flex items-center justify-center text-white text-center px-4">
+                    <div>
+                        <h1 className="text-3xl md:text-5xl font-bold mb-2">Линия роста</h1>
+                        <p className="text-lg md:text-xl max-w-3xl mx-auto">
+                            Современные решения для вашего дома: натяжные потолки, SPC ламинат и отделочные работы под ключ.
+                            Мы создаём уют и стиль с использованием качественных материалов и индивидуального подхода.
+                            Доверьтесь профессионалам — и вы получите результат, который будет радовать долгие годы.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div className="container mx-auto px-4 py-8 space-y-16">
+                <HeroSection/>
 
-            <ProductsSection/>
+                <CategoriesSection/>
 
-            <PortfolioSection/>
+                <ProductsSection/>
 
-            <ConsultationSection/>
+                <PortfolioSection/>
 
-            <InstagramSection/>
-        </div>
+                <ConsultationSection/>
+
+                <InstagramSection/>
+            </div>
+        </>
+
     );
 };
 
