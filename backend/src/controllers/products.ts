@@ -55,6 +55,10 @@ export const getProducts = async (req: Request, res: Response, next: NextFunctio
                     cover: 1,
                     coverAlt: "$cover.alt",
                     description: 1,
+                    images: 1,
+                    icon: 1,
+                    sale: 1,
+                    characteristics: 1,
                     imagesCount: {
                         $cond: {
                             if: {$isArray: "$images"},

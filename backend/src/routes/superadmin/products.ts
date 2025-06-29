@@ -6,11 +6,21 @@ import {productImage} from "../../middleware/multer";
 
 const productsSuperAdminRouter = express.Router();
 
-productsSuperAdminRouter.post("/", productImage.single("image"), async (req, res, next) => {
+productsSuperAdminRouter.post("/", productImage.fields([
+    {name: "cover", maxCount: 1},
+    {name: "images"}
+]), async (req, res, next) => {
     try {
+        const files = req.files as {
+            [fieldname: string]: Express.Multer.File[];
+        };
+
+        const coverFile = files.cover?.[0];
+        const imagesFiles = files.images || [];
+
         const {category, title, description} = req.body;
-        if (!category || !title || !title.trim() || !req.file) {
-            res.status(400).send({error: "Категория, заголовок и изображение обязательны"});
+        if (!category || !title || !title.trim() || !coverFile) {
+            res.status(400).send({error: "Категория, заголовок и обложка обязательны"});
             return;
         }
 
@@ -25,7 +35,11 @@ productsSuperAdminRouter.post("/", productImage.single("image"), async (req, res
             return;
         }
 
-        const parsedImages = req.body.images ? JSON.parse(req.body.images) : [];
+        const alts: string[] = Array.isArray(req.body.alt) ? req.body.alt : [req.body.alt];
+        const images = imagesFiles.map((file, i) => ({
+            url: "product/" + file.filename,
+            alt: alts[i] || null,
+        }));
         const parsedCharacteristics = req.body.characteristics ? JSON.parse(req.body.characteristics) : [];
 
         const product = new Product({
@@ -33,10 +47,10 @@ productsSuperAdminRouter.post("/", productImage.single("image"), async (req, res
             title: title.trim(),
             description: description?.trim() || null,
             cover: {
-                url: `product/${req.file.filename}`,
+                url: `product/${coverFile.filename}`,
                 alt: req.body.coverAlt || null,
             },
-            images: parsedImages,
+            images,
             characteristics: parsedCharacteristics,
             sale: {
                 isOnSale: req.body.isOnSale === 'true',
@@ -55,8 +69,19 @@ productsSuperAdminRouter.post("/", productImage.single("image"), async (req, res
     }
 });
 
-productsSuperAdminRouter.patch("/:id", productImage.single("image"), async (req, res, next) => {
+productsSuperAdminRouter.patch("/:id", productImage.fields([
+    {name: "cover", maxCount: 1},
+    {name: "images"}
+]), async (req, res, next) => {
     try {
+        const files = req.files as {
+            [fieldname: string]: Express.Multer.File[];
+        };
+
+        const coverFile = files.cover?.[0];
+        const imagesFiles = files.images || [];
+
+
         const {id} = req.params;
         const {category, title, description} = req.body;
 
@@ -65,7 +90,7 @@ productsSuperAdminRouter.patch("/:id", productImage.single("image"), async (req,
             return;
         }
 
-        if (!category && !title && !description && !req.file) {
+        if (!category && !title && !description && !coverFile && !req.body.images && !req.body.characteristics) {
             res.status(400).send({error: "Не указаны поля для обновления"});
             return;
         }
@@ -121,6 +146,15 @@ productsSuperAdminRouter.patch("/:id", productImage.single("image"), async (req,
             }
         }
 
+        if (imagesFiles.length > 0) {
+            const alts: string[] = Array.isArray(req.body.alt) ? req.body.alt : [req.body.alt];
+
+            product.set('images', imagesFiles.map((file, i) => ({
+                url: "product/" + file.filename,
+                alt: alts[i] || null,
+            })));
+        }
+
         if (!product.sale) {
             product.sale = {isOnSale: false, label: ''};
         }
@@ -140,10 +174,12 @@ productsSuperAdminRouter.patch("/:id", productImage.single("image"), async (req,
             };
         }
 
-        if (req.file) product.cover = {
-            url: `product/${req.file.filename}`,
-            alt: typeof req.body.coverAlt === 'string' ? req.body.coverAlt : '',
-        };
+        if (coverFile) {
+            product.cover = {
+                url: `product/${coverFile.filename}`,
+                alt: typeof req.body.coverAlt === 'string' ? req.body.coverAlt : '',
+            };
+        }
         await product.save();
         res.send({message: "Продукт обновлен успешно", product});
     } catch (e) {
