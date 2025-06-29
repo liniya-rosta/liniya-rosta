@@ -47,17 +47,6 @@ export interface Category {
     title: string;
 }
 
-export interface Product {
-    _id: string;
-    title: string;
-    category: {
-        _id: string;
-        title: string;
-    };
-    image: string
-    description: string | null;
-}
-
 export interface ValidationError {
     errors: {
         [key: string]: {
@@ -145,15 +134,98 @@ export interface UpdatePostData {
     image?: File;
 }
 
-export interface ProductAdmin {
+export interface Product {
     _id: string;
     title: string;
-    category: string;
-    image: string
+    category: {
+        _id: string;
+        title: string;
+    };
     description: string | null;
+    coverAlt?: string | null;
+    cover: {
+        url: string;
+        alt: string;
+    };
+    images?: {
+        url: string;
+        alt?: string;
+    }[];
+    characteristics?: {
+        key: string;
+        value: string;
+    }[];
+    sale?: {
+        isOnSale: boolean;
+        label: string;
+    };
+    icon?: {
+        alt: string;
+        url: string;
+    };
 }
 
-export type ProductWithoutId = Omit<ProductAdmin, '_id'>;
+export interface ProductMutation {
+    category: string;
+    title: string;
+    description?: string;
+    coverAlt?: string | null;
+    cover: File | null;
+    images?: {
+        url: File;
+        alt?: string;
+    }[];
+    characteristics?: {
+        key: string;
+        value: string;
+    }[];
+    sale?: {
+        isOnSale: boolean;
+        label: string;
+    };
+    icon?: {
+        alt: string;
+        url: string;
+    };
+}
+
+export interface ProductUpdateMutation extends ProductMutation {
+    category: {
+        _id: string;
+        title: string;
+    };
+}
+//
+// export interface ProductAdmin {
+//     _id: string;
+//     title: string;
+//     category: {
+//         _id: string;
+//         title: string;
+//     };
+//     image: string
+//     description: string | null;
+//     coverAlt?: string | null;
+//     cover: File | null;
+//     images?: {
+//         url: File;
+//         alt?: string;
+//     }[];
+//     characteristics?: {
+//         key: string;
+//         value: string;
+//     }[];
+//     sale?: {
+//         isOnSale: boolean;
+//         label: string;
+//     };
+//     icon?: {
+//         alt: string;
+//         url: string;
+//     };
+// }
+//
+// export type ProductWithoutId = Omit<ProductAdmin, '_id'>;
 
 export interface IRequest {
     _id: string;
