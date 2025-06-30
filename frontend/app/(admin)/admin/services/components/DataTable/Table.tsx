@@ -8,6 +8,7 @@ import React from "react";
 import {TableBody, TableCell, TableHead, TableHeader, TableRow, Table } from "@/components/ui/table";
 import { flexRender } from "@tanstack/react-table";
 import {DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger} from "@/components/ui/dropdown-menu";
+import {useSuperAdminServicesStore} from "@/store/superadmin/superAdminServices";
 
 interface Props {
     table: TanStackTable<Service>;
@@ -21,6 +22,7 @@ const columnLabels: Record<string, string> = {
 };
 
 const CustomTable: React.FC<Props> = ({table, selectedToDelete, showConfirm}) => {
+    const { services } = useSuperAdminServicesStore();
 return (
     <div className="w-full">
         <div className="flex items-center py-4">
@@ -32,40 +34,43 @@ return (
                 }
                 className="max-w-sm"
             />
-            <Button
-                variant="outline"
-                disabled={!selectedToDelete || selectedToDelete.length < 1}
-                onClick={() => {
-                    showConfirm(true);
-                }}
-            >Удалить выбранные {selectedToDelete?.length} элементы</Button>
-            <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                    <Button variant="outline" className="ml-auto">
-                        Колонки <ChevronDown />
-                    </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                    {table
-                        .getAllColumns()
-                        .filter((column) => column.getCanHide())
-                        .map((column) => {
-                            return (
-                                <DropdownMenuCheckboxItem
-                                    key={column.id}
-                                    className="capitalize"
-                                    checked={column.getIsVisible()}
-                                    onCheckedChange={(value) =>
-                                        column.toggleVisibility(!!value)
-                                    }
-                                >
-                                    {columnLabels[column.id] ?? column.id}
-                                </DropdownMenuCheckboxItem>
-                            )
-                        })}
-                </DropdownMenuContent>
-            </DropdownMenu>
+
+            <div className="flex gap-2 ml-auto">
+                <Button
+                    variant="outline"
+                    disabled={!selectedToDelete || selectedToDelete.length < 1}
+                    onClick={() => {
+                        showConfirm(true);
+                    }}
+                >Удалить выбранные {selectedToDelete?.length} элементы</Button>
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="outline">
+                            Колонки <ChevronDown />
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                        {table
+                            .getAllColumns()
+                            .filter((column) => column.getCanHide())
+                            .map((column) => {
+                                return (
+                                    <DropdownMenuCheckboxItem
+                                        key={column.id}
+                                        checked={column.getIsVisible()}
+                                        onCheckedChange={(value) =>
+                                            column.toggleVisibility(!!value)
+                                        }
+                                    >
+                                        {columnLabels[column.id] ?? column.id}
+                                    </DropdownMenuCheckboxItem>
+                                )
+                            })}
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            </div>
         </div>
+
         <div className="rounded-md border">
             <Table>
                 <TableHeader>
@@ -116,11 +121,11 @@ return (
                 </TableBody>
             </Table>
         </div>
-        <div className="flex items-center justify-end space-x-2 py-4">
 
-            <div className="space-x-2">
-
-            </div>
+        <div className="flex items-center space-x-2 py-4">
+            <span className="text-sm text-muted-foreground">
+                Всего элементов: <span className="font-medium">{services?.total ?? 0}</span>
+            </span>
         </div>
     </div>
 )

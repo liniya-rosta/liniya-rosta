@@ -22,6 +22,8 @@ import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import {toast} from "react-toastify";
 import {isAxiosError} from "axios";
 import {fetchAllServices} from "@/actions/services";
+import ServiceFormModal from "@/app/(admin)/admin/services/components/ServiceFormModal";
+import {deleteService} from "@/actions/superadmin/services";
 
 interface Props {
     data: ServiceResponse | null;
@@ -42,8 +44,11 @@ const AdminServiceClient: React.FC<Props> = ({data, error}) => {
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
     const [rowSelection, setRowSelection] = useState({});
+
     const [showConfirm, setShowConfirm] =  useState(false);
     const [selectedToDelete, setSelectedToDelete] = useState<string[]>([]);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [modalId, setModalId] = useState<string | null>(null);
 
     useEffect(() => {
         if (data) setServices(data);
@@ -56,18 +61,47 @@ const AdminServiceClient: React.FC<Props> = ({data, error}) => {
     }, [rowSelection]);
 
     const editService = (id: string) => {
-        // Здесь открой модалку или переадресуй
-        console.log("Edit", id);
+        setModalId(id);
+        setIsModalOpen(true);
     };
 
-    const deleteService = async (id: string) => {
-        // Здесь вызов на удаление
-        console.log("Delete", id);
+    const onDeleteService = async (id: string) => {
+        try {
+            setDeleteServiceLoading(true);
+            await deleteService(id);
+            toast.success("Удалено успешно");
+
+            const updated = await fetchAllServices();
+            setServices(updated);
+        } catch (error) {
+            let errorMessage = "Ошибка при удалении";
+            if (isAxiosError(error) && error.response) {
+                errorMessage = error.response.data.error;
+            } else if (error instanceof Error) {
+                errorMessage = error.message;
+            }
+
+            toast.error(errorMessage);
+        } finally {
+            setDeleteServiceLoading(false);
+        }
+    };
+
+    const handleModalChange = (isOpen: boolean) => {
+        setIsModalOpen(isOpen);
+        if (!isOpen) {
+            setModalId(null);
+        }
+    };
+
+    const showConfirmDeleteForSingle = (id: string) => {
+        setSelectedToDelete([id]);
+        setShowConfirm(true);
     };
 
     const table = useReactTable({
         data: services?.items ?? [],
-        columns: getColumns(deleteService, editService),
+        columns: getColumns(showConfirmDeleteForSingle, editService),
         onSortingChange: setSorting,
         onColumnFiltersChange: setColumnFilters,
         getCoreRowModel: getCoreRowModel(),
@@ -87,7 +121,6 @@ const AdminServiceClient: React.FC<Props> = ({data, error}) => {
         try {
             setShowConfirm(false);
             setDeleteServiceLoading(true);
-
 
                 await Promise.all(
                     selectedToDelete.map((id) => deleteService(id))
@@ -128,13 +161,19 @@ const AdminServiceClient: React.FC<Props> = ({data, error}) => {
                         Создавайте и редактируйте услуги
                     </p>
                 </div>
-                <Button className="flex items-center gap-2 w-full sm:w-auto">
+                <Button className="flex items-center gap-2 w-full sm:w-auto" onClick={() => setIsModalOpen(true)}>
                     <Plus size={16}/>
                     Создать услугу
                 </Button>
 
             </div>
-            <CustomTable table={table}/>
+            <CustomTable table={table} selectedToDelete={selectedToDelete} showConfirm={setShowConfirm}/>
+
+            <ServiceFormModal
+                open={isModalOpen}
+                id={modalId}
+                openChange={handleModalChange}
+            />
 
             <ConfirmDialog
                 open={showConfirm}
@@ -148,7 +187,7 @@ const AdminServiceClient: React.FC<Props> = ({data, error}) => {
                     if (selectedToDelete.length > 1) {
                         await multipleDeletion();
                     } else if (selectedToDelete.length === 1) {
-                        await deleteService(selectedToDelete[0]);
+                        await onDeleteService(selectedToDelete[0]);
                     }
                 }}
                 loading={deleteServiceLoading}

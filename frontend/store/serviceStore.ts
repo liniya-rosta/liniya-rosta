@@ -6,12 +6,12 @@ interface ServiceState {
     fetchLoadingService: boolean;
 
     setAllServices: (data: Service[]) => void;
-    setFetchLoading: (loading: boolean) => void;
+    setFetchServiceLoading: (loading: boolean) => void;
 }
 
 export const useServiceStore = create<ServiceState>((set) => ({
     allServices: [],
     fetchLoadingService: true,
     setAllServices: (data) => set({ allServices: data }),
-    setFetchLoading: (loading) => set({ fetchLoadingService: loading }),
+    setFetchServiceLoading: (loading) => set({ fetchLoadingService: loading }),
 }));

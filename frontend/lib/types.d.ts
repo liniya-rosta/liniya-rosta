@@ -163,7 +163,7 @@ export interface IRequest {
 
 export interface ServiceForm {
     title: string;
-    description: string;
+    description?: string;
 }
 
 export interface Service extends ServiceForm {

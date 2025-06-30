@@ -43,8 +43,10 @@ export const getColumns = (
     {
         id: "index",
         header: "№",
-        cell: ({row}) => {
-            return <div>{row.index + 1}</div>;
+        cell: ({ row, table }) => {
+            const flatRows = table.getRowModel().flatRows;
+            const originalIndex = flatRows.findIndex(r => r.id === row.id);
+            return <div>{originalIndex + 1}</div>;
         },
         enableSorting: false,
         enableHiding: false,
