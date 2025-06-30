@@ -24,8 +24,8 @@ const advantages = [
 
 const AdvantagesLaminate = () => {
     return (
-        <div className="mb-18">
-            <h3 className="text-[28px] mb-10 text-center">Преимущества SPC ламината</h3>
+        <div className="mb-[70px] sm:mb-[55px]">
+            <h3 className="sm:text-2xl text-xl  mb-10 text-center">Преимущества SPC ламината</h3>
             <div className="flex flex-wrap justify-center gap-7">
                 {
                     advantages.map((advantage, i) => (
