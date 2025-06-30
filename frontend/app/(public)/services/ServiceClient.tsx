@@ -13,12 +13,12 @@ interface Props {
 }
 
 const ServiceClient: React.FC<Props> = ({data, error}) => {
-    const {setAllServices, fetchLoadingService, setFetchLoading} = useServiceStore();
+    const {setAllServices, fetchLoadingService, setFetchServiceLoading} = useServiceStore();
 
     useEffect(() => {
         if(data) setAllServices(data.items);
-        setFetchLoading(false);
-    }, [data, setAllServices, setFetchLoading]);
+        setFetchServiceLoading(false);
+    }, [data, setAllServices, setFetchServiceLoading]);
 
     if (fetchLoadingService) return <LoadingFullScreen/>;
     if (error) return <ErrorMsg error={error}/>
