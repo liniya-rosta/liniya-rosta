@@ -9,7 +9,7 @@ import {Input} from "@/components/ui/input";
 import {Textarea} from "@/components/ui/textarea";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue,} from "@/components/ui/select";
 import {Alert, AlertDescription} from "@/components/ui/alert";
-import {Category, Product} from "@/lib/types";
+import {Product} from "@/lib/types";
 import {API_BASE_URL} from "@/lib/globalConstants";
 import {
     CreateProductFormData,
@@ -21,15 +21,17 @@ import {useAdminProductStore} from "@/store/superadmin/superadminProductsStore";
 import {createProduct, updateProduct} from "@/actions/superadmin/products";
 import {toast} from "react-toastify";
 import {AxiosError} from "axios";
+import {useCategoryStore} from "@/store/categoriesStore";
+import {cn} from "@/lib/utils";
 
 interface ProductFormProps {
     isEditing: boolean;
     editingProduct: Product | null;
-    categories: Category[];
     onCancel?: () => void;
 }
+type FormData = CreateProductFormData | UpdateProductFormData;
 
-const ProductForm: React.FC<ProductFormProps> = ({isEditing, editingProduct, categories, onCancel}) => {
+const ProductForm: React.FC<ProductFormProps> = ({isEditing, editingProduct, onCancel}) => {
     const {
         products,
         setProducts,
@@ -42,13 +44,14 @@ const ProductForm: React.FC<ProductFormProps> = ({isEditing, editingProduct, cat
         setCreateError,
         setUpdateError,
     } = useAdminProductStore();
+    const { categories } = useCategoryStore();
 
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const loading = createLoading || updateLoading;
 
-    const form = useForm<CreateProductFormData | UpdateProductFormData>({
+    const form = useForm<FormData>({
         resolver: zodResolver(isEditing ? updateProductSchema : createProductSchema),
         defaultValues: {
             category: isEditing ? editingProduct?.category._id : "",
@@ -61,13 +64,10 @@ const ProductForm: React.FC<ProductFormProps> = ({isEditing, editingProduct, cat
     useEffect(() => {
         if (editingProduct) {
             form.reset({
-                category:
-                    typeof editingProduct.category === "object"
-                        ? editingProduct.category._id
-                        : editingProduct.category,
+                category: editingProduct.category._id,
                 title: editingProduct.title,
                 description: editingProduct.description || "",
-                image: undefined,
+                cover: undefined,
             } as UpdateProductFormData);
 
             if (editingProduct.cover) {
@@ -115,42 +115,46 @@ const ProductForm: React.FC<ProductFormProps> = ({isEditing, editingProduct, cat
         form.trigger("cover");
     };
 
+    const handleSubmitForm = async (data: CreateProductFormData | UpdateProductFormData) => {
+        try {
+            if (isEditing && editingProduct) {
+                setUpdateLoading(true);
+                setUpdateError(null);
+                const updatedProduct = await updateProduct(editingProduct._id, data as UpdateProductFormData, data.cover ?? undefined);
+                setProducts(products.map(p => p._id === updatedProduct._id ? updatedProduct : p));
+                toast.success("Продукт успешно обновлен");
+            } else {
+                setCreateLoading(true);
+                setCreateError(null);
+                const newProduct = await createProduct(data as CreateProductFormData, data.cover ?? undefined);
+                setProducts([...products, newProduct]);
+                toast.success("Продукт успешно создан");
+            }
+
+            form.reset();
+            setImagePreview(null);
+            onCancel?.();
+        } catch (e) {
+            if (e instanceof AxiosError) {
+                const errorMsg = e.response?.data?.error || 'Произошла ошибка';
+                if (isEditing) setUpdateError(errorMsg);
+                else setCreateError(errorMsg);
+                toast.error(errorMsg);
+            } else {
+                toast.error('Неизвестная ошибка');
+            }
+        } finally {
+            setCreateLoading(false);
+            setUpdateLoading(false);
+        }
+    };
+
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(async (data) => {
-                try {
-                    if (isEditing && editingProduct) {
-                        setUpdateLoading(true);
-                        setUpdateError(null);
-                        const updatedProduct = await updateProduct(editingProduct._id, data as UpdateProductFormData, data.cover ?? undefined);
-                        setProducts(products.map(p => p._id === updatedProduct._id ? updatedProduct : p));
-                        toast.success("Продукт успешно обновлен");
-                    } else {
-                        setCreateLoading(true);
-                        setCreateError(null);
-                        const newProduct = await createProduct(data as CreateProductFormData, data.cover ?? undefined);
-                        setProducts([...products, newProduct]);
-                        toast.success("Продукт успешно создан");
-                    }
-                    form.reset();
-                    setImagePreview(null);
-                    onCancel?.();
-                } catch (e) {
-                    if (e instanceof AxiosError) {
-                        if (isEditing) {
-                            setUpdateError(e.response?.data?.error);
-                        } else {
-                            setCreateError(e.response?.data?.error);
-                        }
-                        toast.error(e.response?.data?.error);
-                    } else {
-                        toast.error('Неизвестная ошибка');
-                    }
-                } finally {
-                    setCreateLoading(false);
-                    setUpdateLoading(false);
-                }
-            })} className="space-y-6">
+            <form
+                onSubmit={form.handleSubmit(handleSubmitForm)}
+                className={cn("space-y-6", loading && "opacity-50 pointer-events-none")}
+            >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <FormField
                         control={form.control}

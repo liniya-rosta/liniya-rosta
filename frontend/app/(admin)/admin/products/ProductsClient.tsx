@@ -8,8 +8,8 @@ import {CardContent} from "@/components/ui/card";
 import {AxiosError} from "axios";
 import {useCategoryStore} from "@/store/categoriesStore";
 import {deleteProduct} from "@/actions/superadmin/products";
-import ProductModal from "@/app/(admin)/admin/products/components/ProductModal";
-import ProductsTable from "@/app/(admin)/admin/products/components/ProductsTable";
+import ProductModal from "@/app/(admin)/admin/products/components/ProductModalForm/ProductModal";
+import ProductsTable from "@/app/(admin)/admin/products/components/ProductTable/ProductsTable";
 import {Category, Product} from "@/lib/types";
 import {toast} from "react-toastify";
 import {useAdminProductStore} from "@/store/superadmin/superadminProductsStore";
@@ -29,15 +29,20 @@ const ProductsClient: React.FC<ProductsClientProps> = ({
     const {
         products,
         setProducts,
+
         fetchLoading,
+        setFetchLoading,
+        setFetchError,
+
         createLoading,
+        setCreateError,
         updateLoading,
         deleteLoading,
         fetchError,
-        setFetchLoading,
+
         setDeleteLoading,
-        setFetchError,
-        setCreateError,
+
+
         setUpdateError,
         setDeleteError,
     } = useAdminProductStore();
@@ -192,7 +197,6 @@ const ProductsClient: React.FC<ProductsClientProps> = ({
                 onClose={resetAndCloseModal}
                 isEditing={!!editingProduct}
                 editingProduct={editingProduct}
-                categories={categories}
             />
         </div>
     );
