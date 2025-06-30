@@ -1,18 +1,17 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { Plus } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { CardContent } from "@/components/ui/card";
-import { AxiosError } from "axios";
-import { useCategoryStore } from "@/store/categoriesStore";
-import { CreateProductFormData, UpdateProductFormData } from "@/lib/zodSchemas/productSchema";
-import { createProduct, deleteProduct, updateProduct } from "@/actions/products";
+import React, {useEffect, useState} from "react";
+import {Plus} from "lucide-react";
+import {Button} from "@/components/ui/button";
+import {Alert, AlertDescription} from "@/components/ui/alert";
+import {CardContent} from "@/components/ui/card";
+import {AxiosError} from "axios";
+import {useCategoryStore} from "@/store/categoriesStore";
+import {deleteProduct} from "@/actions/superadmin/products";
 import ProductModal from "@/app/(admin)/admin/products/components/ProductModal";
 import ProductsTable from "@/app/(admin)/admin/products/components/ProductsTable";
-import { Category, Product } from "@/lib/types";
-import { toast } from 'react-toastify';
+import {Category, Product} from "@/lib/types";
+import {toast} from "react-toastify";
 import {useAdminProductStore} from "@/store/superadmin/superadminProductsStore";
 import DataSkeleton from "@/components/ui/Loading/DataSkeleton";
 
@@ -22,7 +21,11 @@ interface ProductsClientProps {
     initialError: string | null;
 }
 
-const ProductsClient: React.FC<ProductsClientProps> = ({ initialProducts, initialCategories, initialError }) => {
+const ProductsClient: React.FC<ProductsClientProps> = ({
+                                                           initialProducts,
+                                                           initialCategories,
+                                                           initialError,
+                                                       }) => {
     const {
         products,
         setProducts,
@@ -31,11 +34,7 @@ const ProductsClient: React.FC<ProductsClientProps> = ({ initialProducts, initia
         updateLoading,
         deleteLoading,
         fetchError,
-        createError,
-        updateError,
         setFetchLoading,
-        setCreateLoading,
-        setUpdateLoading,
         setDeleteLoading,
         setFetchError,
         setCreateError,
@@ -43,7 +42,7 @@ const ProductsClient: React.FC<ProductsClientProps> = ({ initialProducts, initia
         setDeleteError,
     } = useAdminProductStore();
 
-    const { categories, setCategories } = useCategoryStore();
+    const {categories, setCategories} = useCategoryStore();
 
     const [isHydrating, setIsHydrating] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -93,74 +92,7 @@ const ProductsClient: React.FC<ProductsClientProps> = ({ initialProducts, initia
         setDeleteError(null);
     };
 
-    const onSubmit = async (formData: CreateProductFormData | UpdateProductFormData, isEditingMode: boolean) => {
-        resetErrors();
-        try {
-            let resultProduct: Product;
-            if (isEditingMode) {
-                setUpdateLoading(true);
-                const updateFormData = formData as UpdateProductFormData;
-                if (!editingProduct) throw new Error("Редактируемый продукт не найден.");
-
-                const productDataForUpdate = {
-                    category: updateFormData.category,
-                    title: updateFormData.title,
-                    description: updateFormData.description || "",
-                };
-
-                const imageFileOrNull = updateFormData.image === null ? undefined : updateFormData.image instanceof File ? updateFormData.image : undefined;
-
-                resultProduct = await updateProduct(
-                    editingProduct._id,
-                    productDataForUpdate,
-                    imageFileOrNull
-                );
-                setProducts(
-                    products.map((product) =>
-                        product._id === editingProduct._id ? resultProduct : product
-                    )
-                );
-                toast.success("Товар успешно обновлен!");
-            } else {
-                setCreateLoading(true);
-                const createFormData = formData as CreateProductFormData;
-
-                const productDataForCreate = {
-                    category: createFormData.category,
-                    title: createFormData.title,
-                    description: createFormData.description || "",
-                    image: createFormData.image,
-                };
-
-                resultProduct = await createProduct(
-                    productDataForCreate,
-                    productDataForCreate.image
-                );
-                setProducts([...products, resultProduct]);
-                toast.success("Товар успешно создан!");
-            }
-            resetAndCloseModal();
-        } catch (err) {
-            const errorMessage =
-                err instanceof AxiosError
-                    ? err.response?.data?.error
-                    : err instanceof Error
-                        ? err.message
-                        : "Неизвестная ошибка при сохранении товара";
-            if (isEditingMode) {
-                setUpdateError(errorMessage);
-            } else {
-                setCreateError(errorMessage);
-            }
-            toast.error(errorMessage);
-        } finally {
-            setCreateLoading(false);
-            setUpdateLoading(false);
-        }
-    };
-
     const handleDeleteProduct = async (id: string) => {
-
         resetErrors();
         setDeleteLoading(true);
         try {
@@ -168,7 +100,10 @@ const ProductsClient: React.FC<ProductsClientProps> = ({ initialProducts, initia
             setProducts(products.filter((product) => product._id !== id));
             toast.success("Товар успешно удален!");
         } catch (err) {
-            const errorMessage = err instanceof AxiosError ? err.response?.data?.error : "Неизвестная ошибка при удалении товара";
+            const errorMessage =
+                err instanceof AxiosError
+                    ? err.response?.data?.error
+                    : "Неизвестная ошибка при удалении товара";
             setDeleteError(errorMessage);
             toast.error(errorMessage);
         } finally {
@@ -186,7 +121,10 @@ const ProductsClient: React.FC<ProductsClientProps> = ({ initialProducts, initia
             setProducts(products.filter((product) => !ids.includes(product._id)));
             toast.success("Выбранные товары успешно удалены!");
         } catch (err) {
-            const errorMessage = err instanceof AxiosError ? err.response?.data?.error : "Неизвестная ошибка при удалении выбранных товаров";
+            const errorMessage =
+                err instanceof AxiosError
+                    ? err.response?.data?.error
+                    : "Неизвестная ошибка при удалении выбранных товаров";
             setDeleteError(errorMessage);
             toast.error(errorMessage);
         } finally {
@@ -194,7 +132,7 @@ const ProductsClient: React.FC<ProductsClientProps> = ({ initialProducts, initia
         }
     };
 
-    if (isHydrating || fetchLoading) return <DataSkeleton />;
+    if (isHydrating || fetchLoading) return <DataSkeleton/>;
 
     if (fetchError) {
         return (
@@ -224,7 +162,7 @@ const ProductsClient: React.FC<ProductsClientProps> = ({ initialProducts, initia
                     disabled={anyLoading}
                     className="flex items-center gap-2 w-full sm:w-auto"
                 >
-                    <Plus size={16} />
+                    <Plus size={16}/>
                     Добавить продукт
                 </Button>
             </div>
@@ -255,10 +193,6 @@ const ProductsClient: React.FC<ProductsClientProps> = ({ initialProducts, initia
                 isEditing={!!editingProduct}
                 editingProduct={editingProduct}
                 categories={categories}
-                loading={createLoading || updateLoading}
-                onSubmit={onSubmit}
-                createError={createError}
-                updateError={updateError}
             />
         </div>
     );

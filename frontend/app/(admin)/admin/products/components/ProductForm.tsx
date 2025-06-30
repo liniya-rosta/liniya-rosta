@@ -1,62 +1,60 @@
-import React, { useEffect, useState, useRef } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import React, {useEffect, useRef, useState} from "react";
+import {useForm} from "react-hook-form";
+import {zodResolver} from "@hookform/resolvers/zod";
 import Image from "next/image";
-import { X } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Category, Product } from "@/lib/types";
-import { API_BASE_URL } from "@/lib/globalConstants";
+import {X} from "lucide-react";
+import {Button} from "@/components/ui/button";
+import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage,} from "@/components/ui/form";
+import {Input} from "@/components/ui/input";
+import {Textarea} from "@/components/ui/textarea";
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue,} from "@/components/ui/select";
+import {Alert, AlertDescription} from "@/components/ui/alert";
+import {Category, Product} from "@/lib/types";
+import {API_BASE_URL} from "@/lib/globalConstants";
 import {
     CreateProductFormData,
     createProductSchema,
     UpdateProductFormData,
     updateProductSchema
 } from "@/lib/zodSchemas/productSchema";
+import {useAdminProductStore} from "@/store/superadmin/superadminProductsStore";
+import {createProduct, updateProduct} from "@/actions/superadmin/products";
+import {toast} from "react-toastify";
+import {AxiosError} from "axios";
 
 interface ProductFormProps {
     isEditing: boolean;
     editingProduct: Product | null;
     categories: Category[];
-    loading: boolean;
-    onSubmit: (formData: CreateProductFormData | UpdateProductFormData, isEditingMode: boolean) => void;
     onCancel?: () => void;
-    createError?: string | null;
-    updateError?: string | null;
 }
 
-const ProductForm: React.FC<ProductFormProps> = ({isEditing, editingProduct, categories, loading, onSubmit, onCancel, createError, updateError}) => {
+const ProductForm: React.FC<ProductFormProps> = ({isEditing, editingProduct, categories, onCancel}) => {
+    const {
+        products,
+        setProducts,
+        createLoading,
+        updateLoading,
+        createError,
+        updateError,
+        setCreateLoading,
+        setUpdateLoading,
+        setCreateError,
+        setUpdateError,
+    } = useAdminProductStore();
+
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const loading = createLoading || updateLoading;
 
     const form = useForm<CreateProductFormData | UpdateProductFormData>({
         resolver: zodResolver(isEditing ? updateProductSchema : createProductSchema),
         defaultValues: {
-            category: isEditing
-                ? typeof editingProduct?.category === "object"
-                    ? editingProduct.category._id
-                    : editingProduct?.category
-                : "",
+            category: isEditing ? editingProduct?.category._id : "",
             title: editingProduct?.title || "",
             description: editingProduct?.description || "",
-            image: undefined,
+            cover: undefined,
         } as CreateProductFormData | UpdateProductFormData,
     });
 
@@ -72,8 +70,8 @@ const ProductForm: React.FC<ProductFormProps> = ({isEditing, editingProduct, cat
                 image: undefined,
             } as UpdateProductFormData);
 
-            if (editingProduct.image) {
-                setImagePreview(`${API_BASE_URL}/${editingProduct.image}`);
+            if (editingProduct.cover) {
+                setImagePreview(`${API_BASE_URL}/${editingProduct.cover.url}`);
             } else {
                 setImagePreview(null);
             }
@@ -95,40 +93,69 @@ const ProductForm: React.FC<ProductFormProps> = ({isEditing, editingProduct, cat
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            form.setValue("image", file);
+            form.setValue("cover", file);
             const reader = new FileReader();
             reader.onload = () => {
                 setImagePreview(reader.result as string);
             };
             reader.readAsDataURL(file);
         } else {
-            form.setValue("image", undefined);
+            form.setValue("cover", undefined);
             setImagePreview(null);
         }
-        form.trigger("image");
+        form.trigger("cover");
     };
 
     const clearImage = () => {
-        form.setValue("image", null);
+        form.setValue("cover", null);
         setImagePreview(null);
         if (fileInputRef.current) {
             fileInputRef.current.value = "";
         }
-        form.trigger("image");
-    };
-
-    const handleSubmit = (data: CreateProductFormData | UpdateProductFormData) => {
-        onSubmit(data, isEditing);
+        form.trigger("cover");
     };
 
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+            <form onSubmit={form.handleSubmit(async (data) => {
+                try {
+                    if (isEditing && editingProduct) {
+                        setUpdateLoading(true);
+                        setUpdateError(null);
+                        const updatedProduct = await updateProduct(editingProduct._id, data as UpdateProductFormData, data.cover ?? undefined);
+                        setProducts(products.map(p => p._id === updatedProduct._id ? updatedProduct : p));
+                        toast.success("Продукт успешно обновлен");
+                    } else {
+                        setCreateLoading(true);
+                        setCreateError(null);
+                        const newProduct = await createProduct(data as CreateProductFormData, data.cover ?? undefined);
+                        setProducts([...products, newProduct]);
+                        toast.success("Продукт успешно создан");
+                    }
+                    form.reset();
+                    setImagePreview(null);
+                    onCancel?.();
+                } catch (e) {
+                    if (e instanceof AxiosError) {
+                        if (isEditing) {
+                            setUpdateError(e.response?.data?.error);
+                        } else {
+                            setCreateError(e.response?.data?.error);
+                        }
+                        toast.error(e.response?.data?.error);
+                    } else {
+                        toast.error('Неизвестная ошибка');
+                    }
+                } finally {
+                    setCreateLoading(false);
+                    setUpdateLoading(false);
+                }
+            })} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <FormField
                         control={form.control}
                         name="title"
-                        render={({ field }) => (
+                        render={({field}) => (
                             <FormItem>
                                 <FormLabel>Название *</FormLabel>
                                 <FormControl>
@@ -138,7 +165,7 @@ const ProductForm: React.FC<ProductFormProps> = ({isEditing, editingProduct, cat
                                         {...field}
                                     />
                                 </FormControl>
-                                <FormMessage />
+                                <FormMessage/>
                             </FormItem>
                         )}
                     />
@@ -146,7 +173,7 @@ const ProductForm: React.FC<ProductFormProps> = ({isEditing, editingProduct, cat
                     <FormField
                         control={form.control}
                         name="category"
-                        render={({ field }) => (
+                        render={({field}) => (
                             <FormItem>
                                 <FormLabel>Категория *</FormLabel>
                                 <Select
@@ -156,7 +183,7 @@ const ProductForm: React.FC<ProductFormProps> = ({isEditing, editingProduct, cat
                                 >
                                     <FormControl>
                                         <SelectTrigger>
-                                            <SelectValue placeholder="Выберите категорию" />
+                                            <SelectValue placeholder="Выберите категорию"/>
                                         </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
@@ -167,7 +194,7 @@ const ProductForm: React.FC<ProductFormProps> = ({isEditing, editingProduct, cat
                                         ))}
                                     </SelectContent>
                                 </Select>
-                                <FormMessage />
+                                <FormMessage/>
                             </FormItem>
                         )}
                     />
@@ -175,7 +202,7 @@ const ProductForm: React.FC<ProductFormProps> = ({isEditing, editingProduct, cat
                     <FormField
                         control={form.control}
                         name="description"
-                        render={({ field }) => (
+                        render={({field}) => (
                             <FormItem className="md:col-span-2">
                                 <FormLabel>Описание</FormLabel>
                                 <FormControl>
@@ -186,14 +213,14 @@ const ProductForm: React.FC<ProductFormProps> = ({isEditing, editingProduct, cat
                                         {...field}
                                     />
                                 </FormControl>
-                                <FormMessage />
+                                <FormMessage/>
                             </FormItem>
                         )}
                     />
 
                     <FormField
                         control={form.control}
-                        name="image"
+                        name="cover"
                         render={() => (
                             <FormItem className="md:col-span-2">
                                 <FormLabel>Изображение {isEditing ? "" : "*"}</FormLabel>
@@ -236,13 +263,13 @@ const ProductForm: React.FC<ProductFormProps> = ({isEditing, editingProduct, cat
                                                     disabled={loading}
                                                     className="absolute -top-2 -right-2 w-6 h-6 rounded-full p-0"
                                                 >
-                                                    <X size={12} />
+                                                    <X size={12}/>
                                                 </Button>
                                             </div>
                                         )}
                                     </div>
                                 </FormControl>
-                                <FormMessage />
+                                <FormMessage/>
                             </FormItem>
                         )}
                     />

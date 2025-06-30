@@ -181,19 +181,16 @@ export interface ProductMutation {
     }[];
     sale?: {
         isOnSale: boolean;
-        label: string;
+        label?: string | null;
     };
     icon?: {
-        alt: string;
-        url: string;
+        alt?: string | null;
+        url?: string;
     };
 }
 
 export interface ProductUpdateMutation extends ProductMutation {
-    category: {
-        _id: string;
-        title: string;
-    };
+    cover?: File | null;
 }
 //
 // export interface ProductAdmin {

@@ -7,7 +7,6 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog";
 import { Category, Product } from "@/lib/types";
-import { CreateProductFormData, UpdateProductFormData } from "@/lib/zodSchemas/productSchema";
 import ProductForm from "./ProductForm";
 
 interface ProductModalProps {
@@ -16,13 +15,9 @@ interface ProductModalProps {
     isEditing: boolean;
     editingProduct: Product | null;
     categories: Category[];
-    loading: boolean;
-    onSubmit: (formData: CreateProductFormData | UpdateProductFormData, isEditingMode: boolean) => void;
-    createError: string | null;
-    updateError: string | null;
 }
 
-const ProductModal: React.FC<ProductModalProps> = ({isOpen, onClose, isEditing, editingProduct, categories, loading, onSubmit, createError, updateError}) => {
+const ProductModal: React.FC<ProductModalProps> = ({isOpen, onClose, isEditing, editingProduct, categories}) => {
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
             <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto">
@@ -41,11 +36,7 @@ const ProductModal: React.FC<ProductModalProps> = ({isOpen, onClose, isEditing, 
                     isEditing={isEditing}
                     editingProduct={editingProduct}
                     categories={categories}
-                    loading={loading}
-                    onSubmit={onSubmit}
                     onCancel={onClose}
-                    createError={createError}
-                    updateError={updateError}
                 />
             </DialogContent>
         </Dialog>
