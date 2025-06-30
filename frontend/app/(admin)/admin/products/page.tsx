@@ -3,6 +3,7 @@ import {Category, Product} from "@/lib/types";
 import {fetchProducts} from "@/actions/products";
 import {fetchCategories} from "@/actions/categories";
 import ProductsClient from "@/app/(admin)/admin/products/ProductsClient";
+import {AxiosError} from "axios";
 
 const AdminProductsPage = async () => {
     let products: Product[] = [];
@@ -12,12 +13,13 @@ const AdminProductsPage = async () => {
     let categoriesError: string | null = null;
 
     try {
-        products = await fetchProducts();
+        const data = await fetchProducts();
+        products = data.items;
     } catch (e) {
-        if (e instanceof Error) {
-            productsError = e.message;
+        if (e instanceof AxiosError) {
+            productsError = (e.response?.data?.error ?? "Ошибка при загрузке админов.");
         } else {
-            productsError = 'Неизвестная ошибка на сервере при загрузке продуктов.';
+            productsError = "Неизвестная ошибка на сервере при загрузке продуктов.";
         }
     }
 
@@ -34,13 +36,13 @@ const AdminProductsPage = async () => {
     const combinedError = productsError || categoriesError;
 
     return (
-        <div>
+        <>
             <ProductsClient
                 initialProducts={products}
                 initialCategories={categories}
                 initialError={combinedError}
             />
-        </div>
+        </>
 
     );
 };

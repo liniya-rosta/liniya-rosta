@@ -26,7 +26,7 @@ const HomePage = async () => {
             }),
 
         fetchProducts()
-            .then(data => productsData = data)
+            .then(data => productsData = data.items)
             .catch(e => {
                 productsError = e instanceof Error ? e.message : String(e);
             }),

@@ -18,7 +18,7 @@ const ProductCard: React.FC<Props> = ({product}) => {
             <div className="flex-shrink-0">
                 <AspectRatio ratio={4 / 3}>
                     <Image
-                        src={`${API_BASE_URL}/${product.image}`}
+                        src={`${API_BASE_URL}/${product.cover.url}`}
                         alt={product.title}
                         fill
                         className="object-cover"

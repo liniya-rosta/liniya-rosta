@@ -55,7 +55,7 @@ export const updateProduct = async (id: string, productData: ProductUpdateMutati
         const formData = new FormData();
 
         if (productData.category) {
-            formData.append('category', productData.category._id);
+            formData.append('category', productData.category);
         }
 
         if (productData.title) {
@@ -75,12 +75,7 @@ export const updateProduct = async (id: string, productData: ProductUpdateMutati
         }
 
         if (productData.images?.length) {
-            productData.images.forEach(img => {
-                if ('url' in img) {
-                    formData.append('images', img.url);
-                    formData.append('alt', img.alt || '');
-                }
-            });
+            formData.append('images', JSON.stringify(productData.images));
         }
 
         if (productData.characteristics) {
@@ -92,8 +87,8 @@ export const updateProduct = async (id: string, productData: ProductUpdateMutati
         }
 
         if (productData.icon) {
-            formData.append('iconUrl', productData.icon.url);
-            formData.append('iconAlt', productData.icon.alt || '');
+            if (productData.icon.url) formData.append('iconUrl', productData.icon.url);
+            if (productData.icon.alt) formData.append('iconAlt', productData.icon.alt);
         }
 
         const res = await axiosAPI.patch<{

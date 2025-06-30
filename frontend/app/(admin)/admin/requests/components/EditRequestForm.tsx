@@ -13,8 +13,6 @@ import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from '@/
 import {Textarea} from "@/components/ui/textarea";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select';
 import {DialogFooter} from "@/components/ui/dialog";
-import ButtonLoading from "@/components/ui/ButtonLoading";
-import {Loader} from "lucide-react";
 
 interface Props {
     request: IRequest | null;

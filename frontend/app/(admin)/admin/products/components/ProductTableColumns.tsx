@@ -59,7 +59,7 @@ export const getProductTableColumns = (
             accessorKey: "image",
             header: "Изображение",
             cell: ({ row }) => {
-                const imageUrl = row.original.image;
+                const imageUrl = row.original.cover.url;
                 return imageUrl ? (
                     <div className="w-16 h-16 relative flex-shrink-0">
                         <Image

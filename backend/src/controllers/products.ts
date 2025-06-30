@@ -48,6 +48,19 @@ export const getProducts = async (req: Request, res: Response, next: NextFunctio
             {$sort: {_id: -1}},
             {$skip: skip},
             {$limit: parsedLimit},
+            {$lookup: {
+                    from: "categories",
+                    localField: "category",
+                    foreignField: "_id",
+                    as: "category"
+                }
+            },
+            {
+                $unwind: {
+                    path: "$category",
+                    preserveNullAndEmptyArrays: true
+                }
+            },
             {
                 $project: {
                     title: 1,
