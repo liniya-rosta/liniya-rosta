@@ -166,6 +166,22 @@ export interface IRequest {
     updatedAt: string;
 }
 
+export interface ServiceForm {
+    title: string;
+    description?: string;
+}
+
+export interface Service extends ServiceForm {
+    _id: string;
+}
+
+export type ServiceUpdate = Partial<ServiceForm>;
+
+export interface ServiceResponse {
+    items: Service[];
+    total: number;
+}
+
 export interface RequestMutation {
     name: string;
     phone: string;

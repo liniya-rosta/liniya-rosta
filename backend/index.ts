@@ -12,6 +12,8 @@ import requestRouter from "./src/routes/requests";
 import portfolioItemRouter from "./src/routes/portfolioItems";
 import contactsRouter from "./src/routes/contacts";
 import path from "path";
+import serviceRouter from "./src/routes/services";
+
 
 const app = express();
 const port = 8000;
@@ -38,6 +40,7 @@ app.use('/posts', postRouter);
 app.use('/requests', requestRouter)
 app.use('/portfolio-items', portfolioItemRouter);
 app.use('/contacts', contactsRouter);
+app.use('/services', serviceRouter);
 
 const run = async () => {
     await mongoose.connect(config.db);

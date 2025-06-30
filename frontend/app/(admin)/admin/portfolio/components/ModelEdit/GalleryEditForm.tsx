@@ -3,7 +3,6 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import {useSuperAdminPortfolioStore} from "@/store/superadmin/superAdminPortfolio";
 import React, {useEffect, useState} from "react";
 import {GalleryEditValues} from "@/lib/types";
-import {gallerySchema} from "@/lib/zodSchemas/portfolio/gallerySchema";
 import {Input} from "@/components/ui/input";
 import Image from "next/image";
 import {API_BASE_URL} from "@/lib/globalConstants";
@@ -17,6 +16,7 @@ import {fetchPortfolioItem} from "@/actions/portfolios";
 import {Eye} from "lucide-react";
 import {Label} from "@/components/ui/label";
 import ImageModal from "@/app/(admin)/admin/portfolio/components/ImageModal";
+import { gallerySchema } from "@/lib/zodSchemas/portfolioSchema";
 
 interface Props {
     onSaved: () => void;

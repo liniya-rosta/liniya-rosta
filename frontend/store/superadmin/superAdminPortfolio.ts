@@ -10,7 +10,6 @@ interface PortfolioState {
     createLoading: boolean;
     editLoading: boolean;
     deleteLoading: boolean;
-    fetchPortfolioError: string | null;
     paginationPortfolio: PaginationMeta | null;
 
     setPortfolioPreview: (data: PortfolioItemPreview[]) => void;
@@ -21,7 +20,6 @@ interface PortfolioState {
     setPortfolioCreateLoading: (loading: boolean) => void;
     setPortfolioDeleteLoading: (loading: boolean) => void;
     setPortfolioEditLoading: (loading: boolean) => void;
-    setFetchPortfolioError: (error: string) => void;
     setPaginationPortfolio: (data: PaginationMeta) => void;
 }
 
@@ -34,7 +32,6 @@ export const useSuperAdminPortfolioStore = create<PortfolioState>((set) => ({
     createLoading: false,
     editLoading: false,
     deleteLoading: false,
-    fetchPortfolioError: null,
     paginationPortfolio: null,
 
     setPortfolioPreview: data => set({ items: data }),
@@ -45,6 +42,5 @@ export const useSuperAdminPortfolioStore = create<PortfolioState>((set) => ({
     setPortfolioCreateLoading: loading => set({ createLoading: loading }),
     setPortfolioDeleteLoading: loading => set({ deleteLoading: loading }),
     setPortfolioEditLoading: loading => set({ editLoading: loading }),
-    setFetchPortfolioError: error => set({ fetchPortfolioError: error }),
     setPaginationPortfolio: data => set({ paginationPortfolio: data }),
 }));

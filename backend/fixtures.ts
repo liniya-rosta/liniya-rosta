@@ -7,7 +7,7 @@ import Post from "./src/models/Post";
 import {PortfolioItem} from "./src/models/PortfolioItem";
 import RequestFromClient from "./src/models/Request";
 import Contact from "./src/models/Contact";
-
+import Service from "./src/models/Service";
 
 const run = async () => {
     await mongoose.connect(config.db);
@@ -337,7 +337,22 @@ const run = async () => {
             phone: "+996555112233",
             email: 'aidana@gmail.com',
         },
-    )
+    );
+
+    await Service.create(
+        {
+            title: "Выезд на замер",
+            description: "Наш специалист приедет к вам в удобное время, сделает точные замеры и даст рекомендации",
+        },
+        {
+            title: "Монтаж потолков и ламината",
+            description: "Профессиональный монтаж натяжных потолков и укладка ламината любой сложности",
+        },
+        {
+            title: "Расчет освещенности",
+            description: "Точный расчет освещения вашего помещения с учетом всех особенностей и пожеланий",
+        }
+    );
     await db.close();
 }
 
