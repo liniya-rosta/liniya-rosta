@@ -17,8 +17,8 @@ const AdminHeader = () => {
     ];
 
     return (
-        <header className="w-full bg-gray-800 text-white px-4 py-4 shadow mb-8">
-            <div className={`container mx-auto flex items-center ${
+        <header className="w-full bg-gray-800 text-white shadow mb-8">
+            <div className={`container px-4 py-4 mx-auto flex items-center ${
                 isSuperadmin ? "justify-between" : "justify-end"
             }`}>
                 {isSuperadmin && <Burger navItems={navItems} isAdmin/>}

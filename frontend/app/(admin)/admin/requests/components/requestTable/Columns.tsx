@@ -1,9 +1,34 @@
 import {ColumnDef} from "@tanstack/react-table"
 import {IRequest} from "@/lib/types";
-import {Button} from "@/components/ui/button";
 import {ArrowUpDown} from "lucide-react";
+import {Checkbox} from "@/components/ui/checkbox";
+import dayjs from "dayjs";
 
 export const columns: ColumnDef<IRequest>[] = [
+    {
+        accessorKey: "_id",
+        accessorFn: (row) => row._id,
+    header: ({ table }) => (
+    <Checkbox
+        checked={
+            table.getIsAllPageRowsSelected() ||
+            (table.getIsSomePageRowsSelected() && "indeterminate")
+        }
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+    />
+),
+    cell: ({ row }) => (
+    <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        onClick={(e) => e.stopPropagation()}
+        aria-label="Select row"
+    />
+),
+    enableSorting: false,
+    enableHiding: false,
+},
     {
         accessorKey: "name",
         header: "Имя",
@@ -31,11 +56,7 @@ export const columns: ColumnDef<IRequest>[] = [
     },
     {
         accessorKey: "status",
-        header: () => (
-            <>
-                Статус
-            </>
-        ),
+        header: "Статус",
         cell: ({ row }) => {
             const status = row.getValue("status") as string
             return (
@@ -56,28 +77,55 @@ export const columns: ColumnDef<IRequest>[] = [
         accessorKey: "createdAt",
         header: ({ column }) => {
             return (
-                <Button
-                    variant="ghost"
+                <div
+                    className="flex cursor-pointer"
                     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                 >
                     Дата создания
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
-                </Button>
+                    <ArrowUpDown className="ml-2 h-4 w-4 mt-0.5" />
+                </div>
             )
+        },
+        cell: ({ row }) => {
+            return dayjs(row.original.createdAt).format("DD-MM-YYYY HH:mm");
+        },
+        filterFn: (row, columnId, filterValue: [string, string]) => {
+            const raw = row.getValue(columnId) as string;
+            const value = new Date(raw);
+            const [from, to] = filterValue;
+
+            const valueDateOnly = new Date(value.getFullYear(), value.getMonth(), value.getDate());
+
+            const fromDate = from ? new Date(from + "T00:00:00") : null;
+            const toDate = to ? new Date(to + "T00:00:00") : null;
+
+            return (
+                (!fromDate || valueDateOnly >= fromDate) &&
+                (!toDate || valueDateOnly <= toDate)
+            );
+        },
+        meta: {
+            title: "Дата создания",
         },
     },
     {
         accessorKey: "updatedAt",
         header: ({ column }) => {
             return (
-                <Button
-                    variant="ghost"
+                <div
+                    className="flex cursor-pointer"
                     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                 >
                     Дата обновления
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
-                </Button>
+                    <ArrowUpDown className="ml-2 h-4 w-4 mt-0.5" />
+                </div>
             )
+        },
+        cell: ({ row }) => {
+            return dayjs(row.original.createdAt).format("DD-MM-YYYY HH:mm");
+        },
+        meta: {
+            title: "Дата обновления",
         },
     },
 ]

@@ -6,7 +6,7 @@ const superAdminPrivateRouter = express.Router();
 
 superAdminPrivateRouter.get("/", async (_req, res, next) => {
     try {
-        const admins = await User.find();
+        const admins = await User.find().select("-refreshToken");
         res.send(admins);
     } catch (e) {
         next(e);

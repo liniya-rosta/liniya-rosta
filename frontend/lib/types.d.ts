@@ -115,6 +115,11 @@ export interface UserForm {
     confirmPassword: string;
 }
 
+export interface AdminForm extends UserForm {
+    displayName?: string;
+    role?: "admin" | "superadmin";
+}
+
 export interface EditProfileForm {
     displayName?: string;
     email?: string;
@@ -155,7 +160,7 @@ export interface IRequest {
     name: string;
     phone: string;
     email: string;
-    commentOfManager: string;
+    commentOfManager?: string;
     status: "Новая" | "В работе" | "Завершена" | "Отклонена";
     createdAt: string;
     updatedAt: string;
@@ -175,4 +180,19 @@ export type ServiceUpdate = Partial<ServiceForm>;
 export interface ServiceResponse {
     items: Service[];
     total: number;
+}
+
+export interface RequestMutation {
+    name: string;
+    phone: string;
+    email: string;
+    commentOfManager?: string;
+    status: "Новая" | "В работе" | "Завершена" | "Отклонена";
+}
+
+export interface FetchRequestsResponse {
+    data: IRequest[];
+    currentPage: number;
+    totalPages: number;
+    totalItems: number;
 }

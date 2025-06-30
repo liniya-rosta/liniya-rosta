@@ -1,12 +1,11 @@
 'use client'
 
 import React, {useEffect} from 'react';
-import {IRequest} from "@/lib/types";
+import {FetchRequestsResponse} from "@/lib/types";
 import {fetchAllRequests} from "@/actions/superadmin/requests";
 import {useAdminRequestsStore} from "@/store/superadmin/adminRequestsStore";
 import {DataTable} from "@/app/(admin)/admin/requests/components/requestTable/Data-table";
 import {columns} from "@/app/(admin)/admin/requests/components/requestTable/Columns";
-import dayjs from "dayjs";
 
 const RequestsPage = () => {
     const {
@@ -15,35 +14,33 @@ const RequestsPage = () => {
         fetchAllError,
         fetchAllLoading,
         setFetchAllError,
-        setFetchAllLoading
+        setFetchAllLoading,
+        setPage,
+        setLastPage,
+        setTotalItems,
     } = useAdminRequestsStore()
 
     useEffect(() => {
-        let fetchData: IRequest[] = []
-        let error: string | null = null
-
         const getDataFetch = async () => {
             setFetchAllLoading(true);
             setFetchAllError(null);
 
             try {
-                fetchData = await fetchAllRequests();
-                const data = fetchData.map((item) => ({
-                    ...item,
-                    createdAt: dayjs(item.createdAt).format('DD-MM-YYYY HH:mm'),
-                    updatedAt: dayjs(item.updatedAt).format('DD-MM-YYYY HH:mm'),
-                }));
-                setRequests(data.reverse());
-                setFetchAllLoading(false);
+                const response: FetchRequestsResponse = await fetchAllRequests({ page: 1 });
+                setRequests(response.data);
+                setPage(1);
+                setLastPage(response.totalPages);
+                setTotalItems(response.totalItems);
             } catch (e) {
-                error = e instanceof Error ? e.message : 'Произошла ошибка при получении заявок';
-                setFetchAllError(error)
+                const errorMessage = e instanceof Error ? e.message : 'Произошла ошибка при получении заявок';
+                setFetchAllError(errorMessage);
             } finally {
                 setFetchAllLoading(false);
             }
-        }
-        getDataFetch().then()
-    }, [setRequests, setFetchAllLoading, setFetchAllError]);
+        };
+
+        getDataFetch().then();
+    }, []);
 
     return (
         <div>

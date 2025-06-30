@@ -3,16 +3,16 @@
 import * as React from "react"
 import {
     ColumnDef,
-    ColumnFiltersState,
     flexRender,
-    getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, SortingState,
-    useReactTable, VisibilityState,
+    getCoreRowModel,
+    RowSelectionState,
+    useReactTable,
+    VisibilityState,
 } from "@tanstack/react-table"
-
 import {
     Table,
     TableBody,
-    TableCell, TableFooter,
+    TableCell,
     TableHead,
     TableHeader,
     TableRow,
@@ -22,136 +22,123 @@ import TablePagination from "@/app/(admin)/admin/requests/components/requestTabl
 import {useState} from "react";
 import StatusFilter from "@/app/(admin)/admin/requests/components/requestTable/StatusFilter";
 import ColumnVisibility from "./ColumnVisibility"
-import {Input} from "@/components/ui/input";
+import SearchTable from "@/app/(admin)/admin/requests/components/requestTable/SearchTable";
+import CheckboxAction from "@/app/(admin)/admin/requests/components/requestTable/CheckboxAction";
+import {DateFilter} from "@/app/(admin)/admin/requests/components/requestTable/DateFilter";
+import {IRequest} from "@/lib/types";
+import RequestsModal from "@/app/(admin)/admin/requests/components/RequestsModal";
 
-interface DataTableProps<TData, TValue> {
-    columns: ColumnDef<TData, TValue>[]
-    data: TData[]
+interface DataTableProps {
+    columns: ColumnDef<IRequest, any>[]
+    data: IRequest[]
     error: string | null
     loading: boolean
 }
 
-export const DataTable = <TData, TValue>({
-                                             columns,
-                                             data,
-                                             error,
-                                             loading,
-                                         }: DataTableProps<TData, TValue>) => {
-    const [sorting, setSorting] = React.useState<SortingState>([])
-    const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-    const [columnVisibility, setColumnVisibility] =
-        React.useState<VisibilityState>({})
+export const DataTable = ({
+                              columns,
+                              data,
+                              error,
+                              loading,
+                          }: DataTableProps) => {
+    const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+    const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+    const [selectedRow, setSelectedRow] = useState<IRequest | null>(null);
 
     const table = useReactTable({
         data,
         columns,
         getCoreRowModel: getCoreRowModel(),
-        getPaginationRowModel: getPaginationRowModel(),
-        onSortingChange: setSorting,
-        getSortedRowModel: getSortedRowModel(),
-        getFilteredRowModel: getFilteredRowModel(),
-        onColumnFiltersChange: setColumnFilters,
         onColumnVisibilityChange: setColumnVisibility,
+        onRowSelectionChange: setRowSelection,
         state: {
-            pagination: {
-                pageSize: 20,
-                pageIndex: 0,
-
-            },
-            sorting,
-            columnFilters,
             columnVisibility,
+            rowSelection,
         },
-    })
-
-    const statusColumn = table.getColumn("status");
+    });
 
     return (
-        <div className="rounded-md border p-2">
-            <Table>
-                <TableHeader>
-                    <TableRow
-                        className="hover:bg-transparent">
-                        <TableCell colSpan={columns.length}>
-                            <div className="flex justify-between items-center gap-4">
-                                {statusColumn && <StatusFilter column={statusColumn}/>}
-                                <div className="flex items-center py-4">
-                                    <Input
-                                        placeholder="Поиск по имени"
-                                        value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-                                        onChange={(event) =>
-                                            table.getColumn("name")?.setFilterValue(event.target.value)
-                                        }
-                                        className="max-w-sm"
-                                    />
-                                </div>
-                                <ColumnVisibility table={table}/>
-                                <TablePagination<TData> table={table}/>
-                            </div>
-                        </TableCell>
-                    </TableRow>
-                    {table.getHeaderGroups().map((headerGroup) => (
-                        <TableRow
-                            className="hover:bg-transparent"
-                            key={headerGroup.id}>
-                            {headerGroup.headers.map((header) => (
-                                <TableHead key={header.id}>
-                                    {header.isPlaceholder
-                                        ? null
-                                        : flexRender(
-                                            header.column.columnDef.header,
-                                            header.getContext()
-                                        )}
-                                </TableHead>
-                            ))}
-                        </TableRow>
-                    ))}
-                </TableHeader>
-                <TableBody>
-                    {loading ? (
-                        <TableRow>
-                            <TableCell colSpan={columns.length} className="h-24 text-center">
-                                <Loading/>
-                            </TableCell>
-                        </TableRow>
-                    ) : error ? (
-                        <TableRow>
-                            <TableCell colSpan={columns.length} className="h-24 text-center text-red-500">
-                                {error}
-                            </TableCell>
-                        </TableRow>
-                    ) : table.getRowModel().rows?.length ? (
-                        table.getRowModel().rows.map((row) => (
-                            <TableRow
-                                className="odd:bg-white even:bg-gray-50 hover:bg-blue-50 cursor-pointer"
-                                key={row.id}
-                                data-state={row.getIsSelected() && "selected"}
-                            >
-                                {row.getVisibleCells().map((cell) => (
-                                    <TableCell key={cell.id}>
-                                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                    </TableCell>
-                                ))}
+        <div className="mb-[40px]">
+            <h1 className="text-3xl font-bold mb-4">Заявки</h1>
+            <div>
+                <div className="flex justify-between items-center gap-3 flex-wrap">
+                    <SearchTable/>
+                    <StatusFilter/>
+                    <div>
+                        <DateFilter/>
+                    </div>
+
+                </div>
+                <div className="flex justify-between items-center gap-4">
+                    <div className="flex items-center gap-3">
+                        <ColumnVisibility table={table}/>
+                        <CheckboxAction table={table}/>
+                    </div>
+                    <TablePagination/>
+                </div>
+            </div>
+
+
+            <div className="rounded-md border mb-2">
+                <Table>
+                    <TableHeader>
+                        {table.getHeaderGroups().map((headerGroup) => (
+                            <TableRow key={headerGroup.id}>
+                                {headerGroup.headers.map((header) => {
+                                    const isCheckbox = header.id === "_id";
+                                    const widthClass = isCheckbox ? 'px-3' : 'min-w-45 max-w-45 whitespace-normal break-words px-3';
+                                    return (
+                                        <TableHead key={header.id} className={widthClass}>
+                                            {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                                        </TableHead>
+                                    );
+                                })}
                             </TableRow>
-                        ))
-                    ) : (
-                        <TableRow>
-                            <TableCell colSpan={columns.length} className="h-24 text-center">
-                                Пока нет заявок
-                            </TableCell>
-                        </TableRow>
-                    )}
-                </TableBody>
-                <TableFooter>
-                    <TableRow>
-                        <TableCell colSpan={columns.length}>
-                            <div className="flex justify-end">
-                                <TablePagination<TData> table={table}/>
-                            </div>
-                        </TableCell>
-                    </TableRow>
-                </TableFooter>
-            </Table>
+                        ))}
+                    </TableHeader>
+                    <TableBody>
+                        {loading ? (
+                            <TableRow>
+                                <TableCell colSpan={columns.length} className="h-24 text-center">
+                                    <Loading/>
+                                </TableCell>
+                            </TableRow>
+                        ) : error ? (
+                            <TableRow>
+                                <TableCell colSpan={columns.length} className="h-48 text-center text-red-500">
+                                    {error}
+                                </TableCell>
+                            </TableRow>
+                        ) : table.getRowModel().rows?.length ? (
+                            table.getRowModel().rows.map((row) => (
+                                <TableRow
+                                    key={row.id}
+                                    onClick={() => setSelectedRow(row.original)}
+                                    className="odd:bg-white even:bg-gray-50 hover:bg-blue-50 cursor-pointer"
+                                >
+                                    {row.getVisibleCells().map((cell) => (
+                                        <TableCell className="h-15 whitespace-normal break-words px-3" key={cell.id}>
+                                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                        </TableCell>
+                                    ))}
+                                </TableRow>
+                            ))
+                        ) : (
+                            <TableRow>
+                                <TableCell colSpan={columns.length} className="h-24 text-center">
+                                    Пока нет заявок
+                                </TableCell>
+                            </TableRow>
+                        )}
+                    </TableBody>
+                </Table>
+            </div>
+
+            <div className="flex justify-end">
+                <TablePagination/>
+            </div>
+
+            <RequestsModal request={selectedRow} onClose={() => setSelectedRow(null)}/>
         </div>
-    )
+    );
 };
