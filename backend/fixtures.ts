@@ -21,6 +21,7 @@ const run = async () => {
         await db.dropCollection('portfolioitems');
         await db.dropCollection('requests');
         await db.dropCollection('contacts');
+        await db.dropCollection('services');
     } catch (e) {
         console.log('Коллекции отсутствовали, пропуск сброса');
     }
@@ -151,7 +152,7 @@ const run = async () => {
             description: 'Lorem ipsum',
             images: [
                 { image: 'test/news1.jpg', alt: 'Новость 1' },
-                { image: 'test/news1_2.jpg', alt: 'Доп. изображение 1' },
+                { image: 'test/news2.png', alt: 'Доп. изображение 1' },
             ],
         },
         {
@@ -159,7 +160,7 @@ const run = async () => {
             description: 'Lorem ipsum',
             images: [
                 { image: 'test/news1.jpg', alt: 'Новость 1' },
-                { image: 'test/news1_2.jpg', alt: 'Доп. изображение 1' },
+                { image: 'test/news2.png', alt: 'Доп. изображение 1' },
             ],
         },
         {
@@ -167,7 +168,7 @@ const run = async () => {
             description: 'Lorem ipsum',
             images: [
                 { image: 'test/news1.jpg', alt: 'Новость 1' },
-                { image: 'test/news1_2.jpg', alt: 'Доп. изображение 1' },
+                { image: 'test/news2.png', alt: 'Доп. изображение 1' },
             ],
         },
         {
@@ -175,7 +176,7 @@ const run = async () => {
             description: 'Lorem ipsum',
             images: [
                 { image: 'test/news1.jpg', alt: 'Новость 1' },
-                { image: 'test/news1_2.jpg', alt: 'Доп. изображение 1' },
+                { image: 'test/news2.png', alt: 'Доп. изображение 1' },
             ],
         },
         {
@@ -183,7 +184,7 @@ const run = async () => {
             description: 'Lorem ipsum',
             images: [
                 { image: 'test/news1.jpg', alt: 'Новость 1' },
-                { image: 'test/news1_2.jpg', alt: 'Доп. изображение 1' },
+                { image: 'test/news2.png', alt: 'Доп. изображение 1' },
             ],
         },
         {
@@ -191,7 +192,7 @@ const run = async () => {
             description: 'Lorem ipsum',
             images: [
                 { image: 'test/news1.jpg', alt: 'Новость 1' },
-                { image: 'test/news1_2.jpg', alt: 'Доп. изображение 1' },
+                { image: 'test/news2.png', alt: 'Доп. изображение 1' },
             ],
         },
         {
@@ -199,7 +200,7 @@ const run = async () => {
             description: 'Lorem ipsum',
             images: [
                 { image: 'test/news1.jpg', alt: 'Новость 1' },
-                { image: 'test/news1_2.jpg', alt: 'Доп. изображение 1' },
+                { image: 'test/news2.png', alt: 'Доп. изображение 1' },
             ],
         },
         {
@@ -207,7 +208,7 @@ const run = async () => {
             description: 'Lorem ipsum',
             images: [
                 { image: 'test/news1.jpg', alt: 'Новость 1' },
-                { image: 'test/news1_2.jpg', alt: 'Доп. изображение 1' },
+                { image: 'test/news2.png', alt: 'Доп. изображение 1' },
             ],
         },
         {
@@ -215,7 +216,7 @@ const run = async () => {
             description: 'Lorem ipsum',
             images: [
                 { image: 'test/news1.jpg', alt: 'Новость 1' },
-                { image: 'test/news1_2.jpg', alt: 'Доп. изображение 1' },
+                { image: 'news2.png', alt: 'Доп. изображение 1' },
             ],
         },
         {
@@ -223,7 +224,7 @@ const run = async () => {
             description: 'Lorem ipsum',
             images: [
                 { image: 'test/news1.jpg', alt: 'Новость 1' },
-                { image: 'test/news1_2.jpg', alt: 'Доп. изображение 1' },
+                { image: 'news2.png', alt: 'Доп. изображение 1' },
             ],
         },
     );
