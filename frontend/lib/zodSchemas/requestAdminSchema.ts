@@ -7,5 +7,6 @@ export const requestAdminSchema = z.object({
     commentOfManager: z.string().optional(),
     status: z.enum(["Новая", "В работе", "Завершена", "Отклонена"]).refine((val) => !!val, {
         message: "Статус обязателен",
-    })
+    }),
+    isArchived: z.boolean().optional(),
 });

@@ -27,6 +27,7 @@ export interface UpdatesRequest {
     phone?: string;
     status?: 'Новая' | 'В работе' | 'Завершена' | 'Отклонена';
     commentOfManager?: string | null;
+    isArchived?: string;
 }
 
 export interface ContactFields {

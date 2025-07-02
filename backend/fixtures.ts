@@ -326,16 +326,19 @@ const run = async () => {
             name: "Нурбек",
             phone: "+996555123456",
             email: 'nurbek@gmail.com',
+            isArchived: false
         },
         {
             name: "Александр",
             phone: "+996550654321",
             email: 'alex@gmail.com',
+            isArchived: false
         },
         {
             name: "Айдана",
             phone: "+996555112233",
             email: 'aidana@gmail.com',
+            isArchived: false
         },
     )
     await db.close();
