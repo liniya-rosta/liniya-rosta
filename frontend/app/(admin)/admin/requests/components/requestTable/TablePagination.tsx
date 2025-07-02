@@ -17,7 +17,8 @@ const TablePagination = () => {
         status,
         search,
         dateTo,
-        dateFrom
+        dateFrom,
+        viewArchived,
     } = useAdminRequestsStore();
 
     const goToPage = async (targetPage: number) => {
@@ -26,7 +27,8 @@ const TablePagination = () => {
             status,
             search,
             dateTo,
-            dateFrom
+            dateFrom,
+            archived: viewArchived,
         })
         setPage(targetPage);
         setRequests(res.data);
@@ -36,7 +38,7 @@ const TablePagination = () => {
 
     useEffect(() => {
         goToPage(1).then();
-    }, [status, search, dateTo, dateFrom]);
+    }, [status, search, dateTo, dateFrom, viewArchived]);
 
     const handlePrev = () => {
         if (page > 1) goToPage(page - 1).then();

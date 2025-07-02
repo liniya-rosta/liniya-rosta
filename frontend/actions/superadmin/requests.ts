@@ -1,5 +1,5 @@
 import axiosAPI from "@/lib/axiosAPI";
-import {FetchRequestsResponse, RequestMutation} from "@/lib/types";
+import {FetchRequestsResponse, IRequest, RequestMutation} from "@/lib/types";
 
 export const fetchAllRequests = async (
     params?: {
@@ -8,6 +8,7 @@ export const fetchAllRequests = async (
         search?: string,
         dateFrom?: string;
         dateTo?: string;
+        archived: boolean;
     }
 ): Promise<FetchRequestsResponse> => {
     const response = await axiosAPI.get<FetchRequestsResponse>("/superadmin/requests",
@@ -15,6 +16,11 @@ export const fetchAllRequests = async (
 
     return response.data;
 };
+
+export const fetchOneRequest = async (id: string) => {
+    const response = await axiosAPI.get<IRequest>(`/superadmin/requests/${id}`)
+    return response.data;
+}
 
 export const editRequest = async (request_id: string, state: Partial<RequestMutation>) => {
     await axiosAPI.patch(`/superadmin/requests/${request_id}`, state);
