@@ -2,7 +2,7 @@ import {Product, ProductMutation, ProductUpdateMutation} from "@/lib/types";
 import axiosAPI from "@/lib/axiosAPI";
 import {isAxiosError} from "axios";
 
-export const createProduct = async (productData: ProductMutation, coverFile?: File): Promise<Product> => {
+export const createProduct = async (productData: ProductMutation): Promise<Product> => {
     try {
         const formData = new FormData();
         formData.append('category', productData.category);
@@ -12,8 +12,8 @@ export const createProduct = async (productData: ProductMutation, coverFile?: Fi
             formData.append('description', productData.description);
         }
 
-        if (coverFile) {
-            formData.append('cover', coverFile);
+        if (productData.cover) {
+            formData.append('cover', productData.cover);
         }
 
         if (productData.coverAlt) {
@@ -21,8 +21,16 @@ export const createProduct = async (productData: ProductMutation, coverFile?: Fi
         }
 
         if (productData.images) {
-            formData.append('images', JSON.stringify(productData.images));
+            const fileImages = productData.images.filter(img => img.url instanceof File);
+            formData.append('images', JSON.stringify(fileImages));
         }
+
+        productData.images.forEach((img) => {
+            if (img.url instanceof File) {
+                formData.append("images", img.url);
+                formData.append("alt", img.alt || "Элемент галереи");
+            }
+        });
 
         if (productData.characteristics) {
             formData.append('characteristics', JSON.stringify(productData.characteristics));

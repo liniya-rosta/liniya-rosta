@@ -134,6 +134,11 @@ export interface UpdatePostData {
     image?: File;
 }
 
+export interface ProductImagesForm {
+    url: File | null;
+    alt?: string;
+}
+
 export interface Product {
     _id: string;
     title: string;
@@ -147,20 +152,17 @@ export interface Product {
         url: string;
         alt: string;
     };
-    images?: {
-        url: string;
-        alt?: string;
-    }[];
+    images: ProductImagesForm[];
     characteristics?: {
         key: string;
         value: string;
     }[];
     sale?: {
         isOnSale: boolean;
-        label: string;
+        label?: string;
     };
     icon?: {
-        alt: string;
+        alt?: string;
         url: string;
     };
 }
@@ -170,11 +172,8 @@ export interface ProductMutation {
     title: string;
     description?: string;
     coverAlt?: string | null;
-    cover: File | null;
-    images?: {
-        url: File;
-        alt?: string;
-    }[];
+    cover?: File | null;
+    images: ProductImagesForm[];
     characteristics?: {
         key: string;
         value: string;
@@ -192,6 +191,7 @@ export interface ProductMutation {
 export interface ProductUpdateMutation extends ProductMutation {
     cover?: File | null;
 }
+
 //
 // export interface ProductAdmin {
 //     _id: string;

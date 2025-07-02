@@ -3,23 +3,31 @@ import { Product } from '@/lib/types';
 
 interface AdminProductState {
     products: Product[];
-    fetchLoading: boolean;
-    createLoading: boolean;
-    updateLoading: boolean;
-    deleteLoading: boolean;
-    fetchError: string | null;
-    createError: string | null;
-    updateError: string | null;
-    deleteError: string | null;
-
     setProducts: (products: Product[]) => void;
+
+    fetchLoading: boolean;
     setFetchLoading: (loading: boolean) => void;
-    setCreateLoading: (loading: boolean) => void;
-    setUpdateLoading: (loading: boolean) => void;
-    setDeleteLoading: (loading: boolean) => void;
+
+    fetchError: string | null;
     setFetchError: (error: string | null) => void;
+
+    createLoading: boolean;
+    setCreateLoading: (loading: boolean) => void;
+
+    createError: string | null;
     setCreateError: (error: string | null) => void;
+
+    updateLoading: boolean;
+    setUpdateLoading: (loading: boolean) => void;
+
+    updateError: string | null;
     setUpdateError: (error: string | null) => void;
+
+    deleteLoading: boolean;
+    setDeleteLoading: (loading: boolean) => void;
+
+
+    deleteError: string | null;
     setDeleteError: (error: string | null) => void;
 }
 

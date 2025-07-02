@@ -34,14 +34,13 @@ const AdminProductsPage = async () => {
             }),
     ]);
 
-    const combinedError = productsError || categoriesError;
-
     return (
         <>
             <ProductsClient
                 initialProducts={products}
                 initialCategories={categories}
-                initialError={combinedError}
+                initialProductsError={productsError}
+                initialCategoriesError={categoriesError}
             />
         </>
 

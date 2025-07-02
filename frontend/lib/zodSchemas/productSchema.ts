@@ -1,8 +1,8 @@
 import { z } from "zod";
 
 const characteristicSchema = z.object({
-    key: z.string().min(1),
-    value: z.string().min(1),
+    key: z.string().min(1, { message: "Ключ обязателен" }),
+    value: z.string().min(1, { message: "Значение обязательно" }),
 });
 
 const saleSchema = z.object({
@@ -16,17 +16,24 @@ const iconSchema = z.object({
 });
 
 const imageItemSchema = z.object({
-    url: z.instanceof(File).refine(file => file.size > 0),
     alt: z.string().optional(),
+    url: z.instanceof(File, {message: "Добавьте изображение"}).nullable(),
 });
 
 export const createProductSchema = z.object({
-    category: z.string().min(1),
-    title: z.string().min(1).max(200),
+    category: z.string().min(1, { message: "Категория обязательна" }),
+    title: z.string().min(1, { message: "Название обязательно" }).max(200, { message: "Максимум 200 символов" }),
     description: z.string().optional(),
     coverAlt: z.string().optional().nullable(),
-    cover: z.instanceof(File).refine(file => file.size > 0),
-    images: z.array(imageItemSchema).optional(),
+    cover: z
+        .union([z.instanceof(File), z.null()])
+        .refine((file) => file instanceof File && file.size > 0, {
+            message: "Файл обязателен",
+        }),
+    images: z
+        .array(imageItemSchema)
+        .min(1, "Добавьте хотя бы одно изображение в галерею")
+        .default([]),
     characteristics: z.array(characteristicSchema).optional(),
     sale: saleSchema.optional(),
     icon: iconSchema.optional(),
@@ -34,7 +41,7 @@ export const createProductSchema = z.object({
 
 export const updateProductSchema = z.object({
     category: z.string().min(1, 'Категория обязательна'),
-    title: z.string().min(1).max(200),
+    title: z.string().min(1, { message: "Название обязательно" }).max(200, { message: "Максимум 200 символов" }),
     description: z.string().optional(),
     coverAlt: z.string().optional().nullable(),
     cover: z.union([z.instanceof(File), z.null(), z.undefined()]).optional(),

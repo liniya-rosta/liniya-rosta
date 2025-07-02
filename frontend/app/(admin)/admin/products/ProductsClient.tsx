@@ -3,28 +3,31 @@
 import React, {useEffect, useState} from "react";
 import {Plus} from "lucide-react";
 import {Button} from "@/components/ui/button";
-import {Alert, AlertDescription} from "@/components/ui/alert";
 import {CardContent} from "@/components/ui/card";
 import {AxiosError} from "axios";
 import {useCategoryStore} from "@/store/categoriesStore";
 import {deleteProduct} from "@/actions/superadmin/products";
-import ProductModal from "@/app/(admin)/admin/products/components/ProductModalForm/ProductModal";
+import ProductModal from "@/app/(admin)/admin/products/components/ProductForm/ProductModal";
 import ProductsTable from "@/app/(admin)/admin/products/components/ProductTable/ProductsTable";
 import {Category, Product} from "@/lib/types";
 import {toast} from "react-toastify";
 import {useAdminProductStore} from "@/store/superadmin/superadminProductsStore";
 import DataSkeleton from "@/components/ui/Loading/DataSkeleton";
+import ErrorMsg from "@/components/ui/ErrorMsg";
+import Link from "next/link";
 
 interface ProductsClientProps {
     initialProducts: Product[];
     initialCategories: Category[];
-    initialError: string | null;
+    initialProductsError: string | null;
+    initialCategoriesError: string | null;
 }
 
 const ProductsClient: React.FC<ProductsClientProps> = ({
                                                            initialProducts,
                                                            initialCategories,
-                                                           initialError,
+                                                           initialProductsError,
+                                                           initialCategoriesError,
                                                        }) => {
     const {
         products,
@@ -47,28 +50,32 @@ const ProductsClient: React.FC<ProductsClientProps> = ({
         setDeleteError,
     } = useAdminProductStore();
 
-    const {categories, setCategories} = useCategoryStore();
+    const {categories, setCategories, fetchCategoriesError, setFetchCategoriesError} = useCategoryStore();
 
     const [isHydrating, setIsHydrating] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingProduct, setEditingProduct] = useState<Product | null>(null);
 
     const anyLoading = createLoading || updateLoading || deleteLoading;
+    const overallError = fetchError || fetchCategoriesError;
 
     useEffect(() => {
         if (initialProducts) setProducts(initialProducts);
         if (initialCategories) setCategories(initialCategories);
-        if (initialError) setFetchError(initialError);
+        if (initialProductsError) setFetchError(initialProductsError);
+        if (initialCategoriesError) setFetchCategoriesError(initialCategoriesError);
         setFetchLoading(false);
         setIsHydrating(false);
     }, [
         initialProducts,
         initialCategories,
-        initialError,
+        initialProductsError,
+        initialCategoriesError,
         setProducts,
         setCategories,
         setFetchError,
         setFetchLoading,
+        setFetchCategoriesError,
     ]);
 
     const resetAndCloseModal = () => {
@@ -92,6 +99,7 @@ const ProductsClient: React.FC<ProductsClientProps> = ({
 
     const resetErrors = () => {
         setFetchError(null);
+        setFetchCategoriesError(null);
         setCreateError(null);
         setUpdateError(null);
         setDeleteError(null);
@@ -139,17 +147,7 @@ const ProductsClient: React.FC<ProductsClientProps> = ({
 
     if (isHydrating || fetchLoading) return <DataSkeleton/>;
 
-    if (fetchError) {
-        return (
-            <div className="flex items-center justify-center min-h-64">
-                <Alert variant="destructive" className="max-w-md">
-                    <AlertDescription>
-                        Ошибка при загрузке продуктов: {fetchError}
-                    </AlertDescription>
-                </Alert>
-            </div>
-        );
-    }
+    if (overallError) return <ErrorMsg error={overallError}/>
 
     return (
         <div className="space-y-6">
@@ -162,14 +160,13 @@ const ProductsClient: React.FC<ProductsClientProps> = ({
                         Создавайте и редактируйте товары
                     </p>
                 </div>
-                <Button
-                    onClick={openCreateModal}
-                    disabled={anyLoading}
-                    className="flex items-center gap-2 w-full sm:w-auto"
-                >
-                    <Plus size={16}/>
-                    Добавить продукт
-                </Button>
+                <Link href="/admin/products/add-product">
+                    <Button className="flex items-center gap-2 w-full sm:w-auto" disabled={anyLoading}
+                    >
+                        <Plus size={16}/>
+                        Создать продукт
+                    </Button>
+                </Link>
             </div>
 
             <CardContent className="px-0">

@@ -1,7 +1,6 @@
 import React from "react";
 import {Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle,} from "@/components/ui/dialog";
 import {Product} from "@/lib/types";
-import ProductForm from "./ProductForm";
 
 interface ProductModalProps {
     isOpen: boolean;
@@ -25,11 +24,6 @@ const ProductModal: React.FC<ProductModalProps> = ({isOpen, onClose, isEditing, 
                     </DialogDescription>
                 </DialogHeader>
 
-                <ProductForm
-                    isEditing={isEditing}
-                    editingProduct={editingProduct}
-                    onCancel={onClose}
-                />
             </DialogContent>
         </Dialog>
     );
