@@ -1,8 +1,8 @@
-import { z } from "zod";
+import {z} from "zod";
 
 const characteristicSchema = z.object({
-    key: z.string().min(1, { message: "Ключ обязателен" }),
-    value: z.string().min(1, { message: "Значение обязательно" }),
+    key: z.string().min(1, {message: "Ключ обязателен"}),
+    value: z.string().min(1, {message: "Значение обязательно"}),
 });
 
 const saleSchema = z.object({
@@ -12,7 +12,7 @@ const saleSchema = z.object({
 
 const iconSchema = z.object({
     alt: z.string().optional(),
-    url: z.string().url().optional(),
+    url: z.instanceof(File, {message: "Добавьте иконку"}).nullable(),
 });
 
 const imageItemSchema = z.object({
@@ -21,8 +21,8 @@ const imageItemSchema = z.object({
 });
 
 export const createProductSchema = z.object({
-    category: z.string().min(1, { message: "Категория обязательна" }),
-    title: z.string().min(1, { message: "Название обязательно" }).max(200, { message: "Максимум 200 символов" }),
+    category: z.string().min(1, {message: "Категория обязательна"}),
+    title: z.string().min(1, {message: "Название обязательно"}).max(200, {message: "Максимум 200 символов"}),
     description: z.string().optional(),
     coverAlt: z.string().optional().nullable(),
     cover: z
@@ -41,7 +41,7 @@ export const createProductSchema = z.object({
 
 export const updateProductSchema = z.object({
     category: z.string().min(1, 'Категория обязательна'),
-    title: z.string().min(1, { message: "Название обязательно" }).max(200, { message: "Максимум 200 символов" }),
+    title: z.string().min(1, {message: "Название обязательно"}).max(200, {message: "Максимум 200 символов"}),
     description: z.string().optional(),
     coverAlt: z.string().optional().nullable(),
     cover: z.union([z.instanceof(File), z.null(), z.undefined()]).optional(),

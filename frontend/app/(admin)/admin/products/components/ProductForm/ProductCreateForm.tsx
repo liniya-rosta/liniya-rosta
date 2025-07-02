@@ -4,7 +4,7 @@ import React, {useRef, useState} from "react";
 import {Resolver, useFieldArray, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import Image from "next/image";
-import {Loader2} from "lucide-react";
+import {Loader2, Trash2} from "lucide-react";
 import {Button} from "@/components/ui/button";
 import {Form, FormControl, FormField, FormItem, FormLabel,} from "@/components/ui/form";
 import {Input} from "@/components/ui/input";
@@ -33,6 +33,7 @@ const ProductCreateForm: React.FC<Props> = ({categories, categoriesError}) => {
         setCreateLoading,
         setCreateError,
     } = useAdminProductStore();
+    const router = useRouter();
 
     const form = useForm<CreateProductFormData>({
         resolver: zodResolver(createProductSchema) as Resolver<CreateProductFormData>,
@@ -52,15 +53,23 @@ const ProductCreateForm: React.FC<Props> = ({categories, categoriesError}) => {
             },
             icon: {
                 alt: "",
-                url: "",
+                url: null,
             },
         },
     });
     const {fields, append, remove} = useFieldArray({control: form.control, name: "images",});
-    const router = useRouter();
+    const {
+        fields: characteristicFields,
+        append: appendCharacteristic,
+        remove: removeCharacteristic
+    } = useFieldArray({control: form.control, name: "characteristics"});
 
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const iconInputRef = useRef<HTMLInputElement>(null);
+    const [iconPreview, setIconPreview] = useState<string | null>(null);
+
     const loading = createLoading;
     const overallError = categoriesError || createError;
 
@@ -79,7 +88,17 @@ const ProductCreateForm: React.FC<Props> = ({categories, categoriesError}) => {
         form.setValue(`images.${index}.url`, file, {shouldValidate: true});
     };
 
+    const onIconChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        form.setValue("icon.url", file);
+        setIconPreview(URL.createObjectURL(file));
+        await form.trigger("icon.url");
+    };
+
     const onSubmit = async (data: CreateProductFormData) => {
+        data.images = data.images.filter(image => image.url instanceof File);
         try {
             setCreateLoading(true);
             setCreateError(null);
@@ -187,7 +206,7 @@ const ProductCreateForm: React.FC<Props> = ({categories, categoriesError}) => {
                             name="cover"
                             render={() => (
                                 <FormItem>
-                                    <FormLabel>Изображение</FormLabel>
+                                    <FormLabel>Обложка</FormLabel>
                                     <FormControl>
                                         <div>
                                             <Button
@@ -198,8 +217,8 @@ const ProductCreateForm: React.FC<Props> = ({categories, categoriesError}) => {
                                                 className="w-full"
                                             >
                                                 {imagePreview
-                                                    ? "Изменить изображение"
-                                                    : "Выбрать изображение"}
+                                                    ? "Изменить обложку"
+                                                    : "Выбрать обложку"}
                                             </Button>
                                             <Input
                                                 type="file"
@@ -304,15 +323,99 @@ const ProductCreateForm: React.FC<Props> = ({categories, categoriesError}) => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="flex flex-col">
+                        <FormField
+                            control={form.control}
+                            name="icon.url"
+                            render={() => (
+                                <FormItem>
+                                    <FormLabel>Иконка</FormLabel>
+                                    <FormControl>
+                                        <div>
+                                            <Button
+                                                type="button"
+                                                variant="outline"
+                                                onClick={() => iconInputRef.current?.click()}
+                                                disabled={loading}
+                                                className="w-full"
+                                            >
+                                                {iconPreview
+                                                    ? "Изменить иконку"
+                                                    : "Выбрать иконку"}
+                                            </Button>
+                                            <Input
+                                                type="file"
+                                                accept="image/*"
+                                                ref={iconInputRef}
+                                                onChange={onIconChange}
+                                                disabled={loading}
+                                                className="hidden"
+                                            />
+                                        </div>
+                                    </FormControl>
+                                    {form.formState.errors.icon?.url?.message && (
+                                        <FormErrorMessage>
+                                            {form.formState.errors.icon.url.message}
+                                        </FormErrorMessage>
+                                    )}
+                                </FormItem>
+                            )}
+                        />
+                    </div>
+
+                    <div className="flex flex-col">
+                        <FormField
+                            control={form.control}
+                            name="icon.alt"
+                            render={({field}) => (
+                                <FormItem>
+                                    <FormLabel>Альтернативный текст для иконки</FormLabel>
+                                    <FormControl>
+                                        <Input placeholder="Например: Логотип Евробагета"
+                                               disabled={loading} {...field} />
+                                    </FormControl>
+                                    {form.formState.errors.icon?.alt?.message && (
+                                        <FormErrorMessage>
+                                            {form.formState.errors.icon.alt.message}
+                                        </FormErrorMessage>
+                                    )}
+                                </FormItem>
+                            )}
+                        />
+                    </div>
+
+                    {iconPreview && (
+                        <div className="relative inline-block mt-2">
+                            <Image
+                                src={iconPreview}
+                                alt="Предпросмотр иконки"
+                                className="w-16 h-16 object-cover rounded border"
+                                width={64}
+                                height={64}
+                            />
+                        </div>
+                    )}
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-10 border-t border-t-gray-500 pt-10">
+                    <div className="flex flex-col">
                         <Button
                             type="button"
-                            onClick={() => append({alt: "", url: null})}
+                            onClick={() => {
+                                const lastImage = form.getValues("images")?.at(-1);
+                                if (lastImage && !(lastImage.url instanceof File)) return;
+                                append({alt: "", url: null});
+                            }}
+                            className='cursor-pointer mb-2'
                             disabled={loading}
                         >
                             Добавить изображение
                         </Button>
 
-                        <div className="mt-4 max-h-[700px] overflow-y-auto p-2 space-y-4">
+                        {form.formState.errors.images?.message && (
+                            <FormErrorMessage>{form.formState.errors.images.message}</FormErrorMessage>
+                        )}
+
+                        <div className="mt-4 max-h-[300px] md:max-h-[500px]  overflow-y-auto p-2 space-y-4">
                             <div className='space-y-4'>
                                 {fields.map((item, index) => (
                                     <div key={item.id} className="border rounded-lg p-4 bg-white shadow-sm space-y-4">
@@ -381,32 +484,26 @@ const ProductCreateForm: React.FC<Props> = ({categories, categoriesError}) => {
                     <div className="flex flex-col">
                         <Button
                             type="button"
-                            onClick={() =>
-                                form.setValue(
-                                    "characteristics",
-                                    [...(form.getValues("characteristics") || []), {key: "", value: ""}]
-                                )
-                            }
+                            onClick={() => appendCharacteristic({key: "", value: ""})}
                             disabled={loading}
                         >
                             Добавить характеристику
                         </Button>
 
-                        <div className="mt-4 max-h-[700px] overflow-y-auto p-2 space-y-4">
-                            {form.watch("characteristics")?.map((_, index) => (
-                                <div key={index} className="grid grid-cols-2 gap-4 w-full">
+                        <div className="mt-4 max-h-[300px] md:max-h-[500px]  overflow-y-auto  space-y-4">
+                            {characteristicFields.map((item, index) => (
+                                <div key={item.id} className="grid grid-cols-9 gap-4 w-full">
                                     <FormField
                                         control={form.control}
                                         name={`characteristics.${index}.key`}
                                         render={({field}) => (
-                                            <FormItem className="flex flex-col">
-                                                <FormLabel>Ключ</FormLabel>
+                                            <FormItem className="flex flex-col col-span-4">
                                                 <FormControl>
                                                     <Input placeholder="Ключ" disabled={loading} {...field} />
                                                 </FormControl>
                                                 {form.formState.errors.characteristics?.[index]?.key?.message && (
                                                     <FormErrorMessage>
-                                                        {form.formState.errors.characteristics?.[index]?.key?.message}
+                                                        {form.formState.errors.characteristics[index].key.message}
                                                     </FormErrorMessage>
                                                 )}
                                             </FormItem>
@@ -416,19 +513,30 @@ const ProductCreateForm: React.FC<Props> = ({categories, categoriesError}) => {
                                         control={form.control}
                                         name={`characteristics.${index}.value`}
                                         render={({field}) => (
-                                            <FormItem className="flex flex-col">
-                                                <FormLabel>Значение</FormLabel>
+                                            <FormItem className="flex flex-col col-span-4">
                                                 <FormControl>
                                                     <Input placeholder="Значение" disabled={loading} {...field} />
                                                 </FormControl>
                                                 {form.formState.errors.characteristics?.[index]?.value?.message && (
                                                     <FormErrorMessage>
-                                                        {form.formState.errors.characteristics?.[index]?.value?.message}
+                                                        {form.formState.errors.characteristics[index].value.message}
                                                     </FormErrorMessage>
                                                 )}
                                             </FormItem>
                                         )}
                                     />
+
+                                    <div className="flex items-start col-span-1">
+                                        <Button
+                                            type="button"
+                                            variant="destructive"
+                                            size="icon"
+                                            onClick={() => removeCharacteristic(index)}
+                                            disabled={loading}
+                                        >
+                                            <Trash2 className="w-5 h-5"/>
+                                        </Button>
+                                    </div>
                                 </div>
                             ))}
                         </div>

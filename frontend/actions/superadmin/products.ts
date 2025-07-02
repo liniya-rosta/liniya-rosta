@@ -20,11 +20,6 @@ export const createProduct = async (productData: ProductMutation): Promise<Produ
             formData.append('coverAlt', productData.coverAlt);
         }
 
-        if (productData.images) {
-            const fileImages = productData.images.filter(img => img.url instanceof File);
-            formData.append('images', JSON.stringify(fileImages));
-        }
-
         productData.images.forEach((img) => {
             if (img.url instanceof File) {
                 formData.append("images", img.url);

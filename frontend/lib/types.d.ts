@@ -38,7 +38,7 @@ interface PaginationMeta {
     totalPages: number;
 }
 
-export interface PaginatedPortfolioResponse extends PaginationMeta{
+export interface PaginatedPortfolioResponse extends PaginationMeta {
     items: PortfolioItemPreview[],
 }
 
@@ -147,7 +147,6 @@ export interface Product {
         title: string;
     };
     description: string | null;
-    coverAlt?: string | null;
     cover: {
         url: string;
         alt: string;
@@ -163,7 +162,7 @@ export interface Product {
     };
     icon?: {
         alt?: string;
-        url: string;
+        url: string | null;
     };
 }
 
@@ -184,7 +183,7 @@ export interface ProductMutation {
     };
     icon?: {
         alt?: string | null;
-        url?: string;
+        url?: File | null;
     };
 }
 
