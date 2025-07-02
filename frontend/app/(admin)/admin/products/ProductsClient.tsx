@@ -32,17 +32,17 @@ const ProductsClient: React.FC<ProductsClientProps> = ({
 
         fetchLoading,
         setFetchLoading,
+
+        fetchError,
         setFetchError,
 
-        createLoading,
-        setCreateError,
-        updateLoading,
         deleteLoading,
-        fetchError,
-
         setDeleteLoading,
 
+        createLoading,
+        updateLoading,
 
+        setCreateError,
         setUpdateError,
         setDeleteError,
     } = useAdminProductStore();

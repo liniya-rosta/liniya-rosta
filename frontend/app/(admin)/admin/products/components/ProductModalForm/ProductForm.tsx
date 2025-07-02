@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from "react";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import Image from "next/image";
-import {X} from "lucide-react";
+import {Loader2, X} from "lucide-react";
 import {Button} from "@/components/ui/button";
 import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage,} from "@/components/ui/form";
 import {Input} from "@/components/ui/input";
@@ -29,6 +29,7 @@ interface ProductFormProps {
     editingProduct: Product | null;
     onCancel?: () => void;
 }
+
 type FormData = CreateProductFormData | UpdateProductFormData;
 
 const ProductForm: React.FC<ProductFormProps> = ({isEditing, editingProduct, onCancel}) => {
@@ -44,7 +45,7 @@ const ProductForm: React.FC<ProductFormProps> = ({isEditing, editingProduct, onC
         setCreateError,
         setUpdateError,
     } = useAdminProductStore();
-    const { categories } = useCategoryStore();
+    const {categories} = useCategoryStore();
 
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -120,29 +121,63 @@ const ProductForm: React.FC<ProductFormProps> = ({isEditing, editingProduct, onC
             if (isEditing && editingProduct) {
                 setUpdateLoading(true);
                 setUpdateError(null);
-                const updatedProduct = await updateProduct(editingProduct._id, data as UpdateProductFormData, data.cover ?? undefined);
-                setProducts(products.map(p => p._id === updatedProduct._id ? updatedProduct : p));
+
+                const updatedProduct = await updateProduct(
+                    editingProduct._id,
+                    data as UpdateProductFormData,
+                    data.cover ?? undefined
+                );
+
+                const updatedCategory = categories.find(cat => cat._id === updatedProduct.category._id);
+                if (updatedCategory) updatedProduct.category = updatedCategory;
+
+                setProducts(products.map(p =>
+                    p._id === updatedProduct._id ? updatedProduct : p
+                ));
+
                 toast.success("Продукт успешно обновлен");
+
+                form.reset({
+                    category: updatedCategory?._id || "",
+                    title: updatedProduct.title,
+                    description: updatedProduct.description || "",
+                    cover: undefined,
+                });
+
+                if (updatedProduct.cover) {
+                    setImagePreview(`${API_BASE_URL}/${updatedProduct.cover.url}`);
+                } else {
+                    setImagePreview(null);
+                }
+                onCancel?.()
             } else {
                 setCreateLoading(true);
                 setCreateError(null);
-                const newProduct = await createProduct(data as CreateProductFormData, data.cover ?? undefined);
+
+                const newProduct = await createProduct(
+                    data as CreateProductFormData,
+                    data.cover ?? undefined
+                );
+
                 setProducts([...products, newProduct]);
                 toast.success("Продукт успешно создан");
-            }
 
-            form.reset();
-            setImagePreview(null);
-            onCancel?.();
+                form.reset();
+                setImagePreview(null);
+                onCancel?.();
+            }
         } catch (e) {
             if (e instanceof AxiosError) {
-                const errorMsg = e.response?.data?.error || 'Произошла ошибка';
-                if (isEditing) setUpdateError(errorMsg);
-                else setCreateError(errorMsg);
-                toast.error(errorMsg);
+                if (isEditing) {
+                    setUpdateError(e.response?.data.error);
+                } else {
+                    setCreateError(e.response?.data.error);
+                }
+                toast.error(e.response?.data.error);
             } else {
                 toast.error('Неизвестная ошибка');
             }
+            console.error(e);
         } finally {
             setCreateLoading(false);
             setUpdateLoading(false);
@@ -150,7 +185,7 @@ const ProductForm: React.FC<ProductFormProps> = ({isEditing, editingProduct, onC
     };
 
     return (
-        <Form {...form}>
+        <Form {...form} key={editingProduct?._id || "new"}>
             <form
                 onSubmit={form.handleSubmit(handleSubmitForm)}
                 className={cn("space-y-6", loading && "opacity-50 pointer-events-none")}
@@ -300,7 +335,7 @@ const ProductForm: React.FC<ProductFormProps> = ({isEditing, editingProduct, onC
                     )}
                     <Button type="submit" disabled={loading}>
                         {loading
-                            ? "Сохранение..."
+                            ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/>
                             : isEditing
                                 ? "Сохранить изменения"
                                 : "Создать продукт"}

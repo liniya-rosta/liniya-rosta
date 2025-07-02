@@ -12,26 +12,27 @@ const AdminProductsPage = async () => {
     let categories: Category[] = [];
     let categoriesError: string | null = null;
 
-    try {
-        const data = await fetchProducts();
-        products = data.items;
-    } catch (e) {
-        if (e instanceof AxiosError) {
-            productsError = (e.response?.data?.error ?? "Ошибка при загрузке админов.");
-        } else {
-            productsError = "Неизвестная ошибка на сервере при загрузке продуктов.";
-        }
-    }
+    await Promise.all([
+        fetchCategories()
+            .then(data => categories = data)
+            .catch(e => {
+                if (e instanceof AxiosError) {
+                    categoriesError = (e.response?.data?.error ?? "Ошибка при загрузке категории.");
+                } else {
+                    categoriesError = "Неизвестная ошибка на сервере при загрузке категории.";
+                }
+            }),
 
-    try {
-        categories = await fetchCategories();
-    } catch (e) {
-        if (e instanceof Error) {
-            categoriesError = e.message;
-        } else {
-            categoriesError = 'Неизвестная ошибка на сервере при загрузке категории.';
-        }
-    }
+        fetchProducts()
+            .then(data => products = data.items)
+            .catch(e => {
+                if (e instanceof AxiosError) {
+                    productsError = (e.response?.data?.error ?? "Ошибка при загрузке продуктов.");
+                } else {
+                    productsError = "Неизвестная ошибка на сервере при загрузке продуктов.";
+                }
+            }),
+    ]);
 
     const combinedError = productsError || categoriesError;
 
