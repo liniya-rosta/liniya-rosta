@@ -149,12 +149,82 @@ const run = async () => {
         {
             title: 'Тестовый пост №1',
             description: 'Lorem ipsum',
-            image: 'test/news1.jpg',
+            images: [
+                { image: 'test/news1.jpg', alt: 'Новость 1' },
+                { image: 'test/news1_2.jpg', alt: 'Доп. изображение 1' },
+            ],
         },
         {
             title: 'Тестовый пост №2',
             description: 'Lorem ipsum',
-            image: 'test/news2.png',
+            images: [
+                { image: 'test/news1.jpg', alt: 'Новость 1' },
+                { image: 'test/news1_2.jpg', alt: 'Доп. изображение 1' },
+            ],
+        },
+        {
+            title: 'Тестовый пост №3',
+            description: 'Lorem ipsum',
+            images: [
+                { image: 'test/news1.jpg', alt: 'Новость 1' },
+                { image: 'test/news1_2.jpg', alt: 'Доп. изображение 1' },
+            ],
+        },
+        {
+            title: 'Тестовый пост №4',
+            description: 'Lorem ipsum',
+            images: [
+                { image: 'test/news1.jpg', alt: 'Новость 1' },
+                { image: 'test/news1_2.jpg', alt: 'Доп. изображение 1' },
+            ],
+        },
+        {
+            title: 'Тестовый пост №5',
+            description: 'Lorem ipsum',
+            images: [
+                { image: 'test/news1.jpg', alt: 'Новость 1' },
+                { image: 'test/news1_2.jpg', alt: 'Доп. изображение 1' },
+            ],
+        },
+        {
+            title: 'Тестовый пост №6',
+            description: 'Lorem ipsum',
+            images: [
+                { image: 'test/news1.jpg', alt: 'Новость 1' },
+                { image: 'test/news1_2.jpg', alt: 'Доп. изображение 1' },
+            ],
+        },
+        {
+            title: 'Тестовый пост №7',
+            description: 'Lorem ipsum',
+            images: [
+                { image: 'test/news1.jpg', alt: 'Новость 1' },
+                { image: 'test/news1_2.jpg', alt: 'Доп. изображение 1' },
+            ],
+        },
+        {
+            title: 'Тестовый пост №8',
+            description: 'Lorem ipsum',
+            images: [
+                { image: 'test/news1.jpg', alt: 'Новость 1' },
+                { image: 'test/news1_2.jpg', alt: 'Доп. изображение 1' },
+            ],
+        },
+        {
+            title: 'Тестовый пост №9',
+            description: 'Lorem ipsum',
+            images: [
+                { image: 'test/news1.jpg', alt: 'Новость 1' },
+                { image: 'test/news1_2.jpg', alt: 'Доп. изображение 1' },
+            ],
+        },
+        {
+            title: 'Тестовый пост №10',
+            description: 'Lorem ipsum',
+            images: [
+                { image: 'test/news1.jpg', alt: 'Новость 1' },
+                { image: 'test/news1_2.jpg', alt: 'Доп. изображение 1' },
+            ],
         },
     );
 

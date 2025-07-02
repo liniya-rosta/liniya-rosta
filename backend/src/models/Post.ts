@@ -1,6 +1,12 @@
 import mongoose from "mongoose";
+import {ImageItem} from "../../types";
 
 const Schema = mongoose.Schema;
+
+const ImageSchema = new Schema({
+    image: { type: String, required: true },
+    alt: { type: String, default: null },
+}, { _id: false });
 
 const PostSchema = new Schema({
     title: {
@@ -11,9 +17,13 @@ const PostSchema = new Schema({
         type: String,
         required: [true, "Поле описания обязательно для заполнения"],
     },
-    image: {
-        type: String,
-        required: [true, "Фото обязательно для заполнения"],
+    images: {
+        type: [ImageSchema],
+        validate: {
+            validator: (arr: ImageItem[]) => arr.length > 0,
+            message: "Необходимо загрузить хотя бы одно изображение",
+        },
+        required: true,
     },
 });
 

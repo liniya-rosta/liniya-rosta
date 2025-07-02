@@ -2,21 +2,31 @@ import express from 'express';
 import Post from "../../models/Post";
 import mongoose from "mongoose";
 import {postImage} from "../../middleware/multer";
+import {updatePost} from "../../../types";
 
 const postsSuperAdminRouter = express.Router();
 
-postsSuperAdminRouter.post("/", postImage.single("image"), async (req, res, next) => {
+postsSuperAdminRouter.post("/", postImage.array("images"), async (req, res, next) => {
     try {
         const {title, description} = req.body;
-        if (!title || !description || !title.trim() || !description.trim() || !req.file) {
+        const files = req.files as Express.Multer.File[];
+
+        if (!title || !description || !title.trim() || !description.trim() || !files || files.length === 0) {
             res.status(400).send({error: "Все поля обязательны для заполнения"});
             return;
         }
 
+        const alts = Array.isArray(req.body.alts) ? req.body.alts : [req.body.alts];
+
+        const images = files.map((file, index) => ({
+            image: `post/${file.filename}`,
+            alt: alts[index],
+        }));
+
         const post = new Post({
             title: title.trim(),
             description: description.trim(),
-            image: `post/${req.file.filename}`,
+            images,
         });
 
         await post.save();
@@ -29,7 +39,7 @@ postsSuperAdminRouter.post("/", postImage.single("image"), async (req, res, next
     }
 });
 
-postsSuperAdminRouter.patch("/:id", postImage.single("image"), async (req, res, next) => {
+postsSuperAdminRouter.patch("/:id", postImage.array("images"), async (req, res, next) => {
     try {
         const {id} = req.params;
         const {title, description} = req.body;
@@ -39,14 +49,17 @@ postsSuperAdminRouter.patch("/:id", postImage.single("image"), async (req, res, 
             return;
         }
 
-        if (!title && !description && !req.file) {
-            res.status(400).send({error: "Не указаны поля для обновления"});
-            return;
-        }
-
         const post = await Post.findById(id);
         if (!post) {
             res.status(404).send({error: "Пост не найден"});
+            return;
+        }
+
+        const files = req.files as Express.Multer.File[];
+        const alts: string[] = Array.isArray(req.body.alts) ? req.body.alts : [req.body.alts];
+
+        if (!title?.trim() && !description?.trim() && (!files || files.length === 0) && (!req.body.alts || req.body.alts.length === 0)) {
+            res.status(400).send({error: "Не указано ни одно поле для обновления"});
             return;
         }
 
@@ -59,12 +72,129 @@ postsSuperAdminRouter.patch("/:id", postImage.single("image"), async (req, res, 
             return;
         }
 
-        if (title) post.title = title.trim();
-        if (description) post.description = description.trim();
-        if (req.file) post.image = `post/${req.file.filename}`;
+        const updateData: updatePost = {};
+        if (title?.trim()) updateData.title = title.trim();
+        if (description?.trim()) updateData.description = description.trim();
+
+        if (files && files.length > 0) {
+            updateData.images = files.map((file, index) => ({
+                image: `post/${file.filename}`,
+                alt: alts[index] || "",
+            }));
+        }
+
+        const updatedPost = await Post.findByIdAndUpdate(id, updateData, {
+            new: true,
+            runValidators: true,
+        });
+
+        if (!updatedPost) {
+            res.status(404).send({error: "Пост не найден"});
+            return;
+        }
+
+        res.send({message: "Пост обновлен успешно", post: updatedPost});
+    } catch (e) {
+        next(e);
+    }
+});
+
+//изменение конкретного изображения
+postsSuperAdminRouter.patch("/:id/update-image",postImage.single("newImage") ,async (req, res, next) => {
+    const { id } = req.params;
+    const { imageUrl, alt } = req.body;
+
+    if (!imageUrl) {
+         res.status(400).json({ error: "Ссылка на изображение обязательна" });
+        return;
+    }
+
+    try {
+        const post = await Post.findById(id);
+        if (!post)  {
+            res.status(404).send({ error: "Пост не найден" });
+            return;
+        }
+
+        const imageItem = post.images.find(img => img.image === imageUrl);
+        if (!imageItem) {
+            res.status(404).json({ error: "Изображение не найдено" });
+            return;
+        }
+
+        if (req.file) {
+            imageItem.image = `post/${req.file.filename}`;
+        }
+
+        if (alt !== undefined) imageItem.alt = alt;
 
         await post.save();
-        res.send({message: "Пост обновлен успешно", post});
+
+       res.send({ message: "Изображение обновлено", post });
+    } catch (e) {
+        next(e);
+    }
+});
+
+//для изменения порядка изображений
+postsSuperAdminRouter.patch("/:id/reorder-images", async (req, res, next) => {
+    const { id } = req.params;
+    const { newOrder } = req.body;
+
+    if (!Array.isArray(newOrder) || newOrder.length === 0) {
+        res.status(400).json({ error: "Неверный формат нового порядка изображений" });
+        return;
+    }
+
+    try {
+        const post = await Post.findById(id);
+        if (!post){
+            res.status(404).json({ error: "Пост не найден" })
+            return
+        }
+
+        const currentImages = post.images.map(img => img.image);
+        const isValid =
+            newOrder.length === currentImages.length &&
+            newOrder.every(img => currentImages.includes(img.image));
+
+        if (!isValid) {
+            res.status(400).json({ error: "Новый порядок содержит недопустимые изображения" });
+            return
+        }
+
+        post.set("images", newOrder);
+        await post.save();
+        res.send(post);
+    } catch (e) {
+        next(e);
+    }
+
+});
+
+//для удаления конкретного изображения
+postsSuperAdminRouter.patch("/:id/remove-images", async (req, res, next) => {
+    const {id} = req.params;
+    const {image} = req.body;
+
+    if (!image) {
+        res.status(400).json({error: "Не передан URL изображения"});
+        return;
+    }
+
+    try {
+        const updatedPost = await Post.findByIdAndUpdate(
+            id,
+            {$pull: {images: {image: image}}},
+            {new: true}
+        );
+
+        if (!updatedPost) {
+            res.status(404).send({error: "Пост не найден"});
+            return;
+        }
+
+        res.send(updatedPost);
     } catch (e) {
         next(e);
     }
