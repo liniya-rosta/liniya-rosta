@@ -27,13 +27,14 @@ const SpcPage = async () => {
     }
 
     return (
-        <div className="container mx-auto px-4">
+        <>
             <InfoAboutSpcLaminate/>
+            <div className="container mx-auto px-4">
+                <AdvantagesLaminate/>
+                <SpcLaminatePage initialData={laminateData} error={error} categoryName={categoryName}/>
+            </div>
+        </>
 
-            <AdvantagesLaminate/>
-
-            <SpcLaminatePage initialData={laminateData} error={error} categoryName={categoryName}/>
-        </div>
     );
 };
 

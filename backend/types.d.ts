@@ -55,3 +55,8 @@ export interface PortfolioUpdate{
     description?: string;
     coverAlt?: string;
 }
+
+export interface ServiceUpdate {
+    title?: string;
+    description?: string;
+}

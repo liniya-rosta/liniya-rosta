@@ -25,7 +25,10 @@ export const getPortfolioItems = async (req: Request, res: Response, next: NextF
         const parsedPage = Math.max(1, parseInt(page as string));
         const skip = (parsedPage - 1) * parsedLimit;
 
-        const matchStage: Record<string, any> = {};
+        const matchStage: Partial<{
+            description: { $regex: string; $options: string };
+            coverAlt: { $regex: string; $options: string };
+        }> = {};
 
         if (description && typeof description === "string") {
             matchStage.description = { $regex: description, $options: "i" };

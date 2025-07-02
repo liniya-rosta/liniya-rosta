@@ -159,7 +159,7 @@ portfolioSuperAdminRouter.delete("/:id", async (req, res, next) => {
             return;
         }
 
-        res.send({message: "Удаление обложки портфолио успешно"});
+        res.send({message: "Удаление портфолио успешно"});
     } catch (e) {
         next(e);
     }

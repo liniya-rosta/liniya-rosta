@@ -1,26 +1,10 @@
 import React from 'react';
-import {Home, Layers, Sun} from 'lucide-react';
 import ServiceContentCard from "@/app/(public)/services/components/ServiceContentCard";
-
-const services = [
-    {
-        title: 'Выезд на замер',
-        description: 'Наш специалист приедет к вам в удобное время, сделает точные замеры и даст рекомендации.',
-        icon: <Home className="w-10 h-10 text-yellow-400"/>,
-    },
-    {
-        title: 'Монтаж потолков и ламината',
-        description: 'Профессиональный монтаж натяжных потолков и укладка ламината любой сложности.',
-        icon: <Layers className="w-10 h-10 text-yellow-400"/>,
-    },
-    {
-        title: 'Расчет освещенности',
-        description: 'Точный расчет освещения вашего помещения с учетом всех особенностей и пожеланий.',
-        icon: <Sun className="w-10 h-10 text-yellow-400"/>,
-    },
-];
+import {useServiceStore} from "@/store/serviceStore";
 
 const ServicesContent = () => {
+    const { allServices } =useServiceStore();
+
     return (
         <section className="bg-gray-100 py-16 px-6">
             <div className="max-w-4xl mx-auto">
@@ -32,10 +16,26 @@ const ServicesContent = () => {
                     </p>
                 </div>
 
-                <div className="grid gap-8 grid-cols-1 md:grid-cols-3">
-                    {services.map(({title, description, icon}) => (
-                        <ServiceContentCard key={title} title={title} description={description} icon={icon}/>
-                    ))}
+                <div className="flex flex-wrap justify-center gap-8 mt-8">
+                    {allServices?.length ? (
+                        allServices.map((service) => (
+                            <div
+                                key={service._id}
+                                className="w-full sm:w-[calc(50%-1rem)] md:w-[calc(33.333%-1.333rem)]"
+                            >
+                                <ServiceContentCard
+                                    title={service.title}
+                                    description={service.description}
+                                />
+                            </div>
+                        ))
+                    ) : (
+                        <div className="flex justify-center items-center min-h-[200px] w-full">
+                            <p className="text-muted-foreground text-lg">
+                                Что-то пошло не так. Услуги не загрузились
+                            </p>
+                        </div>
+                    )}
                 </div>
             </div>
         </section>
