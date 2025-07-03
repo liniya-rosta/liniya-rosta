@@ -17,7 +17,10 @@ const iconSchema = z.object({
 
 const imageItemSchema = z.object({
     alt: z.string().optional(),
-    url: z.instanceof(File, {message: "Добавьте изображение"}).nullable(),
+    url: z.union([z.instanceof(File), z.null()])
+        .refine((file) => file instanceof File && file.size > 0, {
+            message: "Файл обязателен",
+        }),
 });
 
 export const createProductSchema = z.object({

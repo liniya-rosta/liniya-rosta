@@ -1,4 +1,4 @@
-import ProductCreateForm from "@/app/(admin)/admin/products/components/ProductForm/ProductCreateForm";
+import ProductCreateForm from "@/app/(admin)/admin/products/add-product/components/ProductForm/ProductCreateForm";
 import {Category} from "@/lib/types";
 import {fetchCategories} from "@/actions/categories";
 import {AxiosError} from "axios";
@@ -20,8 +20,8 @@ const AddProduct = async () => {
 
     return (
         <div className="container mx-auto px-4">
-            <h2 className="font-bold text-3xl text-center mb-5">Создать продукт</h2>
-            <ProductCreateForm categories={categories} categoriesError={categoriesError}/>
+            <h2 className="font-bold text-3xl mb-5">Создать продукт</h2>
+            <ProductCreateForm initialCategories={categories} initialCategoriesError={categoriesError}/>
         </div>
     )
 };
