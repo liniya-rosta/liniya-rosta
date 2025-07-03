@@ -7,8 +7,9 @@ import {productImage} from "../../middleware/multer";
 const productsSuperAdminRouter = express.Router();
 
 productsSuperAdminRouter.post("/", productImage.fields([
-    {name: "cover", maxCount: 1},
-    {name: "images"}
+    { name: "cover", maxCount: 1 },
+    { name: "images" },
+    { name: "icon", maxCount: 1 }
 ]), async (req, res, next) => {
     try {
         const files = req.files as {
@@ -17,6 +18,7 @@ productsSuperAdminRouter.post("/", productImage.fields([
 
         const coverFile = files.cover?.[0];
         const imagesFiles = files.images || [];
+        const iconFile = files.icon?.[0];
 
         const {category, title, description} = req.body;
         if (!category || !title || !title.trim() || !coverFile) {
@@ -57,7 +59,7 @@ productsSuperAdminRouter.post("/", productImage.fields([
                 label: req.body.saleLabel || null,
             },
             icon: {
-                url: req.body.iconUrl,
+                url: iconFile ? `product/${iconFile.filename}` : null,
                 alt: req.body.iconAlt || null,
             },
         });
@@ -71,7 +73,8 @@ productsSuperAdminRouter.post("/", productImage.fields([
 
 productsSuperAdminRouter.patch("/:id", productImage.fields([
     {name: "cover", maxCount: 1},
-    {name: "images"}
+    {name: "images"},
+    {name: "icon", maxCount: 1}
 ]), async (req, res, next) => {
     try {
         const files = req.files as {
@@ -80,7 +83,7 @@ productsSuperAdminRouter.patch("/:id", productImage.fields([
 
         const coverFile = files.cover?.[0];
         const imagesFiles = files.images || [];
-
+        const iconFile = files.icon?.[0];
 
         const {id} = req.params;
         const {category, title, description} = req.body;
@@ -167,9 +170,9 @@ productsSuperAdminRouter.patch("/:id", productImage.fields([
             product.sale.label = typeof req.body.saleLabel === 'string' ? req.body.saleLabel : '';
         }
 
-        if (req.body.iconUrl !== undefined || req.body.iconAlt !== undefined) {
+        if (iconFile) {
             product.icon = {
-                url: req.body.iconUrl || '',
+                url: `product/${iconFile.filename}`,
                 alt: typeof req.body.iconAlt === 'string' ? req.body.iconAlt : '',
             };
         }
