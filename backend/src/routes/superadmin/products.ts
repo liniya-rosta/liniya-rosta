@@ -7,9 +7,9 @@ import {productImage} from "../../middleware/multer";
 const productsSuperAdminRouter = express.Router();
 
 productsSuperAdminRouter.post("/", productImage.fields([
-    { name: "cover", maxCount: 1 },
-    { name: "images" },
-    { name: "icon", maxCount: 1 }
+    {name: "cover", maxCount: 1},
+    {name: "images"},
+    {name: "icon", maxCount: 1}
 ]), async (req, res, next) => {
     try {
         const files = req.files as {
@@ -190,6 +190,48 @@ productsSuperAdminRouter.patch("/:id", productImage.fields([
     }
 });
 
+productsSuperAdminRouter.patch("/images/:imageId", productImage.fields([{
+    name: "images",
+    maxCount: 1
+}]), async (req, res, next) => {
+    try {
+        const {imageId} = req.params;
+        if (!mongoose.Types.ObjectId.isValid(imageId)) {
+            res.status(400).send({error: "Неверный ID изображения"});
+            return;
+        }
+
+        const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+        const file = files.images?.[0];
+        const newAlt = req.body.alt;
+
+        const updateFields: any = {};
+        if (file) updateFields["images.$.url"] = "product/" + file.filename;
+        if (newAlt) updateFields["images.$.alt"] = newAlt;
+
+        const product = await Product.findOne({"images._id": imageId});
+        if (!product) {
+            res.status(404).send({error: "Продукт или изображение не найдено"});
+            return;
+        }
+
+        const updateResult = await Product.updateOne(
+            {"images._id": imageId},
+            {$set: updateFields}
+        );
+
+        if (updateResult.modifiedCount === 0) {
+            res.status(400).send({error: "Изменения не были применены"});
+            return;
+        }
+
+        const updatedProduct = await Product.findOne({"images._id": imageId});
+        res.send(updatedProduct);
+    } catch (e) {
+        next(e);
+    }
+});
+
 productsSuperAdminRouter.delete("/:id", async (req, res, next) => {
     try {
         if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
@@ -203,6 +245,30 @@ productsSuperAdminRouter.delete("/:id", async (req, res, next) => {
             return;
         }
         res.send({message: "Продукт успешно удален"});
+    } catch (e) {
+        next(e);
+    }
+});
+
+productsSuperAdminRouter.delete("/images/:imageId", async (req, res, next) => {
+    try {
+        const {imageId} = req.params;
+        if (!mongoose.Types.ObjectId.isValid(imageId)) {
+            res.status(400).send({error: "Неверный ID изображения"});
+            return;
+        }
+
+        const updateResult = await Product.updateOne(
+            {"images._id": imageId},
+            {$pull: {images: {_id: imageId}}}
+        );
+
+        if (updateResult.modifiedCount === 0) {
+            res.status(404).send({error: "Изображение не найдено или уже удалено"});
+            return;
+        }
+
+        res.send({message: "Изображение успешно удалено"});
     } catch (e) {
         next(e);
     }
