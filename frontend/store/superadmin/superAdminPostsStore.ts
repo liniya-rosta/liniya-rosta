@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { Post } from '@/lib/types';
+import {PaginationMeta, Post} from '@/lib/types';
 
 interface AdminPostState {
     posts: Post[];
@@ -11,6 +11,7 @@ interface AdminPostState {
     createError: string | null;
     updateError: string | null;
     deleteError: string | null;
+    paginationPost: PaginationMeta | null,
 
     setPosts: (posts: Post[]) => void;
     setFetchLoading: (loading: boolean) => void;
@@ -21,6 +22,7 @@ interface AdminPostState {
     setCreateError: (error: string | null) => void;
     setUpdateError: (error: string | null) => void;
     setDeleteError: (error: string | null) => void;
+    setPaginationPost: (data: PaginationMeta) => void;
 }
 
 export const useAdminPostStore = create<AdminPostState>((set) => ({
@@ -33,6 +35,7 @@ export const useAdminPostStore = create<AdminPostState>((set) => ({
     createError: null,
     updateError: null,
     deleteError: null,
+    paginationPost: null,
 
     setPosts: (posts) => set({ posts }),
     setFetchLoading: (loading) => set({ fetchLoading: loading }),
@@ -43,4 +46,5 @@ export const useAdminPostStore = create<AdminPostState>((set) => ({
     setCreateError: (error) => set({ createError: error }),
     setUpdateError: (error) => set({ updateError: error }),
     setDeleteError: (error) => set({ deleteError: error }),
+    setPaginationPost: (data) => set({ paginationPost: data }),
 }));

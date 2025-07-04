@@ -2,26 +2,30 @@
 
 import React, {useEffect, useState} from 'react';
 import {Plus} from 'lucide-react';
-import {Post, CreatePostData, UpdatePostData} from "@/lib/types";
+import {Post, CreatePostData, UpdatePostData, PostResponse} from "@/lib/types";
 import {Button} from '@/components/ui/button';
 import {Alert, AlertDescription} from '@/components/ui/alert';
-import {createPost, deletePost, updatePost} from "@/actions/posts";
-import PostsTable from "@/app/(admin)/admin/blog/components/PostsTable";
+import {createPost, deletePost, updatePost} from "@/actions//superadmin/posts";
+import PostsTable, {FilterType} from "@/app/(admin)/admin/blog/components/DataTable/PostsTable";
 import PostModal from "@/app/(admin)/admin/blog/components/PostModal";
 import {toast} from 'react-toastify';
 import {AxiosError} from 'axios';
-import {useAdminPostStore} from "@/store/superadmin/superadminPostsStore";
+import {useAdminPostStore} from "@/store/superadmin/superAdminPostsStore";
 import DataSkeleton from "@/components/ui/Loading/DataSkeleton";
+import {fetchPosts} from "@/actions/posts";
+import { PaginationState } from '@tanstack/react-table';
 
 interface Props {
-    data: Post[];
+    data: PostResponse | null;
     error: string | null;
     isAdmin?: boolean;
+    limit?: string;
 }
 
-const AdminBlogClient: React.FC<Props> = ({data, error, isAdmin = true}) => {
+const AdminBlogClient: React.FC<Props> = ({data, error, isAdmin = true, limit="10"}) => {
     const {
         posts,
+        paginationPost,
         fetchLoading,
         createLoading,
         updateLoading,
@@ -30,6 +34,7 @@ const AdminBlogClient: React.FC<Props> = ({data, error, isAdmin = true}) => {
         createError,
         updateError,
         setPosts,
+        setPaginationPost,
         setFetchLoading,
         setCreateLoading,
         setUpdateLoading,
@@ -43,17 +48,27 @@ const AdminBlogClient: React.FC<Props> = ({data, error, isAdmin = true}) => {
     const [isHydrating, setIsHydrating] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingPost, setEditingPost] = useState<Post | null>(null);
+    const [pagination, setPagination] = useState<PaginationState>({
+        pageIndex: 0,
+        pageSize: Number(limit),
+    });
 
     const anyLoading = createLoading || updateLoading || deleteLoading;
 
     useEffect(() => {
         if (data) {
-            setPosts(data);
+            setPosts(data.items);
+            setPaginationPost({
+                total: data.total,
+                totalPages: data.totalPages,
+                page: data.page,
+                pageSize: data.pageSize,
+            })
         }
         setFetchError(error);
         setFetchLoading(false);
         setIsHydrating(false);
-    }, [data, error, setPosts, setFetchError, setFetchLoading]);
+    }, [data, error, setPosts, setFetchError, setFetchLoading, setPaginationPost]);
 
     const resetErrors = () => {
         setFetchError(null);
@@ -92,7 +107,7 @@ const AdminBlogClient: React.FC<Props> = ({data, error, isAdmin = true}) => {
                 const updateData: UpdatePostData = {
                     title: formData.title,
                     description: formData.description,
-                    image: (formData as UpdatePostData).image,
+                    images: (formData as UpdatePostData).images,
                 };
 
                 result = await updatePost(editingPost._id, updateData);
@@ -142,6 +157,24 @@ const AdminBlogClient: React.FC<Props> = ({data, error, isAdmin = true}) => {
             toast.error(errorMessage);
         } finally {
             setDeleteLoading(false);
+        }
+    };
+
+    const handlePageSizeChange = async (pageSize: string) => {
+        setFetchLoading(true);
+        try {
+            const res = await fetchPosts(pageSize);
+            setPosts(res.items);
+            setPaginationPost({
+                total: res.total,
+                totalPages: res.totalPages,
+                page: res.page,
+                pageSize: res.pageSize,
+            });
+        } catch (error) {
+            setFetchError("Не удалось обновить количество элементов");
+        } finally {
+            setFetchLoading(false);
         }
     };
 
@@ -207,6 +240,10 @@ const AdminBlogClient: React.FC<Props> = ({data, error, isAdmin = true}) => {
                     onDeletePost={handleDelete}
                     onDeleteSelectedPosts={handleDeleteSelectedPosts}
                     actionLoading={anyLoading}
+                    onPageSizeChange={handlePageSizeChange}
+                    pagination={pagination}
+                    onPaginationChange={setPagination}
+                    totalPages={paginationPost?.totalPages}
                 />
             )}
 

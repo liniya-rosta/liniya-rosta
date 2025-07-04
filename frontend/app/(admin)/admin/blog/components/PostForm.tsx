@@ -49,8 +49,8 @@ const PostForm: React.FC<PostFormProps> = ({isEditing, editingPost, actionLoadin
                 description: editingPost.description,
                 image: undefined,
             } as UpdatePostFormData);
-            if (editingPost.image) {
-                setImagePreviewUrl(`${API_BASE_URL}/${editingPost.image}`);
+            if (editingPost.images) {
+                setImagePreviewUrl(`${API_BASE_URL}/${editingPost.images}`);
             } else {
                 setImagePreviewUrl(null);
             }
