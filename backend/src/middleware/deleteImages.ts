@@ -18,7 +18,6 @@ export const deleteImagesFromFs = (
                         const fullPath = path.join(config.publicPath, imagePath);
                         try {
                             await fs.unlink(fullPath);
-                            console.log("Файл удалён:", fullPath);
                         } catch (err: any) {
                             if (err.code !== "ENOENT") {
                                 console.error("Ошибка при удалении файла:", fullPath, err);
