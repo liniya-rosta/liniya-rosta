@@ -2,6 +2,7 @@ import express from 'express';
 import Post from "../../models/Post";
 import mongoose from "mongoose";
 import {postImage} from "../../middleware/multer";
+import {deleteImagesFromFs} from "../../middleware/deleteImages";
 
 const postsSuperAdminRouter = express.Router();
 
@@ -16,7 +17,7 @@ postsSuperAdminRouter.post("/", postImage.single("image"), async (req, res, next
         const post = new Post({
             title: title.trim(),
             description: description.trim(),
-            image: `post/${req.file.filename}`,
+            image: `posts/${req.file.filename}`,
         });
 
         await post.save();
@@ -70,22 +71,21 @@ postsSuperAdminRouter.patch("/:id", postImage.single("image"), async (req, res, 
     }
 });
 
-postsSuperAdminRouter.delete("/:id", async (req, res, next) => {
-    try {
-        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
-            res.status(400).send({error: "Неверный формат ID поста"});
-            return;
+postsSuperAdminRouter.delete(
+    "/:id",
+    deleteImagesFromFs(Post, (doc) => [doc.image]),
+    async (req, res, next) => {
+        try {
+            const post = await Post.findByIdAndDelete(req.params.id);
+            if (!post) {
+                res.status(404).send({error: "Пост не найден"});
+                return
+            }
+            res.send({message: "Пост успешно удален"});
+        } catch (e) {
+            next(e);
         }
-
-        const post = await Post.findByIdAndDelete(req.params.id);
-        if (!post) {
-            res.status(404).send({error: "Пост не найден"});
-            return;
-        }
-        res.send({message: "Пост успешно удален"});
-    } catch (e) {
-        next(e);
     }
-});
+);
 
 export default postsSuperAdminRouter;

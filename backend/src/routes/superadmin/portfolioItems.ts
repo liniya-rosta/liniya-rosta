@@ -3,6 +3,10 @@ import {PortfolioItem} from "../../models/PortfolioItem";
 import {portfolioImage} from "../../middleware/multer";
 import {Error, Types} from "mongoose";
 import {PortfolioUpdate} from "../../../types";
+import path from "path";
+import config from "../../../config";
+import fs from "fs";
+import {deleteImagesFromFs} from "../../middleware/deleteImages";
 
 const portfolioSuperAdminRouter = express.Router();
 
@@ -143,46 +147,65 @@ portfolioSuperAdminRouter.patch("/gallery/:galleryId", portfolioImage.fields([
     }
 });
 
-portfolioSuperAdminRouter.delete("/:id", async (req, res, next) => {
-    try {
-        const {id} = req.params;
-
-        if (!Types.ObjectId.isValid(id)) {
-            res.status(400).send({error: "Неверный формат ID обложки портфолио"});
-            return;
+portfolioSuperAdminRouter.delete(
+    "/:id",
+    deleteImagesFromFs(PortfolioItem, (doc) => {
+        const images = doc.gallery.map((item: { image: string }) => item.image);
+        if (doc.cover) images.push(doc.cover);
+        return images;
+    }),
+    async (req, res, next) => {
+        try {
+            const item = await PortfolioItem.findByIdAndDelete(req.params.id);
+            if (!item) {
+                res.status(404).send({error: "Элемент не найден"});
+                return
+            }
+            res.send({message: "Удаление портфолио успешно"});
+        } catch (e) {
+            next(e);
         }
-
-        const item = await PortfolioItem.findByIdAndDelete(id)
-
-        if (!item) {
-            res.status(404).send({error: "Элемент галереи не найден"});
-            return;
-        }
-
-        res.send({message: "Удаление портфолио успешно"});
-    } catch (e) {
-        next(e);
     }
-});
+);
 
-portfolioSuperAdminRouter.delete("/gallery/:id", async (req, res, next) => {
-    try {
-        const {id} = req.params;
+portfolioSuperAdminRouter.delete(
+    "/gallery/:id",
+    async (req, res, next) => {
+        try {
+            const {id} = req.params;
+            const item = await PortfolioItem.findOne({"gallery._id": id});
+            if (!item) {
+                res.status(404).send({error: "Галерея не найдена"});
+                return;
+            }
 
-        const updated = await PortfolioItem.updateOne(
-            {"gallery._id": id},
-            {$pull: {gallery: {_id: id}}}
-        );
+            const galleryItem = item.gallery.find(el => el._id.toString() === id);
+            const imagePath = galleryItem?.image;
 
-        if (updated.modifiedCount === 0) {
-            res.status(404).send({error: "Элемент галереи не найден или уже удалён"});
-            return;
+            const result = await PortfolioItem.updateOne(
+                {"gallery._id": id},
+                {$pull: {gallery: {_id: id}}}
+            );
+
+            if (result.modifiedCount === 0) {
+                 res.status(404).send({error: "Элемент галереи не найден"});
+                return
+            }
+
+            if (imagePath) {
+                const fullPath = path.join(config.publicPath, imagePath);
+                fs.unlink(fullPath, err => {
+                    if (err && err.code !== "ENOENT") {
+                        console.error(`Ошибка при удалении файла ${imagePath}:`, err);
+                    }
+                });
+            }
+
+            res.send({message: "Удаление элемента галереи успешно"});
+        } catch (e) {
+            next(e);
         }
-
-        res.send({message: "Удаление элемента галереи успешно"});
-    } catch (e) {
-        next(e);
     }
-});
+);
 
 export default portfolioSuperAdminRouter;

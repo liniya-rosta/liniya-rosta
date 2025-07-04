@@ -3,6 +3,7 @@ import Product from "../../models/Product";
 import Category from "../../models/Category";
 import mongoose from "mongoose";
 import {productImage} from "../../middleware/multer";
+import {deleteImagesFromFs} from "../../middleware/deleteImages";
 
 const productsSuperAdminRouter = express.Router();
 
@@ -29,7 +30,7 @@ productsSuperAdminRouter.post("/", productImage.single("image"), async (req, res
             category,
             title: title.trim(),
             description: description ? description.trim() : null,
-            image: `product/${req.file.filename}`,
+            image: `products/${req.file.filename}`,
         });
 
         await product.save();
@@ -95,22 +96,21 @@ productsSuperAdminRouter.patch("/:id", productImage.single("image"), async (req,
     }
 });
 
-productsSuperAdminRouter.delete("/:id", async (req, res, next) => {
-    try {
-        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
-            res.status(400).send({error: "Неверный формат ID продукта"});
-            return;
+productsSuperAdminRouter.delete(
+    "/:id",
+    deleteImagesFromFs(Product, (doc) => [doc.image]),
+    async (req, res, next) => {
+        try {
+            const product = await Product.findByIdAndDelete(req.params.id);
+            if (!product) {
+                res.status(404).send({error: "Продукт не найден"});
+                return
+            }
+            res.send({message: "Продукт успешно удален"});
+        } catch (e) {
+            next(e);
         }
-
-        const product = await Product.findByIdAndDelete(req.params.id);
-        if (!product) {
-            res.status(404).send({error: "Продукт не найден"});
-            return;
-        }
-        res.send({message: "Продукт успешно удален"});
-    } catch (e) {
-        next(e);
     }
-});
+);
 
 export default productsSuperAdminRouter;
