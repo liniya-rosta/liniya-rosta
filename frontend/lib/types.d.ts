@@ -181,10 +181,8 @@ export interface ProductMutation {
         isOnSale: boolean;
         label?: string | null;
     };
-    icon?: {
-        alt?: string | null;
-        url?: File | null;
-    };
+    icon?: File | null;
+    iconAlt?: string | null;
 }
 
 export interface ProductUpdateMutation extends ProductMutation {

@@ -32,11 +32,18 @@ export const createProduct = async (productData: ProductMutation): Promise<Produ
         }
 
         if (productData.sale) {
-            formData.append('sale', JSON.stringify(productData.sale));
+            formData.append('isOnSale', String(productData.sale.isOnSale));
+            if (productData.sale.label) {
+                formData.append('saleLabel', productData.sale.label);
+            }
         }
 
         if (productData.icon) {
-            formData.append('icon', JSON.stringify(productData.icon));
+            formData.append('icon', productData.icon);
+        }
+
+        if (productData.iconAlt) {
+            formData.append('iconAlt', productData.iconAlt);
         }
 
         const res = await axiosAPI.post<{ message: string, product: Product }>('/superadmin/products', formData, {

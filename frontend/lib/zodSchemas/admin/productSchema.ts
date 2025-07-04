@@ -39,7 +39,13 @@ export const createProductSchema = z.object({
         .default([]),
     characteristics: z.array(characteristicSchema).optional(),
     sale: saleSchema.optional(),
-    icon: iconSchema.optional(),
+    icon: z
+        .union([z.instanceof(File), z.null(), z.undefined()])
+        .optional()
+        .refine((file) => !file || (file instanceof File && file.size > 0), {
+            message: "Файл обязателен",
+        }),
+    iconAlt: z.string().optional().nullable(),
 });
 
 export const updateProductSchema = z.object({

@@ -50,7 +50,7 @@ const ProductsClient: React.FC<ProductsClientProps> = ({
         setDeleteError,
     } = useAdminProductStore();
 
-    const {categories, setCategories, fetchCategoriesError, setFetchCategoriesError} = useCategoryStore();
+    const {setCategories, fetchCategoriesError, setFetchCategoriesError} = useCategoryStore();
 
     const [isHydrating, setIsHydrating] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -83,12 +83,6 @@ const ProductsClient: React.FC<ProductsClientProps> = ({
         setIsModalOpen(false);
         setCreateError(null);
         setUpdateError(null);
-    };
-
-    const openCreateModal = () => {
-        setEditingProduct(null);
-        setIsModalOpen(true);
-        resetErrors();
     };
 
     const openEditModal = (product: Product) => {
@@ -179,8 +173,6 @@ const ProductsClient: React.FC<ProductsClientProps> = ({
                     </div>
                 ) : (
                     <ProductsTable
-                        products={products}
-                        categories={categories}
                         onEditProduct={openEditModal}
                         onDeleteProduct={handleDeleteProduct}
                         onDeleteSelectedProducts={handleDeleteSelectedProducts}

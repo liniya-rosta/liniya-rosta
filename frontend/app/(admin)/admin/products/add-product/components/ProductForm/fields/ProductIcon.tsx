@@ -22,9 +22,9 @@ const ProductIcon: React.FC<Props> = ({form}) => {
         const file = e.target.files?.[0];
         if (!file) return;
 
-        form.setValue("icon.url", file);
+        form.setValue("icon", file);
         setIconPreview(URL.createObjectURL(file));
-        await form.trigger("icon.url");
+        await form.trigger("icon");
     };
 
     return (
@@ -32,7 +32,7 @@ const ProductIcon: React.FC<Props> = ({form}) => {
             <div className="flex flex-col">
                 <FormField
                     control={form.control}
-                    name="icon.url"
+                    name="icon"
                     render={() => (
                         <FormItem>
                             <FormLabel>Иконка</FormLabel>
@@ -59,9 +59,9 @@ const ProductIcon: React.FC<Props> = ({form}) => {
                                     />
                                 </div>
                             </FormControl>
-                            {form.formState.errors.icon?.url?.message && (
+                            {form.formState.errors.icon?.message && (
                                 <FormErrorMessage>
-                                    {form.formState.errors.icon.url.message}
+                                    {form.formState.errors.icon?.message}
                                 </FormErrorMessage>
                             )}
                         </FormItem>
@@ -72,17 +72,21 @@ const ProductIcon: React.FC<Props> = ({form}) => {
             <div className="flex flex-col">
                 <FormField
                     control={form.control}
-                    name="icon.alt"
+                    name="iconAlt"
                     render={({field}) => (
                         <FormItem>
                             <FormLabel>Альтернативный текст для иконки</FormLabel>
                             <FormControl>
-                                <Input placeholder="Например: Логотип Евробагета"
-                                       disabled={createLoading} {...field} />
+                                <Input
+                                    placeholder="Например: Логотип Евробагета"
+                                    disabled={createLoading}
+                                    {...field}
+                                    value={field.value || ""}
+                                />
                             </FormControl>
-                            {form.formState.errors.icon?.alt?.message && (
+                            {form.formState.errors.iconAlt?.message && (
                                 <FormErrorMessage>
-                                    {form.formState.errors.icon.alt.message}
+                                    {form.formState.errors.iconAlt.message}
                                 </FormErrorMessage>
                             )}
                         </FormItem>

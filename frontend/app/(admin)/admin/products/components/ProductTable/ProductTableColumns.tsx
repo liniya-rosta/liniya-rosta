@@ -1,28 +1,22 @@
-"use client";
-
-import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import {ColumnDef} from "@tanstack/react-table";
 import Image from "next/image";
-
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Badge } from "@/components/ui/badge";
-import { Category, Product } from "@/lib/types";
+import React from "react";
+import {Checkbox} from "@/components/ui/checkbox";
+import {Tooltip, TooltipContent, TooltipTrigger} from "@/components/ui/tooltip";
+import {Category, Product} from "@/lib/types";
 import {API_BASE_URL} from "@/lib/globalConstants";
+import {Button} from "@/components/ui/button";
+import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from "@/components/ui/dropdown-menu";
+import {MoreHorizontal} from "lucide-react";
+import {Badge} from "@/components/ui/badge";
 
 export const getProductTableColumns = (
     categories: Category[],
     onEditProduct: (product: Product) => void,
     onDeleteProduct: (id: string) => void,
-    actionLoading: boolean
+    actionLoading: boolean,
+    onImageClick: (image: { url: string; alt: string }) => void,
+    onSaleLabelClick: (label: string) => void,
 ): ColumnDef<Product>[] => {
     const getCategoryTitle = (category: string | Category) => {
         if (typeof category === "object" && category !== null) {
@@ -34,18 +28,15 @@ export const getProductTableColumns = (
 
     return [
         {
-            id: "выбрать",
-            header: ({ table }) => (
+            id: "select",
+            header: ({table}) => (
                 <Checkbox
-                    checked={
-                        table.getIsAllPageRowsSelected() ||
-                        (table.getIsSomePageRowsSelected() && "indeterminate")
-                    }
+                    checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
                     onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
                     aria-label="Выбрать все"
                 />
             ),
-            cell: ({ row }) => (
+            cell: ({row}) => (
                 <Checkbox
                     checked={row.getIsSelected()}
                     onCheckedChange={(value) => row.toggleSelected(!!value)}
@@ -56,26 +47,33 @@ export const getProductTableColumns = (
             enableHiding: false,
         },
         {
-            accessorKey: "image",
-            header: "Изображение",
-            cell: ({ row }) => {
-                const imageUrl = row.original.cover.url;
+            accessorKey: "cover",
+            header: "Обложка",
+            cell: ({row}) => {
+                const imageUrl = row.original.cover?.url;
                 return imageUrl ? (
-                    <div className="w-16 h-16 relative flex-shrink-0">
-                        <Image
-                            src={`${API_BASE_URL}/${imageUrl}`}
-                            alt={row.original.title}
-                            fill
-                            sizes="64px"
-                            className="object-cover rounded-md"
-                            onError={(e) => {
-                                (e.target as HTMLImageElement).src =
-                                    "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=800&h=400&fit=crop";
-                            }}
-                        />
-                    </div>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <div
+                                className="w-16 h-16 relative cursor-pointer"
+                                onClick={() => onImageClick({url: imageUrl, alt: row.original.cover?.alt || "cover"})}
+                            >
+                                <Image
+                                    src={`${API_BASE_URL}/${imageUrl}`}
+                                    alt={row.original.cover?.alt || "Обложка"}
+                                    fill
+                                    sizes="64px"
+                                    className="object-cover rounded-md"
+                                />
+                            </div>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>Нажмите чтобы просмотреть изображение</p>
+                        </TooltipContent>
+                    </Tooltip>
                 ) : (
-                    <div className="w-16 h-16 bg-muted rounded-md flex items-center justify-center text-xs text-muted-foreground flex-shrink-0">
+                    <div
+                        className="w-16 h-16 bg-muted rounded-md flex items-center justify-center text-xs text-muted-foreground">
                         Нет фото
                     </div>
                 );
@@ -83,26 +81,13 @@ export const getProductTableColumns = (
         },
         {
             accessorKey: "title",
-            header: ({ column }) => {
-                return (
-                    <Button
-                        variant="ghost"
-                        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                    >
-                        Название
-                        <ArrowUpDown className="ml-2 h-4 w-4" />
-                    </Button>
-                );
-            },
-            cell: ({ row }) => (
-                <div className="font-medium min-w-[150px]">{row.getValue("title")}</div>
-            ),
-            filterFn: "includesString",
+            header: "Название",
+            cell: ({row}) => row.original.title || "—",
         },
         {
             accessorKey: "category",
             header: "Категория",
-            cell: ({ row }) => (
+            cell: ({row}) => (
                 <Badge variant="outline">
                     {getCategoryTitle(row.original.category)}
                 </Badge>
@@ -120,43 +105,114 @@ export const getProductTableColumns = (
         {
             accessorKey: "description",
             header: "Описание",
-            cell: ({ row }) => {
-                const description = row.getValue("description") as string;
+            cell: ({row}) => row.original.description ||
+                <span className="text-muted-foreground italic">Нет описания</span>,
+        },
+        {
+            accessorKey: "characteristics",
+            header: "Характеристики",
+            cell: ({row}) => {
+                const characteristics = row.original.characteristics;
+
+                if (!Array.isArray(characteristics) || characteristics.length === 0) {
+                    return "—";
+                }
+
                 return (
-                    <div className="max-w-[200px] truncate" title={description}>
-                        {description || "Нет описания"}
+                    <div className="max-h-24 overflow-y-auto">
+                        <ul className="list-disc ml-4 space-y-1 text-sm pr-2">
+                            {characteristics.map((char, idx) => (
+                                <li key={idx}>
+                                    <span className="font-medium">{char.key}:</span> {char.value}
+                                </li>
+                            ))}
+                        </ul>
                     </div>
                 );
             },
-            filterFn: "includesString",
         },
         {
-            id: "действия",
-            enableHiding: false,
-            cell: ({ row }) => {
-                const product = row.original;
+            accessorKey: "icon",
+            header: "Иконка",
+            cell: ({row}) => {
+                const iconUrl = row.original.icon?.url;
+                return iconUrl ? (
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <div
+                                className="w-8 h-8 relative cursor-pointer"
+                                onClick={() => onImageClick({url: iconUrl, alt: row.original.icon?.alt || "icon"})}
+                            >
+                                <Image
+                                    src={`${API_BASE_URL}/${iconUrl}`}
+                                    alt={row.original.icon?.alt || "Иконка"}
+                                    fill
+                                    sizes="32px"
+                                    className="object-cover rounded"
+                                />
+                            </div>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>Нажмите чтобы просмотреть иконку</p>
+                        </TooltipContent>
+                    </Tooltip>
+                ) : (
+                    "—"
+                );
+            },
+        },
+        {
+            accessorKey: "sale",
+            header: "Скидка",
+            cell: ({row}) => {
+                const saleLabel = row.original.sale?.label;
 
+                if (saleLabel) {
+                    return (
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <div
+                                    className="w-8 h-8 relative cursor-pointer"
+                                    onClick={() => onSaleLabelClick(saleLabel)}
+                                >
+                                    {row.original.sale?.isOnSale ? 'Да' : '—'}
+                                </div>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>Нажмите чтобы подробнее подробнее посмотреть акцию</p>
+                            </TooltipContent>
+                        </Tooltip>
+                    );
+                } else {
+                    return (
+                        row.original.sale?.isOnSale ? 'Да' : "—"
+                    );
+                }
+            }
+        },
+        {
+            accessorKey: "images",
+            header: "Изображения",
+            cell: ({row}) => Array.isArray(row.original.images) ? `${row.original.images.length}` : "0",
+        },
+        {
+            id: "actions",
+            header: "Меню",
+            enableHiding: false,
+            cell: ({row}) => {
+                const product = row.original;
                 return (
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="ghost" className="h-8 w-8 p-0">
-                                <span className="sr-only">Открыть меню</span>
-                                <MoreHorizontal className="h-4 w-4" />
+                                <MoreHorizontal className="h-4 w-4"/>
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Действия</DropdownMenuLabel>
                             <DropdownMenuItem onClick={() => onEditProduct(product)} disabled={actionLoading}>
-                                <Pencil className="mr-2 h-4 w-4" />
                                 Редактировать
                             </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem
-                                onClick={() => onDeleteProduct(product._id)}
-                                disabled={actionLoading}
-                                className="text-red-600 focus:text-red-600"
-                            >
-                                <Trash2 className="mr-2 h-4 w-4" />
+                            <DropdownMenuItem onClick={() => onDeleteProduct(product._id)} disabled={actionLoading}>
                                 Удалить
                             </DropdownMenuItem>
                         </DropdownMenuContent>

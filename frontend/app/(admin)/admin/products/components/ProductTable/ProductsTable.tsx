@@ -2,58 +2,47 @@
 
 import React from "react";
 import {
+    ColumnFiltersState,
     flexRender,
     getCoreRowModel,
     getFilteredRowModel,
     getPaginationRowModel,
     getSortedRowModel,
-    useReactTable,
-    SortingState,
-    ColumnFiltersState,
-    VisibilityState,
     RowSelectionState,
+    SortingState,
+    useReactTable,
+    VisibilityState,
 } from "@tanstack/react-table";
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select';
-import {
-    DropdownMenu,
-    DropdownMenuCheckboxItem,
-    DropdownMenuContent,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { ChevronDown } from "lucide-react";
-import { getProductTableColumns } from "./ProductTableColumns";
-import {Category, Product} from "@/lib/types";
-import CategoryFilter from "@/app/(admin)/admin/products/components/CategoryFilter";
+
+import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow,} from "@/components/ui/table";
+import {Button} from "@/components/ui/button";
+import {getProductTableColumns} from "./ProductTableColumns";
+import {Product} from "@/lib/types";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
+import ImagePreviewModal from "@/app/(admin)/admin/products/components/ImagePreviewModal";
+import SaleLabelModal from "@/app/(admin)/admin/products/components/SaleLabelModal";
+import {useCategoryStore} from "@/store/categoriesStore";
+import {useAdminProductStore} from "@/store/superadmin/superadminProductsStore";
+import TableToolbar from "@/app/(admin)/admin/products/components/ProductTable/TableToolbar";
 
 interface ProductsTableProps {
-    products: Product[];
-    categories: Category[];
     onEditProduct: (product: Product) => void;
+    actionLoading: boolean;
     onDeleteProduct: (id: string) => void;
     onDeleteSelectedProducts: (ids: string[]) => void;
-    actionLoading: boolean;
 }
 
 type FilterType = 'title' | 'description';
 
-const ProductsTable: React.FC<ProductsTableProps> = ({products, categories, onEditProduct, onDeleteProduct, onDeleteSelectedProducts, actionLoading,}) => {
+const ProductsTable: React.FC<ProductsTableProps> = ({
+                                                         onEditProduct,
+                                                         actionLoading,
+                                                         onDeleteProduct,
+                                                         onDeleteSelectedProducts,
+                                                     }) => {
+    const {categories} = useCategoryStore();
+    const {products} = useAdminProductStore();
+
     const [sorting, setSorting] = React.useState<SortingState>([]);
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
     const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
@@ -66,24 +55,30 @@ const ProductsTable: React.FC<ProductsTableProps> = ({products, categories, onEd
     const [filterValue, setFilterValue] = React.useState<string>('');
     const [filteredProducts, setFilteredProducts] = React.useState<Product[]>(products);
 
-    const columnLabels: Record<string, string> = {
-        "select": "Выбрать",
-        "image": "Изображение",
-        "title": "Название",
-        "description": "Описание",
-        "category": "Категория",
+    const [previewImage, setPreviewImage] = React.useState<{ url: string; alt: string } | null>(null);
+    const [saleLabel, setSaleLabel] = React.useState<string | null>(null);
+
+    const onImageClick = (image: { url: string; alt: string }) => {
+        setPreviewImage(image);
+    };
+
+    const onSaleLabelClick = (label: string) => {
+        setSaleLabel(label);
     };
 
     const columns = React.useMemo(
-        () => getProductTableColumns(
-            categories,
-            onEditProduct,
-            (id: string) => {
-                setIdsToDelete([id]);
-                setShowConfirmDialog(true);
-            },
-            actionLoading
-        ),
+        () =>
+            getProductTableColumns(
+                categories,
+                onEditProduct,
+                (id: string) => {
+                    setIdsToDelete([id]);
+                    setShowConfirmDialog(true);
+                },
+                actionLoading,
+                onImageClick,
+                onSaleLabelClick,
+            ),
         [categories, onEditProduct, actionLoading]
     );
 
@@ -105,17 +100,6 @@ const ProductsTable: React.FC<ProductsTableProps> = ({products, categories, onEd
         }
     }, [products, activeFilterType, filterValue]);
 
-    const getFilterPlaceholder = () => {
-        switch (activeFilterType) {
-            case 'title':
-                return 'Фильтр по названию';
-            case 'description':
-                return 'Фильтр по описанию';
-            default:
-                return 'Введите значение для фильтра';
-        }
-    };
-
     const table = useReactTable({
         data: filteredProducts,
         columns,
@@ -135,14 +119,6 @@ const ProductsTable: React.FC<ProductsTableProps> = ({products, categories, onEd
         },
     });
 
-    const handleBulkDelete = () => {
-        const selectedIds = table.getSelectedRowModel().rows.map(row => row.original._id);
-        if (selectedIds.length > 0) {
-            setIdsToDelete(selectedIds);
-            setShowConfirmDialog(true);
-        }
-    };
-
     const confirmDeletion = () => {
         if (idsToDelete.length > 1) {
             onDeleteSelectedProducts(idsToDelete);
@@ -160,67 +136,12 @@ const ProductsTable: React.FC<ProductsTableProps> = ({products, categories, onEd
 
     return (
         <div className="w-full">
-            <div className="flex items-center py-4 flex-wrap gap-2">
-                <Select value={activeFilterType} onValueChange={(value: FilterType) => {
-                    setActiveFilterType(value);
-                    setFilterValue('');
-                }}>
-                    <SelectTrigger className="w-[180px]">
-                        <SelectValue placeholder="Выберите фильтр"/>
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="title">По названию</SelectItem>
-                        <SelectItem value="description">По описанию</SelectItem>
-                    </SelectContent>
-                </Select>
-
-                <Input
-                    placeholder={getFilterPlaceholder()}
-                    value={filterValue}
-                    onChange={(e) => setFilterValue(e.target.value)}
-                    className="flex-grow max-w-sm"
-                />
-
-                <CategoryFilter
-                    column={table.getColumn("category")}
-                    categories={categories}
-                />
-
-                <Button
-                    disabled={actionLoading || table.getFilteredSelectedRowModel().rows.length === 0}
-                    onClick={handleBulkDelete}
-                    variant='outline'
-                >
-                    Удалить выбранные {table.getFilteredSelectedRowModel().rows.length} элементы
-                </Button>
-
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="outline">
-                            Столбцы <ChevronDown className="ml-2 h-4 w-5" />
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                        {table
-                            .getAllColumns()
-                            .filter((column) => column.getCanHide())
-                            .map((column) => {
-                                return (
-                                    <DropdownMenuCheckboxItem
-                                        key={column.id}
-                                        className="capitalize"
-                                        checked={column.getIsVisible()}
-                                        onCheckedChange={(value) =>
-                                            column.toggleVisibility(value)
-                                        }
-                                    >
-                                        {columnLabels[column.id] ?? column.id}
-                                    </DropdownMenuCheckboxItem>
-                                );
-                            })}
-                    </DropdownMenuContent>
-                </DropdownMenu>
-            </div>
+            <TableToolbar actionLoading={actionLoading} table={table} filterValue={filterValue}
+                          setFilterValue={setFilterValue} activeFilterType={activeFilterType}
+                          setActiveFilterType={setActiveFilterType} onConfirmDialogOpen={(ids: string[]) => {
+                setIdsToDelete(ids);
+                setShowConfirmDialog(true);
+            }}/>
 
             <div className="rounded-md border overflow-x-auto">
                 <Table>
@@ -306,6 +227,11 @@ const ProductsTable: React.FC<ProductsTableProps> = ({products, categories, onEd
                 loading={actionLoading}
             >
             </ConfirmDialog>
+            <ImagePreviewModal
+                image={previewImage}
+                onClose={() => setPreviewImage(null)}
+            />
+            <SaleLabelModal saleLabel={saleLabel} onClose={() => setSaleLabel(null)}/>
         </div>
     );
 };

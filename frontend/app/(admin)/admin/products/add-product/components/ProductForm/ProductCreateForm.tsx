@@ -56,15 +56,12 @@ const ProductCreateForm: React.FC<Props> = ({initialCategories, initialCategorie
             coverAlt: "",
             images: [],
             characteristics: [],
-
             sale: {
                 isOnSale: false,
                 label: "",
             },
-            icon: {
-                alt: "",
-                url: null,
-            },
+            icon: null,
+            iconAlt: "",
         },
     });
 
