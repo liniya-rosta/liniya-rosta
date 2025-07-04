@@ -76,7 +76,7 @@ const TableToolbar: React.FC<Props> = ({
                 setActiveFilterType(value);
                 setFilterValue('');
             }}>
-                <SelectTrigger className="w-[180px]">
+                <SelectTrigger className="md:w-[180px] w-full">
                     <SelectValue placeholder="Выберите фильтр"/>
                 </SelectTrigger>
                 <SelectContent>

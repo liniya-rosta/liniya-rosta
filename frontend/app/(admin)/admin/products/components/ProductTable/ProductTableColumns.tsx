@@ -92,7 +92,7 @@ export const getProductTableColumns = (
                     {getCategoryTitle(row.original.category)}
                 </Badge>
             ),
-            filterFn: (row, id, value) => {
+            filterFn: (row, value) => {
                 if (!value) return true;
 
                 const categoryId =
@@ -105,8 +105,13 @@ export const getProductTableColumns = (
         {
             accessorKey: "description",
             header: "Описание",
-            cell: ({row}) => row.original.description ||
-                <span className="text-muted-foreground italic">Нет описания</span>,
+            cell: ({ row }) => (
+                <div className="w-60 max-h-24 overflow-auto text-sm break-words whitespace-pre-wrap">
+                    {row.original.description || (
+                        <span className="text-muted-foreground italic">Нет описания</span>
+                    )}
+                </div>
+            ),
         },
         {
             accessorKey: "characteristics",

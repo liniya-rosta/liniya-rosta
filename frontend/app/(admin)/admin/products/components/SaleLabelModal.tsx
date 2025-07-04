@@ -7,16 +7,16 @@ interface Props {
     onClose: () => void;
 }
 
-const ImagePreviewModal: React.FC<Props> = ({saleLabel, onClose}) => {
+const SaleLabelModal: React.FC<Props> = ({saleLabel, onClose}) => {
     if (!saleLabel) return null;
 
     return (
         <Dialog open={!!saleLabel} onOpenChange={onClose}>
-            <DialogContent className="w-auto max-w-[90vw] p-4">
+            <DialogContent className="w-full max-w-[90vw] max-h-[80vh]">
                 <VisuallyHidden>
                     <DialogTitle>Подробный просмотр акции</DialogTitle>
                 </VisuallyHidden>
-                <div className='p-5'>
+                <div className="p-4 whitespace-pre-wrap break-words overflow-x-hidden">
                     {saleLabel}
                 </div>
             </DialogContent>
@@ -24,4 +24,4 @@ const ImagePreviewModal: React.FC<Props> = ({saleLabel, onClose}) => {
     );
 };
 
-export default ImagePreviewModal;
+export default SaleLabelModal;
