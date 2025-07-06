@@ -2,7 +2,7 @@ import express from "express";
 import {PortfolioItem} from "../../models/PortfolioItem";
 import {portfolioImage} from "../../middleware/multer";
 import {Error, Types} from "mongoose";
-import {PortfolioUpdate} from "../../../types";
+import {GalleryUpdate, PortfolioUpdate} from "../../../types";
 
 const portfolioSuperAdminRouter = express.Router();
 
@@ -92,9 +92,7 @@ portfolioSuperAdminRouter.patch("/:id", portfolioImage.single("cover"), async (r
     }
 });
 
-portfolioSuperAdminRouter.patch("/gallery/:galleryId", portfolioImage.fields([
-    {name: "gallery", maxCount: 1}
-]), async (req, res, next) => {
+portfolioSuperAdminRouter.patch("/gallery/:galleryId", portfolioImage.single("gallery"), async (req, res, next) => {
     try {
         const {galleryId} = req.params;
 
@@ -103,11 +101,10 @@ portfolioSuperAdminRouter.patch("/gallery/:galleryId", portfolioImage.fields([
             return;
         }
 
-        const files = req.files as { [fieldname: string]: Express.Multer.File[] };
-        const file = files.gallery?.[0];
+        const file = req.file;
         const newAlt = req.body.alt;
 
-        const updateFields: any = {};
+        const updateFields: GalleryUpdate = {};
         if (file) {
             updateFields["gallery.$.image"] = "portfolio/" + file.filename;
         }
@@ -148,7 +145,7 @@ portfolioSuperAdminRouter.delete("/:id", async (req, res, next) => {
         const {id} = req.params;
 
         if (!Types.ObjectId.isValid(id)) {
-            res.status(400).send({error: "Неверный формат ID обложки портфолио"});
+            res.status(400).send({error: "Неверный формат ID портфолио"});
             return;
         }
 
