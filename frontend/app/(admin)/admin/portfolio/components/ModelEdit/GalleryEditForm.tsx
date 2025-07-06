@@ -107,8 +107,8 @@ const GalleryEditForm: React.FC<Props> = ({onSaved}) => {
                 </div>
 
                 <div className="mb-3">
-                    <div className="flex items-center gap-3 mb-2">
-                        <Label htmlFor="image" className="mb-2">Изображение</Label>
+                    <Label htmlFor="image" className="mb-2">Изображение</Label>
+                    <div className="flex gap-3 mb-2">
                         <Input
                             id="image"
                             type="file"
@@ -121,13 +121,13 @@ const GalleryEditForm: React.FC<Props> = ({onSaved}) => {
                             variant="outline"
                             disabled={editLoading}
                             onClick={() => {
-                                const file = control._formValues.gallery.image;
+                                const file = control._formValues.image;
                                 if (file instanceof File) {
-                                    showImagePreview(file, control._formValues.gallery.alt);
+                                    showImagePreview(file, control._formValues.alt);
                                 }
                             }}
                         >
-                            <Eye className="w-4 h-4" /> Посмотреть изображение
+                            <Eye className="w-4 h-4" /> Посмотреть
                         </Button>
 
                     </div>

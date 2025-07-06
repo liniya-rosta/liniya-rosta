@@ -70,7 +70,6 @@ const AdminPortfolioClient: React.FC<Props> = ({ error, limit = "10"}) => {
 
      const updatePaginationAndData = async (searchValue = "", searchField = "coverAlt") => {
        try {
-           setPortfolioFetchLoading(true);
            const filters = {
                coverAlt: "",
                description: "",
@@ -101,8 +100,6 @@ const AdminPortfolioClient: React.FC<Props> = ({ error, limit = "10"}) => {
            }
 
            toast.error(errorMessage);
-       } finally {
-           setPortfolioFetchLoading(false)
        }
     };
 
@@ -212,6 +209,7 @@ const AdminPortfolioClient: React.FC<Props> = ({ error, limit = "10"}) => {
             toast.error(errorMessage);
         }
     }
+
     const openEditModalGalleryItem = async (id: string) => {
        try {
            const galleryItem = await fetchGalleryItem(id)
@@ -318,7 +316,6 @@ const AdminPortfolioClient: React.FC<Props> = ({ error, limit = "10"}) => {
     const handleFilterChange = (column: string, value: string) => {
         void updatePaginationAndData(value, column);
     };
-
 
     if (fetchPortfolioLoading) return <DataSkeleton/>
     if (error) return <ErrorMsg error={error}/>
