@@ -5,6 +5,9 @@ interface AdminProductState {
     products: Product[];
     setProducts: (products: Product[]) => void;
 
+    productDetail: Product | null;
+    setProductDetail: (product: Product | null) => void;
+
     fetchLoading: boolean;
     setFetchLoading: (loading: boolean) => void;
 
@@ -26,27 +29,32 @@ interface AdminProductState {
     deleteLoading: boolean;
     setDeleteLoading: (loading: boolean) => void;
 
-
     deleteError: string | null;
     setDeleteError: (error: string | null) => void;
 }
 
 export const useAdminProductStore = create<AdminProductState>((set) => ({
     products: [],
+    productDetail: null,
+
     fetchLoading: true,
     createLoading: false,
     updateLoading: false,
     deleteLoading: false,
+
     fetchError: null,
     createError: null,
     updateError: null,
     deleteError: null,
 
     setProducts: (products) => set({ products }),
+    setProductDetail: (product) => set({ productDetail: product }),
+
     setFetchLoading: (loading) => set({ fetchLoading: loading }),
     setCreateLoading: (loading) => set({ createLoading: loading }),
     setUpdateLoading: (loading) => set({ updateLoading: loading }),
     setDeleteLoading: (loading) => set({ deleteLoading: loading }),
+
     setFetchError: (error) => set({ fetchError: error }),
     setCreateError: (error) => set({ createError: error }),
     setUpdateError: (error) => set({ updateError: error }),

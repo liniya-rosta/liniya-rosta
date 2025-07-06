@@ -17,7 +17,7 @@ export const getProductTableColumns = (
     actionLoading: boolean,
     onImageClick: (image: { url: string; alt: string }) => void,
     onSaleLabelClick: (label: string) => void,
-): ColumnDef<Product>[] => {
+    onImagesClick: (data: { productId: string; images: { url: string; alt?: string | null; _id: string }[] }) => void): ColumnDef<Product>[] => {
     const getCategoryTitle = (category: string | Category) => {
         if (typeof category === "object" && category !== null) {
             return category.title;
@@ -25,7 +25,6 @@ export const getProductTableColumns = (
         const found = categories.find((cat) => cat._id === category);
         return found ? found.title : String(category);
     };
-
     return [
         {
             id: "select",
@@ -217,6 +216,14 @@ export const getProductTableColumns = (
                             <DropdownMenuItem onClick={() => onEditProduct(product)} disabled={actionLoading}>
                                 Редактировать
                             </DropdownMenuItem>
+
+                            <DropdownMenuItem
+                                onClick={() => onImagesClick({ productId: product._id, images: product.images })}
+                                disabled={actionLoading || !Array.isArray(product.images) || product.images.length === 0}
+                            >
+                                Изображения
+                            </DropdownMenuItem>
+
                             <DropdownMenuItem onClick={() => onDeleteProduct(product._id)} disabled={actionLoading}>
                                 Удалить
                             </DropdownMenuItem>

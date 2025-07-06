@@ -139,6 +139,12 @@ export interface ProductImagesForm {
     alt?: string;
 }
 
+interface ImageItem {
+    _id: string;
+    url: string;
+    alt: string;
+}
+
 export interface Product {
     _id: string;
     title: string;
@@ -151,7 +157,7 @@ export interface Product {
         url: string;
         alt: string;
     };
-    images: ProductImagesForm[];
+    images: ImageItem[];
     characteristics?: {
         key: string;
         value: string;
@@ -184,6 +190,8 @@ export interface ProductMutation {
     icon?: File | null;
     iconAlt?: string | null;
 }
+
+type ImagesEditValues = Partial<GalleryForm>;
 
 export interface ProductUpdateMutation extends ProductMutation {
     cover?: File | null;

@@ -23,6 +23,11 @@ const imageItemSchema = z.object({
         }),
 });
 
+export const imagesSchema = z.object({
+    image: z.instanceof(File).nullable().optional(),
+    alt: z.string().optional(),
+});
+
 export const createProductSchema = z.object({
     category: z.string().min(1, {message: "Категория обязательна"}),
     title: z.string().min(1, {message: "Название обязательно"}).max(200, {message: "Максимум 200 символов"}),

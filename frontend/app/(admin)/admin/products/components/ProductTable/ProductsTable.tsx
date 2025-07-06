@@ -14,16 +14,25 @@ import {
     VisibilityState,
 } from "@tanstack/react-table";
 
-import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow,} from "@/components/ui/table";
-import {Button} from "@/components/ui/button";
-import {getProductTableColumns} from "./ProductTableColumns";
-import {Product} from "@/lib/types";
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import { getProductTableColumns } from "./ProductTableColumns";
+import { Product } from "@/lib/types";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import ImagePreviewModal from "@/app/(admin)/admin/products/components/ImagePreviewModal";
 import SaleLabelModal from "@/app/(admin)/admin/products/components/SaleLabelModal";
-import {useCategoryStore} from "@/store/categoriesStore";
-import {useAdminProductStore} from "@/store/superadmin/superadminProductsStore";
+import { useCategoryStore } from "@/store/categoriesStore";
+import { useAdminProductStore } from "@/store/superadmin/superadminProductsStore";
 import TableToolbar from "@/app/(admin)/admin/products/components/ProductTable/TableToolbar";
+import ImagesModal from "@/app/(admin)/admin/products/components/ImagesModal";
+import { API_BASE_URL } from "@/lib/globalConstants";
 
 interface ProductsTableProps {
     onEditProduct: (product: Product) => void;
@@ -40,8 +49,8 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
                                                          onDeleteProduct,
                                                          onDeleteSelectedProducts,
                                                      }) => {
-    const {categories} = useCategoryStore();
-    const {products} = useAdminProductStore();
+    const { categories } = useCategoryStore();
+    const { products, setProductDetail } = useAdminProductStore();
 
     const [sorting, setSorting] = React.useState<SortingState>([]);
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
@@ -57,6 +66,7 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
 
     const [previewImage, setPreviewImage] = React.useState<{ url: string; alt: string } | null>(null);
     const [saleLabel, setSaleLabel] = React.useState<string | null>(null);
+    const [isImagesModalOpen, setIsImagesModalOpen] = React.useState(false);
 
     const onImageClick = (image: { url: string; alt: string }) => {
         setPreviewImage(image);
@@ -64,6 +74,21 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
 
     const onSaleLabelClick = (label: string) => {
         setSaleLabel(label);
+    };
+
+    const onImages = async (data: {
+        productId: string;
+        images: { url: string; alt?: string | null; _id: string }[];
+    }) => {
+        try {
+            const res = await fetch(`${API_BASE_URL}/products/${data.productId}`);
+            if (!res.ok) throw new Error("Ошибка при получении продукта");
+            const product = await res.json();
+            setProductDetail(product);
+            setIsImagesModalOpen(true);
+        } catch (e) {
+            console.error(e);
+        }
     };
 
     const columns = React.useMemo(
@@ -78,6 +103,7 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
                 actionLoading,
                 onImageClick,
                 onSaleLabelClick,
+                onImages
             ),
         [categories, onEditProduct, actionLoading]
     );
@@ -136,30 +162,34 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
 
     return (
         <div className="w-full">
-            <TableToolbar actionLoading={actionLoading} table={table} filterValue={filterValue}
-                          setFilterValue={setFilterValue} activeFilterType={activeFilterType}
-                          setActiveFilterType={setActiveFilterType} onConfirmDialogOpen={(ids: string[]) => {
-                setIdsToDelete(ids);
-                setShowConfirmDialog(true);
-            }}/>
+            <TableToolbar
+                actionLoading={actionLoading}
+                table={table}
+                filterValue={filterValue}
+                setFilterValue={setFilterValue}
+                activeFilterType={activeFilterType}
+                setActiveFilterType={setActiveFilterType}
+                onConfirmDialogOpen={(ids: string[]) => {
+                    setIdsToDelete(ids);
+                    setShowConfirmDialog(true);
+                }}
+            />
 
             <div className="rounded-md border overflow-x-auto">
                 <Table>
                     <TableHeader>
                         {table.getHeaderGroups().map((headerGroup) => (
                             <TableRow key={headerGroup.id}>
-                                {headerGroup.headers.map((header) => {
-                                    return (
-                                        <TableHead key={header.id} className="min-w-[100px]">
-                                            {header.isPlaceholder
-                                                ? null
-                                                : flexRender(
-                                                    header.column.columnDef.header,
-                                                    header.getContext()
-                                                )}
-                                        </TableHead>
-                                    );
-                                })}
+                                {headerGroup.headers.map((header) => (
+                                    <TableHead key={header.id} className="min-w-[100px]">
+                                        {header.isPlaceholder
+                                            ? null
+                                            : flexRender(
+                                                header.column.columnDef.header,
+                                                header.getContext()
+                                            )}
+                                    </TableHead>
+                                ))}
                             </TableRow>
                         ))}
                     </TableHeader>
@@ -182,10 +212,7 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
                             ))
                         ) : (
                             <TableRow>
-                                <TableCell
-                                    colSpan={columns.length}
-                                    className="h-24 text-center"
-                                >
+                                <TableCell colSpan={columns.length} className="h-24 text-center">
                                     Нет результатов.
                                 </TableCell>
                             </TableRow>
@@ -225,13 +252,19 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
                 title={confirmDialogTitle}
                 onConfirm={confirmDeletion}
                 loading={actionLoading}
-            >
-            </ConfirmDialog>
+            />
             <ImagePreviewModal
                 image={previewImage}
                 onClose={() => setPreviewImage(null)}
             />
-            <SaleLabelModal saleLabel={saleLabel} onClose={() => setSaleLabel(null)}/>
+            <SaleLabelModal
+                saleLabel={saleLabel}
+                onClose={() => setSaleLabel(null)}
+            />
+            <ImagesModal
+                open={isImagesModalOpen}
+                onClose={() => setIsImagesModalOpen(false)}
+            />
         </div>
     );
 };
