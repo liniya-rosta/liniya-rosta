@@ -6,63 +6,73 @@ import {
     DropdownMenuContent, DropdownMenuItem,
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
-import React from "react";
+import React, {useState} from "react";
 import {Table as TanStackTable} from "@tanstack/table-core/";
 import { Post} from "@/lib/types";
-import { FilterType } from "./PostsTable";
 import { Button } from "@/components/ui/button";
 import { ChevronDown } from "lucide-react";
+import {useSuperAdminPostStore} from "@/store/superadmin/superAdminPostsStore";
 
 interface Props {
-    activeFilterType: FilterType;
-    setActiveFilterType: (val: FilterType) => void;
-    filterValue: string;
-    setFilterValue: (val: string) => void;
     handleBulkDelete: () => void;
     table: TanStackTable<Post>,
-    actionLoading: boolean;
-    getFilterPlaceholder: () => string;
-    onPageSizeChange: (size: string) => void;
-
+    onFilterChange: (column: string, value: string) => void;
+    // onPageSizeChange: (size: string) => void;
 }
 
-const TableControls: React.FC<Props> = (
-    { table, actionLoading, getFilterPlaceholder, filterValue, setFilterValue, activeFilterType, setActiveFilterType, handleBulkDelete, onPageSizeChange}
+const columnLabels: Record<string, string> = {
+    "select": "Выбрать",
+    "image": "Изображение",
+    "title": "Заголовок",
+    "description": "Описание",
+};
+
+const filterOptions = [
+    { label: "По заголовку", value: "title" },
+    { label: "По описанию", value: "description" },
+];
+
+const TablePostControls: React.FC<Props> = (
+    { table, onFilterChange, handleBulkDelete}
 ) => {
-    const columnLabels: Record<string, string> = {
-        "select": "Выбрать",
-        "image": "Изображение",
-        "title": "Заголовок",
-        "description": "Описание",
-    };
+    const [filterColumn, setFilterColumn] = useState("title");
+    const filterValue = (table.getColumn(filterColumn)?.getFilterValue() as string) ?? "";
+    const {deleteLoading} = useSuperAdminPostStore();
 
     return (
             <div className="flex justify-between gap-4 py-4 flex-wrap items-center">
                 <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-                    <Select value={activeFilterType} onValueChange={(value: FilterType) => {
-                        setActiveFilterType(value);
-                        setFilterValue('');
+                    <Select value={filterColumn} onValueChange={(value) => {
+                        table.getColumn(filterColumn)?.setFilterValue("");
+                        setFilterColumn(value);
                     }}>
                         <SelectTrigger className="w-[180px]">
-                            <SelectValue placeholder="Выберите фильтр"/>
+                            <SelectValue placeholder="Фильтр по колонке" />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="title">По названию</SelectItem>
-                            <SelectItem value="description">По описанию</SelectItem>
+                            {filterOptions.map(option => (
+                                <SelectItem key={option.value} value={option.value}>
+                                    {option.label}
+                                </SelectItem>
+                            ))}
                         </SelectContent>
                     </Select>
 
                     <Input
-                        placeholder={getFilterPlaceholder()}
+                        placeholder="Поиск..."
                         value={filterValue}
-                        onChange={(e) => setFilterValue(e.target.value)}
-                        className="flex-grow max-w-sm"
+                        onChange={(e) => {
+                            const value = e.target.value;
+                            table.getColumn(filterColumn)?.setFilterValue(value);
+                            onFilterChange(filterColumn, value);
+                        }}
+                        className="w-full sm:w-[300px]"
                     />
                 </div>
 
                 <div className="flex gap-2">
                     <Button
-                        disabled={actionLoading || table.getFilteredSelectedRowModel().rows.length === 0}
+                        disabled={deleteLoading || table.getFilteredSelectedRowModel().rows.length === 0}
                         onClick={handleBulkDelete}
                         variant='outline'
                     >
@@ -81,7 +91,7 @@ const TableControls: React.FC<Props> = (
                                     key={pageSize}
                                     onSelect={() => {
                                         table.setPageSize(pageSize);
-                                        onPageSizeChange(String(pageSize));
+                                        // onPageSizeChange(String(pageSize));
                                     }}
                                 >
                                     {pageSize} элементов
@@ -117,9 +127,8 @@ const TableControls: React.FC<Props> = (
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </div>
-
             </div>
     )
 }
 
-export default TableControls;
+export default TablePostControls;

@@ -11,7 +11,6 @@ import {
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuLabel,
-    DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Post } from '@/lib/types';
@@ -21,8 +20,7 @@ import {Tooltip, TooltipContent, TooltipTrigger} from "@/components/ui/tooltip";
 
 export const getPostTableColumns = (
     onEditPost: (post: Post) => void,
-    onDeletePost: (id: string) => void,
-    actionLoading: boolean,
+    onDeletePost: (ids: string[]) => void,
     onOpenImagesModal: (post: Post) => void
 ): ColumnDef<Post>[] => {
     return [
@@ -140,26 +138,22 @@ export const getPostTableColumns = (
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                             <DropdownMenuLabel>Действия</DropdownMenuLabel>
-                            <DropdownMenuItem onClick={() => onEditPost(post)} disabled={actionLoading}>
+                            <DropdownMenuItem
+                                onClick={() => onOpenImagesModal(post)}
+                            >
+                                <Images className="mr-2 h-4 w-4" />
+                                Все изображения
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => onEditPost(post)}>
                                 <Edit2 className="mr-2 h-4 w-4" />
                                 Редактировать
                             </DropdownMenuItem>
-                            <DropdownMenuSeparator />
                             <DropdownMenuItem
-                                onClick={() => onDeletePost(post._id)}
-                                disabled={actionLoading}
+                                onClick={() => onDeletePost([post._id])}
                                 className="text-red-600 focus:text-red-600"
                             >
                                 <Trash2 className="mr-2 h-4 w-4" />
                                 Удалить
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem
-                                onClick={() => onOpenImagesModal(post)}
-                                disabled={actionLoading}
-                            >
-                                <Images className="mr-2 h-4 w-4" />
-                                Все изображения
                             </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>

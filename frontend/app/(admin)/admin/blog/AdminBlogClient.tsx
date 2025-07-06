@@ -2,18 +2,28 @@
 
 import React, {useEffect, useState} from 'react';
 import {Plus} from 'lucide-react';
-import {Post, CreatePostData, UpdatePostData, PostResponse} from "@/lib/types";
+import {Post, PostResponse} from "@/lib/types";
 import {Button} from '@/components/ui/button';
-import {Alert, AlertDescription} from '@/components/ui/alert';
-import {createPost, deletePost, updatePost} from "@/actions//superadmin/posts";
-import PostsTable, {FilterType} from "@/app/(admin)/admin/blog/components/DataTable/PostsTable";
-import PostModal from "@/app/(admin)/admin/blog/components/PostModal";
-import {toast} from 'react-toastify';
-import {AxiosError} from 'axios';
-import {useAdminPostStore} from "@/store/superadmin/superAdminPostsStore";
+import {
+    ColumnFiltersState,
+    getCoreRowModel,
+    getFilteredRowModel,
+    getPaginationRowModel, getSortedRowModel, PaginationState,
+    SortingState,
+    useReactTable,
+    VisibilityState
+} from "@tanstack/react-table";
+import {useSuperAdminPostStore} from "@/store/superadmin/superAdminPostsStore";
+import {isAxiosError} from "axios";
+import {toast} from "react-toastify";
+import { getPostTableColumns } from './components/DataTable/PostTableColumns';
+import PostsTable from "@/app/(admin)/admin/blog/components/DataTable/PostsTable";
 import DataSkeleton from "@/components/ui/Loading/DataSkeleton";
-import {fetchPosts} from "@/actions/posts";
-import { PaginationState } from '@tanstack/react-table';
+import ErrorMsg from "@/components/ui/ErrorMsg";
+import TablePostControls from "@/app/(admin)/admin/blog/components/DataTable/TablePostControls";
+import TablePostPagination from "@/app/(admin)/admin/blog/components/DataTable/TablePostPagination";
+import {usePostsControlPanel} from "@/app/(admin)/admin/blog/hooks/usePostsControlPanel";
+import ConfirmDialog from '@/components/ui/ConfirmDialog';
 
 interface Props {
     data: PostResponse | null;
@@ -23,192 +33,103 @@ interface Props {
 }
 
 const AdminBlogClient: React.FC<Props> = ({data, error, isAdmin = true, limit="10"}) => {
-    const {
-        posts,
-        paginationPost,
-        fetchLoading,
-        createLoading,
-        updateLoading,
-        deleteLoading,
-        fetchError,
-        createError,
-        updateError,
-        setPosts,
-        setPaginationPost,
-        setFetchLoading,
-        setCreateLoading,
-        setUpdateLoading,
-        setDeleteLoading,
-        setFetchError,
-        setCreateError,
-        setUpdateError,
-        setDeleteError,
-    } = useAdminPostStore();
-
-    const [isHydrating, setIsHydrating] = useState(true);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [editingPost, setEditingPost] = useState<Post | null>(null);
+    const [sorting, setSorting] = useState<SortingState>([]);
+    const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+    const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+    const [rowSelection, setRowSelection] = useState({});
     const [pagination, setPagination] = useState<PaginationState>({
         pageIndex: 0,
         pageSize: Number(limit),
     });
 
-    const anyLoading = createLoading || updateLoading || deleteLoading;
+    const [showConfirm, setShowConfirm] = useState(false);
+
+    const {
+        posts,
+        paginationPost,
+        selectedToDelete,
+        fetchLoading,
+        deleteLoading,
+        setPosts,
+        setPaginationPost,
+        setFetchLoading,
+        setSelectedToDelete,
+    } = useSuperAdminPostStore();
+
+    const {
+        handleDelete,
+        handleDeleteSelectedPosts,
+        updatePaginationAndData,
+    } = usePostsControlPanel(data, error, limit, pagination);
+
 
     useEffect(() => {
-        if (data) {
-            setPosts(data.items);
-            setPaginationPost({
-                total: data.total,
-                totalPages: data.totalPages,
-                page: data.page,
-                pageSize: data.pageSize,
-            })
-        }
-        setFetchError(error);
-        setFetchLoading(false);
-        setIsHydrating(false);
-    }, [data, error, setPosts, setFetchError, setFetchLoading, setPaginationPost]);
-
-    const resetErrors = () => {
-        setFetchError(null);
-        setCreateError(null);
-        setUpdateError(null);
-        setDeleteError(null);
-    };
-
-    const openCreateModal = () => {
-        setEditingPost(null);
-        setIsModalOpen(true);
-        resetErrors();
-    };
-
-    const openEditModal = (post: Post) => {
-        setEditingPost(post);
-        setIsModalOpen(true);
-        resetErrors();
-    };
-
-    const closeModal = () => {
-        setIsModalOpen(false);
-        setEditingPost(null);
-        resetErrors();
-    };
-
-    const onSubmit = async (formData: CreatePostData | UpdatePostData, isEditingMode: boolean) => {
-        resetErrors();
         try {
-            let result: { message: string; post: Post; };
-
-            if (isEditingMode) {
-                setUpdateLoading(true);
-                if (!editingPost) throw new Error('Editing post is null');
-
-                const updateData: UpdatePostData = {
-                    title: formData.title,
-                    description: formData.description,
-                    images: (formData as UpdatePostData).images,
-                };
-
-                result = await updatePost(editingPost._id, updateData);
-                setPosts(posts.map(p => p._id === editingPost._id ? result.post : p));
-                toast.success('Пост успешно обновлен!');
-            } else {
-                setCreateLoading(true);
-                const createData = formData as CreatePostData;
-
-                result = await createPost(createData);
-                setPosts([result.post, ...posts]);
-                toast.success('Пост успешно создан!');
-            }
-            closeModal();
+            void updatePaginationAndData();
         } catch (err) {
-            const errorMessage = err instanceof AxiosError
-                ? err.response?.data?.error
-                : err instanceof Error
-                    ? err.message
-                    : 'Произошла ошибка при сохранении поста';
-            if (isEditingMode) {
-                setUpdateError(errorMessage);
-            } else {
-                setCreateError(errorMessage);
+            let errorMessage = "Ошибка при получении данных";
+            if (isAxiosError(err) && err.response) {
+                errorMessage = err.response.data.error;
+            } else if (err instanceof Error) {
+                errorMessage = err.message;
             }
+
             toast.error(errorMessage);
         } finally {
-            setCreateLoading(false);
-            setUpdateLoading(false);
+            setFetchLoading(false)
         }
-    };
 
-    const handleDelete = async (postId: string) => {
-        resetErrors();
-        setDeleteLoading(true);
-        try {
-            await deletePost(postId);
-            setPosts(posts.filter(p => p._id !== postId));
-            toast.success('Пост успешно удален!');
-        } catch (err) {
-            const errorMessage = err instanceof AxiosError
-                ? err.response?.data?.error
-                : err instanceof Error
-                    ? err.message
-                    : 'Произошла ошибка при удалении';
-            setDeleteError(errorMessage);
-            toast.error(errorMessage);
-        } finally {
-            setDeleteLoading(false);
-        }
-    };
+    }, [pagination]);
 
-    const handlePageSizeChange = async (pageSize: string) => {
-        setFetchLoading(true);
-        try {
-            const res = await fetchPosts(pageSize);
-            setPosts(res.items);
-            setPaginationPost({
-                total: res.total,
-                totalPages: res.totalPages,
-                page: res.page,
-                pageSize: res.pageSize,
-            });
-        } catch (error) {
-            setFetchError("Не удалось обновить количество элементов");
-        } finally {
-            setFetchLoading(false);
-        }
-    };
+    useEffect(() => {
+        const selectedRows = table.getSelectedRowModel().rows;
+        setSelectedToDelete(selectedRows.map(row => row.original._id));
+    }, [rowSelection]);
 
-    const handleDeleteSelectedPosts = async (ids: string[]) => {
-        resetErrors();
-        setDeleteLoading(true);
-        try {
-            for (const id of ids) {
-                await deletePost(id);
+    useEffect(() => {
+        setRowSelection({});
+    }, [pagination.pageIndex]);
+
+    const table = useReactTable<Post>({
+        data: posts,
+        columns: getPostTableColumns(
+            (post) =>
+                // router.push(`/admin/blog/edit/${post._id}`)
+                console.log("edit"),
+            async ([ids]) => {
+                setSelectedToDelete([ids]);
+                setShowConfirm(true);
+            },
+            (post) => {
+                console.log("delete", post);
             }
-            setPosts(posts.filter((post) => !ids.includes(post._id)));
-            toast.success("Выбранные посты успешно удалены!");
-        } catch (err) {
-            const errorMessage = err instanceof AxiosError ? err.response?.data?.error : "Неизвестная ошибка при удалении выбранных постов";
-            setDeleteError(errorMessage);
-            toast.error(errorMessage);
-        } finally {
-            setDeleteLoading(false);
-        }
+        ),
+        pageCount: paginationPost?.totalPages ?? 1,
+        manualPagination: true,
+        onSortingChange: setSorting,
+        onColumnFiltersChange: setColumnFilters,
+        onColumnVisibilityChange: setColumnVisibility,
+        onRowSelectionChange: setRowSelection,
+        onPaginationChange: setPagination,
+        getCoreRowModel: getCoreRowModel(),
+        getPaginationRowModel: getPaginationRowModel(),
+        getSortedRowModel: getSortedRowModel(),
+        getFilteredRowModel: getFilteredRowModel(),
+        state: {
+            sorting,
+            columnFilters,
+            columnVisibility,
+            rowSelection,
+            pagination,
+        },
+    });
+
+    const handleFilterChange = (column: string, value: string) => {
+        void updatePaginationAndData(value, column);
     };
 
-    if (isHydrating || fetchLoading) {
-        return <DataSkeleton/>;
-    }
-
-    if (fetchError) {
-        return (
-            <Alert variant="destructive" className="max-w-md mx-auto">
-                <AlertDescription>
-                    Ошибка при загрузке постов: {fetchError}
-                </AlertDescription>
-            </Alert>
-        );
-    }
+    if (fetchLoading) return <DataSkeleton/>
+    if (error) return <ErrorMsg error={error}/>
 
     return (
         <div className="space-y-6">
@@ -218,45 +139,39 @@ const AdminBlogClient: React.FC<Props> = ({data, error, isAdmin = true, limit="1
                     <p className="text-muted-foreground mt-1">Создавайте и редактируйте посты</p>
                 </div>
                 {isAdmin && (
-                    <Button onClick={openCreateModal} size="lg" className="flex items-center gap-2 w-full sm:w-auto"
-                            disabled={anyLoading}>
+                    <Button size="lg" className="flex items-center gap-2 w-full sm:w-auto">
                         <Plus className="mr-2 h-5 w-5"/>
                         Создать пост
                     </Button>
                 )}
             </div>
 
-            {posts.length === 0 && !fetchLoading ? (
-                <div className="text-center py-8 text-muted-foreground">
-                    <p>Посты не найдены</p>
-                    <p className="text-sm mt-2">
-                        Нажмите &#34;Создать пост&#34; для создания первого поста
-                    </p>
-                </div>
-            ) : (
-                <PostsTable
-                    posts={posts}
-                    onEditPost={openEditModal}
-                    onDeletePost={handleDelete}
-                    onDeleteSelectedPosts={handleDeleteSelectedPosts}
-                    actionLoading={anyLoading}
-                    onPageSizeChange={handlePageSizeChange}
-                    pagination={pagination}
-                    onPaginationChange={setPagination}
-                    totalPages={paginationPost?.totalPages}
+            <div>
+                <TablePostControls
+                    handleBulkDelete={()=> setShowConfirm(true)}
+                    table={table}
+                    onFilterChange={handleFilterChange}
                 />
-            )}
+                <PostsTable table={table}/>
+                <TablePostPagination table={table}/>
+            </div>
 
-            <PostModal
-                isOpen={isModalOpen}
-                onClose={closeModal}
-                isEditing={!!editingPost}
-                editingPost={editingPost}
-                actionLoading={createLoading || updateLoading}
-                createError={createError}
-                updateError={updateError}
-                onSubmit={onSubmit}
+
+            <ConfirmDialog
+                open={showConfirm}
+                onOpenChange={setShowConfirm}
+                title={"Delete"}
+                onConfirm={ async () => {
+                    if (selectedToDelete.length > 1) {
+                        await handleDeleteSelectedPosts();
+                    } else if (selectedToDelete.length === 1) {
+                        await handleDelete();
+                    }
+                }}
+                loading={deleteLoading}
             />
+
+
         </div>
     );
 };

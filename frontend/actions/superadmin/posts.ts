@@ -48,7 +48,7 @@ export const reorderPostImages = async (postId: string, newOrder: ReorderImagePo
     await axiosAPI.patch(`/superadmin/posts/${postId}/reorder-images`, {newOrder});
 };
 
-export const removePostImage = async (postId: string, image: string) => {
+export const deletePostImage = async (postId: string, image: string) => {
     await axiosAPI.patch(`/superadmin/posts/${postId}/remove-images`, {image});
 };
 
