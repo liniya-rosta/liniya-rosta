@@ -1,6 +1,5 @@
 import {Product, ProductMutation, ProductUpdateMutation} from "@/lib/types";
 import axiosAPI from "@/lib/axiosAPI";
-import {isAxiosError} from "axios";
 
 export const createProduct = async (productData: ProductMutation): Promise<Product> => {
     const formData = new FormData();
@@ -138,13 +137,6 @@ export const deleteProductImage = async (imageId: string): Promise<string> => {
 };
 
 export const deleteProduct = async (id: string): Promise<string> => {
-    try {
-        const res = await axiosAPI.delete<{ message: string }>(`/superadmin/products/${id}`);
-        return res.data.message;
-    } catch (e) {
-        if (isAxiosError(e)) {
-            throw new Error(e.response?.data?.error || 'Произошла ошибка при удалении продукта');
-        }
-        throw e;
-    }
+    const res = await axiosAPI.delete<{ message: string }>(`/superadmin/products/${id}`);
+    return res.data.message;
 };

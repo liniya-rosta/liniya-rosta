@@ -14,25 +14,20 @@ import {
     VisibilityState,
 } from "@tanstack/react-table";
 
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import { getProductTableColumns } from "./ProductTableColumns";
-import { Product } from "@/lib/types";
+import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow,} from "@/components/ui/table";
+import {Button} from "@/components/ui/button";
+import {getProductTableColumns} from "./ProductTableColumns";
+import {Product} from "@/lib/types";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
-import ImagePreviewModal from "@/app/(admin)/admin/products/components/ImagePreviewModal";
-import SaleLabelModal from "@/app/(admin)/admin/products/components/SaleLabelModal";
-import { useCategoryStore } from "@/store/categoriesStore";
-import { useAdminProductStore } from "@/store/superadmin/superadminProductsStore";
+import ImagePreviewModal from "@/app/(admin)/admin/products/components/Modal/ImagePreviewModal";
+import SaleLabelModal from "@/app/(admin)/admin/products/components/Modal/SaleLabelModal";
+import {useCategoryStore} from "@/store/categoriesStore";
+import {useAdminProductStore} from "@/store/superadmin/superadminProductsStore";
 import TableToolbar from "@/app/(admin)/admin/products/components/ProductTable/TableToolbar";
-import ImagesModal from "@/app/(admin)/admin/products/components/ImagesModal";
-import { API_BASE_URL } from "@/lib/globalConstants";
+import ImagesModal from "@/app/(admin)/admin/products/components/Modal/ImagesModal";
+import {isAxiosError} from "axios";
+import {toast} from "react-toastify";
+import {fetchProductById} from "@/actions/products";
 
 interface ProductsTableProps {
     onEditProduct: (product: Product) => void;
@@ -49,47 +44,55 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
                                                          onDeleteProduct,
                                                          onDeleteSelectedProducts,
                                                      }) => {
-    const { categories } = useCategoryStore();
-    const { products, setProductDetail } = useAdminProductStore();
+    const {categories} = useCategoryStore();
+    const {products, setProductDetail, setUpdateError} = useAdminProductStore();
 
     const [sorting, setSorting] = React.useState<SortingState>([]);
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
     const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
     const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({});
 
-    const [showConfirmDialog, setShowConfirmDialog] = React.useState(false);
-    const [idsToDelete, setIdsToDelete] = React.useState<string[]>([]);
+    // соглашение на удаление
+    const [showConfirmDialog, setShowConfirmDialog] = React.useState(false); // само соглашение, типа модалка
+    const [idsToDelete, setIdsToDelete] = React.useState<string[]>([]); // какие продукты удалить (по их айди)
 
-    const [activeFilterType, setActiveFilterType] = React.useState<FilterType>('title');
-    const [filterValue, setFilterValue] = React.useState<string>('');
-    const [filteredProducts, setFilteredProducts] = React.useState<Product[]>(products);
+    // для фильтрации
+    const [activeFilterType, setActiveFilterType] = React.useState<FilterType>('title'); // по какому полю фильтровать (в нашем случае title или description), изначально title
+    const [filterValue, setFilterValue] = React.useState<string>(''); // для ввода инпута
+    const [filteredProducts, setFilteredProducts] = React.useState<Product[]>(products); // отфильтрованные продукты по filterValue или activeFilterType
 
-    const [previewImage, setPreviewImage] = React.useState<{ url: string; alt: string } | null>(null);
-    const [saleLabel, setSaleLabel] = React.useState<string | null>(null);
-    const [isImagesModalOpen, setIsImagesModalOpen] = React.useState(false);
+    // для модальных окон
+    const [previewImage, setPreviewImage] = React.useState<{ url: string; alt: string } | null>(null); // для обложки
+    const [saleLabel, setSaleLabel] = React.useState<string | null>(null); // для текста скидки
+    const [isImagesModalOpen, setIsImagesModalOpen] = React.useState(false); // для изображений из массива
 
-    const onImageClick = (image: { url: string; alt: string }) => {
+    const onImageClick = React.useCallback((image: { url: string; alt: string }) => { // для открытия модального окна обложки
         setPreviewImage(image);
-    };
+    }, []);
 
-    const onSaleLabelClick = (label: string) => {
+    const onSaleLabelClick = React.useCallback((label: string) => {
         setSaleLabel(label);
-    };
+    }, []); // для открытия модального окна текста скидки
 
-    const onImages = async (data: {
+    const onImages = React.useCallback(async (data: {
         productId: string;
         images: { url: string; alt?: string | null; _id: string }[];
     }) => {
         try {
-            const res = await fetch(`${API_BASE_URL}/products/${data.productId}`);
-            if (!res.ok) throw new Error("Ошибка при получении продукта");
-            const product = await res.json();
+            setUpdateError(null);
+            const product = await fetchProductById(data.productId);
             setProductDetail(product);
             setIsImagesModalOpen(true);
         } catch (e) {
+            if (isAxiosError(e)) {
+                setUpdateError(e.response?.data?.error);
+                toast.error(e.response?.data?.error);
+            } else {
+                toast.error('Неизвестная ошибка при получении продукта')
+            }
             console.error(e);
         }
-    };
+    }, [setUpdateError, setProductDetail]); // для открытия модального окна изображений из массива
 
     const columns = React.useMemo(
         () =>
@@ -105,7 +108,7 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
                 onSaleLabelClick,
                 onImages
             ),
-        [categories, onEditProduct, actionLoading]
+        [categories, onEditProduct, actionLoading, onImageClick, onSaleLabelClick, onImages]
     );
 
     React.useEffect(() => {

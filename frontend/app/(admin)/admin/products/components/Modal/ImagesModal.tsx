@@ -19,6 +19,8 @@ import {
     updateProductImage,
 } from "@/actions/superadmin/products";
 import { useAdminProductStore } from "@/store/superadmin/superadminProductsStore";
+import {fetchProductById} from "@/actions/products";
+import {isAxiosError} from "axios";
 
 interface Props {
     open: boolean;
@@ -26,7 +28,7 @@ interface Props {
 }
 
 const ImagesModal: React.FC<Props> = ({ open, onClose }) => {
-    const { productDetail, setProductDetail,setProducts, products } = useAdminProductStore();
+    const { productDetail, setProductDetail,setProducts, products , setUpdateError} = useAdminProductStore();
 
     const images = productDetail?.images ?? [];
     const productId = productDetail?._id ?? "";
@@ -87,10 +89,9 @@ const ImagesModal: React.FC<Props> = ({ open, onClose }) => {
         }
     };
 
-    const refreshProduct = async () => {
+    const refreshProduct = React.useCallback(async () => {
         try {
-            const res = await fetch(`${API_BASE_URL}/products/${productId}`);
-            const product = await res.json();
+            const product = await fetchProductById(productId);
             setProductDetail(product);
             setProducts(
                 products.map((p) =>
@@ -98,15 +99,21 @@ const ImagesModal: React.FC<Props> = ({ open, onClose }) => {
                 )
             );
         } catch (e) {
-            toast.error("Ошибка при обновлении изображений");
+            if (isAxiosError(e)){
+                setUpdateError(e.response?.data.error);
+                toast.error(e.response?.data.error);
+            } else {
+                toast.error("Ошибка при обновлении изображений");
+            }
+            console.error(e);
         }
-    };
+    }, [productId, products, setProductDetail ,setProducts, setUpdateError]);
 
     useEffect(() => {
         if (open && productId) {
             void refreshProduct();
         }
-    }, [open, productId]);
+    }, [open, productId, refreshProduct]);
 
     return (
         <Dialog
