@@ -6,7 +6,7 @@ import categoriesAdminRouter from "./categories";
 import productsAdminRouter from "./products";
 import postsAdminRouter from "./posts";
 import requestAdminRouter from "./requests";
-import portfolioSuperAdminRouter from "./portfolioItems";
+import {portfolioSuperAdminRouter} from "./portfolioItems";
 import contactsAdminRouter from "./contacts";
 import servicesSuperAdminRouter from "./services";
 

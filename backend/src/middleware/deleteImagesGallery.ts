@@ -12,16 +12,15 @@ export function deleteOrReplaceGalleryImage<T>(
 ): RequestHandler {
     return async (req, _res, next) => {
         try {
-            const id = req.params.galleryId || req.params.id;
+            const id = req.params.id || req.params.galleryId;
             if (!id) return next();
 
-            let doc = await model.findById(id);
-            if (!doc && req.params.galleryId) {
-                doc = await model.findOne({ "gallery._id": id });
-            }
+            const doc = await model.findOne({ "gallery._id": id });
             if (!doc) return next();
 
-            const galleryItem = (doc as any).gallery?.find((item: any) => item._id.toString() === id);
+            const galleryItem = (doc as any).gallery?.find(
+                (item: any) => item._id.toString() === id
+            );
             if (!galleryItem) return next();
 
             let toDelete: string[] = [];
