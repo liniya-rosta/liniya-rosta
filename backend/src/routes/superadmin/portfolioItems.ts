@@ -3,6 +3,7 @@ import { PortfolioItem } from "../../models/PortfolioItem";
 import { portfolioImage } from "../../middleware/multer";
 import { Error, Types } from "mongoose";
 import { deleteOrReplaceImages } from "../../middleware/deleteImages";
+import {deleteOrReplaceGalleryImage} from "../../middleware/deleteImagesGallery";
 
 const portfolioSuperAdminRouter = express.Router();
 
@@ -108,6 +109,50 @@ portfolioSuperAdminRouter.patch(
     }
 );
 
+portfolioSuperAdminRouter.patch(
+    "/gallery/:galleryId",
+    portfolioImage.fields([{ name: "gallery", maxCount: 1 }]),
+
+    deleteOrReplaceGalleryImage(PortfolioItem, "replace"),
+
+    async (req, res, next) => {
+        try {
+            const { galleryId } = req.params;
+            if (!Types.ObjectId.isValid(galleryId)) {
+                 res.status(400).send({ error: "Неверный формат ID элемента галереи" });
+                 return
+            }
+
+            const file = (req.files as { [fieldname: string]: Express.Multer.File[] })?.gallery?.[0];
+            const newAlt = req.body.alt;
+
+            const updateFields: any = {};
+            if (file) updateFields["gallery.$.image"] = "portfolio/" + file.filename;
+            if (newAlt !== undefined) updateFields["gallery.$.alt"] = newAlt;
+
+            if (Object.keys(updateFields).length === 0) {
+                res.status(400).send({ error: "Нет данных для обновления" });
+                return
+            }
+
+            const updated = await PortfolioItem.updateOne(
+                { "gallery._id": galleryId },
+                { $set: updateFields }
+            );
+
+            if (updated.modifiedCount === 0) {
+                res.status(400).send({ error: "Обновление не выполнено" });
+                return
+            }
+
+            const refreshed = await PortfolioItem.findOne({ "gallery._id": galleryId });
+            res.send(refreshed);
+        } catch (e) {
+            next(e);
+        }
+    }
+);
+
 portfolioSuperAdminRouter.delete(
     "/:id",
     deleteOrReplaceImages(
@@ -126,6 +171,35 @@ portfolioSuperAdminRouter.delete(
                 return;
             }
             res.send({ message: "Удаление портфолио успешно" });
+        } catch (e) {
+            next(e);
+        }
+    }
+);
+
+portfolioSuperAdminRouter.delete(
+    "/gallery/:galleryId",
+    deleteOrReplaceGalleryImage(PortfolioItem, "delete"),
+
+    async (req, res, next) => {
+        try {
+            const { galleryId } = req.params;
+            if (!Types.ObjectId.isValid(galleryId)) {
+                res.status(400).send({ error: "Неверный формат ID элемента галереи" });
+                return
+            }
+
+            const updated = await PortfolioItem.updateOne(
+                { "gallery._id": galleryId },
+                { $pull: { gallery: { _id: galleryId } } }
+            );
+
+            if (updated.modifiedCount === 0) {
+                res.status(404).send({ error: "Элемент галереи не найден" });
+                return
+            }
+
+            res.send({ message: "Изображение галереи удалено" });
         } catch (e) {
             next(e);
         }
