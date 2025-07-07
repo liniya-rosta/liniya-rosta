@@ -1,34 +1,26 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 import Image from "next/image";
-import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { toast } from "react-toastify";
-import { API_BASE_URL } from "@/lib/globalConstants";
-import {
-    deleteProductImage,
-    updateProductImage,
-} from "@/actions/superadmin/products";
-import { useAdminProductStore } from "@/store/superadmin/superadminProductsStore";
+import {Dialog, DialogContent, DialogHeader, DialogTitle,} from "@/components/ui/dialog";
+import {Button} from "@/components/ui/button";
+import {Checkbox} from "@/components/ui/checkbox";
+import {Card, CardContent, CardFooter} from "@/components/ui/card";
+import {toast} from "react-toastify";
+import {API_BASE_URL} from "@/lib/globalConstants";
+import {deleteProductImage,} from "@/actions/superadmin/products";
+import {useAdminProductStore} from "@/store/superadmin/superadminProductsStore";
 import {fetchProductById} from "@/actions/products";
 import {isAxiosError} from "axios";
+import ImagesEditForm from "@/app/(admin)/admin/products/components/Modal/ImagesEditForm";
 
 interface Props {
     open: boolean;
     onClose: () => void;
 }
 
-const ImagesModal: React.FC<Props> = ({ open, onClose }) => {
-    const { productDetail, setProductDetail,setProducts, products , setUpdateError} = useAdminProductStore();
+const ImagesModal: React.FC<Props> = ({open, onClose}) => {
+    const {productDetail, setProductDetail, setProducts, products, setUpdateError} = useAdminProductStore();
 
     const images = productDetail?.images ?? [];
     const productId = productDetail?._id ?? "";
@@ -36,8 +28,6 @@ const ImagesModal: React.FC<Props> = ({ open, onClose }) => {
     const [selectionMode, setSelectionMode] = useState(false);
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
     const [editingId, setEditingId] = useState<string | null>(null);
-    const [newAlt, setNewAlt] = useState("");
-
     const toggleSelect = (id: string) => {
         setSelectedIds((prev) =>
             prev.includes(id) ? prev.filter((_id) => _id !== id) : [...prev, id]
@@ -53,21 +43,6 @@ const ImagesModal: React.FC<Props> = ({ open, onClose }) => {
         const img = images.find((i) => i._id === id);
         if (img) {
             setEditingId(id);
-            setNewAlt(img.alt || "");
-        }
-    };
-
-    const handleUpdateAlt = async () => {
-        if (!editingId) return;
-        try {
-            await updateProductImage(editingId, undefined, newAlt);
-            toast.success("Alt обновлён");
-            await refreshProduct();
-            setEditingId(null);
-            setSelectedIds([]);
-        } catch (e) {
-            toast.error("Ошибка при обновлении alt");
-            console.error(e);
         }
     };
 
@@ -99,7 +74,7 @@ const ImagesModal: React.FC<Props> = ({ open, onClose }) => {
                 )
             );
         } catch (e) {
-            if (isAxiosError(e)){
+            if (isAxiosError(e)) {
                 setUpdateError(e.response?.data.error);
                 toast.error(e.response?.data.error);
             } else {
@@ -107,7 +82,7 @@ const ImagesModal: React.FC<Props> = ({ open, onClose }) => {
             }
             console.error(e);
         }
-    }, [productId, products, setProductDetail ,setProducts, setUpdateError]);
+    }, [productId, products, setProductDetail, setProducts, setUpdateError]);
 
     useEffect(() => {
         if (open && productId) {
@@ -222,18 +197,18 @@ const ImagesModal: React.FC<Props> = ({ open, onClose }) => {
 
             {editingId && (
                 <Dialog open={true} onOpenChange={() => setEditingId(null)}>
-                    <DialogContent>
+                    <DialogContent className="max-w-2xl">
                         <DialogHeader>
-                            <DialogTitle>Редактировать alt</DialogTitle>
+                            <DialogTitle>Редактирование изображения</DialogTitle>
                         </DialogHeader>
-                        <div className="space-y-4">
-                            <Input
-                                value={newAlt}
-                                onChange={(e) => setNewAlt(e.target.value)}
-                                placeholder="Введите alt текст"
-                            />
-                            <Button onClick={handleUpdateAlt}>Сохранить</Button>
-                        </div>
+                        <ImagesEditForm
+                            image={images.find((img) => img._id === editingId)!}
+                            onSaved={async () => {
+                                await refreshProduct();
+                                setEditingId(null);
+                                clearSelection();
+                            }}
+                        />
                     </DialogContent>
                 </Dialog>
             )}
