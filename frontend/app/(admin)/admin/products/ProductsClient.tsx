@@ -7,7 +7,7 @@ import {CardContent} from "@/components/ui/card";
 import {AxiosError} from "axios";
 import {useCategoryStore} from "@/store/categoriesStore";
 import {deleteProduct} from "@/actions/superadmin/products";
-import ProductModal from "@/app/(admin)/admin/products/components/ProductForm/ProductModal";
+import ProductEditModal from "@/app/(admin)/admin/products/components/Modal/ProductEditModal";
 import ProductsTable from "@/app/(admin)/admin/products/components/ProductTable/ProductsTable";
 import {Category, Product} from "@/lib/types";
 import {toast} from "react-toastify";
@@ -181,12 +181,13 @@ const ProductsClient: React.FC<ProductsClientProps> = ({
                 )}
             </CardContent>
 
-            <ProductModal
-                isOpen={isModalOpen}
-                onClose={resetAndCloseModal}
-                isEditing={!!editingProduct}
-                editingProduct={editingProduct}
-            />
+            {editingProduct && (
+                <ProductEditModal
+                    open={isModalOpen}
+                    onClose={resetAndCloseModal}
+                    product={editingProduct}
+                />
+            )}
         </div>
     );
 };

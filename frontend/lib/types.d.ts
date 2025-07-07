@@ -194,40 +194,9 @@ export interface ProductMutation {
 type ImagesEditValues = Partial<GalleryForm>;
 
 export interface ProductUpdateMutation extends ProductMutation {
+    images?: null;
     cover?: File | null;
 }
-
-//
-// export interface ProductAdmin {
-//     _id: string;
-//     title: string;
-//     category: {
-//         _id: string;
-//         title: string;
-//     };
-//     image: string
-//     description: string | null;
-//     coverAlt?: string | null;
-//     cover: File | null;
-//     images?: {
-//         url: File;
-//         alt?: string;
-//     }[];
-//     characteristics?: {
-//         key: string;
-//         value: string;
-//     }[];
-//     sale?: {
-//         isOnSale: boolean;
-//         label: string;
-//     };
-//     icon?: {
-//         alt: string;
-//         url: string;
-//     };
-// }
-//
-// export type ProductWithoutId = Omit<ProductAdmin, '_id'>;
 
 export interface IRequest {
     _id: string;

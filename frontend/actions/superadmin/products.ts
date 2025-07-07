@@ -75,13 +75,6 @@ export const updateProduct = async (id: string, productData: ProductUpdateMutati
         formData.append('coverAlt', productData.coverAlt);
     }
 
-    productData.images?.forEach((img) => {
-        if (img.url instanceof File) {
-            formData.append("images", img.url);
-            formData.append("alt", img.alt || "Элемент галереи");
-        }
-    });
-
     if (productData.characteristics) {
         formData.append('characteristics', JSON.stringify(productData.characteristics));
     }
