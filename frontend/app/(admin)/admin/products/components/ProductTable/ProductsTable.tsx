@@ -3,7 +3,6 @@
 import React from "react";
 import {
     ColumnFiltersState,
-    flexRender,
     getCoreRowModel,
     getFilteredRowModel,
     getPaginationRowModel,
@@ -13,8 +12,6 @@ import {
     useReactTable,
     VisibilityState,
 } from "@tanstack/react-table";
-
-import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow,} from "@/components/ui/table";
 import {Button} from "@/components/ui/button";
 import {getProductTableColumns} from "./ProductTableColumns";
 import {Product} from "@/lib/types";
@@ -25,9 +22,8 @@ import {useCategoryStore} from "@/store/categoriesStore";
 import {useAdminProductStore} from "@/store/superadmin/superadminProductsStore";
 import TableToolbar from "@/app/(admin)/admin/products/components/ProductTable/TableToolbar";
 import ImagesModal from "@/app/(admin)/admin/products/components/Modal/ImagesModal";
-import {isAxiosError} from "axios";
-import {toast} from "react-toastify";
-import {fetchProductById} from "@/actions/products";
+import {useProductsTableLogic} from "@/app/(admin)/admin/products/hooks/useProductsTableLogic";
+import ProductTableContent from "@/app/(admin)/admin/products/components/ProductTable/ProductsTableContent";
 
 interface ProductsTableProps {
     onEditProduct: (product: Product) => void;
@@ -36,8 +32,6 @@ interface ProductsTableProps {
     onDeleteSelectedProducts: (ids: string[]) => void;
 }
 
-type FilterType = 'title' | 'description';
-
 const ProductsTable: React.FC<ProductsTableProps> = ({
                                                          onEditProduct,
                                                          actionLoading,
@@ -45,54 +39,26 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
                                                          onDeleteSelectedProducts,
                                                      }) => {
     const {categories} = useCategoryStore();
-    const {products, setProductDetail, setUpdateError} = useAdminProductStore();
+    const {products} = useAdminProductStore();
+
+    const {
+        activeFilterType, setActiveFilterType,
+        filterValue, setFilterValue,
+        filteredProducts,
+        previewImage, setPreviewImage,
+        saleLabel, setSaleLabel,
+        isImagesModalOpen, setIsImagesModalOpen,
+        showConfirmDialog, setShowConfirmDialog,
+        idsToDelete, setIdsToDelete,
+        onImageClick,
+        onSaleLabelClick,
+        onImages,
+    } = useProductsTableLogic(products);
 
     const [sorting, setSorting] = React.useState<SortingState>([]);
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
     const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
     const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({});
-
-    // соглашение на удаление
-    const [showConfirmDialog, setShowConfirmDialog] = React.useState(false); // само соглашение, типа модалка
-    const [idsToDelete, setIdsToDelete] = React.useState<string[]>([]); // какие продукты удалить (по их айди)
-
-    // для фильтрации
-    const [activeFilterType, setActiveFilterType] = React.useState<FilterType>('title'); // по какому полю фильтровать (в нашем случае title или description), изначально title
-    const [filterValue, setFilterValue] = React.useState<string>(''); // для ввода инпута
-    const [filteredProducts, setFilteredProducts] = React.useState<Product[]>(products); // отфильтрованные продукты по filterValue или activeFilterType
-
-    // для модальных окон
-    const [previewImage, setPreviewImage] = React.useState<{ url: string; alt: string } | null>(null); // для обложки
-    const [saleLabel, setSaleLabel] = React.useState<string | null>(null); // для текста скидки
-    const [isImagesModalOpen, setIsImagesModalOpen] = React.useState(false); // для изображений из массива
-
-    const onImageClick = React.useCallback((image: { url: string; alt: string }) => { // для открытия модального окна обложки
-        setPreviewImage(image);
-    }, []);
-
-    const onSaleLabelClick = React.useCallback((label: string) => {
-        setSaleLabel(label);
-    }, []); // для открытия модального окна текста скидки
-
-    const onImages = React.useCallback(async (data: {
-        productId: string;
-        images: { url: string; alt?: string | null; _id: string }[];
-    }) => {
-        try {
-            setUpdateError(null);
-            const product = await fetchProductById(data.productId);
-            setProductDetail(product);
-            setIsImagesModalOpen(true);
-        } catch (e) {
-            if (isAxiosError(e)) {
-                setUpdateError(e.response?.data?.error);
-                toast.error(e.response?.data?.error);
-            } else {
-                toast.error('Неизвестная ошибка при получении продукта')
-            }
-            console.error(e);
-        }
-    }, [setUpdateError, setProductDetail]); // для открытия модального окна изображений из массива
 
     const columns = React.useMemo(
         () =>
@@ -108,26 +74,17 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
                 onSaleLabelClick,
                 onImages
             ),
-        [categories, onEditProduct, actionLoading, onImageClick, onSaleLabelClick, onImages]
+        [
+            categories,
+            onEditProduct,
+            actionLoading,
+            onImageClick,
+            onSaleLabelClick,
+            onImages,
+            setIdsToDelete,
+            setShowConfirmDialog
+        ]
     );
-
-    React.useEffect(() => {
-        if (filterValue) {
-            const lowercasedFilterValue = filterValue.toLowerCase();
-            const newFilteredProducts = products.filter(product => {
-                if (activeFilterType === 'title') {
-                    return product.title.toLowerCase().includes(lowercasedFilterValue);
-                }
-                if (activeFilterType === 'description') {
-                    return product.description?.toLowerCase().includes(lowercasedFilterValue);
-                }
-                return true;
-            });
-            setFilteredProducts(newFilteredProducts);
-        } else {
-            setFilteredProducts(products);
-        }
-    }, [products, activeFilterType, filterValue]);
 
     const table = useReactTable({
         data: filteredProducts,
@@ -178,51 +135,7 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
                 }}
             />
 
-            <div className="rounded-md border overflow-x-auto">
-                <Table>
-                    <TableHeader>
-                        {table.getHeaderGroups().map((headerGroup) => (
-                            <TableRow key={headerGroup.id}>
-                                {headerGroup.headers.map((header) => (
-                                    <TableHead key={header.id} className="min-w-[100px]">
-                                        {header.isPlaceholder
-                                            ? null
-                                            : flexRender(
-                                                header.column.columnDef.header,
-                                                header.getContext()
-                                            )}
-                                    </TableHead>
-                                ))}
-                            </TableRow>
-                        ))}
-                    </TableHeader>
-                    <TableBody>
-                        {table.getRowModel().rows?.length ? (
-                            table.getRowModel().rows.map((row) => (
-                                <TableRow
-                                    key={row.id}
-                                    data-state={row.getIsSelected() && "selected"}
-                                >
-                                    {row.getVisibleCells().map((cell) => (
-                                        <TableCell key={cell.id}>
-                                            {flexRender(
-                                                cell.column.columnDef.cell,
-                                                cell.getContext()
-                                            )}
-                                        </TableCell>
-                                    ))}
-                                </TableRow>
-                            ))
-                        ) : (
-                            <TableRow>
-                                <TableCell colSpan={columns.length} className="h-24 text-center">
-                                    Нет результатов.
-                                </TableCell>
-                            </TableRow>
-                        )}
-                    </TableBody>
-                </Table>
-            </div>
+            <ProductTableContent table={table}/>
 
             <div className="flex items-center justify-end space-x-2 py-4">
                 <div className="text-muted-foreground flex-1 text-sm">
