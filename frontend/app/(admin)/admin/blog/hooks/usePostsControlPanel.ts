@@ -3,12 +3,11 @@ import {PostResponse} from "@/lib/types";
 import {fetchPosts} from "@/actions/posts";
 import {useSuperAdminPostStore} from "@/store/superadmin/superAdminPostsStore";
 import {AxiosError, isAxiosError} from "axios";
-import {deletePost} from "@/actions/superadmin/posts";
+import {deletePost, deletePostImage} from "@/actions/superadmin/posts";
 import {PaginationState} from "@tanstack/react-table";
 import {toast} from "react-toastify";
 
-export const usePostsControlPanel = (
-    data: PostResponse | null, error: string | null, limit: string = "10", pagination: PaginationState) => {
+export const usePostsControlPanel = (limit: string) => {
     const {
         posts,
         selectedToDelete,
@@ -19,20 +18,15 @@ export const usePostsControlPanel = (
         setDeleteLoading,
         setFetchError,
         setDeleteError,
-        setPageSize,
     } = useSuperAdminPostStore();
 
-    const [isHydrating, setIsHydrating] = useState(true);
-    const [fetchLoading, setLoading] = useState(false);
+    const [filters, setFilters] = useState({title: "", description: ""});
+    const [pagination, setPagination] = useState<PaginationState>({
+        pageIndex: 0,
+        pageSize: Number(limit),
+    });
 
-    const updatePaginationAndData = async (searchValue = "", searchField = "title") => {
-        const filters = {
-            title: "",
-            description: "",
-        };
-        if (searchField === "title") filters.title = searchValue;
-        if (searchField === "description") filters.description = searchValue;
-
+    const fetchData = async () => {
         const data = await fetchPosts(
             pagination.pageSize.toString(),
             (pagination.pageIndex + 1).toString(),
@@ -46,16 +40,19 @@ export const usePostsControlPanel = (
             totalPages: data.totalPages,
             pageSize: data.pageSize,
         });
-        return data.items.length;
     };
 
+    const handleFilterChange = (column: string, value: string) => {
+        setFilters((prev) => ({...prev, [column]: value}));
+        setPagination((prev) => ({...prev, pageIndex: 0}));
+    };
 
     const handleDelete = async () => {
         setDeleteLoading(true);
         try {
             const postId = selectedToDelete[0];
             await deletePost(postId);
-            setPosts(posts.filter((p) => p._id !== postId));
+            await fetchData();
         } catch (err) {
             const message = err instanceof AxiosError ? err.response?.data?.error : "Ошибка при удалении";
             setDeleteError(message);
@@ -65,11 +62,24 @@ export const usePostsControlPanel = (
         }
     };
 
+    const handleDeleteImage = async (postId: string, imageUrl: string) => {
+        try {
+            setDeleteLoading(true);
+            await deletePostImage(postId, imageUrl);
+            await fetchData();
+        } catch (err) {
+            const message = err instanceof AxiosError ? err.response?.data?.error : "Ошибка при удалении";
+            setDeleteError(message);
+        } finally {
+            setDeleteLoading(true);
+        }
+    }
+
     const handleDeleteSelectedPosts = async () => {
         setDeleteLoading(true);
         try {
             await Promise.all(selectedToDelete.map(id => deletePost(id)));
-            setPosts(posts.filter((post) => !selectedToDelete.includes(post._id)));
+            await fetchData();
         } catch (err) {
             const message = err instanceof AxiosError ? err.response?.data?.error : "Ошибка при удалении";
             setDeleteError(message);
@@ -82,11 +92,13 @@ export const usePostsControlPanel = (
 
     return {
         posts,
-        isHydrating,
-        fetchLoading,
-        fetchError: error,
+        pagination,
+        setPagination,
+        fetchData,
         handleDelete,
         handleDeleteSelectedPosts,
-        updatePaginationAndData,
+        handleDeleteImage,
+        handleFilterChange,
+        filters,
     };
 };

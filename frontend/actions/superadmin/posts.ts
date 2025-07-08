@@ -35,13 +35,12 @@ export const updatePost = async (postId: string, postData: UpdatePostData) => {
 };
 
 export const updatePostImage = async (postId: string, data: UpdateImagePost) => {
-
     const formData = new FormData();
     formData.append("imageUrl", data.imageUrl);
-    if (data.alt !== undefined) formData.append("alt", data.alt);
+    if (data.alt) formData.append("alt", data.alt);
     if (data.newImage) formData.append("newImage", data.newImage);
 
-    await axiosAPI.patch(`/superadmin/posts/${postId}/update-image`);
+    await axiosAPI.patch(`/superadmin/posts/${postId}/update-image`, formData);
 };
 
 export const reorderPostImages = async (postId: string, newOrder: ReorderImagePost[]) => {

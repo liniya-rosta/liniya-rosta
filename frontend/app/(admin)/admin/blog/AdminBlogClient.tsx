@@ -8,7 +8,8 @@ import {
     ColumnFiltersState,
     getCoreRowModel,
     getFilteredRowModel,
-    getPaginationRowModel, getSortedRowModel, PaginationState,
+    getPaginationRowModel,
+    getSortedRowModel,
     SortingState,
     useReactTable,
     VisibilityState
@@ -16,7 +17,7 @@ import {
 import {useSuperAdminPostStore} from "@/store/superadmin/superAdminPostsStore";
 import {isAxiosError} from "axios";
 import {toast} from "react-toastify";
-import { getPostTableColumns } from './components/DataTable/PostTableColumns';
+import {getPostTableColumns} from './components/DataTable/PostTableColumns';
 import PostsTable from "@/app/(admin)/admin/blog/components/DataTable/PostsTable";
 import DataSkeleton from "@/components/ui/Loading/DataSkeleton";
 import ErrorMsg from "@/components/ui/ErrorMsg";
@@ -24,48 +25,57 @@ import TablePostControls from "@/app/(admin)/admin/blog/components/DataTable/Tab
 import TablePostPagination from "@/app/(admin)/admin/blog/components/DataTable/TablePostPagination";
 import {usePostsControlPanel} from "@/app/(admin)/admin/blog/hooks/usePostsControlPanel";
 import ConfirmDialog from '@/components/ui/ConfirmDialog';
+import ModalGallery from "@/components/shared/ModalGallery";
+import ModalEdit from "@/app/(admin)/admin/blog/components/ModalEdit";
 
 interface Props {
     data: PostResponse | null;
     error: string | null;
-    isAdmin?: boolean;
     limit?: string;
 }
 
-const AdminBlogClient: React.FC<Props> = ({data, error, isAdmin = true, limit="10"}) => {
+const AdminBlogClient: React.FC<Props> = ({data, error, limit = "10"}) => {
     const [sorting, setSorting] = useState<SortingState>([]);
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
     const [rowSelection, setRowSelection] = useState({});
-    const [pagination, setPagination] = useState<PaginationState>({
-        pageIndex: 0,
-        pageSize: Number(limit),
-    });
 
     const [showConfirm, setShowConfirm] = useState(false);
 
+    const [isImagesModalOpen, setIsImagesModalOpen] = useState(false);
+    const [selectionMode, setSelectionMode] = useState(false);
+
+    const [isImageModalEdit, setIsImageModalEdit] = useState(false);
+    const [selectImageEdit, setSelectImageEdit] = useState<string>("");
+
     const {
         posts,
+        detailPost,
         paginationPost,
         selectedToDelete,
         fetchLoading,
         deleteLoading,
         setPosts,
+        setDetailPost,
         setPaginationPost,
         setFetchLoading,
         setSelectedToDelete,
     } = useSuperAdminPostStore();
 
     const {
+        pagination,
+        filters,
+        fetchData,
+        setPagination,
         handleDelete,
         handleDeleteSelectedPosts,
-        updatePaginationAndData,
-    } = usePostsControlPanel(data, error, limit, pagination);
-
+        handleFilterChange,
+        handleDeleteImage,
+    } = usePostsControlPanel(limit);
 
     useEffect(() => {
         try {
-            void updatePaginationAndData();
+            void fetchData();
         } catch (err) {
             let errorMessage = "Ошибка при получении данных";
             if (isAxiosError(err) && err.response) {
@@ -79,7 +89,7 @@ const AdminBlogClient: React.FC<Props> = ({data, error, isAdmin = true, limit="1
             setFetchLoading(false)
         }
 
-    }, [pagination]);
+    }, [pagination, filters]);
 
     useEffect(() => {
         const selectedRows = table.getSelectedRowModel().rows;
@@ -101,7 +111,8 @@ const AdminBlogClient: React.FC<Props> = ({data, error, isAdmin = true, limit="1
                 setShowConfirm(true);
             },
             (post) => {
-                console.log("delete", post);
+                setDetailPost(post);
+                setIsImagesModalOpen(true);
             }
         ),
         pageCount: paginationPost?.totalPages ?? 1,
@@ -124,10 +135,6 @@ const AdminBlogClient: React.FC<Props> = ({data, error, isAdmin = true, limit="1
         },
     });
 
-    const handleFilterChange = (column: string, value: string) => {
-        void updatePaginationAndData(value, column);
-    };
-
     if (fetchLoading) return <DataSkeleton/>
     if (error) return <ErrorMsg error={error}/>
 
@@ -138,17 +145,15 @@ const AdminBlogClient: React.FC<Props> = ({data, error, isAdmin = true, limit="1
                     <h1 className="text-3xl font-bold text-foreground">Управление постами</h1>
                     <p className="text-muted-foreground mt-1">Создавайте и редактируйте посты</p>
                 </div>
-                {isAdmin && (
-                    <Button size="lg" className="flex items-center gap-2 w-full sm:w-auto">
-                        <Plus className="mr-2 h-5 w-5"/>
-                        Создать пост
-                    </Button>
-                )}
+                <Button size="lg" className="flex items-center gap-2 w-full sm:w-auto">
+                    <Plus className="mr-2 h-5 w-5"/>
+                    Создать пост
+                </Button>
             </div>
 
             <div>
                 <TablePostControls
-                    handleBulkDelete={()=> setShowConfirm(true)}
+                    handleBulkDelete={() => setShowConfirm(true)}
                     table={table}
                     onFilterChange={handleFilterChange}
                 />
@@ -161,7 +166,7 @@ const AdminBlogClient: React.FC<Props> = ({data, error, isAdmin = true, limit="1
                 open={showConfirm}
                 onOpenChange={setShowConfirm}
                 title={"Delete"}
-                onConfirm={ async () => {
+                onConfirm={async () => {
                     if (selectedToDelete.length > 1) {
                         await handleDeleteSelectedPosts();
                     } else if (selectedToDelete.length === 1) {
@@ -171,6 +176,32 @@ const AdminBlogClient: React.FC<Props> = ({data, error, isAdmin = true, limit="1
                 loading={deleteLoading}
             />
 
+            <ModalEdit
+                open={isImageModalEdit}
+                imageUrl={selectImageEdit}
+                openChange={() => setIsImageModalEdit(false)}
+            />
+
+            {detailPost && (
+                <ModalGallery
+                    open={isImagesModalOpen}
+                    openChange={() => setIsImagesModalOpen(false)}
+                    items={detailPost.images}
+                    keyBy="image"
+                    selectedKeys={selectedToDelete}
+                    setSelectedKeys={setSelectedToDelete}
+                    selectionMode={selectionMode}
+                    setSelectionMode={setSelectionMode}
+                    onEdit={(key) => {
+                        setIsImageModalEdit(true)
+                        setSelectImageEdit(key)
+                    }}
+                    onDelete={(keys) => {
+                        setSelectedToDelete(keys);
+                        setShowConfirm(true)
+                    }}
+                />
+            )}
 
         </div>
     );

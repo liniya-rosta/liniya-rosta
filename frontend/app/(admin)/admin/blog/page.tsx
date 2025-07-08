@@ -1,10 +1,10 @@
 import React from "react";
-import {Post} from "@/lib/types";
+import {PostResponse} from "@/lib/types";
 import {fetchPosts} from "@/actions/posts";
 import AdminBlogClient from "@/app/(admin)/admin/blog/AdminBlogClient";
 
 const AdminBlogPage = async () => {
-    let posts: Post[] = [];
+    let posts: PostResponse | null;
     let postsError: string | null = null;
 
     try {

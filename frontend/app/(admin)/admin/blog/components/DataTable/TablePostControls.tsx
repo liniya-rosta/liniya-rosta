@@ -17,7 +17,6 @@ interface Props {
     handleBulkDelete: () => void;
     table: TanStackTable<Post>,
     onFilterChange: (column: string, value: string) => void;
-    // onPageSizeChange: (size: string) => void;
 }
 
 const columnLabels: Record<string, string> = {
@@ -37,6 +36,7 @@ const TablePostControls: React.FC<Props> = (
 ) => {
     const [filterColumn, setFilterColumn] = useState("title");
     const filterValue = (table.getColumn(filterColumn)?.getFilterValue() as string) ?? "";
+
     const {deleteLoading} = useSuperAdminPostStore();
 
     return (
@@ -82,7 +82,7 @@ const TablePostControls: React.FC<Props> = (
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="outline">
-                                Показать на странице <ChevronDown />
+                                Показать: {table.getState().pagination.pageSize} <ChevronDown />
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
@@ -91,7 +91,6 @@ const TablePostControls: React.FC<Props> = (
                                     key={pageSize}
                                     onSelect={() => {
                                         table.setPageSize(pageSize);
-                                        // onPageSizeChange(String(pageSize));
                                     }}
                                 >
                                     {pageSize} элементов

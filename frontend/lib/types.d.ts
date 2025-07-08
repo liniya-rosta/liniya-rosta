@@ -1,3 +1,8 @@
+export interface ImageObject {
+    alt?: string;
+    image: string;
+}
+
 interface PaginationMeta {
     total: number;
     page: number;
@@ -130,7 +135,7 @@ export interface Post {
     _id: string;
     title: string;
     description: string;
-    images: {image: string, alt?: string}[];
+    images: Image[];
     imageCount: number;
 }
 
