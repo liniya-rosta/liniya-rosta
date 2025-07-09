@@ -55,6 +55,7 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
         pageIndex, setPageIndex,
         pageSize, setPageSize,
         totalPages,
+        totalItems
     } = useProductsQuery();
 
     const columns = React.useMemo(
@@ -89,7 +90,9 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
         manualPagination: true,
         pageCount: totalPages,
         onPaginationChange: (updater) => {
-            const next = typeof updater === "function" ? updater({pageIndex, pageSize}) : updater;
+            const next = typeof updater === "function"
+                ? updater({ pageIndex, pageSize })
+                : updater;
             setPageIndex(next.pageIndex);
             setPageSize(next.pageSize);
         },
@@ -132,13 +135,15 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
                     setIdsToDelete(ids);
                     setShowConfirmDialog(true);
                 }}
+                setPageSize={setPageSize}
+                setPageIndex={setPageIndex}
             />
 
             <ProductTableContent table={table}/>
 
             <ProductsTablePagination
                 table={table}
-                totalItems={filteredProducts.length * totalPages} // или передай totalItems с бэка
+                totalItems={totalItems}
             />
 
             <ConfirmDialog

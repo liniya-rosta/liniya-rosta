@@ -6,7 +6,7 @@ import {Button} from "@/components/ui/button";
 import {
     DropdownMenu,
     DropdownMenuCheckboxItem,
-    DropdownMenuContent,
+    DropdownMenuContent, DropdownMenuItem,
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 import {ChevronDown} from "lucide-react";
@@ -29,6 +29,9 @@ interface Props {
     categoryId: string | null;
     setCategoryId: (id: string | null) => void;
 
+    setPageSize: (size: number) => void;
+    setPageIndex: (page: number) => void;
+
     onConfirmDialogOpen: (ids: string[]) => void;
 }
 
@@ -41,7 +44,9 @@ const ProductsTableToolbar: React.FC<Props> = ({
                                                    setActiveFilterType,
                                                    categoryId,
                                                    setCategoryId,
-                                                   onConfirmDialogOpen
+                                                   onConfirmDialogOpen,
+                                                   setPageSize,
+                                                   setPageIndex,
                                                }) => {
     const {categories} = useCategoryStore();
 
@@ -76,73 +81,103 @@ const ProductsTableToolbar: React.FC<Props> = ({
     };
 
     return (
-        <div className="flex items-center py-4 flex-wrap gap-2">
-            <Select value={activeFilterType} onValueChange={(value: FilterType) => {
-                setActiveFilterType(value);
-                setFilterValue('');
-                table.setPageIndex(0);
-            }}>
-                <SelectTrigger className="md:w-[180px] w-full">
-                    <SelectValue placeholder="Выберите фильтр"/>
-                </SelectTrigger>
-                <SelectContent>
-                    <SelectItem value="title">По названию</SelectItem>
-                    <SelectItem value="description">По описанию</SelectItem>
-                </SelectContent>
-            </Select>
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 w-full flex-wrap mb-4">
 
-            <Input
-                placeholder={getFilterPlaceholder()}
-                value={filterValue}
-                onChange={(e) => {
-                    setFilterValue(e.target.value);
+            <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
+                <Select value={activeFilterType} onValueChange={(value: FilterType) => {
+                    setActiveFilterType(value);
+                    setFilterValue('');
                     table.setPageIndex(0);
-                }}
-                className="flex-grow max-w-sm"
-            />
+                }}>
+                    <SelectTrigger className="w-full sm:w-[180px]">
+                        <SelectValue placeholder="Выберите фильтр"/>
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="title">По названию</SelectItem>
+                        <SelectItem value="description">По описанию</SelectItem>
+                    </SelectContent>
+                </Select>
 
-            <CategoryFilter
-                selectedCategoryId={categoryId}
-                onCategoryChange={(id) => {
-                    setCategoryId(id === "all" ? null : id);
-                }}
-                categories={categories}
-            />
+                <Input
+                    placeholder={getFilterPlaceholder()}
+                    value={filterValue}
+                    onChange={(e) => {
+                        setFilterValue(e.target.value);
+                        table.setPageIndex(0);
+                    }}
+                    className="w-full sm:max-w-xs"
+                />
+            </div>
 
-            <Button
-                disabled={actionLoading || table.getFilteredSelectedRowModel().rows.length === 0}
-                onClick={handleBulkDelete}
-                variant='outline'
-            >
-                Удалить выбранные {table.getFilteredSelectedRowModel().rows.length} элементы
-            </Button>
+            <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
+                <CategoryFilter
+                    selectedCategoryId={categoryId}
+                    onCategoryChange={(id) => {
+                        setCategoryId(id === "all" ? null : id);
+                    }}
+                    categories={categories}
+                />
 
-            <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                    <Button variant="outline">
-                        Столбцы <ChevronDown className="ml-2 h-4 w-5"/>
-                    </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                    {table
-                        .getAllColumns()
-                        .filter((column) => column.getCanHide())
-                        .map((column) => {
-                            return (
-                                <DropdownMenuCheckboxItem
-                                    key={column.id}
-                                    className="capitalize"
-                                    checked={column.getIsVisible()}
-                                    onCheckedChange={(value) =>
-                                        column.toggleVisibility(value)
-                                    }
-                                >
-                                    {columnLabels[column.id] ?? column.id}
-                                </DropdownMenuCheckboxItem>
-                            );
-                        })}
-                </DropdownMenuContent>
-            </DropdownMenu>
+                <Button
+                    disabled={actionLoading || table.getFilteredSelectedRowModel().rows.length === 0}
+                    onClick={handleBulkDelete}
+                    variant="outline"
+                    className="w-full sm:w-auto"
+                >
+                    Удалить выбранные {table.getFilteredSelectedRowModel().rows.length} элементы
+                </Button>
+            </div>
+
+            <div className="flex gap-2 w-full md:w-auto">
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="outline" className="w-full sm:w-auto">
+                            Показывать по {table.getState().pagination.pageSize}
+                            <ChevronDown className="ml-2 h-4 w-5"/>
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                        {[5, 10, 20, 30, 50].map((size) => (
+                            <DropdownMenuItem
+                                key={size}
+                                onSelect={() => {
+                                    setPageSize(size);
+                                    setPageIndex(0);
+                                }}
+                            >
+                                {size} элементов {size === table.getState().pagination.pageSize && '✓'}                            </DropdownMenuItem>
+                        ))}
+                    </DropdownMenuContent>
+                </DropdownMenu>
+
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="outline" className="w-full sm:w-auto">
+                            Столбцы <ChevronDown className="ml-2 h-4 w-5"/>
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                        {table
+                            .getAllColumns()
+                            .filter((column) => column.getCanHide())
+                            .map((column) => {
+                                return (
+                                    <DropdownMenuCheckboxItem
+                                        key={column.id}
+                                        className="capitalize"
+                                        checked={column.getIsVisible()}
+                                        onCheckedChange={(value) =>
+                                            column.toggleVisibility(value)
+                                        }
+                                    >
+                                        {columnLabels[column.id] ?? column.id}
+                                    </DropdownMenuCheckboxItem>
+                                );
+                            })}
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            </div>
+
         </div>
     );
 };

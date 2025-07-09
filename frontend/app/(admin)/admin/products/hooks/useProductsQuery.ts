@@ -18,6 +18,7 @@ export function useProductsQuery() {
     const [pageIndex, setPageIndex] = useState(0);
     const [pageSize, setPageSize] = useState(10);
     const [totalPages, setTotalPages] = useState(0);
+    const [totalItems, setTotalItems] = useState(0);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -35,6 +36,7 @@ export function useProductsQuery() {
 
                 setProducts(data.items);
                 setTotalPages(data.totalPages);
+                setTotalItems(data.total);
             } catch (e) {
                 const message =
                     isAxiosError(e) && e.response?.data?.error
@@ -66,5 +68,6 @@ export function useProductsQuery() {
         pageSize,
         setPageSize,
         totalPages,
+        totalItems,
     };
 }
