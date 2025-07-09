@@ -1,5 +1,3 @@
-'use client';
-
 import { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown, MoreHorizontal, Edit2, Trash2, Images } from 'lucide-react';
 import Image from 'next/image';
@@ -85,6 +83,18 @@ export const getPostTableColumns = (
                 </div>
             ),
             filterFn: 'includesString',
+        },
+        {
+            accessorKey: "imageCount",
+            header: () => <div className="text-center">Кол-во изображений</div>,
+            cell: ({row}) => {
+                const count = row.getValue<number>("imageCount");
+                return (
+                    <div className="font-medium text-center">
+                        {count}
+                    </div>
+                );
+            },
         },
         {
             accessorKey: 'image',

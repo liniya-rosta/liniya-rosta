@@ -2,7 +2,7 @@
 
 import React, {useEffect, useState} from 'react';
 import {Plus} from 'lucide-react';
-import {Post, PostResponse} from "@/lib/types";
+import {ImageObject, Post, PostResponse} from "@/lib/types";
 import {Button} from '@/components/ui/button';
 import {
     ColumnFiltersState,
@@ -15,26 +15,25 @@ import {
     VisibilityState
 } from "@tanstack/react-table";
 import {useSuperAdminPostStore} from "@/store/superadmin/superAdminPostsStore";
-import {isAxiosError} from "axios";
-import {toast} from "react-toastify";
 import {getPostTableColumns} from './components/DataTable/PostTableColumns';
 import PostsTable from "@/app/(admin)/admin/blog/components/DataTable/PostsTable";
 import DataSkeleton from "@/components/ui/Loading/DataSkeleton";
 import ErrorMsg from "@/components/ui/ErrorMsg";
 import TablePostControls from "@/app/(admin)/admin/blog/components/DataTable/TablePostControls";
 import TablePostPagination from "@/app/(admin)/admin/blog/components/DataTable/TablePostPagination";
-import {usePostsControlPanel} from "@/app/(admin)/admin/blog/hooks/usePostsControlPanel";
+import {usePostDeletion} from "@/app/(admin)/admin/blog/hooks/usePostDeletion";
 import ConfirmDialog from '@/components/ui/ConfirmDialog';
 import ModalGallery from "@/components/shared/ModalGallery";
-import ModalEdit from "@/app/(admin)/admin/blog/components/ModalEdit";
+import ImageEditForm from "@/app/(admin)/admin/blog/components/ImageEditForm";
+import {PostsFetcher} from "@/app/(admin)/admin/blog/hooks/usePostsFetcher";
+import {ImagePreviewModal} from "@/app/(admin)/admin/blog/components/ImagePreviewModal";
 
 interface Props {
     data: PostResponse | null;
     error: string | null;
-    limit?: string;
 }
 
-const AdminBlogClient: React.FC<Props> = ({data, error, limit = "10"}) => {
+const AdminBlogClient: React.FC<Props> = ({data, error}) => {
     const [sorting, setSorting] = useState<SortingState>([]);
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -48,6 +47,9 @@ const AdminBlogClient: React.FC<Props> = ({data, error, limit = "10"}) => {
     const [isImageModalEdit, setIsImageModalEdit] = useState(false);
     const [selectImageEdit, setSelectImageEdit] = useState<string>("");
 
+    const [previewImage, setPreviewImage] = useState<ImageObject | null>(null);
+    const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+
     const {
         posts,
         detailPost,
@@ -55,40 +57,31 @@ const AdminBlogClient: React.FC<Props> = ({data, error, limit = "10"}) => {
         selectedToDelete,
         fetchLoading,
         deleteLoading,
-        setPosts,
         setDetailPost,
-        setPaginationPost,
-        setFetchLoading,
         setSelectedToDelete,
     } = useSuperAdminPostStore();
 
+    // хук для получения данных
     const {
         pagination,
         filters,
         fetchData,
+        fetchOnePost,
         setPagination,
+        handleFilterChange,
+        setPageSize,
+    } = PostsFetcher();
+
+    //хук для удаления
+    const {
+        isImageDelete,
         handleDelete,
         handleDeleteSelectedPosts,
-        handleFilterChange,
-        handleDeleteImage,
-    } = usePostsControlPanel(limit);
+        setImageDelete,
+    } = usePostDeletion(fetchData, fetchOnePost, setRowSelection);
 
     useEffect(() => {
-        try {
-            void fetchData();
-        } catch (err) {
-            let errorMessage = "Ошибка при получении данных";
-            if (isAxiosError(err) && err.response) {
-                errorMessage = err.response.data.error;
-            } else if (err instanceof Error) {
-                errorMessage = err.message;
-            }
-
-            toast.error(errorMessage);
-        } finally {
-            setFetchLoading(false)
-        }
-
+        void fetchData();
     }, [pagination, filters]);
 
     useEffect(() => {
@@ -105,7 +98,7 @@ const AdminBlogClient: React.FC<Props> = ({data, error, limit = "10"}) => {
         columns: getPostTableColumns(
             (post) =>
                 // router.push(`/admin/blog/edit/${post._id}`)
-                console.log("edit"),
+                console.log("edit", post),
             async ([ids]) => {
                 setSelectedToDelete([ids]);
                 setShowConfirm(true);
@@ -121,7 +114,11 @@ const AdminBlogClient: React.FC<Props> = ({data, error, limit = "10"}) => {
         onColumnFiltersChange: setColumnFilters,
         onColumnVisibilityChange: setColumnVisibility,
         onRowSelectionChange: setRowSelection,
-        onPaginationChange: setPagination,
+        onPaginationChange: (updater) => {
+            const newState = typeof updater === "function" ? updater(pagination) : updater;
+            setPagination(newState);
+            setPageSize(newState.pageSize);
+        },
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
         getSortedRowModel: getSortedRowModel(),
@@ -156,6 +153,7 @@ const AdminBlogClient: React.FC<Props> = ({data, error, limit = "10"}) => {
                     handleBulkDelete={() => setShowConfirm(true)}
                     table={table}
                     onFilterChange={handleFilterChange}
+                    setPersistedPageSize={setPageSize}
                 />
                 <PostsTable table={table}/>
                 <TablePostPagination table={table}/>
@@ -165,7 +163,7 @@ const AdminBlogClient: React.FC<Props> = ({data, error, limit = "10"}) => {
             <ConfirmDialog
                 open={showConfirm}
                 onOpenChange={setShowConfirm}
-                title={"Delete"}
+                title={isImageDelete ? "Удалить изображение?" : "Удалить пост(ы)?"}
                 onConfirm={async () => {
                     if (selectedToDelete.length > 1) {
                         await handleDeleteSelectedPosts();
@@ -176,10 +174,19 @@ const AdminBlogClient: React.FC<Props> = ({data, error, limit = "10"}) => {
                 loading={deleteLoading}
             />
 
-            <ModalEdit
+            <ImageEditForm
                 open={isImageModalEdit}
                 imageUrl={selectImageEdit}
                 openChange={() => setIsImageModalEdit(false)}
+                onSaved={() => setIsImageModalEdit(false)}
+                setIsPreviewOpen={setIsPreviewOpen}
+                setPreviewImage={setPreviewImage}
+            />
+
+            <ImagePreviewModal
+                open={isPreviewOpen}
+                onClose={() => setIsPreviewOpen(false)}
+                image={previewImage}
             />
 
             {detailPost && (
@@ -198,8 +205,10 @@ const AdminBlogClient: React.FC<Props> = ({data, error, limit = "10"}) => {
                     }}
                     onDelete={(keys) => {
                         setSelectedToDelete(keys);
-                        setShowConfirm(true)
+                        setShowConfirm(true);
+                        setImageDelete(true);
                     }}
+                    deleteLoading={deleteLoading}
                 />
             )}
 

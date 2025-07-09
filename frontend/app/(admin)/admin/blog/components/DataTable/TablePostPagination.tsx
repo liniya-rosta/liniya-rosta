@@ -3,6 +3,7 @@ import {Table as TanStackTable} from "@tanstack/table-core/";
 import {Post} from "@/lib/types";
 import {Button} from "@/components/ui/button";
 import {Tooltip, TooltipContent, TooltipTrigger} from "@/components/ui/tooltip";
+import {useSuperAdminPostStore} from "@/store/superadmin/superAdminPostsStore";
 
 interface Props {
     table: TanStackTable<Post>,
@@ -11,11 +12,12 @@ interface Props {
 const TablePostPagination: React.FC<Props> = ({table}) => {
     const currentPage = table.getState().pagination.pageIndex;
     const totalPages = table.getPageCount();
+    const {paginationPost} = useSuperAdminPostStore();
 
     return (
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-4 mb-10">
             <span className="text-sm text-muted-foreground">
-                Всего элементов: <span className="font-medium"></span>
+                Всего элементов: <span className="font-medium">{paginationPost?.total}</span>
             </span>
 
             <div className="flex flex-col items-center w-full sm:w-auto">
