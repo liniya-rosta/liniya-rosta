@@ -6,13 +6,15 @@ import {Button} from "@/components/ui/button";
 import {
     DropdownMenu,
     DropdownMenuCheckboxItem,
-    DropdownMenuContent, DropdownMenuItem,
+    DropdownMenuContent,
+    DropdownMenuItem,
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 import {ChevronDown} from "lucide-react";
 import {Product} from "@/lib/types";
-import {useCategoryStore} from "@/store/categoriesStore";
 import {Table} from "@tanstack/react-table";
+import CreateCategoryForm from "@/app/(admin)/admin/products/components/Modal/CategoryCreateForm";
+import {useAdminCategoryStore} from "@/store/superadmin/superadminCategoriesStore";
 
 type FilterType = 'title' | 'description';
 
@@ -48,7 +50,8 @@ const ProductsTableToolbar: React.FC<Props> = ({
                                                    setPageSize,
                                                    setPageIndex,
                                                }) => {
-    const {categories} = useCategoryStore();
+    const {categories} = useAdminCategoryStore();
+    const [isCategoryModalOpen, setIsCategoryModalOpen] = React.useState(false);
 
     const getFilterPlaceholder = () => {
         switch (activeFilterType) {
@@ -81,15 +84,18 @@ const ProductsTableToolbar: React.FC<Props> = ({
     };
 
     return (
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 w-full flex-wrap mb-4">
+        <div className="flex flex-wrap gap-3 items-start justify-between w-full mb-4">
 
-            <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
-                <Select value={activeFilterType} onValueChange={(value: FilterType) => {
-                    setActiveFilterType(value);
-                    setFilterValue('');
-                    table.setPageIndex(0);
-                }}>
-                    <SelectTrigger className="w-full sm:w-[180px]">
+            <div className="flex flex-col sm:flex-row gap-2 flex-1 min-w-[250px]">
+                <Select
+                    value={activeFilterType}
+                    onValueChange={(value: FilterType) => {
+                        setActiveFilterType(value);
+                        setFilterValue('');
+                        table.setPageIndex(0);
+                    }}
+                >
+                    <SelectTrigger className="w-full sm:w-[160px]">
                         <SelectValue placeholder="Выберите фильтр"/>
                     </SelectTrigger>
                     <SelectContent>
@@ -105,11 +111,11 @@ const ProductsTableToolbar: React.FC<Props> = ({
                         setFilterValue(e.target.value);
                         table.setPageIndex(0);
                     }}
-                    className="w-full sm:max-w-xs"
+                    className="w-full sm:flex-1"
                 />
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
+            <div className="flex flex-wrap gap-2 items-start justify-start flex-1 min-w-[250px]">
                 <CategoryFilter
                     selectedCategoryId={categoryId}
                     onCategoryChange={(id) => {
@@ -119,21 +125,29 @@ const ProductsTableToolbar: React.FC<Props> = ({
                 />
 
                 <Button
+                    onClick={() => setIsCategoryModalOpen(true)}
+                    variant="outline"
+                    className="shrink-0"
+                >
+                    + Категория
+                </Button>
+
+                <Button
                     disabled={actionLoading || table.getFilteredSelectedRowModel().rows.length === 0}
                     onClick={handleBulkDelete}
                     variant="outline"
-                    className="w-full sm:w-auto"
+                    className="shrink-0"
                 >
-                    Удалить выбранные {table.getFilteredSelectedRowModel().rows.length} элементы
+                    Удалить {table.getFilteredSelectedRowModel().rows.length || ""}
                 </Button>
             </div>
 
-            <div className="flex gap-2 w-full md:w-auto">
+            <div className="flex gap-2 items-start flex-wrap">
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <Button variant="outline" className="w-full sm:w-auto">
+                        <Button variant="outline" className="min-w-[150px]">
                             Показывать по {table.getState().pagination.pageSize}
-                            <ChevronDown className="ml-2 h-4 w-5"/>
+                            <ChevronDown className="ml-2 h-4 w-4"/>
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
@@ -145,38 +159,40 @@ const ProductsTableToolbar: React.FC<Props> = ({
                                     setPageIndex(0);
                                 }}
                             >
-                                {size} элементов {size === table.getState().pagination.pageSize && '✓'}                            </DropdownMenuItem>
+                                {size} элементов {size === table.getState().pagination.pageSize && '✓'}
+                            </DropdownMenuItem>
                         ))}
                     </DropdownMenuContent>
                 </DropdownMenu>
 
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <Button variant="outline" className="w-full sm:w-auto">
-                            Столбцы <ChevronDown className="ml-2 h-4 w-5"/>
+                        <Button variant="outline" className="min-w-[120px]">
+                            Столбцы <ChevronDown className="ml-2 h-4 w-4"/>
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                         {table
                             .getAllColumns()
                             .filter((column) => column.getCanHide())
-                            .map((column) => {
-                                return (
-                                    <DropdownMenuCheckboxItem
-                                        key={column.id}
-                                        className="capitalize"
-                                        checked={column.getIsVisible()}
-                                        onCheckedChange={(value) =>
-                                            column.toggleVisibility(value)
-                                        }
-                                    >
-                                        {columnLabels[column.id] ?? column.id}
-                                    </DropdownMenuCheckboxItem>
-                                );
-                            })}
+                            .map((column) => (
+                                <DropdownMenuCheckboxItem
+                                    key={column.id}
+                                    className="capitalize"
+                                    checked={column.getIsVisible()}
+                                    onCheckedChange={(value) => column.toggleVisibility(value)}
+                                >
+                                    {columnLabels[column.id] ?? column.id}
+                                </DropdownMenuCheckboxItem>
+                            ))}
                     </DropdownMenuContent>
                 </DropdownMenu>
             </div>
+
+            <CreateCategoryForm
+                open={isCategoryModalOpen}
+                onClose={() => setIsCategoryModalOpen(false)}
+            />
 
         </div>
     );

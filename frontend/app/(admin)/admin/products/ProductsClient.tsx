@@ -5,7 +5,6 @@ import {Plus} from "lucide-react";
 import {Button} from "@/components/ui/button";
 import {CardContent} from "@/components/ui/card";
 import {AxiosError} from "axios";
-import {useCategoryStore} from "@/store/categoriesStore";
 import {deleteProduct} from "@/actions/superadmin/products";
 import ProductEditModal from "@/app/(admin)/admin/products/components/Modal/ProductEditModal";
 import ProductsTable from "@/app/(admin)/admin/products/components/ProductTable/ProductsTable";
@@ -15,6 +14,7 @@ import {useAdminProductStore} from "@/store/superadmin/superadminProductsStore";
 import DataSkeleton from "@/components/ui/Loading/DataSkeleton";
 import ErrorMsg from "@/components/ui/ErrorMsg";
 import Link from "next/link";
+import {useAdminCategoryStore} from "@/store/superadmin/superadminCategoriesStore";
 
 interface ProductsClientProps {
     initialProducts: Product[];
@@ -50,7 +50,7 @@ const ProductsClient: React.FC<ProductsClientProps> = ({
         setDeleteError,
     } = useAdminProductStore();
 
-    const {setCategories, fetchCategoriesError, setFetchCategoriesError} = useCategoryStore();
+    const {setCategories, fetchCategoriesError, setFetchCategoriesError} = useAdminCategoryStore();
 
     const [isHydrating, setIsHydrating] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
