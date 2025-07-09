@@ -207,6 +207,23 @@ export interface IRequest {
     status: "Новая" | "В работе" | "Завершена" | "Отклонена";
     createdAt: string;
     updatedAt: string;
+    isArchived?: boolean;
+}
+
+export interface ServiceForm {
+    title: string;
+    description?: string;
+}
+
+export interface Service extends ServiceForm {
+    _id: string;
+}
+
+export type ServiceUpdate = Partial<ServiceForm>;
+
+export interface ServiceResponse {
+    items: Service[];
+    total: number;
 }
 
 export interface RequestMutation {
@@ -215,6 +232,7 @@ export interface RequestMutation {
     email: string;
     commentOfManager?: string;
     status: "Новая" | "В работе" | "Завершена" | "Отклонена";
+    isArchived?: boolean;
 }
 
 export interface FetchRequestsResponse {

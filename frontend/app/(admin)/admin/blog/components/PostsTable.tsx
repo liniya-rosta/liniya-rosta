@@ -293,6 +293,7 @@ const PostsTable: React.FC<PostsTableProps> = ({posts, onEditPost, onDeletePost,
                 title={confirmDialogTitle}
                 onConfirm={confirmDeletion}
                 loading={actionLoading}
+                text="Это действие невозможно отменить. Элемент будет удален навсегда."
             >
             </ConfirmDialog>
         </div>

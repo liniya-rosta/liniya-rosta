@@ -1,12 +1,8 @@
 import AdminPortfolioClient from "@/app/(admin)/admin/portfolio/PortfolioClient";
 
-const AdminPortfolioPage = async () => {
-    const limit = "10";
-
+const AdminPortfolioPage = () => {
     return (
-        <>
-            <AdminPortfolioClient limit={limit}/>
-        </>
+        <AdminPortfolioClient />
     )
 };
 

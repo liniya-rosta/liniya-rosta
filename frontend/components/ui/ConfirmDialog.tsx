@@ -21,6 +21,7 @@ interface Props {
     title?: string;
     onConfirm: () => void;
     loading?: boolean;
+    text: string;
 }
 
 const ConfirmDialog: React.FC<PropsWithChildren<Props>> = ({
@@ -30,6 +31,7 @@ const ConfirmDialog: React.FC<PropsWithChildren<Props>> = ({
                                                          onConfirm,
                                                          loading = false,
                                                          children,
+                                                               text
                                                      }) => {
     return (
         <AlertDialog
@@ -41,7 +43,7 @@ const ConfirmDialog: React.FC<PropsWithChildren<Props>> = ({
                     <AlertDialogTitle>{title}</AlertDialogTitle>
                 </AlertDialogHeader>
                 <AlertDialogDescription>
-                    Это действие невозможно отменить. Элемент будет удален навсегда.
+                    {text}
                 </AlertDialogDescription>
                 {children}
                 <AlertDialogFooter className="flex justify-center gap-4 mt-4">

@@ -2,7 +2,7 @@
 
 import {useForm, useFieldArray} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {portfolioSchema} from "@/lib/zodSchemas/portfolio/portfolioSchema";
+import {portfolioSchema} from "@/lib/zodSchemas/portfolioSchema";
 import {Input} from "@/components/ui/input";
 import {Button} from "@/components/ui/button";
 import React, { useState } from "react";

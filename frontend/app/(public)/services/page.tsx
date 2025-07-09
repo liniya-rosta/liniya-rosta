@@ -1,9 +1,27 @@
 import React from 'react';
 import ServicesForm from "@/app/(public)/services/components/ServicesForm";
 import ServicesTitle from "@/app/(public)/services/components/ServicesTitle";
-import ServicesContent from "@/app/(public)/services/components/ServicesContent";
+import ServiceClient from "@/app/(public)/services/ServiceClient";
+import {isAxiosError} from "axios";
+import {fetchAllServices} from "@/actions/services";
+import { ServiceResponse } from '@/lib/types';
 
-export default function ServicePage() {
+const ServicePage = async () => {
+    let serviceData:  ServiceResponse | null = null;
+    let errorMessage: string | null = null;
+
+    try {
+        serviceData = await fetchAllServices();
+    } catch (error) {
+        if (isAxiosError(error) && error.response) {
+            errorMessage = error.response.data.error;
+        } else if (error instanceof Error) {
+            errorMessage = error.message;
+        } else {
+            errorMessage = "Неизвестная ошибка при загрузке портфолио";
+        }
+    }
+
     return (
         <section className="min-h-screen bg-white -mt-8">
             <div
@@ -15,7 +33,9 @@ export default function ServicePage() {
                 </div>
             </div>
 
-            <ServicesContent/>
+            <ServiceClient data={serviceData} error={errorMessage}/>
         </section>
     );
 };
+
+export default ServicePage;

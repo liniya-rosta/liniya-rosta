@@ -1,7 +1,6 @@
 'use client'
 
 import {zodResolver} from "@hookform/resolvers/zod";
-import {portfolioItemSchema} from "@/lib/zodSchemas/portfolio/portfolioItemSchema";
 import {useForm} from "react-hook-form";
 import {PortfolioEditValues} from "@/lib/types";
 import {Input} from "@/components/ui/input";
@@ -19,6 +18,7 @@ import {Tooltip, TooltipContent, TooltipTrigger} from "@/components/ui/tooltip";
 import {Eye} from "lucide-react";
 import ImageModal from "@/app/(admin)/admin/portfolio/components/ImageModal";
 import {Label} from "@/components/ui/label";
+import {portfolioItemSchema} from "@/lib/zodSchemas/portfolioSchema";
 
 interface Props {
     onSaved: () => void;

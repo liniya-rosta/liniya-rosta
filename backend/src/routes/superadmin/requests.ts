@@ -14,15 +14,24 @@ requestAdminRouter.get('/', async (req, res) => {
         const dateTo = req.query.dateTo as string | undefined;
         const limit = 20;
         const skip = (page - 1) * limit;
+        const archived = req.query.archived as string | undefined;
 
-        const filter: Record<string, string | { $regex: string; $options: string } | {$gte?: Date;
-            $lte?: Date}> = {};
+        type FilterValue =
+            | string
+            | boolean
+            | { $regex: string; $options: string }
+            | { $gte?: Date; $lte?: Date };
+
+        const filter: Record<string, FilterValue> = {};
+
         if (status) {
             filter.status = status;
         }
         if (search) {
             filter.name = { $regex: search, $options: 'i' };
         }
+
+        filter.isArchived = archived === 'true';
 
         if (dateFrom || dateTo) {
             filter.createdAt = {};
@@ -72,7 +81,7 @@ requestAdminRouter.get('/:id', async (req, res, next) => {
 requestAdminRouter.patch('/:id', async (req, res, next) => {
     try {
         const {id} = req.params;
-        const {name, phone, email, status, commentOfManager} = req.body;
+        const {name, phone, email, status, commentOfManager, isArchived} = req.body;
 
         if (!Types.ObjectId.isValid(id)) {
             res.status(400).send({error: "Неверный формат ID заявки"});
@@ -100,6 +109,7 @@ requestAdminRouter.patch('/:id', async (req, res, next) => {
         if (email !== undefined) updates.email = email.trim();
         if (status !== undefined) updates.status = status;
         if (commentOfManager !== undefined) updates.commentOfManager = commentOfManager;
+        if (isArchived !== undefined) updates.isArchived = isArchived;
 
         const updated = await RequestFromClient.findByIdAndUpdate(
             id,

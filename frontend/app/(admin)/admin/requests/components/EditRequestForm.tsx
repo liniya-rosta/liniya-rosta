@@ -13,6 +13,8 @@ import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from '@/
 import {Textarea} from "@/components/ui/textarea";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select';
 import {DialogFooter} from "@/components/ui/dialog";
+import LoaderIcon from "@/components/ui/LoaderIcon";
+
 
 interface Props {
     request: IRequest | null;
@@ -20,7 +22,7 @@ interface Props {
 }
 
 const EditRequestForm: React.FC<Props> = ({request, onClose}) => {
-    const {setRequests, status, updateLoading, setUpdateLoading} = useAdminRequestsStore();
+    const {setRequests, status, updateLoading, setUpdateLoading, viewArchived} = useAdminRequestsStore();
     const form = useForm<z.infer<typeof requestAdminSchema>>({
         resolver: zodResolver(requestAdminSchema),
         defaultValues: {
@@ -40,6 +42,7 @@ const EditRequestForm: React.FC<Props> = ({request, onClose}) => {
                 email: request.email,
                 commentOfManager: request.commentOfManager ?? '',
                 status: request.status,
+                isArchived: request.isArchived ?? false,
             });
         }
     }, [request]);
@@ -64,12 +67,13 @@ const EditRequestForm: React.FC<Props> = ({request, onClose}) => {
             commentOfManager: request.commentOfManager ?? '',
             status: request.status,
         };
+
         const changes = getChangedFields(originalData, values);
 
         try {
             setUpdateLoading(true);
             await editRequest(request._id, changes);
-            const requests = await fetchAllRequests({status: status, page: 1});
+            const requests = await fetchAllRequests({status, page: 1, archived: viewArchived});
             setRequests(requests.data);
             toast.success("Заявка успешно обновлена!");
             onClose();
@@ -180,7 +184,7 @@ const EditRequestForm: React.FC<Props> = ({request, onClose}) => {
                     <Button
                         type="submit"
                     >
-                        Сохранить {updateLoading && "..."}
+                        Сохранить {updateLoading && <LoaderIcon/>}
                     </Button>
 
 

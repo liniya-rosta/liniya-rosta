@@ -1,10 +1,11 @@
 import React from 'react';
 import {fetchCategories} from '@/actions/categories';
 import {fetchProducts} from '@/actions/products';
-import {Category, Contact, PortfolioItemPreview, Product} from '@/lib/types';
+import {Category, Contact, PortfolioItemPreview, Product, ServiceResponse} from '@/lib/types';
 import {fetchPortfolioPreviews} from "@/actions/portfolios";
 import {fetchContacts} from "@/actions/contacts";
 import HomePageClient from "@/app/(public)/(home)/HomeClient";
+import {fetchAllServices} from "@/actions/services";
 
 export const revalidate = 300;
 
@@ -13,10 +14,14 @@ const HomePage = async () => {
     let productsData: Product[] = [];
     let portfolio: PortfolioItemPreview[] = [];
     let contactData: Contact | null = null;
+    let serviceData: ServiceResponse | null = null;
     let categoriesError = null;
     let productsError = null;
     let portfolioError = null;
     let contactError = null;
+    let serviceError = null;
+
+    const limitPortfolio = "8";
 
     await Promise.all([
         fetchCategories()
@@ -31,7 +36,7 @@ const HomePage = async () => {
                 productsError = e instanceof Error ? e.message : String(e);
             }),
 
-        fetchPortfolioPreviews()
+        fetchPortfolioPreviews(limitPortfolio)
             .then(data => portfolio = data.items)
             .catch(e => {
                 portfolioError = e instanceof Error ? e.message : String(e);
@@ -42,6 +47,11 @@ const HomePage = async () => {
             .catch(e => {
                 contactError = e instanceof Error ? e.message : String(e);
             }),
+        fetchAllServices()
+            .then(data => serviceData = data)
+            .catch(e => {
+                serviceError = e instanceof Error ? e.message : String(e);
+            }),
     ]);
 
     const initialProps = {
@@ -49,10 +59,12 @@ const HomePage = async () => {
         productsData,
         portfolioItems: portfolio,
         contactData,
+        serviceData,
         categoriesError,
         productsError,
         portfolioError,
         contactError,
+        serviceError,
     };
 
     return (
