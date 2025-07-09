@@ -17,7 +17,10 @@ export const getProductTableColumns = (
     actionLoading: boolean,
     onImageClick: (image: { url: string; alt: string }) => void,
     onSaleLabelClick: (label: string) => void,
-    onImagesClick: (data: { productId: string; images: { url: string; alt?: string | null; _id: string }[] }) => void): ColumnDef<Product>[] => {
+    onImagesClick: (data: {
+        productId: string;
+        images: { url: string; alt?: string | null; _id: string }[]
+    }) => void): ColumnDef<Product>[] => {
     const getCategoryTitle = (category: string | Category) => {
         if (typeof category === "object" && category !== null) {
             return category.title;
@@ -104,7 +107,7 @@ export const getProductTableColumns = (
         {
             accessorKey: "description",
             header: "Описание",
-            cell: ({ row }) => (
+            cell: ({row}) => (
                 <div className="w-60 max-h-24 overflow-auto text-sm break-words whitespace-pre-wrap">
                     {row.original.description || (
                         <span className="text-muted-foreground italic">Нет описания</span>
@@ -218,7 +221,7 @@ export const getProductTableColumns = (
                             </DropdownMenuItem>
 
                             <DropdownMenuItem
-                                onClick={() => onImagesClick({ productId: product._id, images: product.images })}
+                                onClick={() => onImagesClick({productId: product._id, images: product.images})}
                                 disabled={actionLoading || !Array.isArray(product.images) || product.images.length === 0}
                             >
                                 Изображения

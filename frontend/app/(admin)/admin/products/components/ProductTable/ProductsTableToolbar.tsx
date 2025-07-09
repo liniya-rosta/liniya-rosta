@@ -1,7 +1,7 @@
 import React from 'react';
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {Input} from "@/components/ui/input";
-import CategoryFilter from "@/app/(admin)/admin/products/components/CategoryFilter";
+import CategoryFilter from "@/app/(admin)/admin/products/components/ProductTable/CategoryFilter";
 import {Button} from "@/components/ui/button";
 import {
     DropdownMenu,
@@ -26,18 +26,23 @@ interface Props {
     activeFilterType: FilterType;
     setActiveFilterType: (type: FilterType) => void;
 
+    categoryId: string | null;
+    setCategoryId: (id: string | null) => void;
+
     onConfirmDialogOpen: (ids: string[]) => void;
 }
 
-const TableToolbar: React.FC<Props> = ({
-                                           actionLoading,
-                                           table,
-                                           filterValue,
-                                           setFilterValue,
-                                           activeFilterType,
-                                           setActiveFilterType,
-                                           onConfirmDialogOpen
-                                       }) => {
+const ProductsTableToolbar: React.FC<Props> = ({
+                                                   actionLoading,
+                                                   table,
+                                                   filterValue,
+                                                   setFilterValue,
+                                                   activeFilterType,
+                                                   setActiveFilterType,
+                                                   categoryId,
+                                                   setCategoryId,
+                                                   onConfirmDialogOpen
+                                               }) => {
     const {categories} = useCategoryStore();
 
     const getFilterPlaceholder = () => {
@@ -75,6 +80,7 @@ const TableToolbar: React.FC<Props> = ({
             <Select value={activeFilterType} onValueChange={(value: FilterType) => {
                 setActiveFilterType(value);
                 setFilterValue('');
+                table.setPageIndex(0);
             }}>
                 <SelectTrigger className="md:w-[180px] w-full">
                     <SelectValue placeholder="Выберите фильтр"/>
@@ -88,12 +94,18 @@ const TableToolbar: React.FC<Props> = ({
             <Input
                 placeholder={getFilterPlaceholder()}
                 value={filterValue}
-                onChange={(e) => setFilterValue(e.target.value)}
+                onChange={(e) => {
+                    setFilterValue(e.target.value);
+                    table.setPageIndex(0);
+                }}
                 className="flex-grow max-w-sm"
             />
 
             <CategoryFilter
-                column={table.getColumn("category")}
+                selectedCategoryId={categoryId}
+                onCategoryChange={(id) => {
+                    setCategoryId(id === "all" ? null : id);
+                }}
                 categories={categories}
             />
 
@@ -135,4 +147,4 @@ const TableToolbar: React.FC<Props> = ({
     );
 };
 
-export default TableToolbar;
+export default ProductsTableToolbar;

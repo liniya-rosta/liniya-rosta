@@ -2,28 +2,24 @@
 
 import React from "react";
 import {
-    ColumnFiltersState,
     getCoreRowModel,
     getFilteredRowModel,
     getPaginationRowModel,
     getSortedRowModel,
-    RowSelectionState,
-    SortingState,
     useReactTable,
-    VisibilityState,
 } from "@tanstack/react-table";
-import {Button} from "@/components/ui/button";
 import {getProductTableColumns} from "./ProductTableColumns";
 import {Product} from "@/lib/types";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import ImagePreviewModal from "@/app/(admin)/admin/products/components/Modal/ImagePreviewModal";
 import SaleLabelModal from "@/app/(admin)/admin/products/components/Modal/SaleLabelModal";
 import {useCategoryStore} from "@/store/categoriesStore";
-import {useAdminProductStore} from "@/store/superadmin/superadminProductsStore";
-import TableToolbar from "@/app/(admin)/admin/products/components/ProductTable/TableToolbar";
+import ProductsTableToolbar from "@/app/(admin)/admin/products/components/ProductTable/ProductsTableToolbar";
 import ImagesModal from "@/app/(admin)/admin/products/components/Modal/ImagesModal";
 import {useProductsTableLogic} from "@/app/(admin)/admin/products/hooks/useProductsTableLogic";
 import ProductTableContent from "@/app/(admin)/admin/products/components/ProductTable/ProductsTableContent";
+import {useProductsQuery} from "@/app/(admin)/admin/products/hooks/useProductsQuery";
+import ProductsTablePagination from "@/app/(admin)/admin/products/components/ProductTable/ProductsTablePagination";
 
 interface ProductsTableProps {
     onEditProduct: (product: Product) => void;
@@ -39,12 +35,8 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
                                                          onDeleteSelectedProducts,
                                                      }) => {
     const {categories} = useCategoryStore();
-    const {products} = useAdminProductStore();
 
     const {
-        activeFilterType, setActiveFilterType,
-        filterValue, setFilterValue,
-        filteredProducts,
         previewImage, setPreviewImage,
         saleLabel, setSaleLabel,
         isImagesModalOpen, setIsImagesModalOpen,
@@ -53,12 +45,17 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
         onImageClick,
         onSaleLabelClick,
         onImages,
-    } = useProductsTableLogic(products);
+    } = useProductsTableLogic();
 
-    const [sorting, setSorting] = React.useState<SortingState>([]);
-    const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
-    const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
-    const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({});
+    const {
+        products: filteredProducts,
+        filterType, setFilterType,
+        filterValue, setFilterValue,
+        categoryId, setCategoryId,
+        pageIndex, setPageIndex,
+        pageSize, setPageSize,
+        totalPages,
+    } = useProductsQuery();
 
     const columns = React.useMemo(
         () =>
@@ -89,20 +86,20 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
     const table = useReactTable({
         data: filteredProducts,
         columns,
-        onSortingChange: setSorting,
-        onColumnFiltersChange: setColumnFilters,
+        manualPagination: true,
+        pageCount: totalPages,
+        onPaginationChange: (updater) => {
+            const next = typeof updater === "function" ? updater({pageIndex, pageSize}) : updater;
+            setPageIndex(next.pageIndex);
+            setPageSize(next.pageSize);
+        },
+        state: {
+            pagination: {pageIndex, pageSize},
+        },
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
         getSortedRowModel: getSortedRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
-        onColumnVisibilityChange: setColumnVisibility,
-        onRowSelectionChange: setRowSelection,
-        state: {
-            sorting,
-            columnFilters,
-            columnVisibility,
-            rowSelection,
-        },
     });
 
     const confirmDeletion = () => {
@@ -122,13 +119,15 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
 
     return (
         <div className="w-full">
-            <TableToolbar
-                actionLoading={actionLoading}
+            <ProductsTableToolbar
                 table={table}
                 filterValue={filterValue}
                 setFilterValue={setFilterValue}
-                activeFilterType={activeFilterType}
-                setActiveFilterType={setActiveFilterType}
+                activeFilterType={filterType}
+                setActiveFilterType={setFilterType}
+                categoryId={categoryId}
+                setCategoryId={setCategoryId}
+                actionLoading={actionLoading}
                 onConfirmDialogOpen={(ids: string[]) => {
                     setIdsToDelete(ids);
                     setShowConfirmDialog(true);
@@ -137,30 +136,10 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
 
             <ProductTableContent table={table}/>
 
-            <div className="flex items-center justify-end space-x-2 py-4">
-                <div className="text-muted-foreground flex-1 text-sm">
-                    {table.getFilteredSelectedRowModel().rows.length} из{" "}
-                    {table.getFilteredRowModel().rows.length} выбрано.
-                </div>
-                <div className="space-x-2">
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => table.previousPage()}
-                        disabled={!table.getCanPreviousPage()}
-                    >
-                        Назад
-                    </Button>
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => table.nextPage()}
-                        disabled={!table.getCanNextPage()}
-                    >
-                        Далее
-                    </Button>
-                </div>
-            </div>
+            <ProductsTablePagination
+                table={table}
+                totalItems={filteredProducts.length * totalPages} // или передай totalItems с бэка
+            />
 
             <ConfirmDialog
                 open={showConfirmDialog}
