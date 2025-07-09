@@ -1,15 +1,27 @@
-import { notFound } from "next/navigation";
-import { fetchProductById } from "@/actions/products";
-import ProductDetailView from "./ProductDetailView";
+import ProductDetailView from "@/app/(public)/products/[id]/ProductDetailView";
+import {Product} from "@/lib/types";
+import {fetchProductById} from "@/actions/products";
+import {isAxiosError} from "axios";
 
-interface Props {
-    params: { id: string };
-}
+export default async function ProductDetailPage({params}: {
+    params: Promise<{ id: string }>;
+}) {
+    const {id} = await params;
+    let product: Product | null = null;
+    let fetchProductError: string | null = null;
 
-export default async function ProductDetailPage({ params }: Props) {
-    const product = await fetchProductById(params.id);
+    try {
+        product = await fetchProductById(id);
+    } catch (e) {
+        fetchProductError = isAxiosError(e) && e.response?.data?.error
+            ? e.response.data.error
+            : "Ошибка при загрузке продукта";
+    }
 
-    if (!product) return notFound();
-
-    return <ProductDetailView product={product} />;
+    return (
+        <ProductDetailView
+            productData={product}
+            fetchProductError={fetchProductError}
+        />
+    );
 }

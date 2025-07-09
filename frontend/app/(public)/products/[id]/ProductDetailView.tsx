@@ -1,19 +1,44 @@
 "use client";
 
-import React from "react";
+import React, {useEffect} from "react";
 import Image from "next/image";
 import {Badge} from "@/components/ui/badge";
 import {Product} from "@/lib/types";
 import {API_BASE_URL} from "@/lib/globalConstants";
 import {Swiper, SwiperSlide} from "swiper/react";
 import {Navigation} from "swiper/modules";
+import LoadingFullScreen from "@/components/ui/Loading/LoadingFullScreen";
+import ErrorMsg from "@/components/ui/ErrorMsg";
+import {useProductStore} from "@/store/productsStore";
+import ImagePreviewModal from "@/app/(admin)/admin/products/components/Modal/ImagePreviewModal";
 
 interface Props {
-    product: Product;
+    productData: Product | null;
+    fetchProductError: string | null;
 }
 
-const ProductDetailView: React.FC<Props> = ({product}) => {
-    return (
+const ProductDetailView: React.FC<Props> = ({productData, fetchProductError}) => {
+    const {
+        setProduct,
+        product,
+        setFetchProductsError,
+        setFetchProductsLoading,
+        fetchProductsError,
+        fetchProductsLoading
+    } = useProductStore();
+
+    const [previewImage, setPreviewImage] = React.useState<{ url: string; alt: string } | null>(null);
+
+    useEffect(() => {
+        if (productData) setProduct(productData);
+        if (fetchProductError) setFetchProductsError(null);
+        setFetchProductsLoading(false);
+    }, [fetchProductError, productData, setFetchProductsError, setFetchProductsLoading, setProduct]);
+
+    if (fetchProductsLoading) return <LoadingFullScreen/>;
+    if (fetchProductsError) return <ErrorMsg error={fetchProductsError} label='продукта'/>
+
+    if (product) return (
         <div
             className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(320px,400px)] gap-10 container mx-auto px-4 py-12">
             <div>
@@ -31,20 +56,18 @@ const ProductDetailView: React.FC<Props> = ({product}) => {
                     <div className="mt-6 bg-muted p-4 rounded-xl">
                         <Swiper
                             spaceBetween={12}
-                            slidesPerView={3}
+                            slidesPerView="auto"
                             navigation
                             modules={[Navigation]}
                             className="pt-2"
-                            breakpoints={{
-                                640: {slidesPerView: 4},
-                                768: {slidesPerView: 5},
-                                1024: {slidesPerView: 6},
-                            }}
                         >
                             {product.images.map((img) => (
-                                <SwiperSlide key={img._id} className="!w-auto">
-                                    <div
-                                        className="relative h-[250px] aspect-[4/3] rounded-lg overflow-hidden shadow-md border hover:scale-105 transition-transform duration-300">
+                                <SwiperSlide key={img._id}
+                                             className="!w-[300px]"
+                                             onClick={() => setPreviewImage({ url: img.url, alt: img.alt })}
+
+                                >
+                                    <div className="relative w-full h-[200px] rounded-lg overflow-hidden shadow-md border hover:scale-105 transition-transform duration-300">
                                         <Image
                                             src={`${API_BASE_URL}/${img.url}`}
                                             alt={img.alt}
@@ -84,6 +107,12 @@ const ProductDetailView: React.FC<Props> = ({product}) => {
                     </div>
                 )}
             </div>
+            {previewImage && (
+                <ImagePreviewModal
+                    image={previewImage}
+                    onClose={() => setPreviewImage(null)}
+                />
+            )}
         </div>
     );
 };
