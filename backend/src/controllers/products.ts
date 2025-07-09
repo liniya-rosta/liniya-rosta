@@ -104,8 +104,7 @@ export const getProductById = async (req: Request, res: Response, next: NextFunc
     const id = req.params.id;
 
     try {
-        const product = await Product.findById(id);
-
+        const product = await Product.findById(id).populate("category", "title");
         if (!product) {
             res.status(404).send({message: 'Продукт не найден'});
             return;
