@@ -216,7 +216,7 @@ const run = async () => {
             description: 'Lorem ipsum',
             images: [
                 { image: 'test/news1.jpg', alt: 'Новость 1' },
-                { image: 'news2.png', alt: 'Доп. изображение 1' },
+                { image: 'test/news2.png', alt: 'Доп. изображение 1' },
             ],
         },
         {
@@ -224,7 +224,7 @@ const run = async () => {
             description: 'Lorem ipsum',
             images: [
                 { image: 'test/news1.jpg', alt: 'Новость 1' },
-                { image: 'news2.png', alt: 'Доп. изображение 1' },
+                { image: 'test/news2.png', alt: 'Доп. изображение 1' },
             ],
         },
     );

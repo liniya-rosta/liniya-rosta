@@ -42,7 +42,7 @@ postsSuperAdminRouter.post("/", postImage.array("images"), async (req, res, next
 postsSuperAdminRouter.patch("/:id", postImage.array("images"), async (req, res, next) => {
     try {
         const {id} = req.params;
-        const {title, description} = req.body;
+        const {title, description, mode = "replace"} = req.body;
 
         if (!mongoose.Types.ObjectId.isValid(id)) {
             res.status(400).send({error: "Неверный формат ID поста"});
@@ -77,10 +77,16 @@ postsSuperAdminRouter.patch("/:id", postImage.array("images"), async (req, res, 
         if (description?.trim()) updateData.description = description.trim();
 
         if (files && files.length > 0) {
-            updateData.images = files.map((file, index) => ({
+            const newImages = files.map((file, index) => ({
                 image: `post/${file.filename}`,
                 alt: alts[index] || "",
             }));
+
+            if (mode === "append") {
+                updateData.images = [...post.images, ...newImages];
+            } else {
+                updateData.images = newImages;
+            }
         }
 
         const updatedPost = await Post.findByIdAndUpdate(id, updateData, {
@@ -99,7 +105,6 @@ postsSuperAdminRouter.patch("/:id", postImage.array("images"), async (req, res, 
     }
 });
 
-//изменение конкретного изображения
 postsSuperAdminRouter.patch("/:id/update-image",postImage.single("newImage") ,async (req, res, next) => {
     const { id } = req.params;
     const { imageUrl, alt } = req.body;
