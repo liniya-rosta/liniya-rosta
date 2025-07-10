@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import Category from "./Category";
 import slugify from "slugify";
+import {ProductDocument} from "../../types";
 
 const Schema = mongoose.Schema;
 

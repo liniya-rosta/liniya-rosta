@@ -1,4 +1,5 @@
 import mongoose, {Schema} from "mongoose";
+import {PortfolioItemDocument} from "../../types";
 import slugify from "slugify";
 
 const GalleryItemSchema = new Schema({
@@ -79,4 +80,5 @@ PortfolioItemSchema.pre("validate", async function (next) {
     next();
 });
 
-export const PortfolioItem = mongoose.model("PortfolioItem", PortfolioItemSchema);
+const PortfolioItem = mongoose.model<PortfolioItemDocument>("PortfolioItem", PortfolioItemSchema);
+export { PortfolioItem };
