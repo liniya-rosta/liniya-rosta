@@ -14,6 +14,7 @@ interface RequestsState {
     fetchAllError: string | null,
     updateLoading: boolean;
     deleteLoading: boolean;
+    viewArchived: boolean;
 
     setRequests: (requests: IRequest[]) => void;
     setPage: (page: number) => void;
@@ -23,6 +24,7 @@ interface RequestsState {
     setSearch: (search: string) => void;
     setDateFrom: (from: string) => void;
     setDateTo: (to: string) => void;
+    setViewArchived: (value: boolean) => void,
     setFetchAllLoading: (loading: boolean) => void;
     setFetchAllError: (error: string | null) => void;
     setUpdateLoading: (loading: boolean) => void;
@@ -38,6 +40,7 @@ export const useAdminRequestsStore = create<RequestsState>((set) => ({
     search: "",
     dateFrom: "",
     dateTo: "",
+    viewArchived: false,
     fetchAllLoading: true,
     fetchAllError: null,
     updateLoading: false,
@@ -51,6 +54,7 @@ export const useAdminRequestsStore = create<RequestsState>((set) => ({
     setTotalItems: (totalItems: number) => set({totalItems}),
     setLastPage: (page: number) => set({lastPage: page}),
     setRequests: (data) => set({ requests: data }),
+    setViewArchived: (value: boolean) => set({ viewArchived: value }),
     setFetchAllLoading: (loading) => set({fetchAllLoading: loading}),
     setFetchAllError: (error) => set({fetchAllError: error}),
     setUpdateLoading: (loading) => set({updateLoading: loading}),

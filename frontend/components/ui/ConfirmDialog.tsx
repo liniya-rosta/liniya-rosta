@@ -1,7 +1,7 @@
 'use client';
 
 import {Button} from "@/components/ui/button";
-import LoaderIcon from "@/components/ui/Loading/LoaderIcon";
+
 
 import React, {PropsWithChildren} from "react";
 import {
@@ -14,6 +14,7 @@ import {
     AlertDialogHeader,
     AlertDialogTitle
 } from "./alert-dialog";
+import LoaderIcon from "@/components/ui/Loading/LoaderIcon";
 
 interface Props {
     open: boolean;
@@ -21,30 +22,29 @@ interface Props {
     title?: string;
     onConfirm: () => void;
     loading?: boolean;
-    description?: string;
+    text: string;
 }
 
 const ConfirmDialog: React.FC<PropsWithChildren<Props>> = ({
-                                                               open,
-                                                               onOpenChange,
-                                                               title = "Вы уверены?",
-                                                               onConfirm,
-                                                               loading = false,
-                                                               children,
-                                                               description = "Это действие невозможно отменить"
-                                                           }) => {
+                                                         open,
+                                                         onOpenChange,
+                                                         title = "Вы уверены?",
+                                                         onConfirm,
+                                                         loading = false,
+                                                         children,
+                                                               text
+                                                     }) => {
     return (
         <AlertDialog
             open={open}
             onOpenChange={onOpenChange}
         >
-            <AlertDialogContent
-                className="!max-w-sm !w-full flex flex-col items-center justify-center text-center gap-4 max-w-lg">
+            <AlertDialogContent className="!max-w-sm !w-full flex flex-col items-center justify-center text-center gap-4 max-w-lg">
                 <AlertDialogHeader className="text-center">
                     <AlertDialogTitle>{title}</AlertDialogTitle>
                 </AlertDialogHeader>
                 <AlertDialogDescription>
-                    {description}
+                    {text}
                 </AlertDialogDescription>
                 {children}
                 <AlertDialogFooter className="flex justify-center gap-4 mt-4">

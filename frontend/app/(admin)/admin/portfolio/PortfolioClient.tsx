@@ -411,6 +411,7 @@ const AdminPortfolioClient: React.FC<Props> = ({ error}) => {
                     }
                 }}
                 loading={deleteLoading}
+                text="Это действие невозможно отменить. Элемент будет удален навсегда."
             />
         </>
     )

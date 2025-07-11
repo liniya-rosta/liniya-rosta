@@ -27,6 +27,8 @@ import CheckboxAction from "@/app/(admin)/admin/requests/components/requestTable
 import {DateFilter} from "@/app/(admin)/admin/requests/components/requestTable/DateFilter";
 import {IRequest} from "@/lib/types";
 import RequestsModal from "@/app/(admin)/admin/requests/components/RequestsModal";
+import {Button} from "@/components/ui/button";
+import {useAdminRequestsStore} from "@/store/superadmin/adminRequestsStore";
 
 interface DataTableProps {
     columns: ColumnDef<IRequest, any>[]
@@ -44,7 +46,7 @@ export const DataTable = ({
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
     const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
     const [selectedRow, setSelectedRow] = useState<IRequest | null>(null);
-
+    const {setViewArchived, viewArchived} = useAdminRequestsStore();
     const table = useReactTable({
         data,
         columns,
@@ -61,7 +63,7 @@ export const DataTable = ({
         <div className="mb-[40px]">
             <h1 className="text-3xl font-bold mb-4">Заявки</h1>
             <div>
-                <div className="flex justify-between items-center gap-3 flex-wrap">
+                <div className="flex justify-between items-center gap-5 flex-wrap">
                     <SearchTable/>
                     <StatusFilter/>
                     <div>
@@ -69,12 +71,17 @@ export const DataTable = ({
                     </div>
 
                 </div>
-                <div className="flex justify-between items-center gap-4">
-                    <div className="flex items-center gap-3">
+                <div className="flex flex-wrap justify-between items-center py-4 gap-4">
+                    <div className="flex flex-wrap items-center gap-3">
                         <ColumnVisibility table={table}/>
+                        <Button onClick={() => setViewArchived(!viewArchived)} variant="outline">
+                            {!viewArchived ? "Архив" : "Активные заявки"}
+                        </Button>
                         <CheckboxAction table={table}/>
                     </div>
-                    <TablePagination/>
+                    <div className="ml-auto mb-2 sm:mb-0">
+                        <TablePagination/>
+                    </div>
                 </div>
             </div>
 
@@ -99,7 +106,7 @@ export const DataTable = ({
                     <TableBody>
                         {loading ? (
                             <TableRow>
-                                <TableCell colSpan={columns.length} className="h-24 text-center">
+                                <TableCell colSpan={columns.length} className="h-24 text-center flex items-center justify-center">
                                     <Loading/>
                                 </TableCell>
                             </TableRow>

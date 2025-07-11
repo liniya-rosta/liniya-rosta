@@ -304,6 +304,7 @@ const ProductsTable: React.FC<ProductsTableProps> = ({products, categories, onEd
                 title={confirmDialogTitle}
                 onConfirm={confirmDeletion}
                 loading={actionLoading}
+                text="Это действие невозможно отменить. Элемент будет удален навсегда."
             >
             </ConfirmDialog>
         </div>

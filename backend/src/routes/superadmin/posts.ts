@@ -1,4 +1,4 @@
-import express from 'express';
+import express from "express";
 import Post from "../../models/Post";
 import mongoose from "mongoose";
 import {postImage} from "../../middleware/multer";
