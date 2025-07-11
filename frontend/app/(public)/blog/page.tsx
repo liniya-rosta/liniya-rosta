@@ -1,10 +1,10 @@
 import React from "react";
-import { Post } from "@/lib/types";
+import { PostResponse} from "@/lib/types";
 import BlogClient from "@/app/(public)/blog/BlogClient";
 import { fetchPosts } from "@/actions/posts";
 
 const BlogPage = async () => {
-    let posts: Post[] = [];
+    let posts: PostResponse | null = null;
     let postsError: string | null = null;
 
     try {

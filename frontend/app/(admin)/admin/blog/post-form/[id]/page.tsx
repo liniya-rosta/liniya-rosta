@@ -118,12 +118,11 @@ const Page = () => {
                     setSelectedKeys={setSelectedToDelete}
                     selectionMode={imageEditSelectionMode}
                     setSelectionMode={setImageEditSelectionMode}
-                    onEdit={(key) => {
+                    isOpenModalEdit={(key) => {
                         setIsImageModalEdit(true)
                         setSelectImageEdit(key)
                     }}
-                    onDelete={(keys) => {
-                        setSelectedToDelete(keys);
+                    onRequestDelete={()=> {
                         setShowConfirm(true);
                         setImageDelete(true);
                     }}

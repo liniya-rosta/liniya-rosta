@@ -54,7 +54,7 @@ const ImageEditForm: React.FC<React.PropsWithChildren<Props>> = (
                 imageUrl,
             });
         }
-    }, [found, reset]);
+    }, [found, reset, imageUrl]);
 
     const showImagePreview = (file: File, alt = "") => {
         const localUrl = URL.createObjectURL(file);

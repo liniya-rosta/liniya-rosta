@@ -285,7 +285,7 @@ const EditPostForm: React.FC<Props> = ({openImagesModal, setPreviewImage, setIsP
                 open={showConfirm}
                 onOpenChange={setShowConfirm}
                 title={confirmTitle}
-                description={confirmDescription}
+                text={confirmDescription}
                 onConfirm={() => {
                     confirmActions();
                     setShowConfirm(false);

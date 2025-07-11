@@ -22,7 +22,7 @@ interface Props {
     title?: string;
     onConfirm: () => void;
     loading?: boolean;
-    text: string;
+    text?: string;
 }
 
 const ConfirmDialog: React.FC<PropsWithChildren<Props>> = ({
@@ -32,7 +32,7 @@ const ConfirmDialog: React.FC<PropsWithChildren<Props>> = ({
                                                          onConfirm,
                                                          loading = false,
                                                          children,
-                                                               text
+                                                               text = "Это действие невозможно отменить"
                                                      }) => {
     return (
         <AlertDialog

@@ -210,7 +210,7 @@ const CreatePostForm: React.FC<Props> = ({setIsPreviewOpen, setPreviewImage}) =>
                 open={showConfirm}
                 onOpenChange={setShowConfirm}
                 title={confirmTitle}
-                description={confirmDescription}
+                text={confirmDescription}
                 onConfirm={() => {
                     setShowConfirm(false);
                 }}
