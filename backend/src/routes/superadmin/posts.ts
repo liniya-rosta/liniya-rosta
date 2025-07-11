@@ -146,7 +146,6 @@ postsSuperAdminRouter.patch("/:id/update-image",postImage.single("newImage") ,as
     }
 });
 
-//для изменения порядка изображений
 postsSuperAdminRouter.patch("/:id/reorder-images", async (req, res, next) => {
     const { id } = req.params;
     const { newOrder } = req.body;
@@ -182,7 +181,6 @@ postsSuperAdminRouter.patch("/:id/reorder-images", async (req, res, next) => {
 
 });
 
-//для удаления конкретного изображения
 postsSuperAdminRouter.patch("/:id/remove-images", async (req, res, next) => {
     const {id} = req.params;
     const {image} = req.body;
