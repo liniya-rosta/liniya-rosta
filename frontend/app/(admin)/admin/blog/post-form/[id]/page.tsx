@@ -55,7 +55,7 @@ const Page = () => {
         if (id && typeof id === "string") {
             void fetchOnePost(id)
         }
-    }, [id]);
+    }, [id, fetchOnePost, setFetchLoading]);
 
     if (fetchLoading) return <LoadingFullScreen/>;
     if (fetchError) return <ErrorMsg error={fetchError}/>
