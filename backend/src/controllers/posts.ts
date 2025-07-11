@@ -24,6 +24,7 @@ export const getPosts = async (req: Request, res: Response, next: NextFunction) 
         }
         const aggregationPipeline = [
             Object.keys(matchStage).length > 0 ? { $match: matchStage } : null,
+            { $sort: { _id: -1 } },
             { $skip: skip },
             { $limit: parsedLimit },
             {

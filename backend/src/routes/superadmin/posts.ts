@@ -11,8 +11,13 @@ postsSuperAdminRouter.post("/", postImage.array("images"), async (req, res, next
         const {title, description} = req.body;
         const files = req.files as Express.Multer.File[];
 
-        if (!title || !description || !title.trim() || !description.trim() || !files || files.length === 0) {
-            res.status(400).send({error: "Все поля обязательны для заполнения"});
+        if (!title || !description || !title.trim() || !description.trim()) {
+            res.status(400).send({error: "Поля заголовка и описания обязательны для заполнения"});
+            return;
+        }
+
+        if (!files || files.length === 0) {
+            res.status(400).send({error: "Добавьте хотя бы одно изображение"});
             return;
         }
 
