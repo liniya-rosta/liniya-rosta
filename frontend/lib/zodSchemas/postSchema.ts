@@ -40,11 +40,6 @@ export const updatePostImageSchema = z.object({
     newImage: z.instanceof(File).optional(),
 });
 
-export const removeImageSchema = z.object({
-    image: z.string().min(1, "URL изображения обязателен"),
-});
-
-
 export type CreatePostFormData = z.infer<typeof createPostSchema>;
 export type UpdatePostFormData = z.infer<typeof updatePostSchema>;
 export type UpdatePostImageFormData = z.infer<typeof updatePostImageSchema>;

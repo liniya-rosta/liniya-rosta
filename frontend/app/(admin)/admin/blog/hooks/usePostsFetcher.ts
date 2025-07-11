@@ -4,15 +4,18 @@ import {PaginationState} from "@tanstack/react-table";
 import {fetchPostById, fetchPosts} from "@/actions/posts";
 import {isAxiosError} from "axios";
 import {usePersistedPageSize} from "@/app/hooks/usePersistedPageSize";
+import {toast} from "react-toastify";
+import { ImageObject } from "@/lib/types";
+import {reorderPostImages} from "@/actions/superadmin/posts";
 
 export const usePostsFetcher = () => {
     const {
-        posts,
         setPosts,
         setDetailPost,
         setPaginationPost,
         setFetchLoading,
         setFetchError,
+        setUpdateLoading,
     } = useSuperAdminPostStore();
 
     const [pageSize, setPageSize] = usePersistedPageSize("admin_post_table_size");
@@ -75,8 +78,26 @@ export const usePostsFetcher = () => {
         setPagination((prev) => ({...prev, pageIndex: 0}));
     };
 
+    const handleReorderImages= async (postId: string, newOrder: ImageObject[]) => {
+        try {
+            setUpdateLoading(true);
+            await reorderPostImages(postId, newOrder);
+            toast.success("Порядок изображений изменен");
+            await fetchData();
+        } catch (error) {
+            let errorMessage = "Неизвестная ошибка при получении данных";
+            if (isAxiosError(error) && error.response) {
+                errorMessage = error.response.data.error;
+            } else if (error instanceof Error) {
+                errorMessage = error.message;
+            }
+            toast.error(errorMessage);
+        } finally {
+            setUpdateLoading(false);
+        }
+    }
+
     return {
-        posts,
         pagination,
         filters,
         pageSize,
@@ -85,5 +106,6 @@ export const usePostsFetcher = () => {
         fetchOnePost,
         handleFilterChange,
         setPageSize,
+        handleReorderImages,
     };
 }

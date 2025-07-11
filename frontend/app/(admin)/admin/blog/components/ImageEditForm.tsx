@@ -12,7 +12,7 @@ import {Input} from "@/components/ui/input";
 import {Button} from "@/components/ui/button";
 import {Eye} from "lucide-react";
 import {Tooltip, TooltipContent, TooltipTrigger} from "@/components/ui/tooltip";
-import LoaderIcon from "@/components/ui/LoaderIcon";
+import LoaderIcon from "@/components/ui/Loading/LoaderIcon";
 import Image from "next/image";
 import {API_BASE_URL} from "@/lib/globalConstants";
 import {ImageObject} from "@/lib/types";

@@ -1,7 +1,7 @@
 'use client';
 
 import {Button} from "@/components/ui/button";
-import LoaderIcon from "@/components/ui/LoaderIcon";
+import LoaderIcon from "@/components/ui/Loading/LoaderIcon";
 
 import React, {PropsWithChildren} from "react";
 import {

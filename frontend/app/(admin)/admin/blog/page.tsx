@@ -3,9 +3,9 @@ import AdminBlogClient from "@/app/(admin)/admin/blog/AdminBlogClient";
 
 const AdminBlogPage = () => {
     return (
-        <div>
+        <main>
             <AdminBlogClient/>
-        </div>
+        </main>
     );
 };
 

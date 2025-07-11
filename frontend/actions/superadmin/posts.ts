@@ -1,5 +1,5 @@
 import axiosAPI from "@/lib/axiosAPI";
-import {Post, ReorderImagePost, UpdateImagePost} from "@/lib/types";
+import {ImageObject, Post, UpdateImagePost} from "@/lib/types";
 import {CreatePostFormData, UpdatePostFormData} from "@/lib/zodSchemas/postSchema";
 
 export const createPost = async (postData: CreatePostFormData) => {
@@ -13,7 +13,6 @@ export const createPost = async (postData: CreatePostFormData) => {
     });
 
     await axiosAPI.post<{ message: string; post: Post }>("/superadmin/posts", formData);
-
 };
 
 export const updatePost = async (
@@ -44,14 +43,13 @@ export const updatePostImage = async (postId: string, data: UpdateImagePost) => 
     await axiosAPI.patch(`/superadmin/posts/${postId}/update-image`, formData);
 };
 
-export const reorderPostImages = async (postId: string, newOrder: ReorderImagePost[]) => {
+export const reorderPostImages = async (postId: string, newOrder: ImageObject[]) => {
     await axiosAPI.patch(`/superadmin/posts/${postId}/reorder-images`, {newOrder});
 };
 
 export const deletePostImage = async (postId: string, image: string) => {
     await axiosAPI.patch(`/superadmin/posts/${postId}/remove-images`, {image});
 };
-
 
 export const deletePost = async (postId: string) => {
     await axiosAPI.delete<{ message: string }>(`/superadmin/posts/${postId}`);

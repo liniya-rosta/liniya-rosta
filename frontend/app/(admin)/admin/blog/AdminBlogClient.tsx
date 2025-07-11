@@ -56,6 +56,7 @@ const AdminBlogClient = () => {
         selectedToDelete,
         fetchLoading,
         deleteLoading,
+        updateLoading,
         fetchError,
         setDetailPost,
         setSelectedToDelete,
@@ -69,6 +70,7 @@ const AdminBlogClient = () => {
         setPagination,
         handleFilterChange,
         setPageSize,
+        handleReorderImages,
     } = usePostsFetcher();
 
     const {
@@ -76,7 +78,7 @@ const AdminBlogClient = () => {
         handleDelete,
         handleDeleteSelectedPosts,
         setImageDelete,
-    } = usePostDeletion(fetchData, fetchOnePost, setRowSelection);
+    } = usePostDeletion(fetchOnePost, fetchData, setRowSelection);
 
     useEffect(() => {
         void fetchData();
@@ -192,31 +194,34 @@ const AdminBlogClient = () => {
 
             {detailPost && (
                 <ModalGallery
-                open={isImagesModalOpen}
-             openChange={() => setIsImagesModalOpen(false)}
-             items={detailPost.images}
-             keyBy="image"
-             selectedKeys={selectedToDelete}
-             setSelectedKeys={setSelectedToDelete}
-             selectionMode={imageEditSelectionMode}
-             setSelectionMode={setImageEditSelectionMode}
-             onEdit={(key) => {
-                 setIsImageModalEdit(true)
-                 setSelectImageEdit(key)
-             }}
-             onDelete={(keys) => {
-                 setSelectedToDelete(keys);
-                 setShowConfirm(true);
-                 setImageDelete(true);
-             }}
-             deleteLoading={deleteLoading}
-        />
-    )
-}
+                    open={isImagesModalOpen}
+                    openChange={() => setIsImagesModalOpen(false)}
+                    items={detailPost.images}
+                    keyBy="image"
+                    selectedKeys={selectedToDelete}
+                    setSelectedKeys={setSelectedToDelete}
+                    selectionMode={imageEditSelectionMode}
+                    setSelectionMode={setImageEditSelectionMode}
+                    isOpenModalEdit={(key) => {
+                        setIsImageModalEdit(true);
+                        setSelectImageEdit(key);
+                    }}
+                    onRequestDelete={() => {
+                        setShowConfirm(true);
+                        setImageDelete(true);
+                    }}
+                    canReorder={true}
+                    onSaveOrder={ async (newOrder) => {
+                        await handleReorderImages(detailPost._id, newOrder);
+                    }}
+                    deleteLoading={deleteLoading}
+                    updateLoading={updateLoading}
+                />
+            )
+            }
 
-</div>
-)
-    ;
+        </div>
+    )
 };
 
 

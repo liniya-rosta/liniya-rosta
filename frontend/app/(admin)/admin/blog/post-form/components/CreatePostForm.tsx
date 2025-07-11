@@ -5,7 +5,7 @@ import {createPost} from '@/actions/superadmin/posts';
 import {Input} from '@/components/ui/input';
 import {Button} from '@/components/ui/button';
 import FormErrorMessage from '@/components/ui/FormErrorMessage';
-import LoaderIcon from '@/components/ui/LoaderIcon';
+import LoaderIcon from '@/components/ui/Loading/LoaderIcon';
 import {Plus, Eye} from 'lucide-react';
 import {useRouter} from 'next/navigation';
 import {isAxiosError} from 'axios';

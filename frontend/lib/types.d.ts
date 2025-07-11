@@ -1,6 +1,7 @@
 export interface ImageObject {
     alt?: string;
     image: string;
+    _id?: string;
 }
 
 interface PaginationMeta {
@@ -43,7 +44,7 @@ export interface PortfolioItemDetail extends PortfolioItemPreview {
 type PortfolioEditValues = Partial<PortfolioMutation>;
 type GalleryEditValues = Partial<GalleryForm>;
 
-export interface PortfolioResponse extends PaginationMeta{
+export interface PortfolioResponse extends PaginationMeta {
     items: PortfolioItemPreview[],
 }
 
@@ -139,31 +140,14 @@ export interface Post {
     imageCount: number;
 }
 
-export interface PostResponse extends PaginationMeta{
+export interface PostResponse extends PaginationMeta {
     items: Post[];
 }
 
-export interface CreatePostData {
-    title: string;
-    description: string;
-    images: { file: File; alt?: string }[];
-}
-
-export interface UpdatePostData {
-    title?: string;
-    description?: string;
-    images?: { file: File; alt?: string }[];
-}
-
-export interface UpdateImagePost{
+export interface UpdateImagePost {
     imageUrl: string;
     alt?: string;
     newImage?: File;
-}
-
-export interface ReorderImagePost {
-    image: string;
-    alt: string;
 }
 
 export interface ProductAdmin {
