@@ -17,6 +17,7 @@ interface Props {
     handleBulkDelete: () => void;
     table: TanStackTable<Post>,
     onFilterChange: (column: string, value: string) => void;
+    setPersistedPageSize: (value: number) => void;
 }
 
 const columnLabels: Record<string, string> = {
@@ -31,9 +32,7 @@ const filterOptions = [
     { label: "По описанию", value: "description" },
 ];
 
-const TablePostControls: React.FC<Props> = (
-    { table, onFilterChange, handleBulkDelete}
-) => {
+const TablePostControls: React.FC<Props> = ({ table, onFilterChange, handleBulkDelete, setPersistedPageSize}) => {
     const [filterColumn, setFilterColumn] = useState("title");
     const filterValue = (table.getColumn(filterColumn)?.getFilterValue() as string) ?? "";
 
@@ -91,6 +90,7 @@ const TablePostControls: React.FC<Props> = (
                                     key={pageSize}
                                     onSelect={() => {
                                         table.setPageSize(pageSize);
+                                        setPersistedPageSize(pageSize);
                                     }}
                                 >
                                     {pageSize} элементов

@@ -3,16 +3,16 @@ import {useState} from "react";
 import {PaginationState} from "@tanstack/react-table";
 import {fetchPostById, fetchPosts} from "@/actions/posts";
 import {isAxiosError} from "axios";
-import {toast} from "react-toastify";
 import {usePersistedPageSize} from "@/app/hooks/usePersistedPageSize";
 
-export const PostsFetcher = () => {
+export const usePostsFetcher = () => {
     const {
         posts,
         setPosts,
         setDetailPost,
         setPaginationPost,
         setFetchLoading,
+        setFetchError,
     } = useSuperAdminPostStore();
 
     const [pageSize, setPageSize] = usePersistedPageSize("admin_post_table_size");
@@ -46,7 +46,7 @@ export const PostsFetcher = () => {
                 errorMessage = err.message;
             }
 
-            toast.error(errorMessage);
+            setFetchError(errorMessage);
         } finally {
             setFetchLoading(false)
         }
@@ -63,7 +63,10 @@ export const PostsFetcher = () => {
             } else if (error instanceof Error) {
                 errorMessage = error.message;
             }
-            toast.error(errorMessage);
+
+            setFetchError(errorMessage);
+        } finally {
+            setFetchLoading(false);
         }
     }
 

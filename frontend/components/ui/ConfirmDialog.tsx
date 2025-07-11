@@ -21,27 +21,30 @@ interface Props {
     title?: string;
     onConfirm: () => void;
     loading?: boolean;
+    description?: string;
 }
 
 const ConfirmDialog: React.FC<PropsWithChildren<Props>> = ({
-                                                         open,
-                                                         onOpenChange,
-                                                         title = "Вы уверены?",
-                                                         onConfirm,
-                                                         loading = false,
-                                                         children,
-                                                     }) => {
+                                                               open,
+                                                               onOpenChange,
+                                                               title = "Вы уверены?",
+                                                               onConfirm,
+                                                               loading = false,
+                                                               children,
+                                                               description = "Это действие невозможно отменить"
+                                                           }) => {
     return (
         <AlertDialog
             open={open}
             onOpenChange={onOpenChange}
         >
-            <AlertDialogContent className="!max-w-sm !w-full flex flex-col items-center justify-center text-center gap-4 max-w-lg">
+            <AlertDialogContent
+                className="!max-w-sm !w-full flex flex-col items-center justify-center text-center gap-4 max-w-lg">
                 <AlertDialogHeader className="text-center">
                     <AlertDialogTitle>{title}</AlertDialogTitle>
                 </AlertDialogHeader>
                 <AlertDialogDescription>
-                    Это действие невозможно отменить. Элемент будет удален навсегда.
+                    {description}
                 </AlertDialogDescription>
                 {children}
                 <AlertDialogFooter className="flex justify-center gap-4 mt-4">

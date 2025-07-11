@@ -9,9 +9,6 @@ interface AdminPostState {
     updateLoading: boolean;
     deleteLoading: boolean;
     fetchError: string | null;
-    createError: string | null;
-    updateError: string | null;
-    deleteError: string | null;
     paginationPost: PaginationMeta | null,
     selectedToDelete: string[];
 
@@ -22,9 +19,6 @@ interface AdminPostState {
     setUpdateLoading: (loading: boolean) => void;
     setDeleteLoading: (loading: boolean) => void;
     setFetchError: (error: string | null) => void;
-    setCreateError: (error: string | null) => void;
-    setUpdateError: (error: string | null) => void;
-    setDeleteError: (error: string | null) => void;
     setPaginationPost: (data: PaginationMeta) => void;
     setSelectedToDelete: (selectedToDelete: string[]) => void;
 }
@@ -37,9 +31,6 @@ export const useSuperAdminPostStore = create<AdminPostState>((set) => ({
     updateLoading: false,
     deleteLoading: false,
     fetchError: null,
-    createError: null,
-    updateError: null,
-    deleteError: null,
     paginationPost: null,
     selectedToDelete: [],
 
@@ -50,9 +41,6 @@ export const useSuperAdminPostStore = create<AdminPostState>((set) => ({
     setUpdateLoading: (loading) => set({ updateLoading: loading }),
     setDeleteLoading: (loading) => set({ deleteLoading: loading }),
     setFetchError: (error) => set({ fetchError: error }),
-    setCreateError: (error) => set({ createError: error }),
-    setUpdateError: (error) => set({ updateError: error }),
-    setDeleteError: (error) => set({ deleteError: error }),
     setPaginationPost: (data) => set({ paginationPost: data }),
     setSelectedToDelete: (ids) => set({ selectedToDelete: ids }),
 }));

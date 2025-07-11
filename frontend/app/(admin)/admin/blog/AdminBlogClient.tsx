@@ -2,7 +2,7 @@
 
 import React, {useEffect, useState} from 'react';
 import {Plus} from 'lucide-react';
-import {ImageObject, Post, PostResponse} from "@/lib/types";
+import {ImageObject, Post} from "@/lib/types";
 import {Button} from '@/components/ui/button';
 import {
     ColumnFiltersState,
@@ -25,15 +25,12 @@ import {usePostDeletion} from "@/app/(admin)/admin/blog/hooks/usePostDeletion";
 import ConfirmDialog from '@/components/ui/ConfirmDialog';
 import ModalGallery from "@/components/shared/ModalGallery";
 import ImageEditForm from "@/app/(admin)/admin/blog/components/ImageEditForm";
-import {PostsFetcher} from "@/app/(admin)/admin/blog/hooks/usePostsFetcher";
-import {ImagePreviewModal} from "@/app/(admin)/admin/blog/components/ImagePreviewModal";
+import {usePostsFetcher} from "@/app/(admin)/admin/blog/hooks/usePostsFetcher";
+import Link from 'next/link';
+import {useRouter} from 'next/navigation';
+import ImageViewerModal from "@/components/shared/ImageViewerModal";
 
-interface Props {
-    data: PostResponse | null;
-    error: string | null;
-}
-
-const AdminBlogClient: React.FC<Props> = ({data, error}) => {
+const AdminBlogClient = () => {
     const [sorting, setSorting] = useState<SortingState>([]);
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -42,13 +39,15 @@ const AdminBlogClient: React.FC<Props> = ({data, error}) => {
     const [showConfirm, setShowConfirm] = useState(false);
 
     const [isImagesModalOpen, setIsImagesModalOpen] = useState(false);
-    const [selectionMode, setSelectionMode] = useState(false);
+    const [imageEditSelectionMode, setImageEditSelectionMode] = useState(false);
 
     const [isImageModalEdit, setIsImageModalEdit] = useState(false);
     const [selectImageEdit, setSelectImageEdit] = useState<string>("");
 
     const [previewImage, setPreviewImage] = useState<ImageObject | null>(null);
     const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+
+    const router = useRouter();
 
     const {
         posts,
@@ -57,11 +56,11 @@ const AdminBlogClient: React.FC<Props> = ({data, error}) => {
         selectedToDelete,
         fetchLoading,
         deleteLoading,
+        fetchError,
         setDetailPost,
         setSelectedToDelete,
     } = useSuperAdminPostStore();
 
-    // хук для получения данных
     const {
         pagination,
         filters,
@@ -70,9 +69,8 @@ const AdminBlogClient: React.FC<Props> = ({data, error}) => {
         setPagination,
         handleFilterChange,
         setPageSize,
-    } = PostsFetcher();
+    } = usePostsFetcher();
 
-    //хук для удаления
     const {
         isImageDelete,
         handleDelete,
@@ -97,8 +95,7 @@ const AdminBlogClient: React.FC<Props> = ({data, error}) => {
         data: posts,
         columns: getPostTableColumns(
             (post) =>
-                // router.push(`/admin/blog/edit/${post._id}`)
-                console.log("edit", post),
+                router.push(`/admin/blog/post-form/${post._id}`),
             async ([ids]) => {
                 setSelectedToDelete([ids]);
                 setShowConfirm(true);
@@ -132,8 +129,8 @@ const AdminBlogClient: React.FC<Props> = ({data, error}) => {
         },
     });
 
-    if (fetchLoading) return <DataSkeleton/>
-    if (error) return <ErrorMsg error={error}/>
+    if (fetchLoading && posts.length === 0) return <DataSkeleton/>
+    if (fetchError) return <ErrorMsg error={fetchError}/>
 
     return (
         <div className="space-y-6">
@@ -142,10 +139,12 @@ const AdminBlogClient: React.FC<Props> = ({data, error}) => {
                     <h1 className="text-3xl font-bold text-foreground">Управление постами</h1>
                     <p className="text-muted-foreground mt-1">Создавайте и редактируйте посты</p>
                 </div>
-                <Button size="lg" className="flex items-center gap-2 w-full sm:w-auto">
-                    <Plus className="mr-2 h-5 w-5"/>
-                    Создать пост
-                </Button>
+                <Link href="/admin/blog/post-form">
+                    <Button size="lg" className="flex items-center gap-2 w-full sm:w-auto">
+                        <Plus className="mr-2 h-5 w-5"/>
+                        Создать пост
+                    </Button>
+                </Link>
             </div>
 
             <div>
@@ -158,7 +157,6 @@ const AdminBlogClient: React.FC<Props> = ({data, error}) => {
                 <PostsTable table={table}/>
                 <TablePostPagination table={table}/>
             </div>
-
 
             <ConfirmDialog
                 open={showConfirm}
@@ -183,37 +181,42 @@ const AdminBlogClient: React.FC<Props> = ({data, error}) => {
                 setPreviewImage={setPreviewImage}
             />
 
-            <ImagePreviewModal
-                open={isPreviewOpen}
-                onClose={() => setIsPreviewOpen(false)}
-                image={previewImage}
-            />
-
-            {detailPost && (
-                <ModalGallery
-                    open={isImagesModalOpen}
-                    openChange={() => setIsImagesModalOpen(false)}
-                    items={detailPost.images}
-                    keyBy="image"
-                    selectedKeys={selectedToDelete}
-                    setSelectedKeys={setSelectedToDelete}
-                    selectionMode={selectionMode}
-                    setSelectionMode={setSelectionMode}
-                    onEdit={(key) => {
-                        setIsImageModalEdit(true)
-                        setSelectImageEdit(key)
-                    }}
-                    onDelete={(keys) => {
-                        setSelectedToDelete(keys);
-                        setShowConfirm(true);
-                        setImageDelete(true);
-                    }}
-                    deleteLoading={deleteLoading}
+            {previewImage && (
+                <ImageViewerModal
+                    open={isPreviewOpen}
+                    openChange={() => setIsPreviewOpen(false)}
+                    alt={previewImage.alt}
+                    image={previewImage.image}
                 />
             )}
 
-        </div>
-    );
+            {detailPost && (
+                <ModalGallery
+                open={isImagesModalOpen}
+             openChange={() => setIsImagesModalOpen(false)}
+             items={detailPost.images}
+             keyBy="image"
+             selectedKeys={selectedToDelete}
+             setSelectedKeys={setSelectedToDelete}
+             selectionMode={imageEditSelectionMode}
+             setSelectionMode={setImageEditSelectionMode}
+             onEdit={(key) => {
+                 setIsImageModalEdit(true)
+                 setSelectImageEdit(key)
+             }}
+             onDelete={(keys) => {
+                 setSelectedToDelete(keys);
+                 setShowConfirm(true);
+                 setImageDelete(true);
+             }}
+             deleteLoading={deleteLoading}
+        />
+    )
+}
+
+</div>
+)
+    ;
 };
 
 

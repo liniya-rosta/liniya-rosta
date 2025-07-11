@@ -1,4 +1,4 @@
-import {Dispatch, useState} from "react";
+import React, {Dispatch, useState} from "react";
 import {useSuperAdminPostStore} from "@/store/superadmin/superAdminPostsStore";
 import {isAxiosError} from "axios";
 import {deletePost, deletePostImage} from "@/actions/superadmin/posts";
@@ -6,9 +6,9 @@ import {toast} from "react-toastify";
 import {RowSelectionState} from "@tanstack/react-table";
 
 export const usePostDeletion = (
-    fetchData: () => Promise<void>,
-    fetchOnePost: (id: string) => Promise<void>,
-    setRowSelection: Dispatch<React.SetStateAction<RowSelectionState>>,
+    fetchOnePost?: (id: string) => Promise<void>,
+    fetchData?: () => Promise<void>,
+    setRowSelection?: Dispatch<React.SetStateAction<RowSelectionState>>,
 ) => {
     const {
         posts,
@@ -25,14 +25,13 @@ export const usePostDeletion = (
         try {
             if (isImageDelete && detailPost) {
                 await deletePostImage(detailPost._id, selectedToDelete[0]);
-                await fetchOnePost(detailPost._id);
-                await fetchData();
+                if(fetchOnePost) await fetchOnePost(detailPost._id);
             } else {
                 const postId = selectedToDelete[0];
                 await deletePost(postId);
-                await fetchData();
             }
 
+            if(fetchData) await fetchData();
             toast.success(isImageDelete ? "Вы успешно удалили изображение" : "Вы успешно удалили пост");
         } catch (error) {
             let errorMessage = "Неизвестная ошибка при удалении";
@@ -54,12 +53,12 @@ export const usePostDeletion = (
         try {
             if (detailPost && isImageDelete) {
                 await Promise.all(selectedToDelete.map(async imageUrl => deletePostImage(detailPost._id, imageUrl)));
-                await fetchOnePost(detailPost._id);
-                await fetchData();
+                if (fetchOnePost) await fetchOnePost(detailPost._id);
             } else {
                 await Promise.all(selectedToDelete.map(id => deletePost(id)));
-                await fetchData();
             }
+
+            if(fetchData) await fetchData();
             toast.success(isImageDelete ? "Вы успешно удалили изображения" : "Вы успешно удалили посты");
         } catch (error) {
             let errorMessage = "Неизвестная ошибка при удалении";
@@ -72,7 +71,7 @@ export const usePostDeletion = (
         } finally {
             setDeleteLoading(false);
             setSelectedToDelete([]);
-            setRowSelection({});
+            if(setRowSelection) setRowSelection({});
         }
     };
 

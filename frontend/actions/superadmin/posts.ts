@@ -1,13 +1,14 @@
 import axiosAPI from "@/lib/axiosAPI";
-import {CreatePostData, Post, ReorderImagePost, UpdateImagePost, UpdatePostData} from "@/lib/types";
+import {Post, ReorderImagePost, UpdateImagePost} from "@/lib/types";
+import {CreatePostFormData, UpdatePostFormData} from "@/lib/zodSchemas/postSchema";
 
-export const createPost = async (postData: CreatePostData) => {
+export const createPost = async (postData: CreatePostFormData) => {
     const formData = new FormData();
     formData.append('title', postData.title);
     formData.append('description', postData.description);
 
     postData.images.forEach((img) => {
-        formData.append("images", img.file);
+        if (img.file) formData.append("images", img.file);
         if (img.alt) formData.append("alts", img.alt);
     });
 
@@ -15,19 +16,19 @@ export const createPost = async (postData: CreatePostData) => {
 
 };
 
-export const updatePost = async (postId: string, postData: UpdatePostData) => {
+export const updatePost = async (
+    postId: string,
+    postData: UpdatePostFormData,
+    mode: "replace" | "append" = "replace"
+) => {
     const formData = new FormData();
 
-    if (postData.title) {
-        formData.append('title', postData.title);
-    }
-
-    if (postData.description) {
-        formData.append('description', postData.description);
-    }
+    if (postData.title) formData.append('title', postData.title);
+    if (postData.description) formData.append('description', postData.description);
+    formData.append("mode", mode);
 
     postData.images?.forEach((img) => {
-        formData.append("images", img.file);
+        if (img.file) formData.append("images", img.file);
         if (img.alt) formData.append("alts", img.alt);
     });
 
