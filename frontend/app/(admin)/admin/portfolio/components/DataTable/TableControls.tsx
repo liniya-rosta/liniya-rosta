@@ -18,6 +18,7 @@ interface Props {
     showConfirm: (value: boolean) => void;
     setGalleryDelete: (value: boolean) => void;
     onFilterChange: (column: string, value: string) => void;
+    setPersistedPageSize: (value: number) => void;
 }
 
 const columnLabels: Record<string, string> = {
@@ -34,7 +35,7 @@ const filterOptions = [
     { label: "По описанию", value: "description" },
 ];
 
-const CustomTableHeader: React.FC<Props> = ({table, showConfirm, setGalleryDelete, onFilterChange}) => {
+const TableControls: React.FC<Props> = ({table, showConfirm, setGalleryDelete, onFilterChange, setPersistedPageSize}) => {
     const { selectedToDelete } = useSuperAdminPortfolioStore()
     const [filterColumn, setFilterColumn] = useState("coverAlt");
     const filterValue = (table.getColumn(filterColumn)?.getFilterValue() as string) ?? "";
@@ -83,14 +84,17 @@ const CustomTableHeader: React.FC<Props> = ({table, showConfirm, setGalleryDelet
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="outline">
-                            Показать на странице <ChevronDown />
+                            Показать: {table.getState().pagination.pageSize} <ChevronDown />
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                         {[5, 10, 20, 30, 50].map((pageSize) => (
                             <DropdownMenuItem
                                 key={pageSize}
-                                onSelect={() => table.setPageSize(pageSize)}
+                                onSelect={() =>{
+                                    table.setPageSize(pageSize)
+                                    setPersistedPageSize(pageSize);
+                                }}
                             >
                                 {pageSize} элементов
                             </DropdownMenuItem>
@@ -126,4 +130,4 @@ const CustomTableHeader: React.FC<Props> = ({table, showConfirm, setGalleryDelet
     )
 }
 
-export default CustomTableHeader;
+export default TableControls;

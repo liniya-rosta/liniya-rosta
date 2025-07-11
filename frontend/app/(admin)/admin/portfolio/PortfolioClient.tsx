@@ -17,31 +17,27 @@ import {
     useReactTable,
     VisibilityState,
 } from "@tanstack/react-table"
-import {CustomTable, getColumns, CustomTableHeader, TablePagination} from "@/app/(admin)/admin/portfolio/components/DataTable";
+import {CustomTable, getColumns, TablePagination, TableControls} from "@/app/(admin)/admin/portfolio/components/DataTable";
 import ImageModal from "@/app/(admin)/admin/portfolio/components/ImageModal";
 import {ModalEdit, PortfolioEditForm, GalleryEditForm} from "@/app/(admin)/admin/portfolio/components/ModelEdit";
-import ModalGallery from "@/app/(admin)/admin/portfolio/components/ModalGallery";
 import DataSkeleton from "@/components/ui/Loading/DataSkeleton";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import Link from "next/link";
 import {Button} from "@/components/ui/button";
 import {Plus} from "lucide-react";
 import ErrorMsg from "@/components/ui/ErrorMsg";
+import ModalGallery from "@/components/shared/ModalGallery";
+import {usePersistedPageSize} from "@/app/hooks/usePersistedPageSize";
 
 interface Props {
     error?: string | null;
-    limit?: string;
 }
 
-const AdminPortfolioClient: React.FC<Props> = ({ error, limit = "10"}) => {
+const AdminPortfolioClient: React.FC<Props> = ({ error}) => {
     const [sorting, setSorting] = useState<SortingState>([]);
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
     const [rowSelection, setRowSelection] = useState({});
-    const [pagination, setPagination] = useState({
-        pageIndex: 0,
-        pageSize: Number(limit),
-    });
 
     const [isModalOpenCover, setIsModalOpenCover] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -51,6 +47,13 @@ const AdminPortfolioClient: React.FC<Props> = ({ error, limit = "10"}) => {
     const [selectedCover, setSelectedCover] = useState<{ cover: string; alt?: string } | null>(null);
     const [isGalleryEdit, setIsGalleryEditing] = useState<boolean>(false);
     const [isGalleryDelete, setGalleryDelete] = useState<boolean>(false);
+    const [galleryEditSelectionMode, setGalleryEditSelectionMode] = useState(false);
+
+    const [pageSize, setPageSize] = usePersistedPageSize("admin_portfolio_table_size");
+    const [pagination, setPagination] = useState({
+        pageIndex: 0,
+        pageSize: pageSize,
+    });
 
     const {
         items,
@@ -339,11 +342,12 @@ const AdminPortfolioClient: React.FC<Props> = ({ error, limit = "10"}) => {
                 </Link>
             </div>
 
-           <CustomTableHeader
+           <TableControls
                table={table}
                showConfirm={setShowConfirm}
                setGalleryDelete={setGalleryDelete}
                onFilterChange={handleFilterChange}
+               setPersistedPageSize={setPageSize}
            />
             <div className="rounded-md border">
                 <CustomTable table={table}/>
@@ -371,15 +375,25 @@ const AdminPortfolioClient: React.FC<Props> = ({ error, limit = "10"}) => {
                 }
             </ModalEdit>
 
-            <ModalGallery
-                open={isModalOpenGallery}
-                openChange={() => setIsModalOpenGallery(!isModalOpenGallery)}
-                isOpenModalEdit={openEditModalGalleryItem}
-                onRequestDelete={() => {
-                    setGalleryDelete(true);
-                    setShowConfirm(true);
-                }}
-            />
+            {detailItem &&
+                <ModalGallery
+                    open={isModalOpenGallery}
+                    openChange={() => setIsModalOpenGallery(false)}
+                    items={detailItem.gallery}
+                    keyBy="id"
+                    selectedKeys={selectedToDelete}
+                    setSelectedKeys={setSelectedToDelete}
+                    selectionMode={galleryEditSelectionMode}
+                    setSelectionMode={setGalleryEditSelectionMode}
+                    isOpenModalEdit={(key) => openEditModalGalleryItem(key)}
+                    onRequestDelete={() => {
+                        setGalleryDelete(true);
+                        setShowConfirm(true);
+                    }}
+                    deleteLoading={deleteLoading}
+                />
+            }
+
 
             <ConfirmDialog
                 open={showConfirm}

@@ -8,7 +8,7 @@ import Image from "next/image";
 import {API_BASE_URL} from "@/lib/globalConstants";
 import {Button} from "@/components/ui/button";
 import { editGalleryItem } from "@/actions/superadmin/portfolios";
-import LoaderIcon from "@/components/ui/LoaderIcon";
+import LoaderIcon from "@/components/ui/Loading/LoaderIcon";
 import {isAxiosError} from "axios";
 import {toast} from "react-toastify";
 import {Tooltip, TooltipContent, TooltipTrigger} from "@/components/ui/tooltip";
