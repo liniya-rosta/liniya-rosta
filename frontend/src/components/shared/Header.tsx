@@ -7,8 +7,10 @@ import LanguageSwitcher from "@/src/components/shared/LanguageSwitcher";
 const Header = () => {
     return (
         <header className="py-4 bg-gray-800 shadow mb-8">
-            <LanguageSwitcher />
-            <NavBar/>
+            <div className="container mx-auto px-4 flex items-center justify-between">
+                <NavBar/>
+                <LanguageSwitcher/>
+            </div>
         </header>
     );
 };

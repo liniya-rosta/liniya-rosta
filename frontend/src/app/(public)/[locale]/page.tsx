@@ -71,7 +71,7 @@ const HomePage = async () => {
     const t = await getTranslations('HomePage');
 
     return (
-        <HomePageClient {...initialProps} title={t('title')} />
+        <HomePageClient {...initialProps} title={t('mainText')} />
     );
 };
 
