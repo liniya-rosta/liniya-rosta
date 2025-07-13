@@ -27,7 +27,7 @@ import {Button} from "@/components/ui/button";
 import {Plus} from "lucide-react";
 import ErrorMsg from "@/components/ui/ErrorMsg";
 import ModalGallery from "@/components/shared/ModalGallery";
-import {usePersistedPageSize} from "@/app/hooks/usePersistedPageSize";
+import {usePersistedPageSize} from "@/hooks/usePersistedPageSize";
 
 interface Props {
     error?: string | null;

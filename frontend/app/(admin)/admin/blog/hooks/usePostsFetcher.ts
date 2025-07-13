@@ -3,7 +3,7 @@ import {useState} from "react";
 import {PaginationState} from "@tanstack/react-table";
 import {fetchPostById, fetchPosts} from "@/actions/posts";
 import {isAxiosError} from "axios";
-import {usePersistedPageSize} from "@/app/hooks/usePersistedPageSize";
+import {usePersistedPageSize} from "@/hooks/usePersistedPageSize";
 import {toast} from "react-toastify";
 import { ImageObject } from "@/lib/types";
 import {reorderPostImages} from "@/actions/superadmin/posts";
