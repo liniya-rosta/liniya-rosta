@@ -18,7 +18,15 @@ const BlogPage = async () => {
     }
 
     return (
-        <BlogClient data={posts} error={postsError} />
+        <main className="container mx-auto px-8">
+            <h1 className="text-3xl font-bold text-foreground mb-5">
+                Блог
+                <span className="block font-medium text-muted-foreground text-sm tracking-wider uppercase">
+                    Последние новости и статьи
+                </span>
+            </h1>
+            <BlogClient data={posts} error={postsError} />
+        </main>
     );
 };
 

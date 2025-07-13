@@ -13,6 +13,7 @@ import {isAxiosError} from "axios";
 import {toast} from "react-toastify";
 import {fetchPortfolioPreviews} from "@/actions/portfolios";
 import {getPaginationButtons} from "@/lib/utils";
+import EmptyState from "@/src/components/ui/emptyState";
 import {BtnArrow} from "@/src/components/ui/btn-arrow";
 
 interface Props {
@@ -90,10 +91,11 @@ const PortfolioClient: React.FC<Props> = ({data, error, limit ="8"}) => {
                             </Link>
                         );
                     })
-                ) : <div className="flex justify-center items-center min-h-[200px]">
-                        <p className="text-muted-foreground text-lg">Нет портфолио</p>
+                ) : (
+                    <div className="flex flex-col items-center justify-center col-span-full min-h-[300px]">
+                        <EmptyState message="Нет данных" />
                     </div>
-                }
+                )}
             </div>
 
             {paginationPortfolio && paginationPortfolio.totalPages > 1 && (
