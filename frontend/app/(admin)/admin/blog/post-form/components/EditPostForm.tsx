@@ -194,7 +194,7 @@ const EditPostForm: React.FC<Props> = ({openImagesModal, setPreviewImage, setIsP
                             variant="outline"
                             onClick={() => setExpanded(prev => !prev)}
                             className="text-sm"
-                            disabled={updateLoading || fields.length === 0}
+                            disabled={updateLoading || fields.length < 5}
                         >
                             {expanded ? 'Свернуть' : 'Развернуть все'}
                         </Button>

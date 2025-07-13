@@ -82,7 +82,7 @@ const AdminBlogClient = () => {
 
     useEffect(() => {
         void fetchData();
-    }, [pagination, filters, fetchData]);
+    }, [pagination, filters]);
 
     useEffect(() => {
         const selectedRows = table.getSelectedRowModel().rows;
