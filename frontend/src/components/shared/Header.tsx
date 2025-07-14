@@ -2,7 +2,7 @@
 
 import React from 'react';
 import NavBar from "@/src/components/shared/NavBar";
-import LanguageSwitcher from "@/src/components/shared/LanguageSwitcher";
+import LanguageSwitcher from "@/src/app/(admin)/admin/components/shared/LanguageSwitcher";
 
 const Header = () => {
     return (

@@ -1,3 +1,4 @@
+
 import animatePlugin from "tailwindcss-animate"
 
 const createFluidFontSize = (mobileSize, desktopSize, lineHeight) => {
@@ -26,13 +27,15 @@ const createFluidHeight = (minHeight, maxHeight) => {
 
 export default {
     darkMode: ["class"],
-    content: [
-        './src/**/*.{js,ts,jsx,tsx,mdx}',
-        './app/**/*.{js,ts,jsx,tsx,mdx}',
-        './pages/**/*.{js,ts,jsx,tsx,mdx}',
-        './components/**/*.{js,ts,jsx,tsx,mdx}',
-        './node_modules/flowbite/**/*.js',
-    ],
+    content: {
+        files: [
+            "./app/**/*.{js,ts,jsx,tsx,mdx}",
+            "./components/**/*.{js,ts,jsx,tsx,mdx}",
+            "./pages/**/*.{js,ts,jsx,tsx,mdx}",
+            "./src/**/*.{js,ts,jsx,tsx,mdx}",
+            "./node_modules/flowbite/**/*.js",
+        ],
+    },
     theme: {
         container: {
             center: true,
@@ -70,10 +73,6 @@ export default {
                 small: "1280px",
                 mac: "1440px",
                 fhd: "1920px",
-            },
-            colors: {
-                border: 'var(--border)',
-                ring: 'var(--ring)',
             },
         },
     },

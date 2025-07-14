@@ -23,12 +23,12 @@ export default function LanguageSwitcher() {
 
     return (
         <Select value={locale} onValueChange={handleChange}>
-            <SelectTrigger className="min-w-[140px]  border border-white text-white">
-                <Earth /> <SelectValue />
+            <SelectTrigger className="min-w-[140px] text-white">
+                <Earth color="white" /> <SelectValue />
             </SelectTrigger>
-            <SelectContent className="bg-muted text-white border border-white">
-                <SelectItem value="ru" className="text-white hover:bg-white/10">Русский</SelectItem>
-                <SelectItem value="ky" className="text-white hover:bg-white/10">Кыргызча</SelectItem>
+            <SelectContent>
+                <SelectItem value="ru" className='hover:bg-gray-500'>Русский</SelectItem>
+                <SelectItem value="ky">Кыргызча</SelectItem>
             </SelectContent>
         </Select>
     );
