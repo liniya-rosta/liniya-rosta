@@ -38,24 +38,13 @@ interface PaginationMeta {
     totalPages: number;
 }
 
-export interface PaginatedPortfolioResponse extends PaginationMeta{
+export interface PaginatedPortfolioResponse extends PaginationMeta {
     items: PortfolioItemPreview[],
 }
 
 export interface Category {
     _id: string;
     title: string;
-}
-
-export interface Product {
-    _id: string;
-    title: string;
-    category: {
-        _id: string;
-        title: string;
-    };
-    image: string
-    description: string | null;
 }
 
 export interface ValidationError {
@@ -145,15 +134,69 @@ export interface UpdatePostData {
     image?: File;
 }
 
-export interface ProductAdmin {
-    _id: string;
-    title: string;
-    category: string;
-    image: string
-    description: string | null;
+export interface ProductImagesForm {
+    url: File | null;
+    alt?: string;
 }
 
-export type ProductWithoutId = Omit<ProductAdmin, '_id'>;
+interface ImageItem {
+    _id: string;
+    url: string;
+    alt: string;
+}
+
+export interface Product {
+    _id: string;
+    title: string;
+    category: {
+        _id: string;
+        title: string;
+    };
+    description: string | null;
+    cover: {
+        url: string;
+        alt: string;
+    };
+    images: ImageItem[];
+    characteristics?: {
+        key: string;
+        value: string;
+    }[];
+    sale?: {
+        isOnSale: boolean;
+        label?: string;
+    };
+    icon?: {
+        alt?: string;
+        url: string | null;
+    };
+}
+
+export interface ProductMutation {
+    category: string;
+    title: string;
+    description?: string;
+    coverAlt?: string | null;
+    cover?: File | null;
+    images: ProductImagesForm[];
+    characteristics?: {
+        key: string;
+        value: string;
+    }[];
+    sale?: {
+        isOnSale: boolean;
+        label?: string | null;
+    };
+    icon?: File | null;
+    iconAlt?: string | null;
+}
+
+type ImagesEditValues = Partial<GalleryForm>;
+
+export interface ProductUpdateMutation extends ProductMutation {
+    images?: null;
+    cover?: File | null;
+}
 
 export interface IRequest {
     _id: string;

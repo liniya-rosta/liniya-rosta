@@ -87,61 +87,161 @@ const run = async () => {
             category: lightingTechnology,
             title: 'Светодиодная лента leds power',
             description: 'световой поток: 1000 Лм/м, мощность: 10 Вт/м, длина: 5 м, ширина: 8 мм',
-            image: 'test/lightingTechnology1.jpg',
+            cover: {
+                url: 'test/lightingTechnology1.jpg',
+                alt: null
+            },
+            characteristics: [
+                {key: 'Пример характеристики', value: 'Значение'}
+            ],
+            sale: {
+                isOnSale: false,
+                label: null
+            }
         },
         {
             category: lightingTechnology,
             title: 'Светодиодная лента vacco group',
             description: 'световой поток: 1000 Лм/м, мощность: 10 Вт/м, длина: 5 м, ширина: 8 мм',
-            image: 'test/lightingTechnology1.jpg',
+            cover: {
+                url: 'test/lightingTechnology1.jpg',
+                alt: null
+            },
+            characteristics: [
+                {key: 'Пример характеристики', value: 'Значение'}
+            ],
+            sale: {
+                isOnSale: false,
+                label: null
+            }
         },
         {
             category: film,
             title: 'Пленка ПВХ LEGEND',
             description: 'ЛАК:; толщина - 0,18±0,01 мм; ГР/М; плотность - 210 г/м2; ширина полотна - 320 см',
-            image: 'test/legend-paint.jpg',
+            cover: {
+                url: 'test/legend-paint.jpg',
+                alt: "свет"
+            },
+            characteristics: [
+                {key: 'Пример характеристики', value: 'Значение'}
+            ],
+            sale: {
+                isOnSale: false,
+                label: null
+            }
         },
         {
             category: film,
             title: 'Пленка ПВХ IDEAL',
             description: 'ЛАК:; толщина - 0,18±0,01 мм; ГР/М; плотность - 210 г/м2; ширина полотна - 320 см',
-            image: 'test/plenkaPBX.png',
+            cover: {
+                url: 'test/plenkaPBX.png',
+                alt: null
+            },
+            characteristics: [
+                {key: 'Пример характеристики', value: 'Значение'}
+            ],
+            sale: {
+                isOnSale: false,
+                label: null
+            }
         },
         {
             category: film,
             title: 'Пленка ПВХ as;lkdf;sajf',
             description: 'ЛАК:; толщина - 0,18±0,01 мм; ГР/М; плотность - 210 г/м2; ширина полотна - 320 см',
-            image: 'test/plenkaPBX.png',
+            cover: {
+                url: 'test/plenkaPBX.png',
+                alt: null
+            },
+            characteristics: [
+                {key: 'Пример характеристики', value: 'Значение'}
+            ],
+            sale: {
+                isOnSale: false,
+                label: null
+            }
         },
         {
             category: spc,
             title: 'Тис Альпик',
             description: 'Размер: 180x1220x4,0/0,3+1ммIXPE',
-            image: 'test/laminate1.JPG',
+            cover: {
+                url: 'test/laminate1.JPG',
+                alt: null
+            },
+            characteristics: [
+                {key: 'Пример характеристики', value: 'Значение'}
+            ],
+            sale: {
+                isOnSale: false,
+                label: null
+            }
         },
         {
             category: spc,
             title: 'Тис Латте',
             description: 'Размер: 180x1220x4,0/0,3+1ммIXPE',
-            image: 'test/laminate2.JPG',
+            cover: {
+                url: 'test/laminate2.JPG',
+                alt: null
+            },
+            characteristics: [
+                {key: 'Пример характеристики', value: 'Значение'}
+            ],
+            sale: {
+                isOnSale: false,
+                label: null
+            }
         },
         {
             category: spc,
             title: 'Бук Шале',
             description: 'Размер: 180x1220x4,0/0,3+1ммIXPE',
-            image: 'test/laminate3.JPG',
+            cover: {
+                url: 'test/laminate3.JPG',
+                alt: null
+            },
+            characteristics: [
+                {key: 'Пример характеристики', value: 'Значение'}
+            ],
+            sale: {
+                isOnSale: false,
+                label: null
+            }
         },
         {
             category: spc,
             title: 'Орех Шато',
             description: 'Размер: 180x1220x4,0/0,3+1ммIXPE',
-            image: 'test/laminate4.JPG',
+            cover: {
+                url: 'test/laminate4.JPG',
+                alt: null
+            },
+            characteristics: [
+                {key: 'Пример характеристики', value: 'Значение'}
+            ],
+            sale: {
+                isOnSale: false,
+                label: null
+            }
         },
         {
             category: spc,
             title: 'Дуб Классик',
             description: 'Размер: 180x1220x4,0/0,3+1ммIXPE',
-            image: 'test/laminate5.JPG',
+            cover: {
+                url: 'test/laminate5.JPG',
+                alt: null
+            },
+            characteristics: [
+                {key: 'Пример характеристики', value: 'Значение'}
+            ],
+            sale: {
+                isOnSale: false,
+                label: null
+            }
         },
     );
 
@@ -163,14 +263,14 @@ const run = async () => {
             cover: 'test/IMG_0448.jpg',
             coverAlt: 'Обложка проекта 1',
             gallery: [
-                { image: 'test/IMG_0450.jpg', alt: 'Галерея 1 - 1' },
-                { image: 'test/IMG_0451.jpg', alt: 'Галерея 1 - 2' },
-                { image: 'test/IMG_0449.jpg', alt: 'Галерея 1 - 3' },
-                { image: 'test/IMG_0453.jpg', alt: 'Галерея 1 - 4' },
-                { image: 'test/IMG_0454.jpg', alt: 'Галерея 1 - 5' },
-                { image: 'test/IMG_0455.jpg', alt: 'Галерея 1 - 6' },
-                { image: 'test/IMG_0610.jpg', alt: 'Галерея 1 - 7' },
-                { image: 'test/IMG_0611.jpg', alt: 'Галерея 1 - 8' },
+                {image: 'test/IMG_0450.jpg', alt: 'Галерея 1 - 1'},
+                {image: 'test/IMG_0451.jpg', alt: 'Галерея 1 - 2'},
+                {image: 'test/IMG_0449.jpg', alt: 'Галерея 1 - 3'},
+                {image: 'test/IMG_0453.jpg', alt: 'Галерея 1 - 4'},
+                {image: 'test/IMG_0454.jpg', alt: 'Галерея 1 - 5'},
+                {image: 'test/IMG_0455.jpg', alt: 'Галерея 1 - 6'},
+                {image: 'test/IMG_0610.jpg', alt: 'Галерея 1 - 7'},
+                {image: 'test/IMG_0611.jpg', alt: 'Галерея 1 - 8'},
             ],
             description: 'Современная гостиная с натяжным потолком',
         },
@@ -178,16 +278,16 @@ const run = async () => {
             cover: 'test/IMG_2687.jpg',
             coverAlt: 'Обложка проекта 2',
             gallery: [
-                { image: 'test/IMG_2683.jpg', alt: 'Галерея 2 - 1' },
-                { image: 'test/IMG_2682.jpg', alt: 'Галерея 2 - 2' },
-                { image: 'test/IMG_2688.jpg', alt: 'Галерея 2 - 3' },
-                { image: 'test/IMG_2685.jpg', alt: 'Галерея 2 - 4' },
-                { image: 'test/IMG_2689.jpg', alt: 'Галерея 2 - 5' },
-                { image: 'test/IMG_2690.jpg', alt: 'Галерея 2 - 6' },
-                { image: 'test/IMG_2691.jpg', alt: 'Галерея 2 - 7' },
-                { image: 'test/IMG_2692.jpg', alt: 'Галерея 2 - 8' },
-                { image: 'test/IMG_2683.jpg', alt: 'Галерея 2 - 9' },
-                { image: 'test/IMG_2682.jpg', alt: 'Галерея 2 - 10' },
+                {image: 'test/IMG_2683.jpg', alt: 'Галерея 2 - 1'},
+                {image: 'test/IMG_2682.jpg', alt: 'Галерея 2 - 2'},
+                {image: 'test/IMG_2688.jpg', alt: 'Галерея 2 - 3'},
+                {image: 'test/IMG_2685.jpg', alt: 'Галерея 2 - 4'},
+                {image: 'test/IMG_2689.jpg', alt: 'Галерея 2 - 5'},
+                {image: 'test/IMG_2690.jpg', alt: 'Галерея 2 - 6'},
+                {image: 'test/IMG_2691.jpg', alt: 'Галерея 2 - 7'},
+                {image: 'test/IMG_2692.jpg', alt: 'Галерея 2 - 8'},
+                {image: 'test/IMG_2683.jpg', alt: 'Галерея 2 - 9'},
+                {image: 'test/IMG_2682.jpg', alt: 'Галерея 2 - 10'},
             ],
             description: 'Современная гостиная с натяжным потолком',
         },
@@ -195,14 +295,14 @@ const run = async () => {
             cover: 'test/IMG_0450.jpg',
             coverAlt: 'Обложка проекта 3',
             gallery: [
-                { image: 'test/IMG_0450.jpg', alt: 'Галерея 3 - 1' },
-                { image: 'test/IMG_0451.jpg', alt: 'Галерея 3 - 2' },
-                { image: 'test/IMG_0449.jpg', alt: 'Галерея 3 - 3' },
-                { image: 'test/IMG_0453.jpg', alt: 'Галерея 3 - 4' },
-                { image: 'test/IMG_0454.jpg', alt: 'Галерея 3 - 5' },
-                { image: 'test/IMG_0455.jpg', alt: 'Галерея 3 - 6' },
-                { image: 'test/IMG_0610.jpg', alt: 'Галерея 3 - 7' },
-                { image: 'test/IMG_0611.jpg', alt: 'Галерея 3 - 8' },
+                {image: 'test/IMG_0450.jpg', alt: 'Галерея 3 - 1'},
+                {image: 'test/IMG_0451.jpg', alt: 'Галерея 3 - 2'},
+                {image: 'test/IMG_0449.jpg', alt: 'Галерея 3 - 3'},
+                {image: 'test/IMG_0453.jpg', alt: 'Галерея 3 - 4'},
+                {image: 'test/IMG_0454.jpg', alt: 'Галерея 3 - 5'},
+                {image: 'test/IMG_0455.jpg', alt: 'Галерея 3 - 6'},
+                {image: 'test/IMG_0610.jpg', alt: 'Галерея 3 - 7'},
+                {image: 'test/IMG_0611.jpg', alt: 'Галерея 3 - 8'},
             ],
             description: 'Современная гостиная с натяжным потолком',
         },
@@ -210,16 +310,16 @@ const run = async () => {
             cover: 'test/IMG_2688.jpg',
             coverAlt: 'Обложка проекта 4',
             gallery: [
-                { image: 'test/IMG_2683.jpg', alt: 'Галерея 4 - 1' },
-                { image: 'test/IMG_2682.jpg', alt: 'Галерея 4 - 2' },
-                { image: 'test/IMG_2688.jpg', alt: 'Галерея 4 - 3' },
-                { image: 'test/IMG_2685.jpg', alt: 'Галерея 4 - 4' },
-                { image: 'test/IMG_2689.jpg', alt: 'Галерея 4 - 5' },
-                { image: 'test/IMG_2690.jpg', alt: 'Галерея 4 - 6' },
-                { image: 'test/IMG_2691.jpg', alt: 'Галерея 4 - 7' },
-                { image: 'test/IMG_2692.jpg', alt: 'Галерея 4 - 8' },
-                { image: 'test/IMG_2683.jpg', alt: 'Галерея 4 - 9' },
-                { image: 'test/IMG_2682.jpg', alt: 'Галерея 4 - 10' },
+                {image: 'test/IMG_2683.jpg', alt: 'Галерея 4 - 1'},
+                {image: 'test/IMG_2682.jpg', alt: 'Галерея 4 - 2'},
+                {image: 'test/IMG_2688.jpg', alt: 'Галерея 4 - 3'},
+                {image: 'test/IMG_2685.jpg', alt: 'Галерея 4 - 4'},
+                {image: 'test/IMG_2689.jpg', alt: 'Галерея 4 - 5'},
+                {image: 'test/IMG_2690.jpg', alt: 'Галерея 4 - 6'},
+                {image: 'test/IMG_2691.jpg', alt: 'Галерея 4 - 7'},
+                {image: 'test/IMG_2692.jpg', alt: 'Галерея 4 - 8'},
+                {image: 'test/IMG_2683.jpg', alt: 'Галерея 4 - 9'},
+                {image: 'test/IMG_2682.jpg', alt: 'Галерея 4 - 10'},
             ],
             description: 'Современная гостиная с натяжным потолком',
         },
@@ -227,14 +327,14 @@ const run = async () => {
             cover: 'test/IMG_0454.jpg',
             coverAlt: 'Обложка проекта 5',
             gallery: [
-                { image: 'test/IMG_0450.jpg', alt: 'Галерея 1 - 1' },
-                { image: 'test/IMG_0451.jpg', alt: 'Галерея 1 - 2' },
-                { image: 'test/IMG_0449.jpg', alt: 'Галерея 1 - 3' },
-                { image: 'test/IMG_0453.jpg', alt: 'Галерея 1 - 4' },
-                { image: 'test/IMG_0454.jpg', alt: 'Галерея 1 - 5' },
-                { image: 'test/IMG_0455.jpg', alt: 'Галерея 1 - 6' },
-                { image: 'test/IMG_0610.jpg', alt: 'Галерея 1 - 7' },
-                { image: 'test/IMG_0611.jpg', alt: 'Галерея 1 - 8' },
+                {image: 'test/IMG_0450.jpg', alt: 'Галерея 1 - 1'},
+                {image: 'test/IMG_0451.jpg', alt: 'Галерея 1 - 2'},
+                {image: 'test/IMG_0449.jpg', alt: 'Галерея 1 - 3'},
+                {image: 'test/IMG_0453.jpg', alt: 'Галерея 1 - 4'},
+                {image: 'test/IMG_0454.jpg', alt: 'Галерея 1 - 5'},
+                {image: 'test/IMG_0455.jpg', alt: 'Галерея 1 - 6'},
+                {image: 'test/IMG_0610.jpg', alt: 'Галерея 1 - 7'},
+                {image: 'test/IMG_0611.jpg', alt: 'Галерея 1 - 8'},
             ],
             description: 'Современная гостиная с натяжным потолком',
         },
@@ -242,16 +342,16 @@ const run = async () => {
             cover: 'test/IMG_2682.jpg',
             coverAlt: 'Обложка проекта 6',
             gallery: [
-                { image: 'test/IMG_2683.jpg', alt: 'Галерея 2 - 1' },
-                { image: 'test/IMG_2682.jpg', alt: 'Галерея 2 - 2' },
-                { image: 'test/IMG_2688.jpg', alt: 'Галерея 2 - 3' },
-                { image: 'test/IMG_2685.jpg', alt: 'Галерея 2 - 4' },
-                { image: 'test/IMG_2689.jpg', alt: 'Галерея 2 - 5' },
-                { image: 'test/IMG_2690.jpg', alt: 'Галерея 2 - 6' },
-                { image: 'test/IMG_2691.jpg', alt: 'Галерея 2 - 7' },
-                { image: 'test/IMG_2692.jpg', alt: 'Галерея 2 - 8' },
-                { image: 'test/IMG_2683.jpg', alt: 'Галерея 2 - 9' },
-                { image: 'test/IMG_2682.jpg', alt: 'Галерея 2 - 10' },
+                {image: 'test/IMG_2683.jpg', alt: 'Галерея 2 - 1'},
+                {image: 'test/IMG_2682.jpg', alt: 'Галерея 2 - 2'},
+                {image: 'test/IMG_2688.jpg', alt: 'Галерея 2 - 3'},
+                {image: 'test/IMG_2685.jpg', alt: 'Галерея 2 - 4'},
+                {image: 'test/IMG_2689.jpg', alt: 'Галерея 2 - 5'},
+                {image: 'test/IMG_2690.jpg', alt: 'Галерея 2 - 6'},
+                {image: 'test/IMG_2691.jpg', alt: 'Галерея 2 - 7'},
+                {image: 'test/IMG_2692.jpg', alt: 'Галерея 2 - 8'},
+                {image: 'test/IMG_2683.jpg', alt: 'Галерея 2 - 9'},
+                {image: 'test/IMG_2682.jpg', alt: 'Галерея 2 - 10'},
             ],
             description: 'Современная гостиная с натяжным потолком',
         },
@@ -259,14 +359,14 @@ const run = async () => {
             cover: 'test/IMG_0454.jpg',
             coverAlt: 'Обложка проекта 7',
             gallery: [
-                { image: 'test/IMG_0450.jpg', alt: 'Галерея 1 - 1' },
-                { image: 'test/IMG_0451.jpg', alt: 'Галерея 1 - 2' },
-                { image: 'test/IMG_0449.jpg', alt: 'Галерея 1 - 3' },
-                { image: 'test/IMG_0453.jpg', alt: 'Галерея 1 - 4' },
-                { image: 'test/IMG_0454.jpg', alt: 'Галерея 1 - 5' },
-                { image: 'test/IMG_0455.jpg', alt: 'Галерея 1 - 6' },
-                { image: 'test/IMG_0610.jpg', alt: 'Галерея 1 - 7' },
-                { image: 'test/IMG_0611.jpg', alt: 'Галерея 1 - 8' },
+                {image: 'test/IMG_0450.jpg', alt: 'Галерея 1 - 1'},
+                {image: 'test/IMG_0451.jpg', alt: 'Галерея 1 - 2'},
+                {image: 'test/IMG_0449.jpg', alt: 'Галерея 1 - 3'},
+                {image: 'test/IMG_0453.jpg', alt: 'Галерея 1 - 4'},
+                {image: 'test/IMG_0454.jpg', alt: 'Галерея 1 - 5'},
+                {image: 'test/IMG_0455.jpg', alt: 'Галерея 1 - 6'},
+                {image: 'test/IMG_0610.jpg', alt: 'Галерея 1 - 7'},
+                {image: 'test/IMG_0611.jpg', alt: 'Галерея 1 - 8'},
             ],
             description: 'Современная гостиная с натяжным потолком',
         },
@@ -274,16 +374,16 @@ const run = async () => {
             cover: 'test/IMG_2687.jpg',
             coverAlt: 'Обложка проекта 8',
             gallery: [
-                { image: 'test/IMG_2683.jpg', alt: 'Галерея 2 - 1' },
-                { image: 'test/IMG_2682.jpg', alt: 'Галерея 2 - 2' },
-                { image: 'test/IMG_2688.jpg', alt: 'Галерея 2 - 3' },
-                { image: 'test/IMG_2685.jpg', alt: 'Галерея 2 - 4' },
-                { image: 'test/IMG_2689.jpg', alt: 'Галерея 2 - 5' },
-                { image: 'test/IMG_2690.jpg', alt: 'Галерея 2 - 6' },
-                { image: 'test/IMG_2691.jpg', alt: 'Галерея 2 - 7' },
-                { image: 'test/IMG_2692.jpg', alt: 'Галерея 2 - 8' },
-                { image: 'test/IMG_2683.jpg', alt: 'Галерея 2 - 9' },
-                { image: 'test/IMG_2682.jpg', alt: 'Галерея 2 - 10' },
+                {image: 'test/IMG_2683.jpg', alt: 'Галерея 2 - 1'},
+                {image: 'test/IMG_2682.jpg', alt: 'Галерея 2 - 2'},
+                {image: 'test/IMG_2688.jpg', alt: 'Галерея 2 - 3'},
+                {image: 'test/IMG_2685.jpg', alt: 'Галерея 2 - 4'},
+                {image: 'test/IMG_2689.jpg', alt: 'Галерея 2 - 5'},
+                {image: 'test/IMG_2690.jpg', alt: 'Галерея 2 - 6'},
+                {image: 'test/IMG_2691.jpg', alt: 'Галерея 2 - 7'},
+                {image: 'test/IMG_2692.jpg', alt: 'Галерея 2 - 8'},
+                {image: 'test/IMG_2683.jpg', alt: 'Галерея 2 - 9'},
+                {image: 'test/IMG_2682.jpg', alt: 'Галерея 2 - 10'},
             ],
             description: 'Современная гостиная с натяжным потолком',
         },
@@ -291,14 +391,14 @@ const run = async () => {
             cover: 'test/IMG_0448.jpg',
             coverAlt: 'Обложка проекта 9',
             gallery: [
-                { image: 'test/IMG_0450.jpg', alt: 'Галерея 1 - 1' },
-                { image: 'test/IMG_0451.jpg', alt: 'Галерея 1 - 2' },
-                { image: 'test/IMG_0449.jpg', alt: 'Галерея 1 - 3' },
-                { image: 'test/IMG_0453.jpg', alt: 'Галерея 1 - 4' },
-                { image: 'test/IMG_0454.jpg', alt: 'Галерея 1 - 5' },
-                { image: 'test/IMG_0455.jpg', alt: 'Галерея 1 - 6' },
-                { image: 'test/IMG_0610.jpg', alt: 'Галерея 1 - 7' },
-                { image: 'test/IMG_0611.jpg', alt: 'Галерея 1 - 8' },
+                {image: 'test/IMG_0450.jpg', alt: 'Галерея 1 - 1'},
+                {image: 'test/IMG_0451.jpg', alt: 'Галерея 1 - 2'},
+                {image: 'test/IMG_0449.jpg', alt: 'Галерея 1 - 3'},
+                {image: 'test/IMG_0453.jpg', alt: 'Галерея 1 - 4'},
+                {image: 'test/IMG_0454.jpg', alt: 'Галерея 1 - 5'},
+                {image: 'test/IMG_0455.jpg', alt: 'Галерея 1 - 6'},
+                {image: 'test/IMG_0610.jpg', alt: 'Галерея 1 - 7'},
+                {image: 'test/IMG_0611.jpg', alt: 'Галерея 1 - 8'},
             ],
             description: 'Современная гостиная с натяжным потолком',
         },
@@ -306,16 +406,16 @@ const run = async () => {
             cover: 'test/IMG_2687.jpg',
             coverAlt: 'Обложка проекта 10',
             gallery: [
-                { image: 'test/IMG_2683.jpg', alt: 'Галерея 2 - 1' },
-                { image: 'test/IMG_2682.jpg', alt: 'Галерея 2 - 2' },
-                { image: 'test/IMG_2688.jpg', alt: 'Галерея 2 - 3' },
-                { image: 'test/IMG_2685.jpg', alt: 'Галерея 2 - 4' },
-                { image: 'test/IMG_2689.jpg', alt: 'Галерея 2 - 5' },
-                { image: 'test/IMG_2690.jpg', alt: 'Галерея 2 - 6' },
-                { image: 'test/IMG_2691.jpg', alt: 'Галерея 2 - 7' },
-                { image: 'test/IMG_2692.jpg', alt: 'Галерея 2 - 8' },
-                { image: 'test/IMG_2683.jpg', alt: 'Галерея 2 - 9' },
-                { image: 'test/IMG_2682.jpg', alt: 'Галерея 2 - 10' },
+                {image: 'test/IMG_2683.jpg', alt: 'Галерея 2 - 1'},
+                {image: 'test/IMG_2682.jpg', alt: 'Галерея 2 - 2'},
+                {image: 'test/IMG_2688.jpg', alt: 'Галерея 2 - 3'},
+                {image: 'test/IMG_2685.jpg', alt: 'Галерея 2 - 4'},
+                {image: 'test/IMG_2689.jpg', alt: 'Галерея 2 - 5'},
+                {image: 'test/IMG_2690.jpg', alt: 'Галерея 2 - 6'},
+                {image: 'test/IMG_2691.jpg', alt: 'Галерея 2 - 7'},
+                {image: 'test/IMG_2692.jpg', alt: 'Галерея 2 - 8'},
+                {image: 'test/IMG_2683.jpg', alt: 'Галерея 2 - 9'},
+                {image: 'test/IMG_2682.jpg', alt: 'Галерея 2 - 10'},
             ],
             description: 'Современная гостиная с натяжным потолком',
         }

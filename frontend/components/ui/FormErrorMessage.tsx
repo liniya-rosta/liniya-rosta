@@ -7,7 +7,7 @@ interface Props {
 
 const FormErrorMessage: React.FC<PropsWithChildren<Props>> = ({children, className}) => {
     return (
-        <p className={cn("text-red-500 text-sm mb-4", className)}>{children}</p>
+        <p className={cn("text-red-500 text-sm", className)}>{children}</p>
     )
 };
 export default FormErrorMessage

@@ -6,6 +6,7 @@ import {Button} from '@/components/ui/button';
 import {Badge} from '@/components/ui/badge';
 import {API_BASE_URL} from '@/lib/globalConstants';
 import {Product} from "@/lib/types";
+import Link from "next/link";
 
 interface Props {
     product: Product;
@@ -18,7 +19,7 @@ const ProductCard: React.FC<Props> = ({product}) => {
             <div className="flex-shrink-0">
                 <AspectRatio ratio={4 / 3}>
                     <Image
-                        src={`${API_BASE_URL}/${product.image}`}
+                        src={`${API_BASE_URL}/${product.cover.url}`}
                         alt={product.title}
                         fill
                         className="object-cover"
@@ -42,9 +43,9 @@ const ProductCard: React.FC<Props> = ({product}) => {
             </CardContent>
 
             <CardFooter className="p-4 pt-0">
-                <Button className="w-full">
-                    Подробнее
-                </Button>
+                <Link href={`/products/${product._id}`} className="w-full">
+                    <Button className="w-full">Подробнее</Button>
+                </Link>
             </CardFooter>
         </Card>
     );

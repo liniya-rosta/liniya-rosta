@@ -148,7 +148,7 @@ const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories })
         <Card key={product._id} className="overflow-hidden hover:shadow-lg transition-shadow">
             <div className="relative w-full h-48">
                 <Image
-                    src={`${API_BASE_URL}/${product.image}`}
+                    src={`${API_BASE_URL}/${product.cover.url}`}
                     fill
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     onError={handleImageError}
