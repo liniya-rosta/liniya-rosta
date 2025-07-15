@@ -152,6 +152,7 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
                 title={confirmDialogTitle}
                 onConfirm={confirmDeletion}
                 loading={actionLoading}
+                text="Это действие нельзя отменить. Вы уверены, что хотите удалить?"
             />
             <ImagePreviewModal
                 image={previewImage}
