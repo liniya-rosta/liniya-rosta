@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 import axiosAPI from "@/lib/axiosAPI";
 import {useAdminCategoryStore} from "@/store/superadmin/superadminCategoriesStore";
 import {isAxiosError} from "axios";
-import LoaderIcon from "@/components/ui/LoaderIcon";
+import LoaderIcon from "@/components/ui/Loading/LoaderIcon";
 
 const CreateCategoryForm: React.FC<{ open: boolean; onClose: () => void }> = ({ open, onClose }) => {
     const [title, setTitle] = useState("");
