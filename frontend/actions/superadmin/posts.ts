@@ -28,7 +28,7 @@ export const updatePost = async (
 
     postData.images?.forEach((img) => {
         if (img.file) formData.append("images", img.file);
-        if (img.alt) formData.append("alts", img.alt);
+        formData.append("alts", img.alt ? img.alt : "");
     });
 
     await axiosAPI.patch(`/superadmin/posts/${postId}`, formData);
@@ -37,7 +37,7 @@ export const updatePost = async (
 export const updatePostImage = async (postId: string, data: UpdateImagePost) => {
     const formData = new FormData();
     formData.append("imageUrl", data.imageUrl);
-    if (data.alt) formData.append("alt", data.alt);
+    formData.append("alt", data.alt ? data.alt : "");
     if (data.newImage) formData.append("newImage", data.newImage);
 
     await axiosAPI.patch(`/superadmin/posts/${postId}/update-image`, formData);
