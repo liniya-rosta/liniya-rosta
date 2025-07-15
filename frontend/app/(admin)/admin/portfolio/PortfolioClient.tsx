@@ -6,7 +6,7 @@ import {toast} from "react-toastify";
 import {PortfolioItemPreview} from "@/lib/types";
 import {useSuperAdminPortfolioStore} from "@/store/superadmin/superAdminPortfolio";
 import {fetchGalleryItem, fetchPortfolioItem, fetchPortfolioPreviews} from "@/actions/portfolios";
-import {deleteGalleryItem, deletePortfolio } from "@/actions/superadmin/portfolios";
+import {deleteGalleryItem, deletePortfolio} from "@/actions/superadmin/portfolios";
 import {
     ColumnFiltersState,
     getCoreRowModel,
@@ -17,7 +17,12 @@ import {
     useReactTable,
     VisibilityState,
 } from "@tanstack/react-table"
-import {CustomTable, getColumns, TablePagination, TableControls} from "@/app/(admin)/admin/portfolio/components/DataTable";
+import {
+    CustomTable,
+    getColumns,
+    TableControls,
+    TablePagination
+} from "@/app/(admin)/admin/portfolio/components/DataTable";
 import ImageModal from "@/app/(admin)/admin/portfolio/components/ImageModal";
 import {ModalEdit, PortfolioEditForm, GalleryEditForm} from "@/app/(admin)/admin/portfolio/components/ModelEdit";
 import DataSkeleton from "@/components/ui/Loading/DataSkeleton";

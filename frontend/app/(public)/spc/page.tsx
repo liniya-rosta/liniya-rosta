@@ -17,7 +17,8 @@ const SpcPage = async () => {
         const spcCategory = categories[0];
 
         categoryName = spcCategory.title;
-        laminateData = await fetchProducts(spcCategory._id);
+        const laminateResponse = await fetchProducts(spcCategory._id);
+        laminateData = laminateResponse.items;
     } catch (e) {
         if (e instanceof Error) {
             error = e.message;
