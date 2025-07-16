@@ -5,16 +5,56 @@ import {Types} from "mongoose";
 
 const requestAdminRouter = express.Router();
 
-requestAdminRouter.get('/', async (req, res, next) => {
+requestAdminRouter.get('/', async (req, res) => {
     try {
-        const requests = await RequestFromClient.find();
-        if (requests.length === 0) {
-            res.status(404).send("Заявки не найдены");
-            return;
+        const page = parseInt(req.query.page as string) || 1;
+        const status = req.query.status as string | undefined;
+        const search = req.query.search as string | undefined;
+        const dateFrom = req.query.dateFrom as string | undefined;
+        const dateTo = req.query.dateTo as string | undefined;
+        const limit = 20;
+        const skip = (page - 1) * limit;
+        const archived = req.query.archived as string | undefined;
+
+        type FilterValue =
+            | string
+            | boolean
+            | { $regex: string; $options: string }
+            | { $gte?: Date; $lte?: Date };
+
+        const filter: Record<string, FilterValue> = {};
+
+        if (status) {
+            filter.status = status;
         }
-        res.send(requests);
-    } catch (e) {
-        next(e)
+        if (search) {
+            filter.name = { $regex: search, $options: 'i' };
+        }
+
+        filter.isArchived = archived === 'true';
+
+        if (dateFrom || dateTo) {
+            filter.createdAt = {};
+            if (dateFrom) filter.createdAt.$gte = new Date(dateFrom + "T00:00:00Z");
+            if (dateTo) filter.createdAt.$lte = new Date(dateTo + "T23:59:59Z");
+        }
+
+        const [requests, total] = await Promise.all([
+            RequestFromClient.find(filter)
+                .skip(skip)
+                .limit(limit)
+                .exec(),
+            RequestFromClient.countDocuments(filter),
+        ]);
+
+        res.send({
+            data: requests,
+            currentPage: page,
+            totalPages: Math.ceil(total / limit),
+            totalItems: total,
+        });
+    } catch (error) {
+        res.status(500).json({ error: "Ошибка при получении заявок" });
     }
 });
 
@@ -41,7 +81,7 @@ requestAdminRouter.get('/:id', async (req, res, next) => {
 requestAdminRouter.patch('/:id', async (req, res, next) => {
     try {
         const {id} = req.params;
-        const {name, phone, email, status, commentOfManager} = req.body;
+        const {name, phone, email, status, commentOfManager, isArchived} = req.body;
 
         if (!Types.ObjectId.isValid(id)) {
             res.status(400).send({error: "Неверный формат ID заявки"});
@@ -69,6 +109,7 @@ requestAdminRouter.patch('/:id', async (req, res, next) => {
         if (email !== undefined) updates.email = email.trim();
         if (status !== undefined) updates.status = status;
         if (commentOfManager !== undefined) updates.commentOfManager = commentOfManager;
+        if (isArchived !== undefined) updates.isArchived = isArchived;
 
         const updated = await RequestFromClient.findByIdAndUpdate(
             id,

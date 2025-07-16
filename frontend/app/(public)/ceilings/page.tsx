@@ -11,7 +11,7 @@ const CeilingsPage = async () => {
 
         return (
             <CeilingsClient
-                initialProducts={products}
+                initialProducts={products.items}
                 initialCategories={categories}
             />
         );

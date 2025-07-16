@@ -27,6 +27,7 @@ export interface UpdatesRequest {
     phone?: string;
     status?: 'Новая' | 'В работе' | 'Завершена' | 'Отклонена';
     commentOfManager?: string | null;
+    isArchived?: string;
 }
 
 export interface ContactFields {
@@ -53,4 +54,9 @@ export interface PortfolioUpdate{
     cover?: string;
     description?: string;
     coverAlt?: string;
+}
+
+export interface ServiceUpdate {
+    title?: string;
+    description?: string;
 }

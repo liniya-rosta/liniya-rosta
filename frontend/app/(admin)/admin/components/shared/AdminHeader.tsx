@@ -13,6 +13,7 @@ const AdminHeader = () => {
         {href: "/admin/admins", label: "Админы"},
         {href: "/admin/contacts", label: "Контакты"},
         {href: "/admin/portfolio", label: "Портфолио"},
+        {href: "/admin/services", label: "Услуги"},
     ];
 
     return (

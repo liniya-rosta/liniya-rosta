@@ -8,10 +8,10 @@ import {Alert, AlertDescription} from '@/components/ui/alert';
 import {createPost, deletePost, updatePost} from "@/actions/posts";
 import PostsTable from "@/app/(admin)/admin/blog/components/PostsTable";
 import PostModal from "@/app/(admin)/admin/blog/components/PostModal";
-import Loading from "@/components/ui/Loading/Loading";
 import {toast} from 'react-toastify';
 import {AxiosError} from 'axios';
 import {useAdminPostStore} from "@/store/superadmin/superadminPostsStore";
+import DataSkeleton from "@/components/ui/Loading/DataSkeleton";
 
 interface Props {
     data: Post[];
@@ -126,9 +126,6 @@ const AdminBlogClient: React.FC<Props> = ({data, error, isAdmin = true}) => {
     };
 
     const handleDelete = async (postId: string) => {
-        if (!confirm('Вы уверены, что хотите удалить этот пост?')) {
-            return;
-        }
         resetErrors();
         setDeleteLoading(true);
         try {
@@ -148,8 +145,26 @@ const AdminBlogClient: React.FC<Props> = ({data, error, isAdmin = true}) => {
         }
     };
 
+    const handleDeleteSelectedPosts = async (ids: string[]) => {
+        resetErrors();
+        setDeleteLoading(true);
+        try {
+            for (const id of ids) {
+                await deletePost(id);
+            }
+            setPosts(posts.filter((post) => !ids.includes(post._id)));
+            toast.success("Выбранные посты успешно удалены!");
+        } catch (err) {
+            const errorMessage = err instanceof AxiosError ? err.response?.data?.error : "Неизвестная ошибка при удалении выбранных постов";
+            setDeleteError(errorMessage);
+            toast.error(errorMessage);
+        } finally {
+            setDeleteLoading(false);
+        }
+    };
+
     if (isHydrating || fetchLoading) {
-        return <Loading/>;
+        return <DataSkeleton/>;
     }
 
     if (fetchError) {
@@ -178,7 +193,7 @@ const AdminBlogClient: React.FC<Props> = ({data, error, isAdmin = true}) => {
                 )}
             </div>
 
-            {posts.length === 0 ? (
+            {posts.length === 0 && !fetchLoading ? (
                 <div className="text-center py-8 text-muted-foreground">
                     <p>Посты не найдены</p>
                     <p className="text-sm mt-2">
@@ -190,6 +205,7 @@ const AdminBlogClient: React.FC<Props> = ({data, error, isAdmin = true}) => {
                     posts={posts}
                     onEditPost={openEditModal}
                     onDeletePost={handleDelete}
+                    onDeleteSelectedPosts={handleDeleteSelectedPosts}
                     actionLoading={anyLoading}
                 />
             )}
@@ -207,5 +223,6 @@ const AdminBlogClient: React.FC<Props> = ({data, error, isAdmin = true}) => {
         </div>
     );
 };
+
 
 export default AdminBlogClient;

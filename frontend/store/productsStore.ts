@@ -8,6 +8,8 @@ interface ProductState {
     setProducts: (products: Product[]) => void;
     setFetchProductsLoading: (loading: boolean) => void;
     setFetchProductsError: (error: string | null) => void;
+    product: Product | null;
+    setProduct: (product: Product) => void;
 }
 
 export const useProductStore = create<ProductState>((set) => ({
@@ -16,5 +18,7 @@ export const useProductStore = create<ProductState>((set) => ({
     fetchProductsError: null,
     setProducts: (products) => set({products}),
     setFetchProductsLoading: (loading) => set({fetchProductsLoading: loading}),
-    setFetchProductsError: (error) => set({fetchProductsError: error})
+    setFetchProductsError: (error) => set({fetchProductsError: error}),
+    product: null,
+    setProduct: (product) => set({product}),
 }));

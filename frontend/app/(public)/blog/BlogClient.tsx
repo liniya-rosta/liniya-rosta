@@ -8,11 +8,12 @@ import { Post } from "@/lib/types";
 import { API_BASE_URL } from "@/lib/globalConstants";
 import Image from "next/image";
 
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Terminal } from 'lucide-react';
+import EmptyState from "@/components/ui/emptyState";
 
 interface Props {
     data: Post[];
@@ -78,22 +79,14 @@ const BlogClient: React.FC<Props> = ({ data, error }) => {
 
     if (posts.length === 0) {
         return (
-            <div className="container mx-auto px-4 py-8 text-center">
-                <h1 className="text-4xl font-bold text-foreground mb-8">Блог</h1>
-                <Card className="max-w-md mx-auto">
-                    <CardContent className="pt-6">
-                        <p className="text-muted-foreground">Пока нет опубликованных постов.</p>
-                        <p className="text-sm text-muted-foreground mt-2">Возможно, их скоро добавят!</p>
-                    </CardContent>
-                </Card>
+            <div className="flex flex-col items-start px-4 py-8">
+                <EmptyState message="Пока нет опубликованных постов." />
             </div>
         );
     }
 
     return (
         <div className="container mx-auto px-4 py-8">
-            <h1 className="text-4xl font-bold text-center mb-12 text-foreground">Блог</h1>
-
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {posts.map((post) => (
                     <Card

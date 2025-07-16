@@ -17,7 +17,7 @@ import {Checkbox} from "@/components/ui/checkbox";
 
 export const getColumns = (
     onImageClick: (image: { cover: string; alt: string }) => void,
-    onRequestDelete: (id: string, cover: string) => void,
+    onRequestDelete: (id: string) => void,
     onEditCover: (id: string) => void,
     onGallery: (id: string) => void,
 ): ColumnDef<PortfolioItemPreview>[] => [
@@ -43,8 +43,10 @@ export const getColumns = (
     {
         id: "index",
         header: "№",
-        cell: ({row}) => {
-            return <div>{row.index + 1}</div>;
+        cell: ({ row, table }) => {
+            const flatRows = table.getRowModel().flatRows;
+            const originalIndex = flatRows.findIndex(r => r.id === row.id);
+            return <div>{originalIndex + 1}</div>;
         },
         enableSorting: false,
         enableHiding: false,
@@ -144,7 +146,7 @@ export const getColumns = (
                         <DropdownMenuItem onClick={() => onEditCover(payment._id)}>
                             Редактировать
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => onRequestDelete(payment._id, payment.cover)}>
+                        <DropdownMenuItem onClick={() => onRequestDelete(payment._id)}>
                             Удалить
                         </DropdownMenuItem>
                     </DropdownMenuContent>

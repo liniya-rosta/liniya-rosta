@@ -8,6 +8,7 @@ import postsAdminRouter from "./posts";
 import requestAdminRouter from "./requests";
 import portfolioSuperAdminRouter from "./portfolioItems";
 import contactsAdminRouter from "./contacts";
+import servicesSuperAdminRouter from "./services";
 
 const superAdminRouter = express.Router();
 
@@ -23,5 +24,6 @@ superAdminRouter.use("/posts", postsAdminRouter);
 superAdminRouter.use("/admins", superAdminPrivateRouter);
 superAdminRouter.use("/portfolio", portfolioSuperAdminRouter);
 superAdminRouter.use("/contacts", contactsAdminRouter);
+superAdminRouter.use("/services", servicesSuperAdminRouter);
 
 export default superAdminRouter;

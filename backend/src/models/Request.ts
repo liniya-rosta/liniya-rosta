@@ -38,7 +38,11 @@ const RequestSchema = new Schema({
             message: 'Недопустимый статус заявки',
         },
         default: 'Новая',
-    }
+    },
+    isArchived: {
+        type: Boolean,
+        default: false,
+    },
 }, { timestamps: true });
 
 const RequestFromClient = model("Request", RequestSchema);

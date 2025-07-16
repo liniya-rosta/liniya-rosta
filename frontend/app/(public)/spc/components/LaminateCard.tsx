@@ -12,7 +12,7 @@ interface Props {
 const LaminateCard: React.FC<Props> = ({title, description, image}) => {
     return (
         <Card>
-            <div className="w-full h-[500px] aspect-[3/2] relative">
+            <div className="w-full aspect-[3/2] relative">
                 <Image
                     src={API_BASE_URL + "/" + image}
                     alt={title}

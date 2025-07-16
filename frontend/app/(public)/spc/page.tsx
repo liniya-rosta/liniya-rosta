@@ -17,7 +17,8 @@ const SpcPage = async () => {
         const spcCategory = categories[0];
 
         categoryName = spcCategory.title;
-        laminateData = await fetchProducts(spcCategory._id);
+        const laminateResponse = await fetchProducts(spcCategory._id);
+        laminateData = laminateResponse.items;
     } catch (e) {
         if (e instanceof Error) {
             error = e.message;
@@ -27,13 +28,14 @@ const SpcPage = async () => {
     }
 
     return (
-        <div className="container mx-auto px-4">
+        <>
             <InfoAboutSpcLaminate/>
+            <div className="container mx-auto px-4">
+                <AdvantagesLaminate/>
+                <SpcLaminatePage initialData={laminateData} error={error} categoryName={categoryName}/>
+            </div>
+        </>
 
-            <AdvantagesLaminate/>
-
-            <SpcLaminatePage initialData={laminateData} error={error} categoryName={categoryName}/>
-        </div>
     );
 };
 

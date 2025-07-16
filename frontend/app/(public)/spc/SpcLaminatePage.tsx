@@ -32,7 +32,7 @@ const SpcLaminatePage: React.FC<Props> = ({initialData, error, categoryName}) =>
 
     return (
         <div className="mb-[55px]">
-            <h3 className="text-[28px] mb-10 text-center">Каталог {categoryName ? `${categoryName}` : ''}</h3>
+            <h3 className="sm:text-2xl text-xl mb-8 text-center">Каталог {categoryName ? `${categoryName}` : ''}</h3>
             <Swiper
                 slidesPerView={1}
                 navigation
@@ -51,7 +51,7 @@ const SpcLaminatePage: React.FC<Props> = ({initialData, error, categoryName}) =>
                 ) : (
                     products.map(item => (
                         <SwiperSlide key={item._id}>
-                            <LaminateCard title={item.title} image={item.image} description={item.description}/>
+                            <LaminateCard title={item.title} image={item.cover.url} description={item.description}/>
                         </SwiperSlide>
                     ))
                 )}
