@@ -81,6 +81,23 @@ const PortfolioClient: React.FC<Props> = ({data, error, limit = "8"}) => {
         }
     };
 
+    useEffect(() => {
+
+        void fetchFilteredItems()
+
+        const hasFilter = (selectedValue === "coverAlt" && coverAlt.trim()) || (selectedValue === "description" && description.trim());
+
+        if (selectedValue && hasFilter) {
+            void fetchFilteredItems();
+        } else if (selectedValue && !hasFilter) {
+            void handlePageChange(1);
+        }
+
+    }, [coverAlt, description, selectedValue]);
+
+    if (paginationPortfolio)
+        paginationButtons = getPaginationButtons(page, paginationPortfolio.totalPages);
+
     const handlePageChange = async (newPage: number) => {
         try {
             setPortfolioLoading(true);
@@ -99,24 +116,6 @@ const PortfolioClient: React.FC<Props> = ({data, error, limit = "8"}) => {
             setPortfolioLoading(false);
         }
     };
-
-    useEffect(() => {
-
-        void fetchFilteredItems()
-
-        const hasFilter = (selectedValue === "coverAlt" && coverAlt.trim()) || (selectedValue === "description" && description.trim());
-
-        if (selectedValue && hasFilter) {
-            void fetchFilteredItems();
-        } else if (selectedValue && !hasFilter) {
-            void handlePageChange(1);
-        }
-
-    }, [coverAlt, description, selectedValue, fetchFilteredItems, handlePageChange]);
-
-    if (paginationPortfolio)
-        paginationButtons = getPaginationButtons(page, paginationPortfolio.totalPages);
-
 
     const handleFilterChange = (value: string) => {
         setSelectedValue(value);
