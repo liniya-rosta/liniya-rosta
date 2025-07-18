@@ -9,7 +9,7 @@ import {Label} from "@/components/ui/label";
 import Image from "next/image";
 import {toast} from "react-toastify";
 import {isAxiosError} from "axios";
-import LoaderIcon from "@/components/ui/LoaderIcon";
+import LoaderIcon from "@/components/ui/Loading/LoaderIcon";
 import {Tooltip, TooltipContent, TooltipTrigger} from "@/components/ui/tooltip";
 import {API_BASE_URL} from "@/lib/globalConstants";
 import {useAdminProductStore} from "@/store/superadmin/superadminProductsStore";

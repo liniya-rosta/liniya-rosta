@@ -3,6 +3,7 @@ import {CartPortfolio} from "@/app/(public)/portfolio/components/CartPortfolio";
 import {API_BASE_URL} from "@/lib/globalConstants";
 import React from "react";
 import {usePortfolioStore} from "@/store/portfolioItemStore";
+import {BtnArrow} from "@/components/ui/btn-arrow";
 
 const PortfolioSection = () => {
     const {
@@ -10,14 +11,21 @@ const PortfolioSection = () => {
     } = usePortfolioStore();
 
     return (
-
         <section className="space-y-6" aria-labelledby="portfolio-heading">
-            <div role="presentation" className="flex justify-between items-center mx-auto">
-                <h2 id="portfolio-heading" className="text-3xl font-bold">Наши работы</h2>
-                <Link href="/portfolio" className="text-primary text-sm font-medium hover:underline">
-                    Все работы →
-                </Link>
+            <div role="presentation" className="relative flex justify-end items-center mx-auto">
+                <h2
+                    id="portfolio-heading"
+                    className="main-section-title text-20-30-1_2 absolute left-1/2 -translate-x-1/2"
+                >
+                    Наши работы
+                </h2>
+                <BtnArrow variant="link" className="hidden md:inline-flex">
+                    <Link href="/portfolio" className="text-primary text-sm font-medium hover:underline">
+                        Все работы
+                    </Link>
+                </BtnArrow>
             </div>
+
             {storedPortfolioItems && storedPortfolioItems.length > 0 ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                     {storedPortfolioItems.map((item) => (
@@ -32,8 +40,15 @@ const PortfolioSection = () => {
             ) : (
                 <p className="text-center">Нет портфолио</p>
             )}
-        </section>
 
+            <div className="flex justify-center md:hidden">
+                <BtnArrow variant="link">
+                    <Link href="/portfolio" className="text-primary text-sm font-medium hover:underline">
+                        Все работы
+                    </Link>
+                </BtnArrow>
+            </div>
+        </section>
     );
 };
 

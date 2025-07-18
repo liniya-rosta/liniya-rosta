@@ -10,22 +10,23 @@ const CategoriesSection = () => {
 
     return (
         <section className="space-y-6" aria-labelledby="categories-heading">
-            <h2 id="categories-heading" className="text-3xl font-bold text-center">Категории продукции</h2>
+            <h2 id="categories-heading" className="main-section-title text-20-30-1_2">Категории продукции</h2>
             {fetchCategoriesError && (
                 <ErrorMsg error={fetchCategoriesError} label='категорий'/>
             )}
             {categories.length > 0 ? (
                 <Swiper
-                    slidesPerView={4}
-                    spaceBetween={10}
+                    slidesPerView={1}
+                    spaceBetween={5}
                     breakpoints={{
+                        500: {slidesPerView: 2, spaceBetween: 10},
                         640: {slidesPerView: 3, spaceBetween: 15},
                         1024: {slidesPerView: 4, spaceBetween: 20},
                     }}
                     navigation
                     pagination={{clickable: true}}
                     modules={[Navigation, Pagination]}
-                    className="mySwiper py-4"
+                    className="mySwiper py-4 w-full"
                 >
                     {categories.map((cat) => (
                         <SwiperSlide key={cat._id}>

@@ -80,7 +80,7 @@ const RequestForm: React.FC<Props> = ({closeModal}) => {
                         <Input
                             id="name"
                             {...register("name")}
-                            placeholder="Вася Пупкин"
+                            placeholder="Введите ваше имя"
                             disabled={createLoading}
                         />
                         {errors.name && (

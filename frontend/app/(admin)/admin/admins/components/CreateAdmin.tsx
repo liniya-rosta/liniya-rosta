@@ -153,11 +153,11 @@ const CreateAdmin: React.FC<Props> = ({closeModal}) => {
 
                 <DialogFooter className="mt-4">
                     <DialogClose asChild>
-                        <Button type="button" variant="outline" disabled={isSubmitting} className='cursor-pointer'>
+                        <Button type="button" variant="outline" disabled={isSubmitting}>
                             Отмена
                         </Button>
                     </DialogClose>
-                    <Button type="submit" disabled={isSubmitting} className='cursor-pointer bg-gray-800'>
+                    <Button type="submit" disabled={isSubmitting}>
                         {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin"/>}
                         Сохранить
                     </Button>

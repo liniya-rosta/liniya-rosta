@@ -1,10 +1,13 @@
 import React from 'react';
 import NavBar from "@/components/shared/NavBar";
+import {Container} from "@/components/shared/Container";
 
 const Header = () => {
     return (
-        <header className="py-4 bg-gray-800 shadow mb-8">
-            <NavBar/>
+        <header className="py-4 shadow mb-8">
+            <Container>
+                <NavBar/>
+            </Container>
         </header>
     );
 };

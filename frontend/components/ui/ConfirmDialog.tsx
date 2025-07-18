@@ -1,7 +1,7 @@
 'use client';
 
 import {Button} from "@/components/ui/button";
-import LoaderIcon from "@/components/ui/LoaderIcon";
+import LoaderIcon from "@/components/ui/Loading/LoaderIcon";
 
 import React, {PropsWithChildren} from "react";
 import {
@@ -21,7 +21,7 @@ interface Props {
     title?: string;
     onConfirm: () => void;
     loading?: boolean;
-    text: string;
+    text?: string;
 }
 
 const ConfirmDialog: React.FC<PropsWithChildren<Props>> = ({

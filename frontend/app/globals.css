@@ -48,30 +48,48 @@
 }
 
 :root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
+  --header-footer-background: #C2CEDA;  /*общий фон для шапки и футера*/
+  --header-footer-foreground: #385157;  /*цвет текста для шапки и футера*/
+  --radius: 0.625rem; /* */
+  --background: #ffffff;
+  --foreground: #000000;
+  --gradient-main: linear-gradient(to right, #47686F, #A7B7C6, #DC7700); /*Градиент для главного заголовка и фон */
+
+  --card: #FFFFFF;
+  --card-foreground: #47686F;
+
+  --popover: #FFFFFF;
+  --popover-foreground: #47686F;
+
+  --primary: #47686F;
+  --primary-foreground: #FFFFFF;
+
+  --secondary: #A7B7C6;
+  --secondary-foreground: #000000;
+
+  --color-orange-light: #ffbe71;
+
   --muted: oklch(0.97 0 0);
   --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
+
+  --accent: #A7B7C6;
+  --accent-foreground: #000000;
+
+  --destructive: #DC7700;
+  --destructive-foreground: #FFFFFF;
+
   --border: oklch(0.922 0 0);
+
   --input: oklch(0.922 0 0);
+
   --ring: oklch(0.708 0 0);
+
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
+
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
   --sidebar-primary: oklch(0.205 0 0);
@@ -123,13 +141,44 @@
   body {
     @apply bg-background text-foreground;
   }
+  header {
+    @apply text-[color:var(--header-footer-foreground)] bg-[color:var(--header-footer-background)];
+  }
+  footer {
+    @apply text-[color:var(--header-footer-foreground)] bg-[color:var(--header-footer-background)];
+  }
 }
 
-/*.container {*/
-/*    max-width: 1200px;*/
-/*    margin: 0 auto;*/
-/*    padding: 0 25px*/
-/*}*/
+@layer utilities {
+  .text-30-48-1_2 {
+    font-size: clamp(30px, calc(25px + (48 - 30) * ((100vw - 320px) / (1920 - 320))), 48px);
+    line-height: 1.2;
+  }
+
+  .text-20-30-1_2 {
+    font-size: clamp(20px, calc(20px + (30 - 20) * ((100vw - 320px) / (1920 - 320))), 30px);
+    line-height: 1.2;
+  }
+
+  .main-section-title {
+    @apply font-bold mb-6 text-center;
+  }
+
+  .btn-hover-scale {
+    @apply transition duration-500 hover:scale-105;
+  }
+
+  .light-shadow-card {
+    @apply transition-shadow duration-300 rounded-lg;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  }
+
+  .light-shadow-card:hover {
+    box-shadow: 0 10px 15px -3px var(--color-orange-light),
+    0 4px 6px -4px var(--color-orange-light);
+  }
+}
 
 .swiper-pagination-bullets {
   display: flex;
@@ -156,4 +205,8 @@
 .swiper-pagination-bullet-active {
   background-color: #000000 !important; /* Черный для активной точки */
   opacity: 1 !important;
+}
+
+.bg-gradient-main {
+  background: var(--gradient-main);
 }

@@ -17,12 +17,12 @@ const ServiceContentCard: React.FC<Props> = ({title, description}) => {
         <Dialog key={title} open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 <div
-                    className="bg-white rounded-lg shadow-lg p-6 flex flex-col items-center text-center hover:shadow-yellow-400/50 transition-shadow duration-300 cursor-pointer w-full h-full"
+                    className="bg-white rounded-lg p-6 flex flex-col items-center text-center cursor-pointer w-full h-full light-shadow-card"
                     onClick={() => setOpen(true)}
                 >
-                    <h3 className="text-xl font-semibold mb-2">{title}</h3>
+                <h3 className="text-xl font-semibold mb-2">{title}</h3>
                     <p className="text-gray-700">{description}</p>
-                    <CheckCircle className="w-6 h-6 text-yellow-400 mt-4"/>
+                    <CheckCircle className="w-6 h-6 mt-4 text-[var(--color-orange-light)]"/>
                 </div>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">

@@ -14,7 +14,7 @@ import {useSuperAdminPortfolioStore} from "@/store/superadmin/superAdminPortfoli
 import {isAxiosError} from "axios";
 import {toast} from "react-toastify";
 import FormErrorMessage from "@/components/ui/FormErrorMessage";
-import LoaderIcon from "@/components/ui/LoaderIcon";
+import LoaderIcon from "@/components/ui/Loading/LoaderIcon";
 import ImageModal from "@/app/(admin)/admin/portfolio/components/ImageModal";
 
 const PortfolioForm= () => {

@@ -7,14 +7,14 @@ interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement>{
     className?: string;
     isLeft?: boolean;
     classNameIcon?: string;
+    variant?: "link" | "default" | "destructive" | "outline" | "secondary" | "ghost" | null | undefined;
 }
 
 export const BtnArrow:  React.FC<React.PropsWithChildren<Props>> = (
-    {className, isLeft=false, classNameIcon, children, ...props}) => {
+    {className, isLeft=false, classNameIcon, children, variant="default", ...props}) => {
     return (
-        <Button className={cn("text-lg font-medium", className)} {...props}>
-            {
-                isLeft ?
+        <Button variant={variant} className={cn("text-lg font-medium", className)} {...props}>
+            {isLeft ?
                     <>
                         <ChevronLeftIcon className={cn(classNameIcon)}/>{children}
                     </>

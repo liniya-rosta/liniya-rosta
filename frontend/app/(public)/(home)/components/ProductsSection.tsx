@@ -5,17 +5,26 @@ import {Swiper, SwiperSlide} from "swiper/react";
 import {Navigation, Pagination} from "swiper/modules";
 import ProductCard from "@/app/(public)/(home)/components/ProductCard";
 import {useProductStore} from "@/store/productsStore";
+import {BtnArrow} from "@/components/ui/btn-arrow";
 
 const ProductsSection = () => {
     const {products, fetchProductsError} = useProductStore();
 
     return (
         <section className="space-y-6" aria-labelledby="products-heading">
-            <div role="presentation" className="flex justify-between items-center">
-                <h2 id="products-heading" className="text-3xl font-bold">Наши товары</h2>
-                <Link href="/products" className="text-primary text-sm font-medium hover:underline">
-                    Все товары →
-                </Link>
+            <div role="presentation" className="frelative flex justify-end items-center mx-auto">
+                <h2
+                    id="products-heading"
+                    className="main-section-title text-20-30-1_2 absolute left-1/2 -translate-x-1/2"
+                >
+                    Наши товары
+                </h2>
+
+                <BtnArrow variant="link" className="hidden md:inline-flex">
+                    <Link href="/products" className="text-primary text-sm font-medium hover:underline">
+                        Все товары
+                    </Link>
+                </BtnArrow>
             </div>
             {fetchProductsError && (
                 <ErrorMsg error={fetchProductsError} label='продуктов'/>
@@ -49,6 +58,13 @@ const ProductsSection = () => {
             ) : (
                 !fetchProductsError && <p className="text-center">Нет продуктов</p>
             )}
+            <div className="flex justify-center md:hidden">
+                <BtnArrow variant="link">
+                    <Link href="/portfolio" className="text-primary text-sm font-medium hover:underline">
+                        Все работы
+                    </Link>
+                </BtnArrow>
+            </div>
         </section>
     );
 };

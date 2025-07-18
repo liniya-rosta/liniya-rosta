@@ -6,6 +6,7 @@ import {DialogTitle} from "@radix-ui/react-dialog";
 import {VisuallyHidden} from "@radix-ui/react-visually-hidden";
 import Link from "next/link";
 import {usePathname} from "next/navigation";
+import {cn} from "@/lib/utils";
 
 interface NavItem {
     href: string;
@@ -25,7 +26,8 @@ const Burger: React.FC<BurgerProps> = ({navItems, isAdmin}) => {
             <Sheet>
                 <SheetTrigger asChild>
                     <Button
-                        className="text-white p-3 rounded-md bg-white/10 hover:bg-white/20 transition cursor-pointer"
+                        variant="outline"
+                        className="p-3 rounded-md bg-transpatent border border-primary"
                     >
                         <Menu className="w-7 h-7"/>
                     </Button>
@@ -33,7 +35,7 @@ const Burger: React.FC<BurgerProps> = ({navItems, isAdmin}) => {
 
                 <SheetContent
                     side="left"
-                    className="bg-gray-800 text-white px-6 py-8 w-full flex flex-col justify-between"
+                    className="px-6 py-8 w-full flex flex-col justify-between bg-[var(--header-footer-background)]"
                     aria-describedby="menu-description"
                 >
                     <DialogTitle asChild>
@@ -52,11 +54,12 @@ const Burger: React.FC<BurgerProps> = ({navItems, isAdmin}) => {
                                     <SheetTrigger asChild>
                                         <Link
                                             href={href}
-                                            className={`block text-base px-3 py-2 rounded-md border transition-all duration-200 ${
+                                            className={cn(
+                                                "block text-base px-4 py-2 rounded-lg border transition-all duration-200",
                                                 isActive
-                                                    ? "bg-white text-black font-semibold border-white shadow"
-                                                    : "border-white/20 text-white hover:bg-white/10 hover:border-white"
-                                            }`}
+                                                    ? "bg-primary text-primary-foreground border-primary shadow-md"
+                                                    : "text-foreground hover:bg-secondary hover:text-secondary-foreground border-transparent"
+                                            )}
                                         >
                                             {label}
                                         </Link>

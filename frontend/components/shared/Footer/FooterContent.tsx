@@ -7,6 +7,7 @@ import {useContactStore} from "@/store/contactsStore";
 import {Contact} from "@/lib/types";
 import Loading from "@/components/ui/Loading/Loading";
 import ErrorMsg from "@/components/ui/ErrorMsg";
+import {Button} from "@/components/ui/button";
 
 interface ContactProps {
     contactData: Contact | null;
@@ -29,6 +30,21 @@ const FooterContent: React.FC<ContactProps> = ({contactData, contactError}) => {
         setFetchContactLoading(false);
     }, [contactData, contactError, setContact, setFetchContactError, setFetchContactLoading]);
 
+    const socialLinks = contact
+        ? [
+            {
+                icon: faInstagram,
+                href: contact.instagram,
+                label: "Instagram",
+            },
+            {
+                icon: faWhatsapp,
+                href: `https://wa.me/${contact.whatsapp.replace('+', '')}`,
+                label: "WhatsApp",
+            },
+        ]
+        : [];
+
     if (fetchContactLoading) return <Loading/>;
     if (fetchContactError) return <ErrorMsg error={fetchContactError} label='контактов'/>
 
@@ -40,14 +56,25 @@ const FooterContent: React.FC<ContactProps> = ({contactData, contactError}) => {
             <p><a href={`tel:${contact.phone1}`} target="_blank">{contact.phone1}</a></p>
             <p><a href={`tel:${contact.phone2}`} target="_blank">{contact.phone2}</a></p>
             <p><a href={`mailto:${contact.email}`} target="_blank">{contact.email}</a></p>
-            <div className="flex items-center gap-2 mt-2">
-                <a href={contact.instagram} target="_blank" rel="noopener noreferrer">
-                    <FontAwesomeIcon icon={faInstagram} className="w-6 h-6 text-white hover:animate-pulse"/>
-                </a>
-                <a href={`https://wa.me/${contact.whatsapp.replace('+', '')}`} target="_blank"
-                   rel="noopener noreferrer">
-                    <FontAwesomeIcon icon={faWhatsapp} className="w-6 h-6 text-white hover:animate-pulse"/>
-                </a>
+            <div className="flex items-center gap-3 mt-2">
+                {socialLinks.map(({ icon, href, label }) => (
+                    <Button
+                        key={label}
+                        variant="secondary"
+                        size="icon"
+                        className="w-9 h-9 rounded-full p-0"
+                    >
+                        <a
+                            href={href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="w-full h-full flex items-center justify-center text-foreground hover:text-primary transition hover:scale-110"
+                            aria-label={label}
+                        >
+                            <FontAwesomeIcon icon={icon} className="w-7 h-7 text-xl" />
+                        </a>
+                    </Button>
+                ))}
             </div>
         </div>
     );

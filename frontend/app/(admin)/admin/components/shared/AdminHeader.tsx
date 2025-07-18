@@ -17,7 +17,7 @@ const AdminHeader = () => {
     ];
 
     return (
-        <header className="w-full bg-gray-800 text-white shadow mb-8">
+        <header className="w-full text-white shadow mb-8">
             <div className={`container p-4 mx-auto flex items-center ${
                 isSuperadmin ? "justify-between" : "justify-end"
             }`}>

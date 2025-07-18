@@ -18,7 +18,7 @@ export default function NavBar() {
     const pathName = usePathname();
 
     return (
-        <nav className="w-full p-4 text-white">
+        <nav className="py-4">
             <div className="hidden md:flex flex-wrap gap-7.5 items-center justify-center">
                 {navItems.map(({href, label}) => {
                     const isActive = pathName === href;

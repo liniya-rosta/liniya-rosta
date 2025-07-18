@@ -3,6 +3,7 @@ import {Contact} from '@/lib/types';
 import {fetchContacts} from "@/actions/contacts";
 import FooterBtn from "@/components/shared/Footer/FooterBtn";
 import FooterContent from "@/components/shared/Footer/FooterContent";
+import {Container} from "@/components/shared/Container";
 
 const Footer = async () => {
     let contactData: Contact | null = null;
@@ -20,11 +21,13 @@ const Footer = async () => {
 
     return (
         <>
-            <footer className="p-10 bg-gray-800 mt-10 text-white">
-                <div className="flex flex-wrap items-center justify-between w-full container mx-auto">
-                    <FooterContent contactData={contactData} contactError={contactError}/>
-                    <FooterBtn/>
-                </div>
+            <footer className="p-10 mt-10">
+                <Container>
+                    <div className="flex flex-wrap items-center justify-between w-full">
+                        <FooterContent contactData={contactData} contactError={contactError}/>
+                        <FooterBtn/>
+                    </div>
+                </Container>
             </footer>
         </>
     );

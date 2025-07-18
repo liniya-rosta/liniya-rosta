@@ -2,8 +2,8 @@
 
 import React, {useState} from 'react';
 import {Dialog, DialogTrigger} from "@/components/ui/dialog";
-import RequestBtn from "@/components/ui/RequestBtn";
 import RequestForm from "@/components/shared/RequestForm";
+import {Button} from "@/components/ui/button";
 
 const FooterBtn = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -11,7 +11,13 @@ const FooterBtn = () => {
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
-                <RequestBtn onClick={() => setIsOpen(true)}/>
+                <Button
+                    onClick={() => setIsOpen(true)}
+                    variant="secondary"
+                    className="rounded-full btn-hover-scale px-7 py-4"
+                >
+                    Оставить заявку
+                </Button>
             </DialogTrigger>
             <RequestForm closeModal={() => setIsOpen(false)}/>
         </Dialog>

@@ -1,27 +1,26 @@
 "use client"
 
-import React, { useEffect, useMemo, useState, useCallback } from 'react';
-import { Filter, MessageCircle, Phone, Search, X } from 'lucide-react';
+import React, {useEffect, useMemo, useState, useCallback} from 'react';
+import {Filter, MessageCircle, Phone, Search, X} from 'lucide-react';
 import RequestForm from "@/components/shared/RequestForm";
-import { ModalWindow } from '@/components/ui/modal-window';
-import { Dialog } from '@/components/ui/dialog';
-import { Category, Product } from "@/lib/types";
-import { useCategoryStore } from "@/store/categoriesStore";
-import { useProductStore } from "@/store/productsStore";
-import { API_BASE_URL } from "@/lib/globalConstants";
+import {Dialog, DialogHeader, DialogTitle} from '@/components/ui/dialog';
+import {Category, Product} from "@/lib/types";
+import {useCategoryStore} from "@/store/categoriesStore";
+import {useProductStore} from "@/store/productsStore";
+import {API_BASE_URL} from "@/lib/globalConstants";
 import Image from "next/image";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
-import { Skeleton } from '@/components/ui/skeleton';
+import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from '@/components/ui/card';
+import {Button} from '@/components/ui/button';
+import {Input} from '@/components/ui/input';
+import {Badge} from '@/components/ui/badge';
+import {Skeleton} from '@/components/ui/skeleton';
 
 type Props = {
     initialProducts: Product[];
     initialCategories: Category[];
 };
 
-const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories }) => {
+const CeilingsClient: React.FC<Props> = ({initialProducts, initialCategories}) => {
     const [selectedCategory, setSelectedCategory] = useState<string>('all');
     const [showConsultationModal, setShowConsultationModal] = useState<boolean>(false);
     const [searchTerm, setSearchTerm] = useState<string>('');
@@ -84,10 +83,6 @@ const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories })
         setShowConsultationModal(true);
     }, []);
 
-    const closeConsultationModal = useCallback(() => {
-        setShowConsultationModal(false);
-    }, []);
-
     const handleProductConsultation = useCallback(() => {
         setShowConsultationModal(true);
     }, []);
@@ -111,16 +106,16 @@ const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories })
 
     const renderSkeleton = () => (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-            {Array.from({ length: 6 }).map((_, i) => (
+            {Array.from({length: 6}).map((_, i) => (
                 <Card key={i} className="overflow-hidden">
-                    <Skeleton className="h-48 w-full" />
+                    <Skeleton className="h-48 w-full"/>
                     <CardHeader>
-                        <Skeleton className="h-6 w-3/4" />
-                        <Skeleton className="h-4 w-full" />
-                        <Skeleton className="h-4 w-1/2" />
+                        <Skeleton className="h-6 w-3/4"/>
+                        <Skeleton className="h-4 w-full"/>
+                        <Skeleton className="h-4 w-1/2"/>
                     </CardHeader>
                     <CardFooter>
-                        <Skeleton className="h-10 w-full" />
+                        <Skeleton className="h-10 w-full"/>
                     </CardFooter>
                 </Card>
             ))}
@@ -130,7 +125,7 @@ const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories })
     const renderEmptyState = () => (
         <Card className="text-center p-12">
             <CardContent className="space-y-4">
-                <Search className="h-12 w-12 mx-auto text-muted-foreground" />
+                <Search className="h-12 w-12 mx-auto text-muted-foreground"/>
                 <CardTitle>Товары не найдены</CardTitle>
                 <CardDescription>
                     Попробуйте изменить критерии поиска или фильтры
@@ -204,12 +199,12 @@ const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories })
                     </div>
                     <div className="flex gap-3">
                         <Button onClick={openConsultationModal} className="gap-2">
-                            <Phone className="h-4 w-4" />
+                            <Phone className="h-4 w-4"/>
                             Консультация
                         </Button>
                         <Button asChild variant="secondary" className="gap-2">
                             <a href="https://wa.me/996552088988" target="_blank" rel="noopener noreferrer">
-                                <MessageCircle className="h-4 w-4" />
+                                <MessageCircle className="h-4 w-4"/>
                                 WhatsApp
                             </a>
                         </Button>
@@ -222,13 +217,14 @@ const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories })
                     <Card className="sticky top-4">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
-                                <Filter className="h-5 w-5" />
+                                <Filter className="h-5 w-5"/>
                                 Категории
                             </CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-6">
                             <div className="relative">
-                                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+                                <Search
+                                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4"/>
                                 <Input
                                     type="text"
                                     placeholder="Поиск товаров..."
@@ -243,7 +239,7 @@ const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories })
                                         onClick={() => setSearchTerm('')}
                                         className="absolute right-1 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0"
                                     >
-                                        <X className="h-3 w-3" />
+                                        <X className="h-3 w-3"/>
                                     </Button>
                                 )}
                             </div>
@@ -271,7 +267,8 @@ const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories })
                 <div className="flex-1">
                     <div className="flex justify-between items-center mb-6">
                         <p className="text-muted-foreground">
-                            Найдено товаров: <span className="font-semibold text-foreground">{filteredProducts.length}</span>
+                            Найдено товаров: <span
+                            className="font-semibold text-foreground">{filteredProducts.length}</span>
                         </p>
                         {selectedCategory !== 'all' && (
                             <Button
@@ -280,7 +277,7 @@ const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories })
                                 onClick={() => setSelectedCategory('all')}
                                 className="gap-1"
                             >
-                                <X className="h-4 w-4" />
+                                <X className="h-4 w-4"/>
                                 Сбросить фильтр
                             </Button>
                         )}
@@ -299,14 +296,12 @@ const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories })
             </div>
 
             {showConsultationModal && (
-                <ModalWindow
-                    isOpen={showConsultationModal}
-                    onClose={closeConsultationModal}
-                >
-                    <Dialog open={true} onOpenChange={closeConsultationModal}>
-                        <RequestForm closeModal={closeConsultationModal} />
-                    </Dialog>
-                </ModalWindow>
+                <Dialog open={showConsultationModal} onOpenChange={setShowConsultationModal}>
+                    <DialogHeader>
+                        <DialogTitle className="text-center">Форма заявки</DialogTitle>
+                    </DialogHeader>
+                    <RequestForm closeModal={() => setShowConsultationModal(false)}/>
+                </Dialog>
             )}
         </div>
     );
