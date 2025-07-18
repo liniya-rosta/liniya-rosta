@@ -1,7 +1,7 @@
 'use client';
 
 import {Button} from "@/components/ui/button";
-import LoaderIcon from "@/components/ui/LoaderIcon";
+
 
 import React, {PropsWithChildren} from "react";
 import {
@@ -14,6 +14,7 @@ import {
     AlertDialogHeader,
     AlertDialogTitle
 } from "./alert-dialog";
+import LoaderIcon from "@/components/ui/Loading/LoaderIcon";
 
 interface Props {
     open: boolean;
@@ -21,7 +22,7 @@ interface Props {
     title?: string;
     onConfirm: () => void;
     loading?: boolean;
-    text: string;
+    text?: string;
 }
 
 const ConfirmDialog: React.FC<PropsWithChildren<Props>> = ({
@@ -31,7 +32,7 @@ const ConfirmDialog: React.FC<PropsWithChildren<Props>> = ({
                                                          onConfirm,
                                                          loading = false,
                                                          children,
-                                                               text
+                                                               text = "Это действие невозможно отменить"
                                                      }) => {
     return (
         <AlertDialog

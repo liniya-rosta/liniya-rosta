@@ -48,11 +48,10 @@ export const editGalleryItem = async ({item, gallery_id}: {
     const formData = new FormData();
 
     if (item.image) {
-        formData.append("image", item.image);
+        formData.append("gallery", item.image);
     }
 
     if (item.alt) {
-        console.log(item.alt)
         formData.append("alt", item.alt);
     }
 

@@ -1,12 +1,12 @@
 import React from 'react';
 import PortfolioClient from "@/app/(public)/portfolio/PortfolioClient";
 import {fetchPortfolioPreviews} from "@/actions/portfolios";
-import {PaginatedPortfolioResponse} from "@/lib/types";
+import {PortfolioResponse} from "@/lib/types";
 import {isAxiosError} from "axios";
 
 const PortfolioPage = async () => {
     let errorMessage: string | null = null;
-    let portfolioData: PaginatedPortfolioResponse | null = null;
+    let portfolioData: PortfolioResponse | null = null;
     const limit = "8";
 
     try {

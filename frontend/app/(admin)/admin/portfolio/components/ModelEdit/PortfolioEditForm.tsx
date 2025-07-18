@@ -11,7 +11,7 @@ import Image from "next/image";
 import {useSuperAdminPortfolioStore} from "@/store/superadmin/superAdminPortfolio";
 import {editPortfolioItem} from "@/actions/superadmin/portfolios";
 import FormErrorMessage from "@/components/ui/FormErrorMessage";
-import LoaderIcon from "@/components/ui/LoaderIcon";
+import LoaderIcon from "@/components/ui/Loading/LoaderIcon";
 import {isAxiosError} from "axios";
 import {toast} from "react-toastify";
 import {Tooltip, TooltipContent, TooltipTrigger} from "@/components/ui/tooltip";

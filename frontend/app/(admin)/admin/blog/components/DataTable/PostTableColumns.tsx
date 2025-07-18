@@ -1,7 +1,5 @@
-'use client';
-
 import { ColumnDef } from '@tanstack/react-table';
-import { ArrowUpDown, MoreHorizontal, Edit2, Trash2 } from 'lucide-react';
+import { ArrowUpDown, MoreHorizontal, Edit2, Trash2, Images } from 'lucide-react';
 import Image from 'next/image';
 
 import { Button } from '@/components/ui/button';
@@ -11,16 +9,17 @@ import {
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuLabel,
-    DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Post } from '@/lib/types';
 import { API_BASE_URL } from '@/lib/globalConstants';
+import React from "react";
+import {Tooltip, TooltipContent, TooltipTrigger} from "@/components/ui/tooltip";
 
 export const getPostTableColumns = (
     onEditPost: (post: Post) => void,
-    onDeletePost: (id: string) => void,
-    actionLoading: boolean
+    onDeletePost: (ids: string[]) => void,
+    onOpenImagesModal: (post: Post) => void
 ): ColumnDef<Post>[] => {
     return [
         {
@@ -44,32 +43,20 @@ export const getPostTableColumns = (
             ),
             enableSorting: false,
             enableHiding: false,
+            meta: {
+                className: "w-10",
+            },
         },
         {
-            accessorKey: 'image',
-            header: 'Изображение',
-            cell: ({ row }) => {
-                const imageUrl = row.original.image;
-                return imageUrl ? (
-                    <div className="w-16 h-16 relative flex-shrink-0">
-                        <Image
-                            src={`${API_BASE_URL}/${imageUrl}`}
-                            alt={row.original.title}
-                            fill
-                            sizes="64px"
-                            className="object-cover rounded-md"
-                            onError={(e) => {
-                                (e.target as HTMLImageElement).src =
-                                    'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=400&h=300&fit=crop';
-                            }}
-                        />
-                    </div>
-                ) : (
-                    <div className="w-16 h-16 bg-muted rounded-md flex items-center justify-center text-xs text-muted-foreground text-center flex-shrink-0">
-                        Нет фото
-                    </div>
-                );
+            id: "index",
+            header: "№",
+            cell: ({ row, table }) => {
+                const flatRows = table.getRowModel().flatRows;
+                const originalIndex = flatRows.findIndex(r => r.id === row.id);
+                return <span className="w-auto">{originalIndex + 1}</span>;
             },
+            enableSorting: false,
+            enableHiding: false,
         },
         {
             accessorKey: 'title',
@@ -91,11 +78,59 @@ export const getPostTableColumns = (
             accessorKey: 'description',
             header: 'Описание',
             cell: ({ row }) => (
-                <div className="line-clamp-2 max-w-sm text-sm text-muted-foreground min-w-[250px]">
+                <div className="line-clamp-2 max-w-sm text-sm text-muted-foreground">
                     {row.getValue('description')}
                 </div>
             ),
             filterFn: 'includesString',
+        },
+        {
+            accessorKey: "imageCount",
+            header: () => <div className="text-center">Кол-во изображений</div>,
+            cell: ({row}) => {
+                const count = row.getValue<number>("imageCount");
+                return (
+                    <div className="font-medium text-center">
+                        {count}
+                    </div>
+                );
+            },
+        },
+        {
+            accessorKey: 'image',
+            header: 'Изображение',
+            cell: ({ row }) => {
+                const imageUrl = row.original.images?.[0]?.image;
+                return imageUrl ? (
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <div
+                                className="w-16 h-16 relative flex-shrink-0 cursor-pointer"
+                                onClick={() => onOpenImagesModal(row.original)}
+                            >
+                                <Image
+                                    src={`${API_BASE_URL}/${imageUrl}`}
+                                    alt={row.original.title}
+                                    fill
+                                    sizes="64px"
+                                    className="object-cover rounded-md"
+                                    onError={(e) => {
+                                        (e.target as HTMLImageElement).src =
+                                            'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=400&h=300&fit=crop';
+                                    }}
+                                />
+                            </div>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>Нажмите чтобы просмотреть все изображения</p>
+                        </TooltipContent>
+                    </Tooltip>
+                ) : (
+                    <div className="w-16 h-16 bg-muted rounded-md flex items-center justify-center text-xs text-muted-foreground text-center flex-shrink-0">
+                        Нет фото
+                    </div>
+                );
+            },
         },
         {
             id: 'действия',
@@ -113,14 +148,18 @@ export const getPostTableColumns = (
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                             <DropdownMenuLabel>Действия</DropdownMenuLabel>
-                            <DropdownMenuItem onClick={() => onEditPost(post)} disabled={actionLoading}>
+                            <DropdownMenuItem
+                                onClick={() => onOpenImagesModal(post)}
+                            >
+                                <Images className="mr-2 h-4 w-4" />
+                                Все изображения
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => onEditPost(post)}>
                                 <Edit2 className="mr-2 h-4 w-4" />
                                 Редактировать
                             </DropdownMenuItem>
-                            <DropdownMenuSeparator />
                             <DropdownMenuItem
-                                onClick={() => onDeletePost(post._id)}
-                                disabled={actionLoading}
+                                onClick={() => onDeletePost([post._id])}
                                 className="text-red-600 focus:text-red-600"
                             >
                                 <Trash2 className="mr-2 h-4 w-4" />

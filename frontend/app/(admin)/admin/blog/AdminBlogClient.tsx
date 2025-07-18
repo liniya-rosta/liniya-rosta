@@ -2,180 +2,137 @@
 
 import React, {useEffect, useState} from 'react';
 import {Plus} from 'lucide-react';
-import {Post, CreatePostData, UpdatePostData} from "@/lib/types";
+import {ImageObject, Post} from "@/lib/types";
 import {Button} from '@/components/ui/button';
-import {Alert, AlertDescription} from '@/components/ui/alert';
-import {createPost, deletePost, updatePost} from "@/actions/posts";
-import PostsTable from "@/app/(admin)/admin/blog/components/PostsTable";
-import PostModal from "@/app/(admin)/admin/blog/components/PostModal";
-import {toast} from 'react-toastify';
-import {AxiosError} from 'axios';
-import {useAdminPostStore} from "@/store/superadmin/superadminPostsStore";
+import {
+    ColumnFiltersState,
+    getCoreRowModel,
+    getFilteredRowModel,
+    getPaginationRowModel,
+    getSortedRowModel,
+    SortingState,
+    useReactTable,
+    VisibilityState
+} from "@tanstack/react-table";
+import {useSuperAdminPostStore} from "@/store/superadmin/superAdminPostsStore";
+import {getPostTableColumns} from './components/DataTable/PostTableColumns';
+import PostsTable from "@/app/(admin)/admin/blog/components/DataTable/PostsTable";
 import DataSkeleton from "@/components/ui/Loading/DataSkeleton";
+import ErrorMsg from "@/components/ui/ErrorMsg";
+import TablePostControls from "@/app/(admin)/admin/blog/components/DataTable/TablePostControls";
+import TablePostPagination from "@/app/(admin)/admin/blog/components/DataTable/TablePostPagination";
+import {usePostDeletion} from "@/app/(admin)/admin/blog/hooks/usePostDeletion";
+import ConfirmDialog from '@/components/ui/ConfirmDialog';
+import ModalGallery from "@/components/shared/ModalGallery";
+import ImageEditForm from "@/app/(admin)/admin/blog/components/ImageEditForm";
+import {usePostsFetcher} from "@/app/(admin)/admin/blog/hooks/usePostsFetcher";
+import Link from 'next/link';
+import {useRouter} from 'next/navigation';
+import ImageViewerModal from "@/components/shared/ImageViewerModal";
 
-interface Props {
-    data: Post[];
-    error: string | null;
-    isAdmin?: boolean;
-}
+const AdminBlogClient = () => {
+    const [sorting, setSorting] = useState<SortingState>([]);
+    const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+    const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+    const [rowSelection, setRowSelection] = useState({});
 
-const AdminBlogClient: React.FC<Props> = ({data, error, isAdmin = true}) => {
+    const [showConfirm, setShowConfirm] = useState(false);
+
+    const [isImagesModalOpen, setIsImagesModalOpen] = useState(false);
+    const [imageEditSelectionMode, setImageEditSelectionMode] = useState(false);
+
+    const [isImageModalEdit, setIsImageModalEdit] = useState(false);
+    const [selectImageEdit, setSelectImageEdit] = useState<string>("");
+
+    const [previewImage, setPreviewImage] = useState<ImageObject | null>(null);
+    const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+
+    const router = useRouter();
+
     const {
         posts,
+        detailPost,
+        paginationPost,
+        selectedToDelete,
         fetchLoading,
-        createLoading,
-        updateLoading,
         deleteLoading,
+        updateLoading,
         fetchError,
-        createError,
-        updateError,
-        setPosts,
-        setFetchLoading,
-        setCreateLoading,
-        setUpdateLoading,
-        setDeleteLoading,
-        setFetchError,
-        setCreateError,
-        setUpdateError,
-        setDeleteError,
-    } = useAdminPostStore();
+        setDetailPost,
+        setSelectedToDelete,
+    } = useSuperAdminPostStore();
 
-    const [isHydrating, setIsHydrating] = useState(true);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [editingPost, setEditingPost] = useState<Post | null>(null);
+    const {
+        pagination,
+        filters,
+        fetchData,
+        fetchOnePost,
+        setPagination,
+        handleFilterChange,
+        setPageSize,
+        handleReorderImages,
+    } = usePostsFetcher();
 
-    const anyLoading = createLoading || updateLoading || deleteLoading;
+    const {
+        isImageDelete,
+        handleDelete,
+        handleDeleteSelectedPosts,
+        setImageDelete,
+    } = usePostDeletion(fetchOnePost, fetchData, setRowSelection);
 
     useEffect(() => {
-        if (data) {
-            setPosts(data);
-        }
-        setFetchError(error);
-        setFetchLoading(false);
-        setIsHydrating(false);
-    }, [data, error, setPosts, setFetchError, setFetchLoading]);
+        void fetchData();
+    }, [pagination, filters]);
 
-    const resetErrors = () => {
-        setFetchError(null);
-        setCreateError(null);
-        setUpdateError(null);
-        setDeleteError(null);
-    };
+    useEffect(() => {
+        const selectedRows = table.getSelectedRowModel().rows;
+        setSelectedToDelete(selectedRows.map(row => row.original._id));
+    }, [rowSelection]);
 
-    const openCreateModal = () => {
-        setEditingPost(null);
-        setIsModalOpen(true);
-        resetErrors();
-    };
+    useEffect(() => {
+        setRowSelection({});
+    }, [pagination.pageIndex]);
 
-    const openEditModal = (post: Post) => {
-        setEditingPost(post);
-        setIsModalOpen(true);
-        resetErrors();
-    };
-
-    const closeModal = () => {
-        setIsModalOpen(false);
-        setEditingPost(null);
-        resetErrors();
-    };
-
-    const onSubmit = async (formData: CreatePostData | UpdatePostData, isEditingMode: boolean) => {
-        resetErrors();
-        try {
-            let result: { message: string; post: Post; };
-
-            if (isEditingMode) {
-                setUpdateLoading(true);
-                if (!editingPost) throw new Error('Editing post is null');
-
-                const updateData: UpdatePostData = {
-                    title: formData.title,
-                    description: formData.description,
-                    image: (formData as UpdatePostData).image,
-                };
-
-                result = await updatePost(editingPost._id, updateData);
-                setPosts(posts.map(p => p._id === editingPost._id ? result.post : p));
-                toast.success('Пост успешно обновлен!');
-            } else {
-                setCreateLoading(true);
-                const createData = formData as CreatePostData;
-
-                result = await createPost(createData);
-                setPosts([result.post, ...posts]);
-                toast.success('Пост успешно создан!');
+    const table = useReactTable<Post>({
+        data: posts,
+        columns: getPostTableColumns(
+            (post) =>
+                router.push(`/admin/blog/post-form/${post._id}`),
+            async ([ids]) => {
+                setSelectedToDelete([ids]);
+                setShowConfirm(true);
+            },
+            (post) => {
+                setDetailPost(post);
+                setIsImagesModalOpen(true);
             }
-            closeModal();
-        } catch (err) {
-            const errorMessage = err instanceof AxiosError
-                ? err.response?.data?.error
-                : err instanceof Error
-                    ? err.message
-                    : 'Произошла ошибка при сохранении поста';
-            if (isEditingMode) {
-                setUpdateError(errorMessage);
-            } else {
-                setCreateError(errorMessage);
-            }
-            toast.error(errorMessage);
-        } finally {
-            setCreateLoading(false);
-            setUpdateLoading(false);
-        }
-    };
+        ),
+        pageCount: paginationPost?.totalPages ?? 1,
+        manualPagination: true,
+        onSortingChange: setSorting,
+        onColumnFiltersChange: setColumnFilters,
+        onColumnVisibilityChange: setColumnVisibility,
+        onRowSelectionChange: setRowSelection,
+        onPaginationChange: (updater) => {
+            const newState = typeof updater === "function" ? updater(pagination) : updater;
+            setPagination(newState);
+            setPageSize(newState.pageSize);
+        },
+        getCoreRowModel: getCoreRowModel(),
+        getPaginationRowModel: getPaginationRowModel(),
+        getSortedRowModel: getSortedRowModel(),
+        getFilteredRowModel: getFilteredRowModel(),
+        state: {
+            sorting,
+            columnFilters,
+            columnVisibility,
+            rowSelection,
+            pagination,
+        },
+    });
 
-    const handleDelete = async (postId: string) => {
-        resetErrors();
-        setDeleteLoading(true);
-        try {
-            await deletePost(postId);
-            setPosts(posts.filter(p => p._id !== postId));
-            toast.success('Пост успешно удален!');
-        } catch (err) {
-            const errorMessage = err instanceof AxiosError
-                ? err.response?.data?.error
-                : err instanceof Error
-                    ? err.message
-                    : 'Произошла ошибка при удалении';
-            setDeleteError(errorMessage);
-            toast.error(errorMessage);
-        } finally {
-            setDeleteLoading(false);
-        }
-    };
-
-    const handleDeleteSelectedPosts = async (ids: string[]) => {
-        resetErrors();
-        setDeleteLoading(true);
-        try {
-            for (const id of ids) {
-                await deletePost(id);
-            }
-            setPosts(posts.filter((post) => !ids.includes(post._id)));
-            toast.success("Выбранные посты успешно удалены!");
-        } catch (err) {
-            const errorMessage = err instanceof AxiosError ? err.response?.data?.error : "Неизвестная ошибка при удалении выбранных постов";
-            setDeleteError(errorMessage);
-            toast.error(errorMessage);
-        } finally {
-            setDeleteLoading(false);
-        }
-    };
-
-    if (isHydrating || fetchLoading) {
-        return <DataSkeleton/>;
-    }
-
-    if (fetchError) {
-        return (
-            <Alert variant="destructive" className="max-w-md mx-auto">
-                <AlertDescription>
-                    Ошибка при загрузке постов: {fetchError}
-                </AlertDescription>
-            </Alert>
-        );
-    }
+    if (fetchLoading && posts.length === 0) return <DataSkeleton/>
+    if (fetchError) return <ErrorMsg error={fetchError}/>
 
     return (
         <div className="space-y-6">
@@ -184,44 +141,87 @@ const AdminBlogClient: React.FC<Props> = ({data, error, isAdmin = true}) => {
                     <h1 className="text-3xl font-bold text-foreground">Управление постами</h1>
                     <p className="text-muted-foreground mt-1">Создавайте и редактируйте посты</p>
                 </div>
-                {isAdmin && (
-                    <Button onClick={openCreateModal} size="lg" className="flex items-center gap-2 w-full sm:w-auto"
-                            disabled={anyLoading}>
+                <Link href="/admin/blog/post-form">
+                    <Button size="lg" className="flex items-center gap-2 w-full sm:w-auto">
                         <Plus className="mr-2 h-5 w-5"/>
                         Создать пост
                     </Button>
-                )}
+                </Link>
             </div>
 
-            {posts.length === 0 && !fetchLoading ? (
-                <div className="text-center py-8 text-muted-foreground">
-                    <p>Посты не найдены</p>
-                    <p className="text-sm mt-2">
-                        Нажмите &#34;Создать пост&#34; для создания первого поста
-                    </p>
-                </div>
-            ) : (
-                <PostsTable
-                    posts={posts}
-                    onEditPost={openEditModal}
-                    onDeletePost={handleDelete}
-                    onDeleteSelectedPosts={handleDeleteSelectedPosts}
-                    actionLoading={anyLoading}
+            <div>
+                <TablePostControls
+                    handleBulkDelete={() => setShowConfirm(true)}
+                    table={table}
+                    onFilterChange={handleFilterChange}
+                    setPersistedPageSize={setPageSize}
+                />
+                <PostsTable table={table}/>
+                <TablePostPagination table={table}/>
+            </div>
+
+            <ConfirmDialog
+                open={showConfirm}
+                onOpenChange={setShowConfirm}
+                title={isImageDelete ? "Удалить изображение?" : "Удалить пост(ы)?"}
+                onConfirm={async () => {
+                    if (selectedToDelete.length > 1) {
+                        await handleDeleteSelectedPosts();
+                    } else if (selectedToDelete.length === 1) {
+                        await handleDelete();
+                    }
+                }}
+                loading={deleteLoading}
+            />
+
+            <ImageEditForm
+                open={isImageModalEdit}
+                imageUrl={selectImageEdit}
+                openChange={() => setIsImageModalEdit(false)}
+                onSaved={() => setIsImageModalEdit(false)}
+                setIsPreviewOpen={setIsPreviewOpen}
+                setPreviewImage={setPreviewImage}
+            />
+
+            {previewImage && (
+                <ImageViewerModal
+                    open={isPreviewOpen}
+                    openChange={() => setIsPreviewOpen(false)}
+                    alt={previewImage.alt}
+                    image={previewImage.image}
                 />
             )}
 
-            <PostModal
-                isOpen={isModalOpen}
-                onClose={closeModal}
-                isEditing={!!editingPost}
-                editingPost={editingPost}
-                actionLoading={createLoading || updateLoading}
-                createError={createError}
-                updateError={updateError}
-                onSubmit={onSubmit}
-            />
+            {detailPost && (
+                <ModalGallery
+                    open={isImagesModalOpen}
+                    openChange={() => setIsImagesModalOpen(false)}
+                    items={detailPost.images}
+                    keyBy="image"
+                    selectedKeys={selectedToDelete}
+                    setSelectedKeys={setSelectedToDelete}
+                    selectionMode={imageEditSelectionMode}
+                    setSelectionMode={setImageEditSelectionMode}
+                    isOpenModalEdit={(key) => {
+                        setIsImageModalEdit(true);
+                        setSelectImageEdit(key);
+                    }}
+                    onRequestDelete={() => {
+                        setShowConfirm(true);
+                        setImageDelete(true);
+                    }}
+                    canReorder={true}
+                    onSaveOrder={ async (newOrder) => {
+                        await handleReorderImages(detailPost._id, newOrder);
+                    }}
+                    deleteLoading={deleteLoading}
+                    updateLoading={updateLoading}
+                />
+            )
+            }
+
         </div>
-    );
+    )
 };
 
 

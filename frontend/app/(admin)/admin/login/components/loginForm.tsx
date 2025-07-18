@@ -13,7 +13,7 @@ import {useRouter} from "next/navigation";
 import FormErrorMessage from "@/components/ui/FormErrorMessage";
 import {isAxiosError} from "axios";
 import {toast} from "react-toastify";
-import LoaderIcon from "@/components/ui/LoaderIcon";
+import LoaderIcon from "@/components/ui/Loading/LoaderIcon";
 import React from "react";
 
 const LoginForm = () => {

@@ -4,7 +4,7 @@ import {usePortfolioStore} from "@/store/portfolioItemStore";
 import React, {useEffect, useState} from "react";
 import {API_BASE_URL} from "@/lib/globalConstants";
 import {CartPortfolio} from '@/app/(public)/portfolio/components/CartPortfolio';
-import {PaginatedPortfolioResponse} from "@/lib/types";
+import {PortfolioResponse} from "@/lib/types";
 import Link from "next/link";
 import ErrorMsg from "@/components/ui/ErrorMsg";
 import LoadingFullScreen from "@/components/ui/Loading/LoadingFullScreen";
@@ -17,7 +17,7 @@ import {BtnArrow} from "@/components/ui/btn-arrow";
 import EmptyState from "@/components/ui/emptyState";
 
 interface Props {
-    data: PaginatedPortfolioResponse | null;
+    data: PortfolioResponse | null;
     error?: string | null;
     limit?: string;
 }
