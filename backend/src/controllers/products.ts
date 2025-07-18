@@ -4,7 +4,7 @@ import mongoose, {PipelineStage} from "mongoose";
 
 export const getProducts = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const {title, category, imagesId, limit = 10, page = 1, description, coverAlt} = req.query;
+        const {title, category, imagesId, limit = 10, page = 1, description} = req.query;
 
         if (imagesId) {
             const item = await Product.findOne(
@@ -39,16 +39,13 @@ export const getProducts = async (req: Request, res: Response, next: NextFunctio
             matchStage.description = {$regex: description, $options: "i"};
         }
 
-        if (coverAlt && typeof coverAlt === "string") {
-            matchStage["cover.alt"] = {$regex: coverAlt, $options: "i"};
-        }
-
         const aggregationPipeline = [
             Object.keys(matchStage).length > 0 ? {$match: matchStage} : null,
             {$sort: {_id: -1}},
             {$skip: skip},
             {$limit: parsedLimit},
-            {$lookup: {
+            {
+                $lookup: {
                     from: "categories",
                     localField: "category",
                     foreignField: "_id",
@@ -64,9 +61,11 @@ export const getProducts = async (req: Request, res: Response, next: NextFunctio
             {
                 $project: {
                     title: 1,
+                    slug: 1,
+                    createdAt: 1,
+                    updatedAt: 1,
                     category: 1,
                     cover: 1,
-                    coverAlt: "$cover.alt",
                     description: 1,
                     images: 1,
                     icon: 1,

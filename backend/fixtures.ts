@@ -83,14 +83,14 @@ const run = async () => {
         }
     );
 
-    await Product.create(
+    const products = [
         {
             category: lightingTechnology,
             title: 'Светодиодная лента leds power',
             description: 'световой поток: 1000 Лм/м, мощность: 10 Вт/м, длина: 5 м, ширина: 8 мм',
             cover: {
                 url: 'test/lightingTechnology1.jpg',
-                alt: null
+                alt: 'a;lskdjf'
             },
             characteristics: [
                 {key: 'Пример характеристики', value: 'Значение'}
@@ -244,87 +244,91 @@ const run = async () => {
                 label: null
             }
         },
-    );
+    ];
+
+    for (const product of products) {
+        await Product.create(product);
+    }
 
     await Post.create(
         {
             title: 'Тестовый пост №1',
             description: 'Lorem ipsum',
             images: [
-                { image: 'test/news1.jpg', alt: 'Новость 1' },
-                { image: 'test/news2.png', alt: 'Доп. изображение 1' },
+                {image: 'test/news1.jpg', alt: 'Новость 1'},
+                {image: 'test/news2.png', alt: 'Доп. изображение 1'},
             ],
         },
         {
             title: 'Тестовый пост №2',
             description: 'Lorem ipsum',
             images: [
-                { image: 'test/news1.jpg', alt: 'Новость 1' },
-                { image: 'test/news2.png', alt: 'Доп. изображение 1' },
+                {image: 'test/news1.jpg', alt: 'Новость 1'},
+                {image: 'test/news2.png', alt: 'Доп. изображение 1'},
             ],
         },
         {
             title: 'Тестовый пост №3',
             description: 'Lorem ipsum',
             images: [
-                { image: 'test/news1.jpg', alt: 'Новость 1' },
-                { image: 'test/news2.png', alt: 'Доп. изображение 1' },
+                {image: 'test/news1.jpg', alt: 'Новость 1'},
+                {image: 'test/news2.png', alt: 'Доп. изображение 1'},
             ],
         },
         {
             title: 'Тестовый пост №4',
             description: 'Lorem ipsum',
             images: [
-                { image: 'test/news1.jpg', alt: 'Новость 1' },
-                { image: 'test/news2.png', alt: 'Доп. изображение 1' },
+                {image: 'test/news1.jpg', alt: 'Новость 1'},
+                {image: 'test/news2.png', alt: 'Доп. изображение 1'},
             ],
         },
         {
             title: 'Тестовый пост №5',
             description: 'Lorem ipsum',
             images: [
-                { image: 'test/news1.jpg', alt: 'Новость 1' },
-                { image: 'test/news2.png', alt: 'Доп. изображение 1' },
+                {image: 'test/news1.jpg', alt: 'Новость 1'},
+                {image: 'test/news2.png', alt: 'Доп. изображение 1'},
             ],
         },
         {
             title: 'Тестовый пост №6',
             description: 'Lorem ipsum',
             images: [
-                { image: 'test/news1.jpg', alt: 'Новость 1' },
-                { image: 'test/news2.png', alt: 'Доп. изображение 1' },
+                {image: 'test/news1.jpg', alt: 'Новость 1'},
+                {image: 'test/news2.png', alt: 'Доп. изображение 1'},
             ],
         },
         {
             title: 'Тестовый пост №7',
             description: 'Lorem ipsum',
             images: [
-                { image: 'test/news1.jpg', alt: 'Новость 1' },
-                { image: 'test/news2.png', alt: 'Доп. изображение 1' },
+                {image: 'test/news1.jpg', alt: 'Новость 1'},
+                {image: 'test/news2.png', alt: 'Доп. изображение 1'},
             ],
         },
         {
             title: 'Тестовый пост №8',
             description: 'Lorem ipsum',
             images: [
-                { image: 'test/news1.jpg', alt: 'Новость 1' },
-                { image: 'test/news2.png', alt: 'Доп. изображение 1' },
+                {image: 'test/news1.jpg', alt: 'Новость 1'},
+                {image: 'test/news2.png', alt: 'Доп. изображение 1'},
             ],
         },
         {
             title: 'Тестовый пост №9',
             description: 'Lorem ipsum',
             images: [
-                { image: 'test/news1.jpg', alt: 'Новость 1' },
-                { image: 'test/news2.png', alt: 'Доп. изображение 1' },
+                {image: 'test/news1.jpg', alt: 'Новость 1'},
+                {image: 'test/news2.png', alt: 'Доп. изображение 1'},
             ],
         },
         {
             title: 'Тестовый пост №10',
             description: 'Lorem ipsum',
             images: [
-                { image: 'test/news1.jpg', alt: 'Новость 1' },
-                { image: 'test/news2.png', alt: 'Доп. изображение 1' },
+                {image: 'test/news1.jpg', alt: 'Новость 1'},
+                {image: 'test/news2.png', alt: 'Доп. изображение 1'},
             ],
         },
     );

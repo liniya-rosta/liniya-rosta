@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import Category from "./Category";
+import slugify from "slugify";
 
 const Schema = mongoose.Schema;
 
@@ -30,6 +31,11 @@ const ProductSchema = new Schema({
         type: String,
         required: [true, 'Поле заголовка обязательно для заполнения'],
     },
+    slug: {
+        type: String,
+        required: true,
+        unique: true,
+    },
     description: {
         type: String,
         default: null,
@@ -53,9 +59,17 @@ const ProductSchema = new Schema({
     icon: {
         url: {type: String},
         alt: {type: String, default: null, maxLength: 150},
-    }
-});
+    }},
+    {
+        timestamps: true,
+    });
 
+ProductSchema.pre("validate", function (next) {
+    if (this.title && !this.slug) {
+        this.slug = slugify(this.title, { lower: true, strict: true });
+    }
+    next();
+});
 
 const Product = mongoose.model('Product', ProductSchema);
 export default Product;
