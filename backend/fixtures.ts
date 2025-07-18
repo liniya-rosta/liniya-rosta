@@ -21,6 +21,7 @@ const run = async () => {
         await db.dropCollection('portfolioitems');
         await db.dropCollection('requests');
         await db.dropCollection('contacts');
+        await db.dropCollection('services');
     } catch (e) {
         console.log('Коллекции отсутствовали, пропуск сброса');
     }
