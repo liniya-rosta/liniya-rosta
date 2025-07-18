@@ -3,6 +3,32 @@ import { PostResponse} from "@/lib/types";
 import BlogClient from "@/app/(public)/blog/BlogClient";
 import { fetchPosts } from "@/actions/posts";
 
+import type { Metadata } from "next";
+
+export const revalidate = 1800;
+
+export const generateMetadata = async (): Promise<Metadata> => {
+    return {
+        title: "Блог",
+        description: "Последние новости, статьи и советы от компании Линия Роста. Всё о потолках, ламинате и интерьерных решениях.",
+        openGraph: {
+            title: "Блог | Линия Роста",
+            description: "Читайте полезные статьи и свежие новости от нашей компании.",
+            url: "/blog",
+            siteName: "Линия Роста",
+            images: [
+                {
+                    url: "/images/og/blog.jpg",
+                    width: 1200,
+                    height: 630,
+                    alt: "Блог Линия Роста",
+                },
+            ],
+            type: "website",
+        }
+    };
+};
+
 const BlogPage = async () => {
     let posts: PostResponse | null = null;
     let postsError: string | null = null;

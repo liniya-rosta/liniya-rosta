@@ -53,17 +53,6 @@ export interface Category {
     title: string;
 }
 
-export interface Product {
-    _id: string;
-    title: string;
-    category: {
-        _id: string;
-        title: string;
-    };
-    image: string
-    description: string | null;
-}
-
 export interface ValidationError {
     errors: {
         [key: string]: {
@@ -186,6 +175,9 @@ export interface Product {
         alt?: string;
         url: string | null;
     };
+    slug: string;
+    createdAt: string;
+    updatedAt: string;
 }
 
 export interface ProductMutation {

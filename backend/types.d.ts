@@ -1,11 +1,3 @@
-export interface Product {
-    _id: string;
-    category: string;
-    title: string;
-    description: string | null;
-    image: string | null;
-}
-
 export interface Category {
     _id: string;
     title: string;

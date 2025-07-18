@@ -5,6 +5,29 @@ import ServiceClient from "@/app/(public)/services/ServiceClient";
 import {isAxiosError} from "axios";
 import {fetchAllServices} from "@/actions/services";
 import { ServiceResponse } from '@/lib/types';
+import {Metadata} from "next";
+
+export const revalidate = 1800;
+
+export const generateMetadata = async (): Promise<Metadata> => ({
+    title: "Услуги",
+    description: "Выезд на замер, расчет освещенности и профессиональный монтаж потолков и ламината от компании Линия Роста. Работаем по Бишкеку и области.",
+    openGraph: {
+        title: "Услуги | Линия Роста",
+        description: "Выезд в удобное время, точные замеры, подбор освещения и качественный монтаж. Услуги под ключ от профессионалов.",
+        url: "/services",
+        siteName: "Линия Роста",
+        images: [
+            {
+                url: "/images/services/main-service.JPG",
+                width: 1200,
+                height: 630,
+                alt: "Услуги Линия Роста — замер, расчет освещенности, монтаж",
+            },
+        ],
+        type: "website",
+    },
+});
 
 const ServicePage = async () => {
     let serviceData:  ServiceResponse | null = null;
