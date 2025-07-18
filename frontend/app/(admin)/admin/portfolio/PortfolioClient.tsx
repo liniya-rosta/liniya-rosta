@@ -20,33 +20,29 @@ import {
 import {
     CustomTable,
     getColumns,
-    CustomTableHeader,
+    TableControls,
     TablePagination
 } from "@/app/(admin)/admin/portfolio/components/DataTable";
 import ImageModal from "@/app/(admin)/admin/portfolio/components/ImageModal";
 import {ModalEdit, PortfolioEditForm, GalleryEditForm} from "@/app/(admin)/admin/portfolio/components/ModelEdit";
-import ModalGallery from "@/app/(admin)/admin/portfolio/components/ModalGallery";
 import DataSkeleton from "@/components/ui/Loading/DataSkeleton";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import Link from "next/link";
 import {Button} from "@/components/ui/button";
 import {Plus} from "lucide-react";
 import ErrorMsg from "@/components/ui/ErrorMsg";
+import ModalGallery from "@/components/shared/ModalGallery";
+import {usePersistedPageSize} from "@/hooks/usePersistedPageSize";
 
 interface Props {
     error?: string | null;
-    limit?: string;
 }
 
-const AdminPortfolioClient: React.FC<Props> = ({error, limit = "10"}) => {
+const AdminPortfolioClient: React.FC<Props> = ({ error}) => {
     const [sorting, setSorting] = useState<SortingState>([]);
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
     const [rowSelection, setRowSelection] = useState({});
-    const [pagination, setPagination] = useState({
-        pageIndex: 0,
-        pageSize: Number(limit),
-    });
 
     const [isModalOpenCover, setIsModalOpenCover] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -56,6 +52,13 @@ const AdminPortfolioClient: React.FC<Props> = ({error, limit = "10"}) => {
     const [selectedCover, setSelectedCover] = useState<{ cover: string; alt?: string } | null>(null);
     const [isGalleryEdit, setIsGalleryEditing] = useState<boolean>(false);
     const [isGalleryDelete, setGalleryDelete] = useState<boolean>(false);
+    const [galleryEditSelectionMode, setGalleryEditSelectionMode] = useState(false);
+
+    const [pageSize, setPageSize] = usePersistedPageSize("admin_portfolio_table_size");
+    const [pagination, setPagination] = useState({
+        pageIndex: 0,
+        pageSize: pageSize,
+    });
 
     const {
         items,
@@ -73,42 +76,39 @@ const AdminPortfolioClient: React.FC<Props> = ({error, limit = "10"}) => {
         setPaginationPortfolio,
     } = useSuperAdminPortfolioStore();
 
-    const updatePaginationAndData = async (searchValue = "", searchField = "coverAlt") => {
-        try {
-            setPortfolioFetchLoading(true);
-            const filters = {
-                coverAlt: "",
-                description: "",
-            };
-            if (searchField === "coverAlt") filters.coverAlt = searchValue;
-            if (searchField === "description") filters.description = searchValue;
+     const updatePaginationAndData = async (searchValue = "", searchField = "coverAlt") => {
+       try {
+           const filters = {
+               coverAlt: "",
+               description: "",
+           };
+           if (searchField === "coverAlt") filters.coverAlt = searchValue;
+           if (searchField === "description") filters.description = searchValue;
 
-            const data = await fetchPortfolioPreviews(
-                pagination.pageSize.toString(),
-                (pagination.pageIndex + 1).toString(),
-                filters.coverAlt,
-                filters.description
-            );
-            setPortfolioPreview(data.items);
-            setPaginationPortfolio({
-                total: data.total,
-                page: data.page,
-                totalPages: data.totalPages,
-                pageSize: data.pageSize,
-            });
-            return data.items.length;
-        } catch (error) {
-            let errorMessage = "Ошибка при получении данных";
-            if (isAxiosError(error) && error.response) {
-                errorMessage = error.response.data.error;
-            } else if (error instanceof Error) {
-                errorMessage = error.message;
-            }
+           const data = await fetchPortfolioPreviews(
+               pagination.pageSize.toString(),
+               (pagination.pageIndex + 1).toString(),
+               filters.coverAlt,
+               filters.description
+           );
+           setPortfolioPreview(data.items);
+           setPaginationPortfolio({
+               total: data.total,
+               page: data.page,
+               totalPages: data.totalPages,
+               pageSize: data.pageSize,
+           });
+           return data.items.length;
+       } catch (error) {
+           let errorMessage = "Ошибка при получении данных";
+           if (isAxiosError(error) && error.response) {
+               errorMessage = error.response.data.error;
+           } else if (error instanceof Error) {
+               errorMessage = error.message;
+           }
 
-            toast.error(errorMessage);
-        } finally {
-            setPortfolioFetchLoading(false)
-        }
+           toast.error(errorMessage);
+       }
     };
 
     useEffect(() => {
@@ -184,21 +184,21 @@ const AdminPortfolioClient: React.FC<Props> = ({error, limit = "10"}) => {
     };
 
     const openEditModalCover = async (id: string) => {
-        try {
-            const portfolioItem = await fetchPortfolioItem(id);
-            setIsEditModalOpen(true);
-            setIsGalleryEditing(false);
-            setPortfolioItemDetail(portfolioItem);
-        } catch (error) {
-            let errorMessage = "Ошибка при получении данных";
-            if (isAxiosError(error) && error.response) {
-                errorMessage = error.response.data.error;
-            } else if (error instanceof Error) {
-                errorMessage = error.message;
-            }
+       try {
+           const portfolioItem = await fetchPortfolioItem(id);
+           setIsEditModalOpen(true);
+           setIsGalleryEditing(false);
+           setPortfolioItemDetail(portfolioItem);
+       } catch (error) {
+           let errorMessage = "Ошибка при получении данных";
+           if (isAxiosError(error) && error.response) {
+               errorMessage = error.response.data.error;
+           } else if (error instanceof Error) {
+               errorMessage = error.message;
+           }
 
-            toast.error(errorMessage);
-        }
+           toast.error(errorMessage);
+       }
     };
 
     const openGalleryModal = async (id: string) => {
@@ -217,22 +217,23 @@ const AdminPortfolioClient: React.FC<Props> = ({error, limit = "10"}) => {
             toast.error(errorMessage);
         }
     }
-    const openEditModalGalleryItem = async (id: string) => {
-        try {
-            const galleryItem = await fetchGalleryItem(id)
-            setGalleryItem(galleryItem);
-            setIsGalleryEditing(true);
-            setIsEditModalOpen(true);
-        } catch (error) {
-            let errorMessage = "Ошибка при получении данных";
-            if (isAxiosError(error) && error.response) {
-                errorMessage = error.response.data.error;
-            } else if (error instanceof Error) {
-                errorMessage = error.message;
-            }
 
-            toast.error(errorMessage);
-        }
+    const openEditModalGalleryItem = async (id: string) => {
+       try {
+           const galleryItem = await fetchGalleryItem(id)
+           setGalleryItem(galleryItem);
+           setIsGalleryEditing(true);
+           setIsEditModalOpen(true);
+       } catch (error) {
+           let errorMessage = "Ошибка при получении данных";
+           if (isAxiosError(error) && error.response) {
+               errorMessage = error.response.data.error;
+           } else if (error instanceof Error) {
+               errorMessage = error.message;
+           }
+
+           toast.error(errorMessage);
+       }
     };
 
     const table = useReactTable<PortfolioItemPreview>({
@@ -271,53 +272,53 @@ const AdminPortfolioClient: React.FC<Props> = ({error, limit = "10"}) => {
     });
 
     const multipleDeletion = async () => {
-        try {
-            setShowConfirm(false);
-            setPortfolioDeleteLoading(true);
-            if (!isGalleryDelete) {
-                const isLastPage = items.length === selectedToDelete.length && pagination.pageIndex > 0;
+       try {
+           setShowConfirm(false);
+           setPortfolioDeleteLoading(true);
+           if (!isGalleryDelete) {
+               const isLastPage = items.length === selectedToDelete.length && pagination.pageIndex > 0;
 
-                await Promise.all(
-                    selectedToDelete.map((id) => deletePortfolio(id))
-                );
+               await Promise.all(
+                   selectedToDelete.map((id) => deletePortfolio(id))
+               );
 
-                if (isLastPage) {
-                    setPagination((prev) => ({
-                        ...prev,
-                        pageIndex: prev.pageIndex - 1,
-                    }));
-                    setRowSelection({});
-                } else {
-                    await updatePaginationAndData();
-                    setRowSelection({});
-                }
+               if (isLastPage) {
+                   setPagination((prev) => ({
+                       ...prev,
+                       pageIndex: prev.pageIndex - 1,
+                   }));
+                   setRowSelection({});
+               } else {
+                   await updatePaginationAndData();
+                   setRowSelection({});
+               }
 
-            } else {
-                await Promise.all(
-                    selectedToDelete.map((id) => deleteGalleryItem(id))
-                );
-                if (detailItem) {
-                    const updated = await fetchPortfolioItem(detailItem._id);
-                    setPortfolioItemDetail(updated);
-                }
-            }
+           } else {
+               await Promise.all(
+                   selectedToDelete.map((id) => deleteGalleryItem(id))
+               );
+               if (detailItem) {
+                   const updated = await fetchPortfolioItem(detailItem._id);
+                   setPortfolioItemDetail(updated);
+               }
+           }
 
-            toast.success(`Удалено ${selectedToDelete.length} элемента`);
+           toast.success(`Удалено ${selectedToDelete.length} элемента`);
 
-        } catch (error) {
-            let errorMessage = "Ошибка при удалении";
-            if (isAxiosError(error) && error.response) {
-                errorMessage = error.response.data.error;
-            } else if (error instanceof Error) {
-                errorMessage = error.message;
-            }
+       } catch (error) {
+           let errorMessage = "Ошибка при удалении";
+           if (isAxiosError(error) && error.response) {
+               errorMessage = error.response.data.error;
+           } else if (error instanceof Error) {
+               errorMessage = error.message;
+           }
 
-            toast.error(errorMessage);
-        } finally {
-            setPortfolioDeleteLoading(false);
-            setSelectedToDelete([]);
-            setRowSelection({});
-        }
+           toast.error(errorMessage);
+       } finally {
+           setPortfolioDeleteLoading(false);
+           setSelectedToDelete([]);
+           setRowSelection({});
+       }
     }
 
     const handleFilterChange = (column: string, value: string) => {
@@ -338,20 +339,21 @@ const AdminPortfolioClient: React.FC<Props> = ({error, limit = "10"}) => {
                         Создавайте и редактируйте портфолио
                     </p>
                 </div>
-                <Link href="/admin/portfolio/add-portfolio">
+                <Link href="/admin/portfolio/add-portfolio" >
                     <Button className="flex items-center gap-2 w-full sm:w-auto">
-                        <Plus size={16}/>
+                        <Plus size={16} />
                         Создать портфолио
                     </Button>
                 </Link>
             </div>
 
-            <CustomTableHeader
-                table={table}
-                showConfirm={setShowConfirm}
-                setGalleryDelete={setGalleryDelete}
-                onFilterChange={handleFilterChange}
-            />
+           <TableControls
+               table={table}
+               showConfirm={setShowConfirm}
+               setGalleryDelete={setGalleryDelete}
+               onFilterChange={handleFilterChange}
+               setPersistedPageSize={setPageSize}
+           />
             <div className="rounded-md border">
                 <CustomTable table={table}/>
             </div>
@@ -370,23 +372,33 @@ const AdminPortfolioClient: React.FC<Props> = ({error, limit = "10"}) => {
                 open={isEditModalOpen}
                 openChange={() => setIsEditModalOpen(!isEditModalOpen)}>
                 {isGalleryEdit ?
-                    <GalleryEditForm onSaved={() => setIsEditModalOpen(!isEditModalOpen)}/>
+                    <GalleryEditForm onSaved={()=> setIsEditModalOpen(!isEditModalOpen)}/>
                     : <PortfolioEditForm
                         updatePaginationAndData={updatePaginationAndData}
-                        onSaved={() => setIsEditModalOpen(!isEditModalOpen)}
+                        onSaved={()=> setIsEditModalOpen(!isEditModalOpen)}
                     />
                 }
             </ModalEdit>
 
-            <ModalGallery
-                open={isModalOpenGallery}
-                openChange={() => setIsModalOpenGallery(!isModalOpenGallery)}
-                isOpenModalEdit={openEditModalGalleryItem}
-                onRequestDelete={() => {
-                    setGalleryDelete(true);
-                    setShowConfirm(true);
-                }}
-            />
+            {detailItem &&
+                <ModalGallery
+                    open={isModalOpenGallery}
+                    openChange={() => setIsModalOpenGallery(false)}
+                    items={detailItem.gallery}
+                    keyBy="id"
+                    selectedKeys={selectedToDelete}
+                    setSelectedKeys={setSelectedToDelete}
+                    selectionMode={galleryEditSelectionMode}
+                    setSelectionMode={setGalleryEditSelectionMode}
+                    isOpenModalEdit={(key) => openEditModalGalleryItem(key)}
+                    onRequestDelete={() => {
+                        setGalleryDelete(true);
+                        setShowConfirm(true);
+                    }}
+                    deleteLoading={deleteLoading}
+                />
+            }
+
 
             <ConfirmDialog
                 open={showConfirm}
@@ -396,7 +408,7 @@ const AdminPortfolioClient: React.FC<Props> = ({error, limit = "10"}) => {
                         ? "Удалить выбранные элементы?"
                         : "Удалить элемент?"
                 }
-                onConfirm={async () => {
+                onConfirm={ async () => {
                     if (selectedToDelete.length > 1) {
                         await multipleDeletion();
                     } else if (selectedToDelete.length === 1) {

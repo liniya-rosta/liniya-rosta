@@ -7,7 +7,7 @@ import {Category, Product} from "@/lib/types";
 import {API_BASE_URL} from "@/lib/globalConstants";
 import {Button} from "@/components/ui/button";
 import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from "@/components/ui/dropdown-menu";
-import {MoreHorizontal} from "lucide-react";
+import {Edit2, Images, MoreHorizontal, Trash2} from "lucide-react";
 import {Badge} from "@/components/ui/badge";
 
 export const getProductTableColumns = (
@@ -216,18 +216,27 @@ export const getProductTableColumns = (
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => onEditProduct(product)} disabled={actionLoading}>
+                            <DropdownMenuItem onClick={() => onEditProduct(product)}
+                                              disabled={actionLoading}
+                                              className="cursor-pointer">
+                                <Edit2 className="mr-2 h-4 w-4"/>
+
                                 Редактировать
                             </DropdownMenuItem>
 
                             <DropdownMenuItem
                                 onClick={() => onImagesClick({productId: product._id, images: product.images})}
-                                disabled={actionLoading || !Array.isArray(product.images) || product.images.length === 0}
+                                className="cursor-pointer"
                             >
+                                <Images className="mr-2 h-4 w-4"/>
                                 Изображения
                             </DropdownMenuItem>
 
-                            <DropdownMenuItem onClick={() => onDeleteProduct(product._id)} disabled={actionLoading}>
+                            <DropdownMenuItem onClick={() => onDeleteProduct(product._id)}
+                                              disabled={actionLoading}
+                                              className="text-red-600 focus:text-red-600 cursor-pointer"
+                            >
+                                <Trash2 className="mr-2 h-4 w-4 text-red-600 focus:text-red-600"/>
                                 Удалить
                             </DropdownMenuItem>
                         </DropdownMenuContent>

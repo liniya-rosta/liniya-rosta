@@ -31,7 +31,7 @@ const ConfirmDialog: React.FC<PropsWithChildren<Props>> = ({
                                                          onConfirm,
                                                          loading = false,
                                                          children,
-                                                               text
+                                                          text = "Это действие невозможно отменить"
                                                      }) => {
     return (
         <AlertDialog

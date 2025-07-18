@@ -56,7 +56,24 @@ export interface PortfolioUpdate{
     coverAlt?: string;
 }
 
+export interface GalleryUpdate {
+    "gallery.$.image"?: string;
+    "gallery.$.alt"?: string;
+}
+
+
 export interface ServiceUpdate {
     title?: string;
     description?: string;
+}
+
+export interface ImageItem {
+    alt?: string;
+    image: string;
+}
+
+export interface updatePost {
+    title?: string;
+    description?: string;
+    images?: {alt?: string, image: string}[];
 }

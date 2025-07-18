@@ -1,6 +1,6 @@
 "use client";
 
-import {Dialog, DialogContent, DialogHeader, DialogTitle,} from "@/components/ui/dialog";
+import {Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle,} from "@/components/ui/dialog";
 import {Form, FormControl, FormField, FormItem, FormLabel,} from "@/components/ui/form";
 import {Input} from "@/components/ui/input";
 import {Textarea} from "@/components/ui/textarea";
@@ -10,7 +10,6 @@ import {useFieldArray, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {Product} from "@/lib/types";
 import {useAdminProductStore} from "@/store/superadmin/superadminProductsStore";
-import {useCategoryStore} from "@/store/categoriesStore";
 import {useRef, useState} from "react";
 import {updateProduct} from "@/actions/superadmin/products";
 import {toast} from "react-toastify";
@@ -19,6 +18,7 @@ import Image from "next/image";
 import {UpdateProductFormData, updateProductSchema} from "@/lib/zodSchemas/admin/productSchema";
 import {API_BASE_URL} from "@/lib/globalConstants";
 import {isAxiosError} from "axios";
+import {useAdminCategoryStore} from "@/store/superadmin/superadminCategoriesStore";
 
 interface Props {
     open: boolean;
@@ -27,7 +27,7 @@ interface Props {
 }
 
 const ProductEditModal: React.FC<Props> = ({open, onClose, product}) => {
-    const {categories} = useCategoryStore();
+    const {categories} = useAdminCategoryStore();
     const {
         updateLoading,
         setUpdateError,
@@ -82,7 +82,7 @@ const ProductEditModal: React.FC<Props> = ({open, onClose, product}) => {
             toast.success("Продукт успешно обновлён");
             onClose();
         } catch (e) {
-            if (isAxiosError(e)){
+            if (isAxiosError(e)) {
                 setUpdateError(e.response?.data.error);
                 toast.error(e.response?.data.error);
             } else {
@@ -94,6 +94,13 @@ const ProductEditModal: React.FC<Props> = ({open, onClose, product}) => {
 
     return (
         <Dialog open={open} onOpenChange={onClose}>
+            <DialogHeader>
+                <DialogTitle>Редактировать продукт</DialogTitle>
+                <DialogDescription>
+                    Измените данные продукта и нажмите "Сохранить"
+                </DialogDescription>
+            </DialogHeader>
+
             <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
                     <DialogTitle>Редактировать продукт</DialogTitle>
@@ -109,7 +116,8 @@ const ProductEditModal: React.FC<Props> = ({open, onClose, product}) => {
                                     <FormItem>
                                         <FormLabel>Название</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="Название продукта" disabled={updateLoading} {...field} />
+                                            <Input placeholder="Название продукта"
+                                                   disabled={updateLoading} {...field} />
                                         </FormControl>
                                     </FormItem>
                                 )}
@@ -150,7 +158,8 @@ const ProductEditModal: React.FC<Props> = ({open, onClose, product}) => {
                                 <FormItem>
                                     <FormLabel>Описание</FormLabel>
                                     <FormControl>
-                                        <Textarea rows={3} placeholder="Описание продукта" disabled={updateLoading} {...field} />
+                                        <Textarea rows={3} placeholder="Описание продукта"
+                                                  disabled={updateLoading} {...field} />
                                     </FormControl>
                                 </FormItem>
                             )}
@@ -165,7 +174,8 @@ const ProductEditModal: React.FC<Props> = ({open, onClose, product}) => {
                                         <FormLabel>Обложка</FormLabel>
                                         <FormControl>
                                             <div>
-                                                <Button type="button" variant="outline" onClick={() => fileInputCoverRef.current?.click()}>
+                                                <Button type="button" variant="outline"
+                                                        onClick={() => fileInputCoverRef.current?.click()}>
                                                     {coverPreview ? "Изменить обложку" : "Загрузить обложку"}
                                                 </Button>
                                                 <Input
@@ -187,7 +197,7 @@ const ProductEditModal: React.FC<Props> = ({open, onClose, product}) => {
                                     <FormItem>
                                         <FormLabel>Alt текст обложки</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="Описание" {...field} value={field.value ?? ""} />
+                                            <Input placeholder="Описание" {...field} value={field.value ?? ""}/>
                                         </FormControl>
                                     </FormItem>
                                 )}
@@ -212,7 +222,8 @@ const ProductEditModal: React.FC<Props> = ({open, onClose, product}) => {
                                         <FormLabel>Иконка</FormLabel>
                                         <FormControl>
                                             <div>
-                                                <Button type="button" variant="outline" onClick={() => fileInputIconRef.current?.click()}>
+                                                <Button type="button" variant="outline"
+                                                        onClick={() => fileInputIconRef.current?.click()}>
                                                     {iconPreview ? "Изменить иконку" : "Загрузить иконку"}
                                                 </Button>
                                                 <Input
@@ -234,7 +245,8 @@ const ProductEditModal: React.FC<Props> = ({open, onClose, product}) => {
                                     <FormItem>
                                         <FormLabel>Alt текст иконки</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="Описание иконки" disabled={updateLoading} {...field} value={field.value ?? ""} />
+                                            <Input placeholder="Описание иконки" disabled={updateLoading} {...field}
+                                                   value={field.value ?? ""}/>
                                         </FormControl>
                                     </FormItem>
                                 )}
@@ -282,7 +294,8 @@ const ProductEditModal: React.FC<Props> = ({open, onClose, product}) => {
                                     <FormItem>
                                         <FormLabel>Текст акции</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="Например: -20%" disabled={updateLoading} {...field} value={field.value ?? ""}/>
+                                            <Input placeholder="Например: -20%" disabled={updateLoading} {...field}
+                                                   value={field.value ?? ""}/>
                                         </FormControl>
                                     </FormItem>
                                 )}

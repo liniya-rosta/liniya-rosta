@@ -1,3 +1,16 @@
+export interface ImageObject {
+    alt?: string;
+    image: string;
+    _id?: string;
+}
+
+interface PaginationMeta {
+    total: number;
+    page: number;
+    pageSize: number;
+    totalPages: number;
+}
+
 export interface GalleryForm {
     image: File | null,
     alt?: string,
@@ -31,20 +44,24 @@ export interface PortfolioItemDetail extends PortfolioItemPreview {
 type PortfolioEditValues = Partial<PortfolioMutation>;
 type GalleryEditValues = Partial<GalleryForm>;
 
-interface PaginationMeta {
-    total: number;
-    page: number;
-    pageSize: number;
-    totalPages: number;
-}
-
-export interface PaginatedPortfolioResponse extends PaginationMeta {
+export interface PortfolioResponse extends PaginationMeta {
     items: PortfolioItemPreview[],
 }
 
 export interface Category {
     _id: string;
     title: string;
+}
+
+export interface Product {
+    _id: string;
+    title: string;
+    category: {
+        _id: string;
+        title: string;
+    };
+    image: string
+    description: string | null;
 }
 
 export interface ValidationError {
@@ -119,19 +136,18 @@ export interface Post {
     _id: string;
     title: string;
     description: string;
-    image: string;
+    images: Image[];
+    imageCount: number;
 }
 
-export interface CreatePostData {
-    title: string;
-    description: string;
-    image: File;
+export interface PostResponse extends PaginationMeta {
+    items: Post[];
 }
 
-export interface UpdatePostData {
-    title?: string;
-    description?: string;
-    image?: File;
+export interface UpdateImagePost {
+    imageUrl: string;
+    alt?: string;
+    newImage?: File;
 }
 
 export interface ProductImagesForm {

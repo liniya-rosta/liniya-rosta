@@ -26,7 +26,7 @@ const PostClient: React.FC<Props> = ({ data, error }) => {
     const {
         setFetchPostsError,
         fetchPostsLoading,
-        setfetchPostsLoading,
+        setFetchPostsLoading,
         fetchPostsError: storeError
     } = usePostsStore();
 
@@ -34,9 +34,9 @@ const PostClient: React.FC<Props> = ({ data, error }) => {
 
     useEffect(() => {
         setFetchPostsError(error);
-        setfetchPostsLoading(false);
+        setFetchPostsLoading(false);
         setIsHydrating(false);
-    }, [data, error, setFetchPostsError, setfetchPostsLoading]);
+    }, [data, error, setFetchPostsError, setFetchPostsLoading]);
 
     if (isHydrating || fetchPostsLoading) return <Loading />;
 
@@ -83,7 +83,7 @@ const PostClient: React.FC<Props> = ({ data, error }) => {
             <Card className="overflow-hidden">
                 <div className="relative aspect-video md:aspect-[2/1] w-full">
                     <Image
-                        src={`${API_BASE_URL}/${data.image}`}
+                        src={`${API_BASE_URL}/${data.images}`}
                         fill
                         sizes="(max-width: 768px) 100vw, 1200px"
                         onError={(e) => {
