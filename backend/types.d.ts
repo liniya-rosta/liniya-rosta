@@ -42,7 +42,7 @@ export interface ContactFields {
     whatsapp: string;
 }
 
-export interface PortfolioUpdate{
+export interface PortfolioUpdate {
     cover?: string;
     description?: string;
     coverAlt?: string;
@@ -67,5 +67,8 @@ export interface ImageItem {
 export interface updatePost {
     title?: string;
     description?: string;
-    images?: {alt?: string, image: string}[];
+    images?: { alt?: string, image: string }[];
+    seoTitle?: string;
+    seoDescription?: string;
+    slug?: string;
 }

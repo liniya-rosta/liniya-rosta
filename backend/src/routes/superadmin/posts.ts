@@ -3,12 +3,13 @@ import Post from "../../models/Post";
 import mongoose from "mongoose";
 import {postImage} from "../../middleware/multer";
 import {updatePost} from "../../../types";
+import slugify from "slugify";
 
 const postsSuperAdminRouter = express.Router();
 
 postsSuperAdminRouter.post("/", postImage.array("images"), async (req, res, next) => {
     try {
-        const {title, description} = req.body;
+        const {title, description, seoTitle, seoDescription} = req.body;
         const files = req.files as Express.Multer.File[];
 
         if (!title || !description || !title.trim() || !description.trim()) {
@@ -31,6 +32,8 @@ postsSuperAdminRouter.post("/", postImage.array("images"), async (req, res, next
         const post = new Post({
             title: title.trim(),
             description: description.trim(),
+            seoTitle: seoTitle?.trim() || null,
+            seoDescription: seoDescription?.trim() || null,
             images,
         });
 
@@ -47,7 +50,7 @@ postsSuperAdminRouter.post("/", postImage.array("images"), async (req, res, next
 postsSuperAdminRouter.patch("/:id", postImage.array("images"), async (req, res, next) => {
     try {
         const {id} = req.params;
-        const {title, description, mode = "replace"} = req.body;
+        const {title, description, seoTitle, seoDescription, mode = "replace"} = req.body;
 
         if (!mongoose.Types.ObjectId.isValid(id)) {
             res.status(400).send({error: "Неверный формат ID поста"});
@@ -78,8 +81,30 @@ postsSuperAdminRouter.patch("/:id", postImage.array("images"), async (req, res, 
         }
 
         const updateData: updatePost = {};
-        if (title?.trim()) updateData.title = title.trim();
+        if (title?.trim()) {
+            const trimmedTitle = title.trim();
+            updateData.title = trimmedTitle;
+
+            const baseSlug = slugify(trimmedTitle, {lower: true, strict: true});
+            let uniqueSlug = baseSlug;
+            let counter = 1;
+
+            while (await Post.exists({slug: uniqueSlug, _id: {$ne: post._id}})) {
+                uniqueSlug = `${baseSlug}-${counter}`;
+                counter++;
+            }
+
+            updateData.slug = uniqueSlug;
+        }
+
         if (description?.trim()) updateData.description = description.trim();
+
+        if (seoTitle !== undefined) {
+            updateData.seoTitle = seoTitle?.trim() || null;
+        }
+        if (seoDescription !== undefined) {
+            updateData.seoDescription = seoDescription?.trim() || null;
+        }
 
         if (files && files.length > 0) {
             const newImages = files.map((file, index) => ({
@@ -110,25 +135,25 @@ postsSuperAdminRouter.patch("/:id", postImage.array("images"), async (req, res, 
     }
 });
 
-postsSuperAdminRouter.patch("/:id/update-image",postImage.single("newImage") ,async (req, res, next) => {
-    const { id } = req.params;
-    const { imageUrl, alt } = req.body;
+postsSuperAdminRouter.patch("/:id/update-image", postImage.single("newImage"), async (req, res, next) => {
+    const {id} = req.params;
+    const {imageUrl, alt} = req.body;
 
     if (!imageUrl) {
-         res.status(400).json({ error: "Ссылка на изображение обязательна" });
+        res.status(400).json({error: "Ссылка на изображение обязательна"});
         return;
     }
 
     try {
         const post = await Post.findById(id);
-        if (!post)  {
-            res.status(404).send({ error: "Пост не найден" });
+        if (!post) {
+            res.status(404).send({error: "Пост не найден"});
             return;
         }
 
         const imageItem = post.images.find(img => img.image === imageUrl);
         if (!imageItem) {
-            res.status(404).json({ error: "Изображение не найдено" });
+            res.status(404).json({error: "Изображение не найдено"});
             return;
         }
 
@@ -140,25 +165,25 @@ postsSuperAdminRouter.patch("/:id/update-image",postImage.single("newImage") ,as
 
         await post.save();
 
-       res.send({ message: "Изображение обновлено", post });
+        res.send({message: "Изображение обновлено", post});
     } catch (e) {
         next(e);
     }
 });
 
 postsSuperAdminRouter.patch("/:id/reorder-images", async (req, res, next) => {
-    const { id } = req.params;
-    const { newOrder } = req.body;
+    const {id} = req.params;
+    const {newOrder} = req.body;
 
     if (!Array.isArray(newOrder) || newOrder.length === 0) {
-        res.status(400).json({ error: "Неверный формат нового порядка изображений" });
+        res.status(400).json({error: "Неверный формат нового порядка изображений"});
         return;
     }
 
     try {
         const post = await Post.findById(id);
-        if (!post){
-            res.status(404).json({ error: "Пост не найден" })
+        if (!post) {
+            res.status(404).json({error: "Пост не найден"})
             return
         }
 
@@ -168,7 +193,7 @@ postsSuperAdminRouter.patch("/:id/reorder-images", async (req, res, next) => {
             newOrder.every(img => currentImages.includes(img.image));
 
         if (!isValid) {
-            res.status(400).json({ error: "Новый порядок содержит недопустимые изображения" });
+            res.status(400).json({error: "Новый порядок содержит недопустимые изображения"});
             return
         }
 
