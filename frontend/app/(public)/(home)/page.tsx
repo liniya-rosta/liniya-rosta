@@ -29,12 +29,6 @@ export async function generateMetadata(): Promise<Metadata> {
             ],
             type: 'website',
         },
-        twitter: {
-            card: 'summary_large_image',
-            title: 'Линия Роста',
-            description: 'Натяжные потолки, SPC ламинат, багеты и интерьерные решения в Бишкеке.',
-            images: ['/images/services/main-service.JPG'],
-        },
     };
 }
 

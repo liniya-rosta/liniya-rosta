@@ -20,7 +20,7 @@ productsSuperAdminRouter.post("/", productImage.fields([
         const imagesFiles = files.images || [];
         const iconFile = files.icon?.[0];
 
-        const {category, title, description} = req.body;
+        const {category, title, description, seoTitle, seoDescription} = req.body;
         if (!category || !title || !title.trim() || !coverFile) {
             res.status(400).send({error: "Категория, заголовок и обложка обязательны"});
             return;
@@ -47,6 +47,8 @@ productsSuperAdminRouter.post("/", productImage.fields([
         const product = new Product({
             category,
             title: title.trim(),
+            seoTitle: seoTitle?.trim() || null,
+            seoDescription: seoDescription?.trim() || null,
             description: description?.trim() || null,
             cover: {
                 url: `product/${coverFile.filename}`,
@@ -86,7 +88,7 @@ productsSuperAdminRouter.patch("/:id", productImage.fields([
         const iconFile = files.icon?.[0];
 
         const {id} = req.params;
-        const {category, title, description} = req.body;
+        const {category, title, description, seoTitle, seoDescription} = req.body;
 
         if (!mongoose.Types.ObjectId.isValid(id)) {
             res.status(400).send({error: "Неверный формат ID продукта"});
@@ -120,6 +122,14 @@ productsSuperAdminRouter.patch("/:id", productImage.fields([
         if (title && !title.trim()) {
             res.status(400).send({error: "Заголовок не может быть пустым"});
             return;
+        }
+
+        if (seoTitle !== undefined) {
+            product.seoTitle = seoTitle?.trim() || null;
+        }
+
+        if (seoDescription !== undefined) {
+            product.seoDescription = seoDescription?.trim() || null;
         }
 
         if (description?.trim() === '') {

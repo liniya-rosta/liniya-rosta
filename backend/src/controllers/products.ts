@@ -62,6 +62,8 @@ export const getProducts = async (req: Request, res: Response, next: NextFunctio
                 $project: {
                     title: 1,
                     slug: 1,
+                    seoTitle: 1,
+                    seoDescription: 1,
                     createdAt: 1,
                     updatedAt: 1,
                     category: 1,
