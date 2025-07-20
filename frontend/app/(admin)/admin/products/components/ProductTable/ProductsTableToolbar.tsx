@@ -81,6 +81,8 @@ const ProductsTableToolbar: React.FC<Props> = ({
         "icon": "Иконка",
         "characteristics": "Характеристики",
         "sale": "Скидка",
+        "seoTitle": "SEO заголовок",
+        "seoDescription": "SEO описание",
     };
 
     return (
