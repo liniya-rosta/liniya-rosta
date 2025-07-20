@@ -10,6 +10,14 @@ export const createProduct = async (productData: ProductMutation): Promise<Produ
         formData.append('description', productData.description);
     }
 
+    if (productData.seoTitle) {
+        formData.append('seoTitle', productData.seoTitle);
+    }
+
+    if (productData.seoDescription) {
+        formData.append('seoDescription', productData.seoDescription);
+    }
+
     if (productData.cover) {
         formData.append('cover', productData.cover);
     }
@@ -65,6 +73,14 @@ export const updateProduct = async (id: string, productData: ProductUpdateMutati
 
     if (productData.description) {
         formData.append('description', productData.description);
+    }
+
+    if (productData.seoTitle) {
+        formData.append('seoTitle', productData.seoTitle);
+    }
+
+    if (productData.seoDescription) {
+        formData.append('seoDescription', productData.seoDescription);
     }
 
     if (productData.cover) {

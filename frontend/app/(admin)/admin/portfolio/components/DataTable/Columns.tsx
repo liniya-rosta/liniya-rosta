@@ -23,14 +23,14 @@ export const getColumns = (
 ): ColumnDef<PortfolioItemPreview>[] => [
     {
         id: "select",
-        header: ({ table }) => (
+        header: ({table}) => (
             <Checkbox
                 checked={table.getIsAllRowsSelected()}
                 onCheckedChange={(value) => table.toggleAllRowsSelected(!!value)}
                 aria-label="Выбрать все"
             />
         ),
-        cell: ({ row }) => (
+        cell: ({row}) => (
             <Checkbox
                 checked={row.getIsSelected()}
                 onCheckedChange={(value) => row.toggleSelected(!!value)}
@@ -43,7 +43,7 @@ export const getColumns = (
     {
         id: "index",
         header: "№",
-        cell: ({ row, table }) => {
+        cell: ({row, table}) => {
             const flatRows = table.getRowModel().flatRows;
             const originalIndex = flatRows.findIndex(r => r.id === row.id);
             return <div>{originalIndex + 1}</div>;
@@ -53,14 +53,14 @@ export const getColumns = (
     },
     {
         accessorKey: "coverAlt",
-        header: ({ column }) => {
+        header: ({column}) => {
             return (
                 <Button
                     variant="ghost"
                     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                 >
                     Альтер-ое название обложки
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                    <ArrowUpDown className="ml-2 h-4 w-4"/>
                 </Button>
             );
         },
@@ -71,11 +71,35 @@ export const getColumns = (
     {
         accessorKey: "description",
         header: "Описание",
-        cell: ({ row }) => {
+        cell: ({row}) => {
             const value = row.getValue("description") as string | undefined;
             return (
                 <div className="capitalize">
                     {value?.trim() ? value : <span className="text-muted-foreground italic">Нет описания</span>}
+                </div>
+            );
+        },
+    },
+    {
+        accessorKey: "seoTitle",
+        header: () => <div className="text-left">SEO заголовок</div>,
+        cell: ({row}) => {
+            const value = row.getValue("seoTitle") as string | undefined;
+            return (
+                <div className="capitalize">
+                    {value?.trim() ? value : <span className="text-muted-foreground italic">Нет SEO заголовка</span>}
+                </div>
+            );
+        },
+    },
+    {
+        accessorKey: "seoDescription",
+        header: () => <div className="text-left">SEO описание</div>,
+        cell: ({row}) => {
+            const value = row.getValue("seoDescription") as string | undefined;
+            return (
+                <div className="capitalize">
+                    {value?.trim() ? value : <span className="text-muted-foreground italic">Нет SEO описания</span>}
                 </div>
             );
         },

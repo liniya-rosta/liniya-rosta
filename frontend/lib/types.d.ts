@@ -21,6 +21,8 @@ export interface PortfolioMutation {
     coverAlt: string;
     cover: File | null;
     gallery: GalleryForm[];
+    seoTitle?: string;
+    seoDescription?: string;
 }
 
 export interface PortfolioItemPreview {
@@ -29,6 +31,11 @@ export interface PortfolioItemPreview {
     cover: string;
     coverAlt: string;
     galleryCount: number;
+    slug: string;
+    createdAt: string;
+    updatedAt: string;
+    seoTitle?: string;
+    seoDescription?: string;
 }
 
 export interface GalleryItem {
@@ -51,17 +58,6 @@ export interface PortfolioResponse extends PaginationMeta {
 export interface Category {
     _id: string;
     title: string;
-}
-
-export interface Product {
-    _id: string;
-    title: string;
-    category: {
-        _id: string;
-        title: string;
-    };
-    image: string
-    description: string | null;
 }
 
 export interface ValidationError {
@@ -138,6 +134,11 @@ export interface Post {
     description: string;
     images: Image[];
     imageCount: number;
+    slug: string;
+    createdAt: string;
+    updatedAt: string;
+    seoTitle?: string;
+    seoDescription?: string;
 }
 
 export interface PostResponse extends PaginationMeta {
@@ -164,6 +165,8 @@ interface ImageItem {
 export interface Product {
     _id: string;
     title: string;
+    seoTitle: string;
+    seoDescription: string;
     category: {
         _id: string;
         title: string;
@@ -186,11 +189,16 @@ export interface Product {
         alt?: string;
         url: string | null;
     };
+    slug: string;
+    createdAt: string;
+    updatedAt: string;
 }
 
 export interface ProductMutation {
     category: string;
     title: string;
+    seoTitle?: string | null;
+    seoDescription?: string | null;
     description?: string;
     coverAlt?: string | null;
     cover?: File | null;

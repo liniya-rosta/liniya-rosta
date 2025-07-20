@@ -30,3 +30,8 @@ export const fetchProductById = async (id: string): Promise<Product> => {
     const res = await axiosAPI.get<Product>(`/products/${id}`);
     return res.data;
 };
+
+export const fetchProductBySlug = async (slug: string): Promise<Product> => {
+    const res = await axiosAPI.get<Product>(`/products/slug/${slug}`);
+    return res.data;
+};

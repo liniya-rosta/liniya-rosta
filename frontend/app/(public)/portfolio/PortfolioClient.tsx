@@ -144,7 +144,7 @@ const PortfolioClient: React.FC<Props> = ({data, error, limit = "8"}) => {
     };
 
 
-    if (error) return <ErrorMsg error={error} />;
+    if (error) return <ErrorMsg error={error}/>;
 
     return (
         <>
@@ -154,9 +154,9 @@ const PortfolioClient: React.FC<Props> = ({data, error, limit = "8"}) => {
 
             {showFilter && (
                 <div className='flex flex-wrap gap-1 '>
-                    <Select onValueChange={handleFilterChange} value={selectedValue} >
+                    <Select onValueChange={handleFilterChange} value={selectedValue}>
                         <SelectTrigger className="w-[180px] mb-4 mr-2">
-                            <SelectValue placeholder="Выберите фильтр" />
+                            <SelectValue placeholder="Выберите фильтр"/>
                         </SelectTrigger>
                         <SelectContent>
                             <SelectItem value="coverAlt">По названию</SelectItem>
@@ -164,8 +164,8 @@ const PortfolioClient: React.FC<Props> = ({data, error, limit = "8"}) => {
                         </SelectContent>
                     </Select>
 
-                    {selectedValue === 'coverAlt' && <SearchByAltGallery />}
-                    {selectedValue === 'description' && <SearchByDescription />}
+                    {selectedValue === 'coverAlt' && <SearchByAltGallery/>}
+                    {selectedValue === 'description' && <SearchByDescription/>}
                 </div>
             )}
 
@@ -173,7 +173,7 @@ const PortfolioClient: React.FC<Props> = ({data, error, limit = "8"}) => {
                 {items && items.length > 0 ? (
                     items.map((item) => {
                         const imageUrl = API_BASE_URL + "/" + item.cover;
-                        const pageUrl = "/portfolio/" + item._id;
+                        const pageUrl = "/portfolio/" + item.slug;
                         return (
                             <Link key={item._id} href={pageUrl}>
                                 <CartPortfolio
@@ -186,7 +186,7 @@ const PortfolioClient: React.FC<Props> = ({data, error, limit = "8"}) => {
                     })
                 ) : (
                     <div className="flex flex-col items-center justify-center col-span-full min-h-[300px]">
-                        <EmptyState message="Нет данных" />
+                        <EmptyState message="Нет данных"/>
                     </div>
                 )}
             </div>

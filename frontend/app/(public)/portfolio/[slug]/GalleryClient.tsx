@@ -15,7 +15,7 @@ type Props = {
     error: string | null,
 };
 
-const GalleryClient: React.FC<Props> = ({detailItem, error=null}) => {
+const GalleryClient: React.FC<Props> = ({detailItem, error = null}) => {
     const {
         fetchLoadingPortfolio,
         setPortfolioItemDetail,
@@ -57,7 +57,7 @@ const GalleryClient: React.FC<Props> = ({detailItem, error=null}) => {
     }, [setPortfolioItemDetail, detailItem, setPortfolioLoading, error, currentIndex, gallery]);
 
 
-    if (!detailItem) return  <p className="text-center">Галерея пуста</p>
+    if (!detailItem) return <p className="text-center">Галерея пуста</p>
     if (fetchLoadingPortfolio) return <LoadingFullScreen/>
     if (error) return <ErrorMsg error={error}/>
 
@@ -76,23 +76,23 @@ const GalleryClient: React.FC<Props> = ({detailItem, error=null}) => {
                 />
 
                 {gallery && gallery.length > 0 ? (
-                    gallery.map((item, index) => {
-                        const imageUrl = `${API_BASE_URL}/${item.image}`;
-                        return (
-                            <GalleryCard
-                                key={item._id}
-                                index={index}
-                                id={item._id}
-                                imageUrl={imageUrl}
-                                handleOpen={handleOpen}
-                                alt={item.alt}
-                                className="aspect-[3/4] w-full overflow-hidden group cursor-pointer rounded-2xl hover:shadow-xl transition"
-                                classNameImage="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
-                            />
-                        );
-                    })
-                )
-                    :<div className="flex justify-center items-center min-h-[200px]">
+                        gallery.map((item, index) => {
+                            const imageUrl = `${API_BASE_URL}/${item.image}`;
+                            return (
+                                <GalleryCard
+                                    key={item._id}
+                                    index={index}
+                                    id={item._id}
+                                    imageUrl={imageUrl}
+                                    handleOpen={handleOpen}
+                                    alt={item.alt}
+                                    className="aspect-[3/4] w-full overflow-hidden group cursor-pointer rounded-2xl hover:shadow-xl transition"
+                                    classNameImage="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
+                                />
+                            );
+                        })
+                    )
+                    : <div className="flex justify-center items-center min-h-[200px]">
                         <p className="text-muted-foreground text-lg">Галерея пуста</p>
                     </div>
                 }
@@ -111,12 +111,12 @@ const GalleryClient: React.FC<Props> = ({detailItem, error=null}) => {
                         target="_blank"
                         rel="noopener noreferrer"
                     ><Image
-                            src={`${API_BASE_URL}/${selectedItem.image}`}
-                            alt={selectedItem.alt}
-                            width={800}
-                            height={600}
-                            className="w-auto h-auto max-w-full max-h-[80vh] object-contain"
-                        />
+                        src={`${API_BASE_URL}/${selectedItem.image}`}
+                        alt={selectedItem.alt}
+                        width={800}
+                        height={600}
+                        className="w-auto h-auto max-w-full max-h-[80vh] object-contain"
+                    />
                     </a>
                 </ModalImage>
             )}

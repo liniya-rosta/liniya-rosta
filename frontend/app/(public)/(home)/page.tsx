@@ -6,8 +6,31 @@ import {fetchPortfolioPreviews} from "@/actions/portfolios";
 import {fetchContacts} from "@/actions/contacts";
 import HomePageClient from "@/app/(public)/(home)/HomeClient";
 import {fetchAllServices} from "@/actions/services";
+import {Metadata} from "next";
 
-export const revalidate = 300;
+export const revalidate = 3600;
+
+export async function generateMetadata(): Promise<Metadata> {
+    return {
+        title: 'Главная',
+        description: 'Компания «Линия Роста» — натяжные потолки, SPC ламинат, багеты и интерьерные решения в Бишкеке. Качество, гарантия, профессиональный монтаж.',
+        openGraph: {
+            title: 'Линия Роста',
+            description: 'Натяжные потолки, SPC ламинат, багеты и интерьерные решения в Бишкеке.',
+            url: '/',
+            siteName: 'Линия Роста',
+            images: [
+                {
+                    url: '/images/services/main-service.JPG',
+                    width: 1200,
+                    height: 630,
+                    alt: 'Натяжные потолки и ламинат в Бишкеке от Линии Роста',
+                },
+            ],
+            type: 'website',
+        },
+    };
+}
 
 const HomePage = async () => {
     let categoriesData: Category[] = [];

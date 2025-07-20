@@ -4,7 +4,7 @@ import mongoose, {PipelineStage} from "mongoose";
 
 export const getProducts = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const {title, category, imagesId, limit = 10, page = 1, description, coverAlt} = req.query;
+        const {title, category, imagesId, limit = 10, page = 1, description} = req.query;
 
         if (imagesId) {
             const item = await Product.findOne(
@@ -39,16 +39,13 @@ export const getProducts = async (req: Request, res: Response, next: NextFunctio
             matchStage.description = {$regex: description, $options: "i"};
         }
 
-        if (coverAlt && typeof coverAlt === "string") {
-            matchStage["cover.alt"] = {$regex: coverAlt, $options: "i"};
-        }
-
         const aggregationPipeline = [
             Object.keys(matchStage).length > 0 ? {$match: matchStage} : null,
             {$sort: {_id: -1}},
             {$skip: skip},
             {$limit: parsedLimit},
-            {$lookup: {
+            {
+                $lookup: {
                     from: "categories",
                     localField: "category",
                     foreignField: "_id",
@@ -64,9 +61,13 @@ export const getProducts = async (req: Request, res: Response, next: NextFunctio
             {
                 $project: {
                     title: 1,
+                    slug: 1,
+                    seoTitle: 1,
+                    seoDescription: 1,
+                    createdAt: 1,
+                    updatedAt: 1,
                     category: 1,
                     cover: 1,
-                    coverAlt: "$cover.alt",
                     description: 1,
                     images: 1,
                     icon: 1,
@@ -105,6 +106,22 @@ export const getProductById = async (req: Request, res: Response, next: NextFunc
 
     try {
         const product = await Product.findById(id).populate("category", "title");
+        if (!product) {
+            res.status(404).send({message: 'Продукт не найден'});
+            return;
+        }
+
+        res.send(product);
+    } catch (e) {
+        next(e);
+    }
+}
+
+export const getProductBySlug = async (req: Request, res: Response, next: NextFunction) => {
+    const slug = req.params.slug;
+
+    try {
+        const product = await Product.findOne({slug}).populate("category", "title");
         if (!product) {
             res.status(404).send({message: 'Продукт не найден'});
             return;

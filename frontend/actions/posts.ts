@@ -34,3 +34,8 @@ export const fetchPostById = async (postId: string): Promise<Post> => {
         throw e;
     }
 };
+
+export const fetchPostBySlug = async (slug: string): Promise<Post> => {
+    const response = await axiosAPI.get<Post>(`/posts/slug/${slug}`);
+    return response.data;
+};

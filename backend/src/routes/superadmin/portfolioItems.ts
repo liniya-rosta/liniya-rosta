@@ -5,6 +5,7 @@ import {portfolioImage} from "../../middleware/multer";
 import {deleteOrReplaceImages} from "../../middleware/deleteImages";
 import {deleteOrReplaceGalleryImage} from "../../middleware/deleteImagesGallery";
 import {GalleryUpdate} from "../../../types";
+import slugify from "slugify";
 
 const portfolioSuperAdminRouter = express.Router();
 
@@ -42,6 +43,8 @@ portfolioSuperAdminRouter.post(
                 gallery,
                 description: req.body.description,
                 coverAlt: req.body.coverAlt,
+                seoTitle: req.body.seoTitle || null,
+                seoDescription: req.body.seoDescription || null,
             });
 
             await newItem.save();
@@ -77,6 +80,23 @@ portfolioSuperAdminRouter.patch(
             if (req.file) updateData.cover = `portfolio/${req.file.filename}`;
             if (req.body.description !== undefined) updateData.description = req.body.description;
             if (req.body.coverAlt !== undefined) updateData.coverAlt = req.body.coverAlt;
+            if (req.body.seoTitle !== undefined) updateData.seoTitle = req.body.seoTitle;
+            if (req.body.seoDescription !== undefined) updateData.seoDescription = req.body.seoDescription;
+            if (req.body.slug !== undefined) updateData.slug = req.body.slug;
+
+            if (req.body.slug === undefined && (req.body.coverAlt || req.body.description)) {
+                const baseSlug = slugify(req.body.coverAlt || req.body.description || "portfolio", {
+                    lower: true,
+                    strict: true
+                });
+                let uniqueSlug = baseSlug;
+                let counter = 1;
+                while (await PortfolioItem.exists({slug: uniqueSlug, _id: {$ne: id}})) {
+                    uniqueSlug = `${baseSlug}-${counter}`;
+                    counter++;
+                }
+                updateData.slug = uniqueSlug;
+            }
 
             const updatedItem = await PortfolioItem.findByIdAndUpdate(
                 id,

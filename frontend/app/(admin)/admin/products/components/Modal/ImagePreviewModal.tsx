@@ -1,4 +1,4 @@
-import {Dialog, DialogContent, DialogTitle} from "@/components/ui/dialog";
+import {Dialog, DialogContent, DialogDescription, DialogTitle} from "@/components/ui/dialog";
 import {API_BASE_URL} from "@/lib/globalConstants";
 import Image from "next/image";
 import React from "react";
@@ -21,6 +21,7 @@ const ImagePreviewModal: React.FC<ImagePreviewModalProps> = ({image, onClose}) =
                 <VisuallyHidden>
                     <DialogTitle>Просмотр изображения</DialogTitle>
                 </VisuallyHidden>
+                <DialogDescription>Полноразмерный просмотр изображения</DialogDescription>
                 <a
                     target="_blank"
                     rel="noopener noreferrer"

@@ -64,15 +64,17 @@ const ProductDetailView: React.FC<Props> = ({productData, fetchProductError}) =>
                             {product.images.map((img) => (
                                 <SwiperSlide key={img._id}
                                              className="!w-[300px]"
-                                             onClick={() => setPreviewImage({ url: img.url, alt: img.alt })}
+                                             onClick={() => setPreviewImage({url: img.url, alt: img.alt})}
 
                                 >
-                                    <div className="relative w-full h-[200px] rounded-lg overflow-hidden shadow-md border hover:scale-105 transition-transform duration-300">
+                                    <div
+                                        className="relative w-full h-[200px] rounded-lg overflow-hidden shadow-md border hover:scale-105 transition-transform duration-300">
                                         <Image
                                             src={`${API_BASE_URL}/${img.url}`}
                                             alt={img.alt}
                                             fill
                                             className="object-cover"
+                                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                         />
                                     </div>
                                 </SwiperSlide>

@@ -1,12 +1,11 @@
 "use client";
 
-import React, {useEffect, useState} from "react";
+import React, {useEffect} from "react";
 import {Plus} from "lucide-react";
 import {Button} from "@/components/ui/button";
 import {CardContent} from "@/components/ui/card";
 import {AxiosError} from "axios";
 import {deleteProduct} from "@/actions/superadmin/products";
-import ProductEditModal from "@/app/(admin)/admin/products/components/Modal/ProductEditModal";
 import ProductsTable from "@/app/(admin)/admin/products/components/ProductTable/ProductsTable";
 import {Category, Product} from "@/lib/types";
 import {toast} from "react-toastify";
@@ -52,10 +51,6 @@ const ProductsClient: React.FC<ProductsClientProps> = ({
 
     const {setCategories, fetchCategoriesError, setFetchCategoriesError} = useAdminCategoryStore();
 
-    const [isHydrating, setIsHydrating] = useState(true);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [editingProduct, setEditingProduct] = useState<Product | null>(null);
-
     const anyLoading = createLoading || updateLoading || deleteLoading;
     const overallError = fetchError || fetchCategoriesError;
 
@@ -65,7 +60,6 @@ const ProductsClient: React.FC<ProductsClientProps> = ({
         if (initialProductsError) setFetchError(initialProductsError);
         if (initialCategoriesError) setFetchCategoriesError(initialCategoriesError);
         setFetchLoading(false);
-        setIsHydrating(false);
     }, [
         initialProducts,
         initialCategories,
@@ -77,19 +71,6 @@ const ProductsClient: React.FC<ProductsClientProps> = ({
         setFetchLoading,
         setFetchCategoriesError,
     ]);
-
-    const resetAndCloseModal = () => {
-        setEditingProduct(null);
-        setIsModalOpen(false);
-        setCreateError(null);
-        setUpdateError(null);
-    };
-
-    const openEditModal = (product: Product) => {
-        setEditingProduct(product);
-        setIsModalOpen(true);
-        resetErrors();
-    };
 
     const resetErrors = () => {
         setFetchError(null);
@@ -139,7 +120,7 @@ const ProductsClient: React.FC<ProductsClientProps> = ({
         }
     };
 
-    if (isHydrating || fetchLoading) return <DataSkeleton/>;
+    if (fetchLoading) return <DataSkeleton/>;
 
     if (overallError) return <ErrorMsg error={overallError}/>
 
@@ -173,21 +154,12 @@ const ProductsClient: React.FC<ProductsClientProps> = ({
                     </div>
                 ) : (
                     <ProductsTable
-                        onEditProduct={openEditModal}
                         onDeleteProduct={handleDeleteProduct}
                         onDeleteSelectedProducts={handleDeleteSelectedProducts}
                         actionLoading={anyLoading}
                     />
                 )}
             </CardContent>
-
-            {editingProduct && (
-                <ProductEditModal
-                    open={isModalOpen}
-                    onClose={resetAndCloseModal}
-                    product={editingProduct}
-                />
-            )}
         </div>
     );
 };
