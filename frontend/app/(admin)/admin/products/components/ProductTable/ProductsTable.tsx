@@ -20,20 +20,32 @@ import {useProductsTableLogic} from "@/app/(admin)/admin/products/hooks/useProdu
 import ProductTableContent from "@/app/(admin)/admin/products/components/ProductTable/ProductsTableContent";
 import {useProductsQuery} from "@/app/(admin)/admin/products/hooks/useProductsQuery";
 import ProductsTablePagination from "@/app/(admin)/admin/products/components/ProductTable/ProductsTablePagination";
+import ProductEditModal from "@/app/(admin)/admin/products/components/Modal/ProductEditModal";
 
 interface ProductsTableProps {
-    onEditProduct: (product: Product) => void;
     actionLoading: boolean;
     onDeleteProduct: (id: string) => void;
     onDeleteSelectedProducts: (ids: string[]) => void;
 }
 
 const ProductsTable: React.FC<ProductsTableProps> = ({
-                                                         onEditProduct,
                                                          actionLoading,
                                                          onDeleteProduct,
                                                          onDeleteSelectedProducts,
                                                      }) => {
+    const [editingProduct, setEditingProduct] = React.useState<Product | null>(null);
+    const [isModalOpen, setIsModalOpen] = React.useState(false);
+
+    const handleEditProduct = React.useCallback((product: Product) => {
+        setEditingProduct(product);
+        setIsModalOpen(true);
+    }, []);
+
+    const resetAndCloseModal = React.useCallback(() => {
+        setEditingProduct(null);
+        setIsModalOpen(false);
+    }, []);
+
     const {categories} = useCategoryStore();
 
     const {
@@ -55,14 +67,15 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
         pageIndex, setPageIndex,
         pageSize, setPageSize,
         totalPages,
-        totalItems
+        totalItems,
+        refresh,
     } = useProductsQuery();
 
     const columns = React.useMemo(
         () =>
             getProductTableColumns(
                 categories,
-                onEditProduct,
+                handleEditProduct,
                 (id: string) => {
                     setIdsToDelete([id]);
                     setShowConfirmDialog(true);
@@ -74,7 +87,7 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
             ),
         [
             categories,
-            onEditProduct,
+            handleEditProduct,
             actionLoading,
             onImageClick,
             onSaleLabelClick,
@@ -91,7 +104,7 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
         pageCount: totalPages,
         onPaginationChange: (updater) => {
             const next = typeof updater === "function"
-                ? updater({ pageIndex, pageSize })
+                ? updater({pageIndex, pageSize})
                 : updater;
             setPageIndex(next.pageIndex);
             setPageSize(next.pageSize);
@@ -154,18 +167,30 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
                 loading={actionLoading}
                 text="Это действие нельзя отменить. Вы уверены, что хотите удалить?"
             />
+
             <ImagePreviewModal
                 image={previewImage}
                 onClose={() => setPreviewImage(null)}
             />
+
             <SaleLabelModal
                 saleLabel={saleLabel}
                 onClose={() => setSaleLabel(null)}
             />
+
             <ImagesModal
                 open={isImagesModalOpen}
                 onClose={() => setIsImagesModalOpen(false)}
             />
+
+            {editingProduct && (
+                <ProductEditModal
+                    open={isModalOpen}
+                    onClose={resetAndCloseModal}
+                    product={editingProduct}
+                    refresh={refresh}
+                />
+            )}
         </div>
     );
 };

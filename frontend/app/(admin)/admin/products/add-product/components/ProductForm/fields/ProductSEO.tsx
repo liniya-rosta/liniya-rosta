@@ -22,10 +22,10 @@ const ProductSeo: React.FC<Props> = ({form}) => {
                     name="seoTitle"
                     render={({field}) => (
                         <FormItem>
-                            <FormLabel>SEO Title</FormLabel>
+                            <FormLabel>SEO Заголовок</FormLabel>
                             <FormControl>
                                 <Input
-                                    placeholder="SEO title"
+                                    placeholder="SEO заголовок"
                                     disabled={createLoading}
                                     {...field}
                                     value={field.value ?? ""}
@@ -45,7 +45,7 @@ const ProductSeo: React.FC<Props> = ({form}) => {
                     name="seoDescription"
                     render={({field}) => (
                         <FormItem>
-                            <FormLabel>SEO Description</FormLabel>
+                            <FormLabel>SEO Описание</FormLabel>
                             <FormControl>
                                 <Textarea
                                     placeholder="SEO description"

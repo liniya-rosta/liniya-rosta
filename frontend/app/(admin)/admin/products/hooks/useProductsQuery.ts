@@ -20,6 +20,8 @@ export function useProductsQuery() {
     const [totalPages, setTotalPages] = useState(0);
     const [totalItems, setTotalItems] = useState(0);
 
+    const [refreshKey, setRefreshKey] = useState(0);
+
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
@@ -51,7 +53,7 @@ export function useProductsQuery() {
         };
 
         fetchData();
-    }, [filterType, filterValue, categoryId, pageIndex, pageSize]);
+    }, [filterType, filterValue, categoryId, pageIndex, pageSize, refreshKey]);
 
     return {
         products,
@@ -69,5 +71,6 @@ export function useProductsQuery() {
         setPageSize,
         totalPages,
         totalItems,
+        refresh: () => setRefreshKey(prev => prev + 1),
     };
 }

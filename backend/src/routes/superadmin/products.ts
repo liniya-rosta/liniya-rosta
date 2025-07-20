@@ -194,7 +194,8 @@ productsSuperAdminRouter.patch("/:id", productImage.fields([
             };
         }
         await product.save();
-        res.send({message: "Продукт обновлен успешно", product});
+        const updatedProduct = await Product.findById(product._id).populate("category");
+        res.send({message: "Продукт обновлен успешно", product: updatedProduct});
     } catch (e) {
         next(e);
     }
