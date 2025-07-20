@@ -1,59 +1,96 @@
-import mongoose, {Schema, Document} from 'mongoose';
+import mongoose from "mongoose";
+import Category from "./Category";
+import slugify from "slugify";
 
-interface IImage {
-    url: string;
-    alt?: string | null;
-}
+const Schema = mongoose.Schema;
 
-interface ICharacteristic {
-    name: string;
-    value: string;
-}
-
-interface ISale {
-    isOnSale: boolean;
-    label?: string | null;
-}
-
-export interface IProduct extends Document {
-    title: string;
-    description?: string;
-    category: mongoose.Types.ObjectId;
-    slug: string;
-    cover: IImage;
-    icon?: IImage;
-    images: IImage[];
-    characteristics: ICharacteristic[];
-    sale: ISale;
-    seoTitle?: string;
-    seoDescription?: string;
-}
-
-const imageSchema = new Schema<IImage>({
+const ImageItemSchema = new Schema({
     url: {type: String, required: true},
-    alt: {type: String, default: null},
-}, {_id: false});
+    alt: {type: String, default: null, maxLength: 150},
+});
 
-const characteristicSchema = new Schema<ICharacteristic>({
-    name: {type: String, required: true},
-    value: {type: String, required: true},
-}, {_id: false});
+const CharacteristicItemSchema = new Schema({
+    key: {type: String, required: true},
+    value: {type: String, required: true, maxLength: 150},
+});
 
-const productSchema = new Schema<IProduct>({
-    title: {type: String, required: true},
-    slug: {type: String, required: true, unique: true},
-    description: {type: String},
-    category: {type: Schema.Types.ObjectId, ref: 'Category', required: true},
-    seoTitle: {type: String, default: null},
-    seoDescription: {type: String, default: null},
-    cover: {type: imageSchema, required: true},
-    icon: {type: imageSchema, default: null},
-    images: {type: [imageSchema], default: []},
-    characteristics: {type: [characteristicSchema], default: []},
-    sale: {
-        isOnSale: {type: Boolean, default: false},
-        label: {type: String, default: null},
+const ProductSchema = new Schema({
+        category: {
+            type: Schema.Types.ObjectId,
+            ref: 'Category',
+            required: true,
+            validate: {
+                validator: async (value: string) => {
+                    const category = await Category.findById(value);
+                    return !!category;
+                },
+                message: 'Категория не найдена',
+            },
+        },
+        title: {
+            type: String,
+            required: [true, 'Поле заголовка обязательно для заполнения'],
+        },
+        slug: {
+            type: String,
+            required: true,
+            unique: true,
+        },
+        seoTitle: {
+            type: String,
+            default: null,
+            maxLength: 120,
+        },
+        seoDescription: {
+            type: String,
+            default: null,
+            maxLength: 300,
+        },
+        description: {
+            type: String,
+            default: null,
+        },
+        cover: {
+            url: {type: String, required: [true, 'Обложка продукта обязательна для заполнения']},
+            alt: {type: String, default: null, maxLength: 150},
+        },
+        images: {
+            type: [ImageItemSchema],
+            required: true,
+        },
+        characteristics: {
+            type: [CharacteristicItemSchema],
+            required: true,
+        },
+        sale: {
+            isOnSale: {type: Boolean, required: true, default: false},
+            label: {type: String, default: null, maxLength: 150}
+        },
+        icon: {
+            url: {type: String},
+            alt: {type: String, default: null, maxLength: 150},
+        }
     },
-}, {timestamps: true});
+    {
+        timestamps: true,
+    });
 
-export default mongoose.models.Product || mongoose.model<IProduct>('Product', productSchema);
+    ProductSchema.pre("validate", async function (next) {
+        if (this.title && !this.slug) {
+            let baseSlug = slugify(this.title, {lower: true, strict: true});
+            let uniqueSlug = baseSlug;
+            let counter = 1;
+
+            while (await Product.exists({slug: uniqueSlug})) {
+                uniqueSlug = `${baseSlug}-${counter}`;
+                counter++;
+            }
+
+            this.slug = uniqueSlug;
+        }
+
+        next();
+    });
+
+const Product = mongoose.model('Product', ProductSchema);
+export default Product;

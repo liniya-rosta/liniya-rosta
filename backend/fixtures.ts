@@ -2,12 +2,12 @@ import mongoose from "mongoose";
 import config from "./config";
 import User from "./src/models/User";
 import Category from "./src/models/Category";
-import Product from "./src/models/Product";
 import Post from "./src/models/Post";
 import {PortfolioItem} from "./src/models/PortfolioItem";
 import RequestFromClient from "./src/models/Request";
 import Contact from "./src/models/Contact";
 import Service from "./src/models/Service";
+import Product from "./src/models/Product";
 
 const run = async () => {
     await mongoose.connect(config.db);
