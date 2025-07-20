@@ -75,10 +75,20 @@ const ProductSchema = new Schema({
         timestamps: true,
     });
 
-ProductSchema.pre("validate", function (next) {
+ProductSchema.pre("validate", async function (next) {
     if (this.title && !this.slug) {
-        this.slug = slugify(this.title, {lower: true, strict: true});
+        let baseSlug = slugify(this.title, {lower: true, strict: true});
+        let uniqueSlug = baseSlug;
+        let counter = 1;
+
+        while (await Product.exists({slug: uniqueSlug})) {
+            uniqueSlug = `${baseSlug}-${counter}`;
+            counter++;
+        }
+
+        this.slug = uniqueSlug;
     }
+
     next();
 });
 

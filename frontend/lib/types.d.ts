@@ -153,6 +153,8 @@ interface ImageItem {
 export interface Product {
     _id: string;
     title: string;
+    seoTitle: string;
+    seoDescription: string;
     category: {
         _id: string;
         title: string;
@@ -183,6 +185,8 @@ export interface Product {
 export interface ProductMutation {
     category: string;
     title: string;
+    seoTitle?: string | null;
+    seoDescription?: string | null;
     description?: string;
     coverAlt?: string | null;
     cover?: File | null;
