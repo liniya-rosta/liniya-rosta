@@ -1,19 +1,46 @@
-import React from "react";
-
+import {Metadata} from "next";
 import {fetchPortfolioItemBySlug} from "@/actions/portfolios";
-import GalleryClient from './GalleryClient';
 import {isAxiosError} from "axios";
+import GalleryClient from "@/app/(public)/portfolio/[slug]/GalleryClient";
 
-interface Params {
-    slug: string;
+type Props = {
+    params: Promise<{ slug: string }>;
+};
+
+export async function generateMetadata({params}: Props): Promise<Metadata> {
+    try {
+        const {slug} = await params;
+        const item = await fetchPortfolioItemBySlug(slug);
+
+        return {
+            title: item.seoTitle || item.coverAlt,
+            description: item.seoDescription || `Галерея: ${item.coverAlt}`,
+            openGraph: {
+                title: item.seoTitle || item.coverAlt,
+                description: item.seoDescription || `Просмотрите фотографии проекта "${item.coverAlt}"`,
+                images: [
+                    {
+                        url: item.cover,
+                        alt: item.coverAlt || "Галерея",
+                    },
+                ],
+                type: "website",
+            },
+        };
+    } catch {
+        return {
+            title: "Галерея не найдена",
+            description: "Информация о галерее недоступна",
+        };
+    }
 }
 
-const GalleryPage = async ({params}: { params: Params }) => {
+const GalleryPage = async ({params}: Props) => {
     let errorMessage: string | null = null;
     let detailItem = null;
 
     try {
-        const {slug} = params;
+        const {slug} = await params;
         detailItem = await fetchPortfolioItemBySlug(slug);
     } catch (error) {
         if (isAxiosError(error) && error.response) {
@@ -24,9 +51,6 @@ const GalleryPage = async ({params}: { params: Params }) => {
             errorMessage = "Неизвестная ошибка при загрузке  галереи";
         }
     }
-
-    console.log(detailItem);
-
 
     return (
         <main className="container mx-auto px-4">
