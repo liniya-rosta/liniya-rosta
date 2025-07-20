@@ -134,6 +134,11 @@ export interface Post {
     description: string;
     images: Image[];
     imageCount: number;
+    slug: string;
+    createdAt: string;
+    updatedAt: string;
+    seoTitle?: string;
+    seoDescription?: string;
 }
 
 export interface PostResponse extends PaginationMeta {

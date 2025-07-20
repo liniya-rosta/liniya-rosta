@@ -81,7 +81,8 @@ export const getPostBySlug = async (req: Request, res: Response, next: NextFunct
         const post = await Post.findOne({slug});
 
         if (!post) {
-            return res.status(404).send({message: "Пост не найден"});
+            res.status(404).send({message: "Пост не найден"});
+            return;
         }
 
         res.send(post);
