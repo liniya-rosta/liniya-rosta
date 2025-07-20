@@ -116,3 +116,19 @@ export const getProductById = async (req: Request, res: Response, next: NextFunc
         next(e);
     }
 }
+
+export const getProductBySlug = async (req: Request, res: Response, next: NextFunction) => {
+    const slug = req.params.slug;
+
+    try {
+        const product = await Product.findOne({slug}).populate("category", "title");
+        if (!product) {
+            res.status(404).send({message: 'Продукт не найден'});
+            return;
+        }
+
+        res.send(product);
+    } catch (e) {
+        next(e);
+    }
+}

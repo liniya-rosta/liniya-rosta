@@ -52,7 +52,7 @@ export function useProductsQuery() {
             }
         };
 
-        fetchData();
+        void fetchData();
     }, [filterType, filterValue, categoryId, pageIndex, pageSize, refreshKey]);
 
     return {
