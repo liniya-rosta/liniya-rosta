@@ -1,4 +1,5 @@
 import mongoose, {Schema} from "mongoose";
+import slugify from "slugify";
 
 const GalleryItemSchema = new Schema({
     image: {type: String, required: true},
@@ -6,23 +7,61 @@ const GalleryItemSchema = new Schema({
 });
 
 const PortfolioItemSchema = new mongoose.Schema({
-    cover: {
-        type: String,
-        required: [true, "Поле обложки портфолио обязательно"],
+        cover: {
+            type: String,
+            required: [true, "Поле обложки портфолио обязательно"],
+        },
+        coverAlt: {
+            type: String,
+            required: [true, "Альтер-ое название обложки портфолио обязательно"],
+            maxLength: 150,
+        },
+        gallery: {
+            type: [GalleryItemSchema],
+            required: true,
+        },
+        description: {
+            type: String,
+            default: null,
+        },
+        slug: {
+            type: String,
+            required: true,
+            unique: true,
+        },
+        seoTitle: {
+            type: String,
+            default: null,
+            maxLength: 120,
+        },
+        seoDescription: {
+            type: String,
+            default: null,
+            maxLength: 300,
+        }
     },
-    coverAlt: {
-        type: String,
-        required:[true, "Альтер-ое название обложки портфолио обязательно"],
-        maxLength: 150,
-    },
-    gallery: {
-        type: [GalleryItemSchema],
-        required: true,
-    },
-    description: {
-        type: String,
-        default: null,
-    },
+    {
+        timestamps: true
+    }
+);
+
+PortfolioItemSchema.pre("validate", async function (next) {
+    if (this.coverAlt && !this.slug) {
+        let baseSlug = slugify(this.coverAlt, {lower: true, strict: true});
+        let uniqueSlug = baseSlug;
+        let counter = 1;
+
+        const PortfolioItem = mongoose.models.PortfolioItem || mongoose.model("PortfolioItem", PortfolioItemSchema);
+
+        while (await PortfolioItem.exists({slug: uniqueSlug})) {
+            uniqueSlug = `${baseSlug}-${counter}`;
+            counter++;
+        }
+
+        this.slug = uniqueSlug;
+    }
+
+    next();
 });
 
 export const PortfolioItem = mongoose.model("PortfolioItem", PortfolioItemSchema);

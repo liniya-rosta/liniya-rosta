@@ -15,12 +15,30 @@ export const portfolioSchema = z.object({
         )
         .min(1, "Добавьте хотя бы одно изображение в галерею")
         .default([]),
+    seoTitle: z
+        .string()
+        .min(1, "SEO-заголовок обязателен")
+        .max(120, "Максимум 120 символов"),
+    seoDescription: z
+        .string()
+        .min(1, "SEO-описание обязательно")
+        .max(300, "Максимум 300 символов"),
 });
 
 export const portfolioItemSchema = z.object({
     cover: z.instanceof(File).optional().nullable(),
     coverAlt: z.string().optional(),
     description: z.string().optional(),
+    seoTitle: z
+        .string()
+        .min(1, "SEO-заголовок обязателен")
+        .max(120, "Максимум 120 символов")
+        .optional(),
+    seoDescription: z
+        .string()
+        .min(1, "SEO-описание обязательно")
+        .max(300, "Максимум 300 символов")
+        .optional(),
 });
 
 export const gallerySchema = z.object({

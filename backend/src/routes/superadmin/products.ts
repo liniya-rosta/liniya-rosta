@@ -3,6 +3,7 @@ import Product from "../../models/Product";
 import Category from "../../models/Category";
 import mongoose from "mongoose";
 import {productImage} from "../../middleware/multer";
+import slugify from "slugify";
 
 const productsSuperAdminRouter = express.Router();
 
@@ -138,7 +139,22 @@ productsSuperAdminRouter.patch("/:id", productImage.fields([
         }
 
         if (category) product.category = category;
-        if (title) product.title = title.trim();
+
+        if (title) {
+            product.title = title.trim();
+
+            const baseSlug = slugify(product.title, {lower: true, strict: true});
+            let uniqueSlug = baseSlug;
+            let counter = 1;
+
+            while (await Product.exists({slug: uniqueSlug, _id: {$ne: product._id}})) {
+                uniqueSlug = `${baseSlug}-${counter}`;
+                counter++;
+            }
+
+            product.slug = uniqueSlug;
+        }
+
         if (description !== undefined) product.description = description;
 
         if (req.body.images) {

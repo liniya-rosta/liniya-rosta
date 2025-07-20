@@ -1,20 +1,20 @@
 import React from "react";
 
-import {fetchPortfolioItem} from "@/actions/portfolios";
+import {fetchPortfolioItemBySlug} from "@/actions/portfolios";
 import GalleryClient from './GalleryClient';
 import {isAxiosError} from "axios";
 
 interface Params {
-    id: string
+    slug: string;
 }
 
-const GalleryPage = async ({params}: { params: Promise<Params> }) => {
+const GalleryPage = async ({params}: { params: Params }) => {
     let errorMessage: string | null = null;
     let detailItem = null;
 
     try {
-        const {id} = await params;
-        detailItem = await fetchPortfolioItem(id);
+        const {slug} = params;
+        detailItem = await fetchPortfolioItemBySlug(slug);
     } catch (error) {
         if (isAxiosError(error) && error.response) {
             errorMessage = error.response.data.error;
@@ -24,6 +24,9 @@ const GalleryPage = async ({params}: { params: Promise<Params> }) => {
             errorMessage = "Неизвестная ошибка при загрузке  галереи";
         }
     }
+
+    console.log(detailItem);
+
 
     return (
         <main className="container mx-auto px-4">

@@ -21,6 +21,8 @@ export interface PortfolioMutation {
     coverAlt: string;
     cover: File | null;
     gallery: GalleryForm[];
+    seoTitle?: string;
+    seoDescription?: string;
 }
 
 export interface PortfolioItemPreview {
@@ -29,6 +31,11 @@ export interface PortfolioItemPreview {
     cover: string;
     coverAlt: string;
     galleryCount: number;
+    slug: string;
+    createdAt: string;
+    updatedAt: string;
+    seoTitle?: string;
+    seoDescription?: string;
 }
 
 export interface GalleryItem {
