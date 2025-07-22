@@ -4,7 +4,7 @@ import mongoose, {isValidObjectId, PipelineStage} from "mongoose";
 
 export const getPortfolioItems = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { galleryId, limit = 10, page = 1, description, coverAlt } = req.query;
+        const {galleryId, limit = 10, page = 1, description, coverAlt} = req.query;
 
         if (galleryId) {
             const item = await PortfolioItem.findOne(
@@ -31,24 +31,29 @@ export const getPortfolioItems = async (req: Request, res: Response, next: NextF
         }> = {};
 
         if (description && typeof description === "string") {
-            matchStage.description = { $regex: description, $options: "i" };
+            matchStage.description = {$regex: description, $options: "i"};
         }
 
         if (coverAlt && typeof coverAlt === "string") {
-            matchStage.coverAlt = { $regex: coverAlt, $options: "i" };
+            matchStage.coverAlt = {$regex: coverAlt, $options: "i"};
         }
 
         const aggregationPipeline = [
-            Object.keys(matchStage).length > 0 ? { $match: matchStage } : null,
-            { $sort: { _id: -1 } },
-            { $skip: skip },
-            { $limit: parsedLimit },
+            Object.keys(matchStage).length > 0 ? {$match: matchStage} : null,
+            {$sort: {_id: -1}},
+            {$skip: skip},
+            {$limit: parsedLimit},
             {
                 $project: {
                     cover: 1,
                     coverAlt: 1,
                     description: 1,
-                    galleryCount: { $size: "$gallery" }
+                    slug: 1,
+                    seoTitle: 1,
+                    seoDescription: 1,
+                    galleryCount: {$size: "$gallery"},
+                    createdAt: 1,
+                    updatedAt: 1
                 }
             }
         ].filter(Boolean) as PipelineStage[];
@@ -85,8 +90,13 @@ export const getPortfolioItemById = async (req: Request, res: Response, next: Ne
                     cover: 1,
                     coverAlt: 1,
                     description: 1,
+                    slug: 1,
+                    seoTitle: 1,
+                    seoDescription: 1,
                     gallery: 1,
-                    galleryCount: {$size: "$gallery"}
+                    galleryCount: {$size: "$gallery"},
+                    createdAt: 1,
+                    updatedAt: 1
                 }
             }
         ]);
@@ -101,3 +111,20 @@ export const getPortfolioItemById = async (req: Request, res: Response, next: Ne
         next(err);
     }
 }
+
+export const getPortfolioItemBySlug = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const {slug} = req.params;
+
+        const item = await PortfolioItem.findOne({slug});
+
+        if (!item) {
+            res.status(404).send({message: "Портфолио не найдено"});
+            return;
+        }
+
+        res.json(item);
+    } catch (err) {
+        next(err);
+    }
+};

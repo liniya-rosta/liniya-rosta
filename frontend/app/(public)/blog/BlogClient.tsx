@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useEffect } from 'react';
-import { usePostsStore } from '@/store/postsStore';
-import { PostResponse} from "@/lib/types";
+import React, {useEffect} from 'react';
+import {usePostsStore} from '@/store/postsStore';
+import {PostResponse} from "@/lib/types";
 import CardSkeleton from "@/app/(public)/blog/components/CardSkeleton";
 import PostCard from "@/app/(public)/blog/components/PostCard";
 import ErrorMsg from "@/components/ui/ErrorMsg";
@@ -12,7 +12,7 @@ interface Props {
     error: string | null;
 }
 
-const BlogClient: React.FC<Props> = ({ data, error }) => {
+const BlogClient: React.FC<Props> = ({data, error}) => {
     const {
         posts,
         fetchPostsLoading,
@@ -40,16 +40,16 @@ const BlogClient: React.FC<Props> = ({ data, error }) => {
                 {posts && posts.length > 0 ? (
                     posts.map((post) => (
                         <PostCard
-                        key={post._id}
-                        id={post._id}
-                        title={post.title}
-                        description={post.description}
-                        images={post.images}
+                            key={post._id}
+                            slug={post.slug}
+                            title={post.title}
+                            description={post.description}
+                            images={post.images}
                         />
                     ))
                 ) : <div className="flex justify-center items-center min-h-[200px]">
-                        <p className="text-muted-foreground text-lg text center">Нет новостей</p>
-                    </div>
+                    <p className="text-muted-foreground text-lg text center">Нет новостей</p>
+                </div>
                 }
             </div>
         </div>

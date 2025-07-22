@@ -26,3 +26,8 @@ export const fetchGalleryItem = async (gallery_id: string) => {
     const response = await axiosAPI<GalleryItem>("/portfolio-items?galleryId=" + gallery_id);
     return response.data;
 }
+
+export const fetchPortfolioItemBySlug = async (slug: string) => {
+    const response = await axiosAPI<PortfolioItemDetail>("/portfolio-items/slug/" + slug);
+    return response.data;
+}

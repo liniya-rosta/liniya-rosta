@@ -2,17 +2,17 @@ import Image from "next/image";
 import {API_BASE_URL} from "@/lib/globalConstants";
 import {Card, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, {useState} from "react";
 import {BtnArrow} from "@/components/ui/btn-arrow";
 
 interface Props {
-    id: string;
-    images: {image: string, alt?: string}[];
+    slug: string;
+    images: { image: string, alt?: string }[];
     title: string;
     description: string;
 }
 
-const PostCard: React.FC<Props> = ({ id, images, title, description }) => {
+const PostCard: React.FC<Props> = ({slug, images, title, description}) => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const total = images.length;
 
@@ -60,7 +60,7 @@ const PostCard: React.FC<Props> = ({ id, images, title, description }) => {
             </CardHeader>
 
             <CardFooter className="px-4 pb-4 mt-auto">
-                <Link href={`/blog/${id}`} passHref>
+                <Link href={`/blog/${slug}`} passHref>
                     <BtnArrow className="text-sm hover:underline">
                         Подробнее
                     </BtnArrow>

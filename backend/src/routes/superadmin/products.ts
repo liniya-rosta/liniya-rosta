@@ -3,6 +3,7 @@ import Product from "../../models/Product";
 import Category from "../../models/Category";
 import mongoose from "mongoose";
 import {productImage} from "../../middleware/multer";
+import slugify from "slugify";
 
 const productsSuperAdminRouter = express.Router();
 
@@ -20,7 +21,7 @@ productsSuperAdminRouter.post("/", productImage.fields([
         const imagesFiles = files.images || [];
         const iconFile = files.icon?.[0];
 
-        const {category, title, description} = req.body;
+        const {category, title, description, seoTitle, seoDescription} = req.body;
         if (!category || !title || !title.trim() || !coverFile) {
             res.status(400).send({error: "Категория, заголовок и обложка обязательны"});
             return;
@@ -47,6 +48,8 @@ productsSuperAdminRouter.post("/", productImage.fields([
         const product = new Product({
             category,
             title: title.trim(),
+            seoTitle: seoTitle?.trim() || null,
+            seoDescription: seoDescription?.trim() || null,
             description: description?.trim() || null,
             cover: {
                 url: `product/${coverFile.filename}`,
@@ -86,7 +89,7 @@ productsSuperAdminRouter.patch("/:id", productImage.fields([
         const iconFile = files.icon?.[0];
 
         const {id} = req.params;
-        const {category, title, description} = req.body;
+        const {category, title, description, seoTitle, seoDescription} = req.body;
 
         if (!mongoose.Types.ObjectId.isValid(id)) {
             res.status(400).send({error: "Неверный формат ID продукта"});
@@ -122,13 +125,36 @@ productsSuperAdminRouter.patch("/:id", productImage.fields([
             return;
         }
 
+        if (seoTitle !== undefined) {
+            product.seoTitle = seoTitle?.trim() || null;
+        }
+
+        if (seoDescription !== undefined) {
+            product.seoDescription = seoDescription?.trim() || null;
+        }
+
         if (description?.trim() === '') {
             res.status(400).send({error: "Описание не может быть пустым"});
             return;
         }
 
         if (category) product.category = category;
-        if (title) product.title = title.trim();
+
+        if (title) {
+            product.title = title.trim();
+
+            const baseSlug = slugify(product.title, {lower: true, strict: true});
+            let uniqueSlug = baseSlug;
+            let counter = 1;
+
+            while (await Product.exists({slug: uniqueSlug, _id: {$ne: product._id}})) {
+                uniqueSlug = `${baseSlug}-${counter}`;
+                counter++;
+            }
+
+            product.slug = uniqueSlug;
+        }
+
         if (description !== undefined) product.description = description;
 
         if (req.body.images) {
@@ -184,7 +210,8 @@ productsSuperAdminRouter.patch("/:id", productImage.fields([
             };
         }
         await product.save();
-        res.send({message: "Продукт обновлен успешно", product});
+        const updatedProduct = await Product.findById(product._id).populate("category");
+        res.send({message: "Продукт обновлен успешно", product: updatedProduct});
     } catch (e) {
         next(e);
     }

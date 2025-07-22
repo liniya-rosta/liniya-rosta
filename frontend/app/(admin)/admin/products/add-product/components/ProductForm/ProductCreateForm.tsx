@@ -24,6 +24,7 @@ import ProductImagesCharacteristics
     from "@/app/(admin)/admin/products/add-product/components/ProductForm/fields/ProductImagesCharacteristics/ProductImagesCharacteristics";
 import ProductBtns
     from "@/app/(admin)/admin/products/add-product/components/ProductForm/fields/ProductActions/ProductBtns";
+import ProductSEO from "@/app/(admin)/admin/products/add-product/components/ProductForm/fields/ProductSEO";
 
 interface Props {
     initialCategories: Category[];
@@ -52,6 +53,8 @@ const ProductCreateForm: React.FC<Props> = ({initialCategories, initialCategorie
             title: "",
             category: "",
             description: "",
+            seoTitle: "",
+            seoDescription: "",
             cover: null,
             coverAlt: "",
             images: [],
@@ -95,6 +98,8 @@ const ProductCreateForm: React.FC<Props> = ({initialCategories, initialCategorie
                 className={cn("space-y-6", createLoading && "opacity-50 pointer-events-none")}
             >
                 <ProductBasicInfo form={form}/>
+
+                <ProductSEO form={form}/>
 
                 <ProductDescription form={form}/>
 

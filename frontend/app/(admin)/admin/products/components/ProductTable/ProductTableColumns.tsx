@@ -198,6 +198,22 @@ export const getProductTableColumns = (
             }
         },
         {
+            accessorKey: "seoTitle",
+            header: "SEO заголовок",
+            cell: ({ row }) => row.original.seoTitle || "—",
+        },
+        {
+            accessorKey: "seoDescription",
+            header: "SEO описание",
+            cell: ({ row }) => (
+                <div className="w-60 max-h-24 overflow-auto text-sm break-words whitespace-pre-wrap">
+                    {row.original.seoDescription || (
+                        <span className="text-muted-foreground italic">Нет описания</span>
+                    )}
+                </div>
+            ),
+        },
+        {
             accessorKey: "images",
             header: "Изображения",
             cell: ({row}) => Array.isArray(row.original.images) ? `${row.original.images.length}` : "0",

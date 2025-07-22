@@ -77,7 +77,7 @@ const EditRequestForm: React.FC<Props> = ({request, onClose}) => {
             setRequests(requests.data);
             toast.success("Заявка успешно обновлена!");
             onClose();
-        } catch (e) {
+        } catch {
             toast.error("Ошибка при обновлении заявки");
             setUpdateLoading(false);
         } finally {

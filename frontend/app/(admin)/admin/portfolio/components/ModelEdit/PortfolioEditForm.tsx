@@ -50,6 +50,8 @@ const PortfolioEditForm: React.FC<Props> = ({onSaved, updatePaginationAndData}) 
             reset({
                 description: detailItem.description,
                 coverAlt: detailItem.coverAlt,
+                seoTitle: detailItem.seoTitle,
+                seoDescription: detailItem.seoDescription,
             });
         }
     }, [detailItem, reset]);
@@ -118,6 +120,34 @@ const PortfolioEditForm: React.FC<Props> = ({onSaved, updatePaginationAndData}) 
                         )}
                     </div>
 
+                    <div className="mb-4">
+                        <Label htmlFor="seoTitle" className="mb-2">SEO заголовок</Label>
+                        <Input
+                            className="mb-2"
+                            type="text"
+                            id="seoTitle"
+                            disabled={editLoading}
+                            {...register("seoTitle")}
+                        />
+                        {errors.seoTitle && (
+                            <FormErrorMessage>{errors.seoTitle.message}</FormErrorMessage>
+                        )}
+                    </div>
+
+                    <div className="mb-4">
+                        <Label htmlFor="seoDescription" className="mb-2">SEO описание</Label>
+                        <Input
+                            className="mb-2"
+                            type="text"
+                            id="seoDescription"
+                            disabled={editLoading}
+                            {...register("seoDescription")}
+                        />
+                        {errors.seoDescription && (
+                            <FormErrorMessage>{errors.seoDescription.message}</FormErrorMessage>
+                        )}
+                    </div>
+
                     <div className="mb-3">
                         <Label className="mb-2">Обложка</Label>
                         <div className="mb-4 flex items-center gap-3">
@@ -142,7 +172,7 @@ const PortfolioEditForm: React.FC<Props> = ({onSaved, updatePaginationAndData}) 
                                     }
                                 }}
                             >
-                                <Eye className="w-4 h-4" /> Посмотреть
+                                <Eye className="w-4 h-4"/> Посмотреть
                             </Button>
                         </div>
                         {errors.cover && (
@@ -169,15 +199,15 @@ const PortfolioEditForm: React.FC<Props> = ({onSaved, updatePaginationAndData}) 
 
                 <Tooltip>
                     <div className="flex justify-end mt-4">
-                    <TooltipTrigger asChild>
+                        <TooltipTrigger asChild>
 
                             <Button type="submit" disabled={!isDirty || editLoading}>
                                 {editLoading && <LoaderIcon/>}
                                 Сохранить
                             </Button>
 
-                    </TooltipTrigger>
-                    {!isDirty && <TooltipContent>Вы ничего не изменили</TooltipContent>}
+                        </TooltipTrigger>
+                        {!isDirty && <TooltipContent>Вы ничего не изменили</TooltipContent>}
                     </div>
                 </Tooltip>
 

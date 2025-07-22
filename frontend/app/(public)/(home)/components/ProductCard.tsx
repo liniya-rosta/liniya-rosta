@@ -13,7 +13,6 @@ interface Props {
 }
 
 const ProductCard: React.FC<Props> = ({product}) => {
-
     return (
         <Card className="flex flex-col h-full">
             <div className="flex-shrink-0">
@@ -43,7 +42,7 @@ const ProductCard: React.FC<Props> = ({product}) => {
             </CardContent>
 
             <CardFooter className="p-4 pt-0">
-                <Link href={`/products/${product._id}`} className="w-full">
+                <Link href={`/products/${product.slug}`} className="w-full">
                     <Button className="w-full">Подробнее</Button>
                 </Link>
             </CardFooter>

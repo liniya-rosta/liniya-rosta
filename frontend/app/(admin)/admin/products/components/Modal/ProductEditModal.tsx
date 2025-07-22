@@ -10,7 +10,7 @@ import {useFieldArray, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {Product} from "@/lib/types";
 import {useAdminProductStore} from "@/store/superadmin/superadminProductsStore";
-import {useRef, useState} from "react";
+import React, {useRef, useState} from "react";
 import {updateProduct} from "@/actions/superadmin/products";
 import {toast} from "react-toastify";
 import {Trash2} from "lucide-react";
@@ -24,9 +24,10 @@ interface Props {
     open: boolean;
     onClose: () => void;
     product: Product;
+    refresh: () => void;
 }
 
-const ProductEditModal: React.FC<Props> = ({open, onClose, product}) => {
+const ProductEditModal: React.FC<Props> = ({open, onClose, product, refresh}) => {
     const {categories} = useAdminCategoryStore();
     const {
         updateLoading,
@@ -44,6 +45,8 @@ const ProductEditModal: React.FC<Props> = ({open, onClose, product}) => {
             title: product.title,
             category: product.category._id,
             description: product.description || "",
+            seoTitle: product.seoTitle || "",
+            seoDescription: product.seoDescription || "",
             coverAlt: product.cover?.alt || "",
             iconAlt: product.icon?.alt || "",
             sale: product.sale || {isOnSale: false, label: ""},
@@ -79,6 +82,7 @@ const ProductEditModal: React.FC<Props> = ({open, onClose, product}) => {
             setUpdateError(null);
             const updated = await updateProduct(product._id, data);
             setProducts(products.map((p) => (p._id === updated._id ? updated : p)));
+            refresh();
             toast.success("Продукт успешно обновлён");
             onClose();
         } catch (e) {
@@ -97,7 +101,7 @@ const ProductEditModal: React.FC<Props> = ({open, onClose, product}) => {
             <DialogHeader>
                 <DialogTitle>Редактировать продукт</DialogTitle>
                 <DialogDescription>
-                    Измените данные продукта и нажмите "Сохранить"
+                    {"Измените данные продукта и нажмите \"Сохранить\""}
                 </DialogDescription>
             </DialogHeader>
 
@@ -160,6 +164,43 @@ const ProductEditModal: React.FC<Props> = ({open, onClose, product}) => {
                                     <FormControl>
                                         <Textarea rows={3} placeholder="Описание продукта"
                                                   disabled={updateLoading} {...field} />
+                                    </FormControl>
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name="seoTitle"
+                            render={({field}) => (
+                                <FormItem>
+                                    <FormLabel>SEO Заголовок</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            placeholder="SEO заголовок"
+                                            disabled={updateLoading}
+                                            {...field}
+                                            value={field.value ?? ""}
+                                        />
+                                    </FormControl>
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name="seoDescription"
+                            render={({field}) => (
+                                <FormItem>
+                                    <FormLabel>SEO Описание</FormLabel>
+                                    <FormControl>
+                                        <Textarea
+                                            placeholder="SEO описание"
+                                            rows={2}
+                                            disabled={updateLoading}
+                                            {...field}
+                                            value={field.value ?? ""}
+                                        />
                                     </FormControl>
                                 </FormItem>
                             )}
