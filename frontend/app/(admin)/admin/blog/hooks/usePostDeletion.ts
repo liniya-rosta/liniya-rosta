@@ -3,12 +3,14 @@ import {useSuperAdminPostStore} from "@/store/superadmin/superAdminPostsStore";
 import {isAxiosError} from "axios";
 import {deletePost, deletePostImage} from "@/actions/superadmin/posts";
 import {toast} from "react-toastify";
-import {RowSelectionState} from "@tanstack/react-table";
+import {PaginationState, RowSelectionState} from "@tanstack/react-table";
 
 export const usePostDeletion = (
     fetchOnePost?: (id: string) => Promise<void>,
     fetchData?: () => Promise<void>,
     setRowSelection?: Dispatch<React.SetStateAction<RowSelectionState>>,
+    pagination?: PaginationState,
+    setPagination?: Dispatch<React.SetStateAction<PaginationState>>,
 ) => {
     const {
         posts,
@@ -20,6 +22,16 @@ export const usePostDeletion = (
 
     const [isImageDelete, setImageDelete] = useState(false);
 
+    const goToPrevPage = () => {
+        if (pagination && setPagination && posts.length === 1 && pagination.pageIndex > 0) {
+            const newPagination = {
+                ...pagination,
+                pageIndex: pagination.pageIndex - 1,
+            };
+            setPagination(newPagination);
+        }
+    }
+
     const handleDelete = async () => {
         setDeleteLoading(true);
         try {
@@ -29,6 +41,7 @@ export const usePostDeletion = (
             } else {
                 const postId = selectedToDelete[0];
                 await deletePost(postId);
+                goToPrevPage();
             }
 
             if(fetchData) await fetchData();
@@ -48,7 +61,7 @@ export const usePostDeletion = (
         }
     };
 
-    const handleDeleteSelectedPosts = async () => {
+    const multipleDeletion = async () => {
         setDeleteLoading(true);
         try {
             if (detailPost && isImageDelete) {
@@ -56,6 +69,7 @@ export const usePostDeletion = (
                 if (fetchOnePost) await fetchOnePost(detailPost._id);
             } else {
                 await Promise.all(selectedToDelete.map(id => deletePost(id)));
+                goToPrevPage();
             }
 
             if(fetchData) await fetchData();
@@ -79,7 +93,7 @@ export const usePostDeletion = (
         posts,
         isImageDelete,
         handleDelete,
-        handleDeleteSelectedPosts,
+        multipleDeletion,
         setImageDelete,
     };
 };

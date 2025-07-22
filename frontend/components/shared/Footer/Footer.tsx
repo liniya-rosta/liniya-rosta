@@ -23,7 +23,7 @@ const Footer = async () => {
         <>
             <footer className="p-10 mt-10">
                 <Container>
-                    <div className="flex flex-wrap items-center justify-between w-full">
+                    <div className="flex flex-wrap items-center justify-center sm:justify-between w-full">
                         <FooterContent contactData={contactData} contactError={contactError}/>
                         <FooterBtn/>
                     </div>

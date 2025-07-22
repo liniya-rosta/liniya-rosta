@@ -104,7 +104,7 @@ const ServicesForm = () => {
 
                 <Button
                     type="submit"
-                    className="w-full bg-yellow-400 hover:bg-yellow-600 cursor-pointer duration-500"
+                    className="w-full bg-accent hover:bg-accent-600 btn-hover-scale"
                     disabled={createLoading}
                 >
                     {createLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin"/>}

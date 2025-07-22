@@ -4,7 +4,7 @@ import {Container} from "@/components/shared/Container";
 
 const Header = () => {
     return (
-        <header className="py-4 shadow mb-8">
+        <header className="py-4 shadow mb-15 md:mb-8">
             <Container>
                 <NavBar/>
             </Container>

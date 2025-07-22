@@ -7,10 +7,10 @@ const ServiceSection = () => {
     const {allServices} = useServiceStore();
 
     return (
-        <section className="bg-gray-100 py-8 md:py-16">
+        <section className="bg-gray-100 py-8 md:py-16 mb-15">
             <Container>
                 <div className="max-w-4xl mx-auto ">
-                    <h2 className="main-section-title text-20-30-1_2">Наши услуги</h2>
+                    <h2 className="main-section-title text-20-30-1_2 text-center">Наши услуги</h2>
 
                     <div className="flex flex-wrap justify-center gap-8 mt-8">
                         {allServices?.length ? (

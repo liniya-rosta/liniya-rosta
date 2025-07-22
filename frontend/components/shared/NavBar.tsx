@@ -28,7 +28,7 @@ export default function NavBar() {
                             key={href}
                             href={href}
                             className={`py-1.5 border-b transition-colors ${
-                                isActive ? "border-b-white font-semibold" : "border-b-transparent hover:border-b-white"
+                                isActive ? "border-b-primary font-semibold" : "border-b-transparent hover:border-b-primary"
                             }`}
                         >
                             {label}

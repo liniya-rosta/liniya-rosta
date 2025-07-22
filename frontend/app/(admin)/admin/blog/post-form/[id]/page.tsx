@@ -36,7 +36,7 @@ const Page = () => {
     const {
         isImageDelete,
         handleDelete,
-        handleDeleteSelectedPosts,
+        multipleDeletion,
         setImageDelete,
     } = usePostDeletion(fetchOnePost);
 
@@ -100,7 +100,7 @@ const Page = () => {
                 title={isImageDelete ? "Удалить изображение?" : "Удалить пост(ы)?"}
                 onConfirm={async () => {
                     if (selectedToDelete.length > 1) {
-                        await handleDeleteSelectedPosts();
+                        await multipleDeletion();
                     } else if (selectedToDelete.length === 1) {
                         await handleDelete();
                     }

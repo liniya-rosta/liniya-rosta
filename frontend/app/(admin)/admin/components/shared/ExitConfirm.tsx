@@ -47,14 +47,14 @@ const ExitConfirm: React.FC<Props> = ({onClose}) => {
             <DialogFooter className="mt-4">
                 <Button
                     variant="outline"
-                    className="cursor-pointer duration-500"
+                    className="btn-hover-scale"
                     onClick={onClose}
                     disabled={loading}
                 >
                     Отмена
                 </Button>
                 <Button
-                    className="bg-red-600 text-white cursor-pointer duration-500"
+                    className="bg-destructive text-white btn-hover-scale"
                     onClick={handleLogout}
                     disabled={loading}
                 >

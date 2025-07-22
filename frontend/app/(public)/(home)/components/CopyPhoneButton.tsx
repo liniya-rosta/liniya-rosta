@@ -2,6 +2,7 @@ import {useState} from "react";
 import {Button} from "@/components/ui/button";
 import {CheckIcon, CopyIcon} from "lucide-react";
 import {Tooltip, TooltipContent, TooltipTrigger} from "@/components/ui/tooltip";
+import {toast} from "react-toastify";
 
 export const CopyPhoneButton = ({ phone }: { phone: string }) => {
     const [copied, setCopied] = useState(false);
@@ -12,7 +13,8 @@ export const CopyPhoneButton = ({ phone }: { phone: string }) => {
             setCopied(true);
             setTimeout(() => setCopied(false), 1500);
         } catch (err) {
-            console.error("Не удалось скопировать:", err);
+            console.log(err);
+            toast.error("Не удалось скопировать:");
         }
     };
 
@@ -23,7 +25,7 @@ export const CopyPhoneButton = ({ phone }: { phone: string }) => {
                     variant="outline"
                     size="lg"
                     onClick={handleCopy}
-                    className="bg-transparent border-white text-white btn-hover-scale select-none"
+                    className="bg-transparent border-white text-white hover:text-primary hover:bg-white/80 btn-hover-scale select-none"
                 >
                     {copied ? (
                         <>

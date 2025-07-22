@@ -3,7 +3,7 @@ import React from 'react';
 const InstagramSection = () => {
     return (
         <section className="space-y-6 mx-auto">
-            <h3 className="main-section-title text-20-30-1_2 from-primary">
+            <h3 className="main-section-title text-20-30-1_2 text-center">
                 Наша лента в Instagram
             </h3>
             <iframe

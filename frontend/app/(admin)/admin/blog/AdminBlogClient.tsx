@@ -76,9 +76,9 @@ const AdminBlogClient = () => {
     const {
         isImageDelete,
         handleDelete,
-        handleDeleteSelectedPosts,
+        multipleDeletion,
         setImageDelete,
-    } = usePostDeletion(fetchOnePost, fetchData, setRowSelection);
+    } = usePostDeletion(fetchOnePost, fetchData, setRowSelection, pagination, setPagination);
 
     useEffect(() => {
         void fetchData();
@@ -166,7 +166,7 @@ const AdminBlogClient = () => {
                 title={isImageDelete ? "Удалить изображение?" : "Удалить пост(ы)?"}
                 onConfirm={async () => {
                     if (selectedToDelete.length > 1) {
-                        await handleDeleteSelectedPosts();
+                        await multipleDeletion();
                     } else if (selectedToDelete.length === 1) {
                         await handleDelete();
                     }

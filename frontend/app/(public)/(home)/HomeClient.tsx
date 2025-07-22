@@ -10,7 +10,6 @@ import {Category, Contact, PortfolioItemPreview, Product, ServiceResponse} from 
 import {useCategoryStore} from "@/store/categoriesStore";
 import ErrorMsg from "@/components/ui/ErrorMsg";
 import HeroSection from "@/app/(public)/(home)/components/HeroSection";
-import CategoriesSection from "@/app/(public)/(home)/components/CategoriesSection";
 import ProductsSection from "@/app/(public)/(home)/components/ProductsSection";
 import PortfolioSection from "@/app/(public)/(home)/components/PortfolioSection";
 import InstagramSection from "@/app/(public)/(home)/components/InstagramSection";
@@ -136,8 +135,7 @@ const HomePageClient: React.FC<HomePageClientProps> = ({
             <HeroSection/>
             <ServiceSection/>
 
-            <Container className="py-8 space-y-16">
-                <CategoriesSection/>
+            <Container className="space-y-16">
 
                 <ProductsSection/>
 

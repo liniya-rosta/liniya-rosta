@@ -28,7 +28,7 @@ const ProfileDropdown = () => {
         <>
             <DropdownMenu>
                 <DropdownMenuTrigger
-                    className="px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-600 duration-500 cursor-pointer"
+                    className="px-4 py-2 text-primary border border-primary rounded hover:bg-white duration-500 cursor-pointer"
                     aria-label="Открыть меню профиля"
                 >
                     Привет, {user.displayName}
