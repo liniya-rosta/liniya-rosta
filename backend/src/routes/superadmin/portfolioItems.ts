@@ -7,6 +7,7 @@ import {deleteOrReplaceGalleryImage} from "../../middleware/deleteImagesGallery"
 import {translateYandex} from "../../../translateYandex";
 import {GalleryUpdate} from "../../../types";
 import slugify from "slugify";
+import {deleteOrReplaceSubImage} from "../../middleware/deleteImagesGallery";
 
 const portfolioSuperAdminRouter = express.Router();
 
@@ -153,14 +154,18 @@ portfolioSuperAdminRouter.patch(
 );
 
 portfolioSuperAdminRouter.patch(
-    "/gallery/:galleryId",
+    "/gallery/:id",
     portfolioImage.single("gallery"),
-    deleteOrReplaceGalleryImage(PortfolioItem, "replace"),
+    deleteOrReplaceSubImage(PortfolioItem, {
+        path: "gallery",
+        key: "image",
+        mode: "replace"
+    }),
     async (req, res, next) => {
         try {
-            const {galleryId} = req.params;
-            if (!Types.ObjectId.isValid(galleryId)) {
-                res.status(400).send({error: "Неверный формат ID элемента галереи"});
+            const {id} = req.params;
+            if (!Types.ObjectId.isValid(id)) {
+                res.status(400).send({ error: "Неверный формат ID элемента галереи" });
                 return;
             }
 
@@ -181,7 +186,7 @@ portfolioSuperAdminRouter.patch(
             }
 
             const updated = await PortfolioItem.updateOne(
-                {"gallery._id": galleryId},
+                {"gallery._id": id},
                 {$set: updateFields}
             );
 
@@ -190,7 +195,7 @@ portfolioSuperAdminRouter.patch(
                 return;
             }
 
-            const refreshed = await PortfolioItem.findOne({"gallery._id": galleryId});
+            const refreshed = await PortfolioItem.findOne({ "gallery._id": id });
             res.send(refreshed);
         } catch (e) {
             next(e);
@@ -223,19 +228,23 @@ portfolioSuperAdminRouter.delete(
 );
 
 portfolioSuperAdminRouter.delete(
-    "/gallery/:galleryId",
-    deleteOrReplaceGalleryImage(PortfolioItem, "delete"),
+    "/gallery/:id",
+    deleteOrReplaceSubImage(PortfolioItem, {
+        path: "gallery",
+        key: "image",
+        mode: "delete"
+    }),
     async (req, res, next) => {
         try {
-            const {galleryId} = req.params;
-            if (!Types.ObjectId.isValid(galleryId)) {
-                res.status(400).send({error: "Неверный формат ID элемента галереи"});
-                return
+            const {id} = req.params;
+            if (!Types.ObjectId.isValid(id)) {
+                res.status(400).send({ error: "Неверный формат ID элемента галереи" });
+                return;
             }
 
             const updated = await PortfolioItem.updateOne(
-                {"gallery._id": galleryId},
-                {$pull: {gallery: {_id: galleryId}}}
+                {"gallery._id": id},
+                {$pull: {gallery: {_id: id}}}
             );
 
             if (updated.modifiedCount === 0) {

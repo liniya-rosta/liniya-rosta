@@ -41,7 +41,7 @@ const ImageEditForm: React.FC<React.PropsWithChildren<Props>> = (
     } = useSuperAdminPostStore();
 
 
-    const found = detailPost?.images.find((img) => img.image === imageUrl);
+    const found = detailPost?.images?.find((img) => img.image === imageUrl);
 
     const {register, handleSubmit, setValue, reset, control, formState: {errors, isDirty}} = useForm({
         resolver: zodResolver(updatePostImageSchema),
