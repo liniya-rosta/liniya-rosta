@@ -1,6 +1,6 @@
 import React from 'react';
 import {Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle} from "@/src/components/ui/dialog";
-import {IRequest} from "@/lib/types";
+import {IRequest} from "@/src/lib/types";
 import EditRequestForm from "@/src/app/(admin)/admin/requests/components/EditRequestForm";
 
 interface Props {

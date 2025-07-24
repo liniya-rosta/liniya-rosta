@@ -10,7 +10,7 @@ import {Button} from "@/src/components/ui/button";
 import {ArrowUpDown, MoreHorizontal} from "lucide-react";
 import React from "react";
 import {Checkbox} from "@/src/components/ui/checkbox";
-import {Service} from "@/lib/types";
+import {Service} from "@/src/lib/types";
 
 export const getColumns = (
     onRequestDelete: (id: string) => void,
@@ -59,21 +59,22 @@ export const getColumns = (
                 </Button>
             );
         },
-        cell: ({row}) => (
-            <div className="capitalize">{row.getValue("title")}</div>
-        ),
+        accessorFn: (row) => row.title.ru,
+        cell: ({ getValue }) => <div className="capitalize">{getValue<string>()}</div>,
     },
     {
         accessorKey: "description",
         header: "Описание",
-        cell: ({ row }) => {
-            const value = row.getValue("description") as string | undefined;
+        accessorFn: (row) => row.description?.ru ?? "",
+        cell: ({ getValue }) => {
+            const value = getValue<string>().trim();
             return (
                 <div className="capitalize">
-                    {value?.trim() ? value : <span className="text-muted-foreground italic">Нет описания</span>}
+                    {value ? value : <span className="text-muted-foreground italic">Нет описания</span>}
                 </div>
             );
         },
+
     },
     {
         id: "actions",

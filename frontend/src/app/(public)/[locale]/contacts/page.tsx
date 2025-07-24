@@ -1,13 +1,15 @@
 import React from "react";
-import {Contact} from "@/lib/types";
+import {Contact} from "@/src/lib/types";
 import ContactsClient from "@/src/app/(public)/[locale]/contacts/ContactsClient";
 import {fetchContacts} from "@/actions/contacts";
+import {getTranslations} from "next-intl/server";
 
 export const revalidate = 3600;
 
 const ContactsPage = async () => {
         let contact: Contact | null = null;
         let contactError: string | null = null;
+        const tErrors = await getTranslations("Errors");
 
         try {
             contact = await fetchContacts();
@@ -15,12 +17,12 @@ const ContactsPage = async () => {
             if (e instanceof Error) {
                 contactError = e.message;
             } else {
-                contactError = 'Неизвестная ошибка на сервере при загрузке контактной информации.';
+                contactError = tErrors("contactsError");
             }
         }
 
         return (
-            <ContactsClient data={contact} error={contactError}/>
+            <ContactsClient  data={contact} error={contactError} />
         );
     }
 ;

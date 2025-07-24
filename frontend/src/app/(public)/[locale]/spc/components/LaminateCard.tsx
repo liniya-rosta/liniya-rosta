@@ -1,7 +1,7 @@
 import React from 'react';
 import {Card, CardContent} from "@/src/components/ui/card";
 import Image from "next/image";
-import {API_BASE_URL} from "@/lib/globalConstants";
+import {API_BASE_URL} from "@/src/lib/globalConstants";
 
 interface Props {
     title: string;

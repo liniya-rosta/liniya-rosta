@@ -4,9 +4,12 @@ import React, {useState} from 'react';
 import RequestForm from '@/src/components/shared/RequestForm';
 import {Dialog, DialogTrigger} from "@/src/components/ui/dialog";
 import {Button} from "@/src/components/ui/button";
+import {useTranslations} from "next-intl";
 
-export default function ClientActions() {
+const ClientActions = () => {
     const [isOpen, setIsOpen] = useState(false);
+
+    const tBtn = useTranslations("Buttons")
 
     return (
         <>
@@ -18,7 +21,7 @@ export default function ClientActions() {
                         bg-transparent border border-[darkOrange]
                         cursor-pointer hover:bg-black/20 transition-transform
                         duration-200 hover:scale-105">
-                        Оставить заявку
+                        {tBtn("requestBtn1")}
                     </Button>
                 </DialogTrigger>
                 <RequestForm closeModal={() => setIsOpen(false)}/>
@@ -26,3 +29,5 @@ export default function ClientActions() {
         </>
     )
 }
+
+export default ClientActions

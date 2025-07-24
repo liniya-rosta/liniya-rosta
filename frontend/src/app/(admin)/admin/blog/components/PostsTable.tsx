@@ -37,7 +37,7 @@ import {
     DropdownMenuTrigger,
 } from "@/src/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
-import { Post } from "@/lib/types";
+import { Post } from "@/src/lib/types";
 import { getPostTableColumns } from "./PostTableColumns";
 import ConfirmDialog from "@/src/components/ui/ConfirmDialog";
 

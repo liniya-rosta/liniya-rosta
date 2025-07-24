@@ -1,6 +1,6 @@
 import {ColumnDef} from "@tanstack/react-table";
-import {PortfolioItemPreview} from "@/lib/types";
-import {API_BASE_URL} from "@/lib/globalConstants";
+import {PortfolioItemPreview} from "@/src/lib/types";
+import {API_BASE_URL} from "@/src/lib/globalConstants";
 import {Tooltip, TooltipContent, TooltipTrigger} from "@/src/components/ui/tooltip";
 import Image from "next/image";
 import {
@@ -65,14 +65,14 @@ export const getColumns = (
             );
         },
         cell: ({row}) => (
-            <div className="capitalize">{row.getValue("coverAlt")}</div>
+            <div className="capitalize">{row.original.coverAlt?.ru}</div>
         ),
     },
     {
-        accessorKey: "description",
+        accessorKey: "description.ru",
         header: "Описание",
         cell: ({ row }) => {
-            const value = row.getValue("description") as string | undefined;
+            const value = row.original.description?.ru  as string | undefined;
             return (
                 <div className="capitalize">
                     {value?.trim() ? value : <span className="text-muted-foreground italic">Нет описания</span>}
@@ -97,7 +97,7 @@ export const getColumns = (
         header: "Обложка",
         cell: ({row}) => {
             const cover: string = row.getValue("cover");
-            const alt: string = row.getValue("coverAlt");
+            const alt: string = row.original.coverAlt.ru;
             const imageUrl = `${API_BASE_URL}/${cover}`;
 
             return (

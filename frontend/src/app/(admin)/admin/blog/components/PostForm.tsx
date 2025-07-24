@@ -15,9 +15,9 @@ import {
 import { Input } from '@/src/components/ui/input';
 import { Textarea } from '@/src/components/ui/textarea';
 import { Alert, AlertDescription } from '@/src/components/ui/alert';
-import { API_BASE_URL } from '@/lib/globalConstants';
-import { Post } from "@/lib/types";
-import { CreatePostFormData, createPostSchema, UpdatePostFormData, updatePostSchema } from '@/lib/zodSchemas/postSchema';
+import { API_BASE_URL } from '@/src/lib/globalConstants';
+import { Post } from "@/src/lib/types";
+import { CreatePostFormData, createPostSchema, UpdatePostFormData, updatePostSchema } from '@/src/lib/zodSchemas/postSchema';
 
 interface PostFormProps {
     isEditing: boolean;

@@ -2,7 +2,10 @@ import mongoose, {Schema} from "mongoose";
 
 const GalleryItemSchema = new Schema({
     image: {type: String, required: true},
-    alt: {type: String, default: null, maxLength: 150},
+    alt:{
+        ru: {type: String, default: null, maxLength: 150},
+        ky: {type: String, default: null, maxLength: 150}
+    },
 });
 
 const PortfolioItemSchema = new mongoose.Schema({
@@ -11,17 +14,30 @@ const PortfolioItemSchema = new mongoose.Schema({
         required: [true, "Поле обложки портфолио обязательно"],
     },
     coverAlt: {
-        type: String,
-        required:[true, "Альтер-ое название обложки портфолио обязательно"],
-        maxLength: 150,
+        ru: {
+            type: String,
+            required:[true, "Альтер-ое название обложки портфолио обязательно"],
+            maxLength: 150,
+        },
+        ky: {
+            type: String,
+            required:true,
+            maxLength: 150,
+        }
     },
     gallery: {
         type: [GalleryItemSchema],
         required: true,
     },
     description: {
-        type: String,
-        default: null,
+        ru: {
+            type: String,
+            default: null,
+        },
+        ky: {
+            type: String,
+            default: null,
+        },
     },
 });
 

@@ -1,11 +1,11 @@
 import React, {useEffect} from 'react';
 import {Input} from "@/src/components/ui/input";
-import {IRequest, RequestMutation} from "@/lib/types";
+import {IRequest, RequestMutation} from "@/src/lib/types";
 import {editRequest, fetchAllRequests} from "@/actions/superadmin/requests";
 import {toast} from "react-toastify";
 import {useAdminRequestsStore} from "@/store/superadmin/adminRequestsStore";
 import {Button} from "@/src/components/ui/button";
-import {requestAdminSchema} from "@/lib/zodSchemas/requestAdminSchema";
+import {requestAdminSchema} from "@/src/lib/zodSchemas/requestAdminSchema";
 import {useForm} from 'react-hook-form';
 import {z} from "zod"
 import {zodResolver} from '@hookform/resolvers/zod';

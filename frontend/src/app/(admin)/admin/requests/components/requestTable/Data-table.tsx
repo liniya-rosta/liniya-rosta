@@ -25,7 +25,7 @@ import ColumnVisibility from "./ColumnVisibility"
 import SearchTable from "@/src/app/(admin)/admin/requests/components/requestTable/SearchTable";
 import CheckboxAction from "@/src/app/(admin)/admin/requests/components/requestTable/CheckboxAction";
 import {DateFilter} from "@/src/app/(admin)/admin/requests/components/requestTable/DateFilter";
-import {IRequest} from "@/lib/types";
+import {IRequest} from "@/src/lib/types";
 import RequestsModal from "@/src/app/(admin)/admin/requests/components/RequestsModal";
 import {Button} from "@/src/components/ui/button";
 import {useAdminRequestsStore} from "@/store/superadmin/adminRequestsStore";

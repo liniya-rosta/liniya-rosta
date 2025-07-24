@@ -1,5 +1,5 @@
 import React from 'react';
-import { Post } from "@/lib/types";
+import { Post } from "@/src/lib/types";
 import { fetchPostById } from "@/actions/posts";
 import PostClient from "@/src/app/(public)/[locale]/blog/[id]/PostClient";
 

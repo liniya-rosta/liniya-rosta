@@ -3,7 +3,7 @@
 import React, {useEffect} from 'react';
 import {useSuperadminAdminsStore} from "@/store/superadmin/superadminAdminsStore";
 import CreateAdmin from "@/src/app/(admin)/admin/admins/components/CreateAdmin";
-import {User} from "@/lib/types";
+import {User} from "@/src/lib/types";
 import LoadingFullScreen from "@/src/components/ui/Loading/LoadingFullScreen";
 import ErrorMsg from "@/src/components/ui/ErrorMsg";
 import AdminsTable from "@/src/app/(admin)/admin/admins/components/AdminsTable";
@@ -37,7 +37,7 @@ const Admins: React.FC<Props> = ({data, error}) => {
     }, [data, error, setAdmins, setAdminsError, setAdminsLoading]);
 
     if (adminsLoading) return <LoadingFullScreen/>;
-    if (adminsError) return <ErrorMsg error={adminsError} label="админов"/>;
+    if (adminsError) return <ErrorMsg error={adminsError}/>;
 
     return (
         <>

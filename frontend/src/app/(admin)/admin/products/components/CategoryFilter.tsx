@@ -7,7 +7,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/src/components/ui/select";
-import { Category } from "@/lib/types";
+import { Category } from "@/src/lib/types";
 
 interface CategoryFilterProps<TData> {
     column?: Column<TData, unknown>;

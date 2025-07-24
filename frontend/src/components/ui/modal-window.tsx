@@ -1,5 +1,5 @@
 import React from 'react';
-import {cn} from "@/lib/utils";
+import {cn} from "@/src/lib/utils";
 import {BtnClose} from "@/src/components/ui/btn-close";
 
 interface Props {

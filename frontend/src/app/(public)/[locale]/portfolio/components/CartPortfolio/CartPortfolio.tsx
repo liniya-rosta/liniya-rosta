@@ -1,5 +1,5 @@
 import React from 'react';
-import {cn} from "@/lib/utils";
+import {cn} from "@/src/lib/utils";
 import {CartImage} from "@/src/app/(public)/[locale]/portfolio/components/CartPortfolio/CartImage";
 import {GradientOverlay} from "@/src/app/(public)/[locale]/portfolio/components/CartPortfolio/GradientOverlay";
 import {AnimatedButton} from "@/src/app/(public)/[locale]/portfolio/components/CartPortfolio/AnimatedButton";
@@ -7,12 +7,11 @@ import {AnimatedButton} from "@/src/app/(public)/[locale]/portfolio/components/C
 interface Props {
     className?: string;
     imageSrc: string;
-    textBtn: string;
     alt?: string;
 }
 
 export const CartPortfolio: React.FC<Props> = (
-    {className, imageSrc, textBtn, alt = "image"}) => {
+    {className, imageSrc, alt = "image"}) => {
     return (
         <div
             className={cn(
@@ -22,7 +21,7 @@ export const CartPortfolio: React.FC<Props> = (
 
             <CartImage alt={alt} src={imageSrc}/>
             <GradientOverlay/>
-            <AnimatedButton text={textBtn}/>
+            <AnimatedButton/>
         </div>
     );
 };

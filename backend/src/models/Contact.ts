@@ -5,10 +5,15 @@ const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const ContactSchema = new mongoose.Schema<ContactFields>({
     location: {
-        type: String,
-        required: true,
-        validator: (v: string) => v.trim().length > 0,
-        message: "Поле обязательно для заполнения",
+            ru: {
+                type: String,
+                required: true,
+                validator: (v: string) => v.trim().length > 0,
+                message: "Поле обязательно для заполнения"},
+            ky: {
+                type: String,
+                required: true,
+                }
     },
     phone1: {type: String, required: true},
     phone2: {type: String},
@@ -23,13 +28,34 @@ const ContactSchema = new mongoose.Schema<ContactFields>({
         },
     },
     workingHours: {
-        monday: {type: String, required: true},
-        tuesday: {type: String, required: true},
-        wednesday: {type: String, required: true},
-        thursday: {type: String, required: true},
-        friday: {type: String, required: true},
-        saturday: {type: String, required: true},
-        sunday: {type: String, required: true},
+        monday: {
+            ru: { type: String, required: true },
+            ky: { type: String, required: true },
+        },
+        tuesday: {
+            ru: { type: String, required: true },
+            ky: { type: String, required: true },
+        },
+        wednesday: {
+            ru: { type: String, required: true },
+            ky: { type: String, required: true },
+        },
+        thursday: {
+            ru: { type: String, required: true },
+            ky: { type: String, required: true },
+        },
+        friday: {
+            ru: { type: String, required: true },
+            ky: { type: String, required: true },
+        },
+        saturday: {
+            ru: { type: String, required: true },
+            ky: { type: String, required: true },
+        },
+        sunday: {
+            ru: { type: String, required: true },
+            ky: { type: String, required: true },
+        },
     },
     mapLocation: {type: String, required: true},
     linkLocation: {type: String, required: true},

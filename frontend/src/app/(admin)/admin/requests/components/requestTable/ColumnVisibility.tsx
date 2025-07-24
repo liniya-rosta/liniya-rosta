@@ -2,7 +2,7 @@ import React from 'react';
 import {DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger} from "@/src/components/ui/dropdown-menu"
 import {Button} from "@/src/components/ui/button";
 import {Table} from "@tanstack/react-table";
-import {IRequest} from "@/lib/types";
+import {IRequest} from "@/src/lib/types";
 
 interface Props {
     table: Table<IRequest>;

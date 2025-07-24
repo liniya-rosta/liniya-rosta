@@ -2,20 +2,22 @@
 
 import React, {useState, useEffect} from 'react';
 import {usePortfolioStore} from "@/store/portfolioItemStore";
-import {API_BASE_URL} from "@/lib/globalConstants";
+import {API_BASE_URL} from "@/src/lib/globalConstants";
 import Image from "next/image";
-import {GalleryItem, PortfolioItemDetail} from "@/lib/types";
+import {GalleryItem, PortfolioItemDetail} from "@/src/lib/types";
 import {ModalImage} from "@/src/components/shared/ModalImage";
 import GalleryCard from '../components/GalleryCard';
 import ErrorMsg from "@/src/components/ui/ErrorMsg";
 import LoadingFullScreen from "@/src/components/ui/Loading/LoadingFullScreen";
+import { useLocale } from 'next-intl';
 
 type Props = {
     detailItem?: PortfolioItemDetail | null,
     error: string | null,
+    emptyGalleryText: string,
 };
 
-const GalleryClient: React.FC<Props> = ({detailItem, error=null}) => {
+const GalleryClient: React.FC<Props> = ({detailItem, error=null, emptyGalleryText}) => {
     const {
         fetchLoadingPortfolio,
         setPortfolioItemDetail,
@@ -25,6 +27,7 @@ const GalleryClient: React.FC<Props> = ({detailItem, error=null}) => {
     const gallery = detailItem?.gallery;
     const [selectedItem, setSelectedItem] = useState<GalleryItem | null>(null);
     const [currentIndex, setCurrentIndex] = useState<number | null>(null);
+    const locale = useLocale() as "ru" | "ky";
 
     const handleOpen = (index: number) => setCurrentIndex(index);
     const handleClose = () => setCurrentIndex(null);
@@ -57,7 +60,7 @@ const GalleryClient: React.FC<Props> = ({detailItem, error=null}) => {
     }, [setPortfolioItemDetail, detailItem, setPortfolioLoading, error, currentIndex, gallery]);
 
 
-    if (!detailItem) return  <p className="text-center">Галерея пуста</p>
+    if (!detailItem) return  <p className="text-center">{emptyGalleryText}</p>
     if (fetchLoadingPortfolio) return <LoadingFullScreen/>
     if (error) return <ErrorMsg error={error}/>
 
@@ -67,7 +70,7 @@ const GalleryClient: React.FC<Props> = ({detailItem, error=null}) => {
 
                 <GalleryCard
                     imageUrl={`${API_BASE_URL}/${detailItem.cover}`}
-                    alt={detailItem.coverAlt}
+                    alt={detailItem.coverAlt[locale]}
                     handleOpen={handleOpen}
                     index={-1}
                     id={detailItem._id}
@@ -85,7 +88,7 @@ const GalleryClient: React.FC<Props> = ({detailItem, error=null}) => {
                                 id={item._id}
                                 imageUrl={imageUrl}
                                 handleOpen={handleOpen}
-                                alt={item.alt}
+                                alt={item.alt[locale]}
                                 className="aspect-[3/4] w-full overflow-hidden group cursor-pointer rounded-2xl hover:shadow-xl transition"
                                 classNameImage="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
                             />
@@ -93,7 +96,7 @@ const GalleryClient: React.FC<Props> = ({detailItem, error=null}) => {
                     })
                 )
                     :<div className="flex justify-center items-center min-h-[200px]">
-                        <p className="text-muted-foreground text-lg">Галерея пуста</p>
+                        <p className="text-muted-foreground text-lg">{emptyGalleryText}</p>
                     </div>
                 }
             </div>
@@ -112,7 +115,7 @@ const GalleryClient: React.FC<Props> = ({detailItem, error=null}) => {
                         rel="noopener noreferrer"
                     ><Image
                             src={`${API_BASE_URL}/${selectedItem.image}`}
-                            alt={selectedItem.alt}
+                            alt={selectedItem.alt[locale]}
                             width={800}
                             height={600}
                             className="w-auto h-auto max-w-full max-h-[80vh] object-contain"

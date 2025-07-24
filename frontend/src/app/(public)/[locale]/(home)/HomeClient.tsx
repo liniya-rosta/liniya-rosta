@@ -6,7 +6,7 @@ import {usePortfolioStore} from "@/store/portfolioItemStore";
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
-import {Category, Contact, PortfolioItemPreview, Product, ServiceResponse} from '@/lib/types';
+import {Category, Contact, PortfolioItemPreview, Product, ServiceResponse} from '@/src/lib/types';
 import {useCategoryStore} from "@/store/categoriesStore";
 import ErrorMsg from "@/src/components/ui/ErrorMsg";
 import HeroSection from "@/src/app/(public)/[locale]/(home)/components/HeroSection";
@@ -31,7 +31,7 @@ interface HomePageClientProps {
     portfolioError: string | null;
     contactError: string | null;
     serviceError: string | null;
-    title: string;
+    title: string
 }
 
 const HomePageClient: React.FC<HomePageClientProps> = ({
@@ -47,6 +47,7 @@ const HomePageClient: React.FC<HomePageClientProps> = ({
                                                            serviceError,
                                                            title
                                                        }) => {
+
 
     const {
         setCategories,
@@ -134,20 +135,20 @@ const HomePageClient: React.FC<HomePageClientProps> = ({
 
     return (
         <>
-            <HeroSection title={title}/>
+            <HeroSection title={title} />
 
             <ServiceSection/>
             <div className="container mx-auto px-4 py-8 space-y-16">
 
-                <CategoriesSection/>
+                <CategoriesSection />
 
-                <ProductsSection/>
+                <ProductsSection />
 
-                <PortfolioSection/>
+                <PortfolioSection />
 
-                <ConsultationSection/>
+                <ConsultationSection />
 
-                <InstagramSection/>
+                <InstagramSection />
             </div>
         </>
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import {Card, CardContent} from '@/src/components/ui/card';
-import {Category} from "@/lib/types";
+import {Category} from "@/src/lib/types";
 
 interface Props {
     category: Category;

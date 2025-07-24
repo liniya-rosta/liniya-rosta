@@ -1,19 +1,22 @@
 import React from 'react';
-import ErrorMsg from "@/src/components/ui/ErrorMsg";
 import {Swiper, SwiperSlide} from "swiper/react";
 import {Navigation, Pagination} from "swiper/modules";
 import CategoryCard from "@/src/app/(public)/[locale]/(home)/components/CategoryCard";
 import {useCategoryStore} from "@/store/categoriesStore";
+import {useTranslations} from "next-intl";
 
 const CategoriesSection = () => {
     const {categories, fetchCategoriesError} = useCategoryStore();
 
+    const tHome = useTranslations("HomePage");
+    const tError = useTranslations("Errors");
+
     return (
         <section className="space-y-6" aria-labelledby="categories-heading">
-            <h2 id="categories-heading" className="text-3xl font-bold text-center">Категории продукции</h2>
-            {fetchCategoriesError && (
-                <ErrorMsg error={fetchCategoriesError} label='категорий'/>
-            )}
+            <h2 id="categories-heading" className="text-3xl font-bold text-center">{tHome("categoriesTitle")}</h2>
+            {fetchCategoriesError &&
+                tError("categoriesError")
+            }
             {categories.length > 0 ? (
                 <Swiper
                     slidesPerView={4}
@@ -34,7 +37,7 @@ const CategoriesSection = () => {
                     ))}
                 </Swiper>
             ) : (
-                !fetchCategoriesError && <p className="text-center">Нет категорий</p>
+                !fetchCategoriesError && <p className="text-center">{tHome("noCategories")}</p>
             )}
         </section>
     );

@@ -1,7 +1,7 @@
 'use client';
 
 import React, {useEffect, useState} from 'react';
-import {User} from "@/lib/types";
+import {User} from "@/src/lib/types";
 import {getAllAdmins} from "@/actions/superadmin/admins";
 import {AxiosError} from "axios";
 import Admins from "@/src/app/(admin)/admin/admins/Admins";

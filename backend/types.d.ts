@@ -30,20 +30,46 @@ export interface UpdatesRequest {
     isArchived?: string;
 }
 
+export interface WorkingHours {
+    monday: {
+        ru: string
+        ky: string;
+    };
+    tuesday: {
+        ru: string
+        ky: string;
+    };
+    wednesday: {
+        ru: string
+        ky: string;
+    };
+    thursday: {
+        ru: string
+        ky: string;
+    };
+    friday: {
+        ru: string
+        ky: string;
+    };
+    saturday: {
+        ru: string
+        ky: string;
+    };
+    sunday: {
+        ru: string
+        ky: string;
+    };
+}
+
 export interface ContactFields {
-    location: string;
+    location: {
+        ru: string
+        ky: string
+    };
     phone1: string;
     phone2?: string;
     email: string;
-    workingHours: {
-        monday: string;
-        tuesday: string;
-        wednesday: string;
-        thursday: string;
-        friday: string;
-        saturday: string;
-        sunday: string;
-    };
+    workingHours: WorkingHours;
     mapLocation: string;
     linkLocation: string;
     instagram: string;
@@ -57,6 +83,12 @@ export interface PortfolioUpdate{
 }
 
 export interface ServiceUpdate {
-    title?: string;
-    description?: string;
+    title?: {
+        ru: string,
+        ky: string;
+    };
+    description?: {
+        ru: string,
+        ky: string;
+    };
 }

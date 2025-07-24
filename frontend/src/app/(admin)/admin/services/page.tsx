@@ -1,5 +1,5 @@
 import AdminServiceClient from "@/src/app/(admin)/admin/services/AdminServiceClient";
-import {ServiceResponse} from "@/lib/types";
+import {ServiceResponse} from "@/src/lib/types";
 import {fetchAllServices} from "@/actions/services";
 import {isAxiosError} from "axios";
 

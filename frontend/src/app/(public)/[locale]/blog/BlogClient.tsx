@@ -4,8 +4,8 @@ import React, { useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { usePostsStore } from '@/store/postsStore';
-import { Post } from "@/lib/types";
-import { API_BASE_URL } from "@/lib/globalConstants";
+import { Post } from "@/src/lib/types";
+import { API_BASE_URL } from "@/src/lib/globalConstants";
 import Image from "next/image";
 
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '@/src/components/ui/card';

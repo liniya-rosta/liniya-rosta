@@ -15,8 +15,8 @@ import {
     DropdownMenuTrigger,
 } from "@/src/components/ui/dropdown-menu";
 import { Badge } from "@/src/components/ui/badge";
-import { Category, Product } from "@/lib/types";
-import {API_BASE_URL} from "@/lib/globalConstants";
+import { Category, Product } from "@/src/lib/types";
+import {API_BASE_URL} from "@/src/lib/globalConstants";
 
 export const getProductTableColumns = (
     categories: Category[],

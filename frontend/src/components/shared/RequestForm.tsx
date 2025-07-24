@@ -4,7 +4,7 @@ import React from 'react';
 import {useForm} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {toast} from "react-toastify";
-import {IRequestMutation} from "@/lib/types";
+import {IRequestMutation} from "@/src/lib/types";
 import {useRequestStore} from "@/store/requestStore";
 import {createRequest} from "@/actions/requestActions";
 import {Button} from "@/src/components/ui/button";
@@ -21,7 +21,8 @@ import {Label} from "@/src/components/ui/label";
 import {Alert, AlertDescription} from "@/src/components/ui/alert";
 import {Loader2, AlertCircle} from "lucide-react";
 
-import requestSchema from "@/lib/zodSchemas/requestSchema";
+import {getRequestSchema} from "@/src/lib/zodSchemas/requestSchema";
+import {useTranslations} from "next-intl";
 
 interface Props {
     closeModal: () => void;
@@ -30,13 +31,19 @@ interface Props {
 const RequestForm: React.FC<Props> = ({closeModal}) => {
     const {createLoading, createError, errorMessage, setLoading, setError} = useRequestStore();
 
+    const tForm = useTranslations("FormModal");
+    const tToasts = useTranslations("Toasts");
+    const tBtn = useTranslations("Buttons");
+    const tFormErrors = useTranslations("FormErrors");
+    const schema = getRequestSchema(tFormErrors);
+
     const {
         register,
         handleSubmit,
         formState: {errors},
         reset,
     } = useForm<IRequestMutation>({
-        resolver: zodResolver(requestSchema),
+        resolver: zodResolver(schema),
     });
 
     const onSubmit = async (data: IRequestMutation) => {
@@ -51,7 +58,7 @@ const RequestForm: React.FC<Props> = ({closeModal}) => {
         if (response !== null) {
             setError(response);
         } else {
-            toast.success('Заявка отправлена! Менеджер свяжется с вами.');
+            toast.success(tToasts("success.submitRequest"));
             reset();
             closeModal();
         }
@@ -61,26 +68,28 @@ const RequestForm: React.FC<Props> = ({closeModal}) => {
         <DialogContent className="sm:max-w-[425px]">
             <form onSubmit={handleSubmit(onSubmit)} noValidate>
                 <DialogHeader>
-                    <DialogTitle>Оставить заявку</DialogTitle>
+                    <DialogTitle>{tForm("formTitle")}</DialogTitle>
                     <DialogDescription>
-                        Заполните форму, и мы свяжемся с вами в ближайшее время.
+                        {tForm("formSubtitle")}
                     </DialogDescription>
                 </DialogHeader>
 
                 <div className="grid gap-4 py-4">
                     {createError && (
                         <Alert variant="destructive">
-                            <AlertCircle className="h-4 w-4"/>
-                            <AlertDescription>{errorMessage}</AlertDescription>
+                            <div>
+                                <AlertCircle className="h-4 w-4"/>
+                                <AlertDescription>{errorMessage}</AlertDescription>
+                            </div>
                         </Alert>
                     )}
 
                     <div className="grid gap-1">
-                        <Label htmlFor="name">Имя</Label>
+                        <Label htmlFor="name">{tForm("form.name")}</Label>
                         <Input
                             id="name"
                             {...register("name")}
-                            placeholder="Вася Пупкин"
+                            placeholder="Иван Иванов"
                             disabled={createLoading}
                         />
                         {errors.name && (
@@ -103,7 +112,7 @@ const RequestForm: React.FC<Props> = ({closeModal}) => {
                     </div>
 
                     <div className="grid gap-1">
-                        <Label htmlFor="phone">Номер телефона</Label>
+                        <Label htmlFor="phone">Телефон</Label>
                         <Input
                             id="phone"
                             type="tel"
@@ -120,12 +129,12 @@ const RequestForm: React.FC<Props> = ({closeModal}) => {
                 <DialogFooter>
                     <DialogClose asChild>
                         <Button type="button" variant="outline" disabled={createLoading} className="cursor-pointer">
-                            Отмена
+                            {tBtn("canselBtn")}
                         </Button>
                     </DialogClose>
                     <Button type="submit" disabled={createLoading} className="cursor-pointer">
                         {createLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin"/>}
-                        Отправить
+                        {tBtn("submitBtn")}
                     </Button>
                 </DialogFooter>
             </form>

@@ -6,7 +6,7 @@ import {Table} from "@tanstack/react-table";
 import {deleteRequest, editRequest, fetchAllRequests, fetchOneRequest} from "@/actions/superadmin/requests";
 import {toast} from "react-toastify";
 import {useAdminRequestsStore} from "@/store/superadmin/adminRequestsStore";
-import {IRequest} from "@/lib/types";
+import {IRequest} from "@/src/lib/types";
 import ConfirmDialog from "@/src/components/ui/ConfirmDialog";
 
 interface Props {

@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
-import {cn} from "@/lib/utils";
+import {cn} from "@/src/lib/utils";
 import {BtnClose} from "@/src/components/ui/btn-close";
+import {useTranslations} from "next-intl";
 
 interface Props {
     className?: string;
@@ -14,6 +15,7 @@ interface Props {
 export const ModalImage: React.FC<React.PropsWithChildren<Props>> = (
     {className, children, onClose, isOpen, handlePrev, handleNext, isNavigable }) => {
     const [showHint, setShowHint] = useState<boolean>(true);
+    const tTitle = useTranslations("Titles");
 
     if (!isOpen) return null;
 
@@ -55,7 +57,7 @@ export const ModalImage: React.FC<React.PropsWithChildren<Props>> = (
                         onClick={() => setShowHint(false)}
                         className="z-30 absolute bottom-[1rem] left-1/2 -translate-x-1/2 bg-white px-4 py-2 rounded-md shadow-md text-sm text-gray-700 cursor-pointer transition-opacity hover:opacity-80"
                     >
-                        Для перелистывания изображений кликайте по левой или правой части картинки. (нажмите, чтобы скрыть)
+                        {tTitle("textImageSwiper")}
                     </div>
                 )}
             </div>

@@ -5,10 +5,14 @@ import {Mail, MapPin, Phone} from "lucide-react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faInstagram, faWhatsapp} from "@fortawesome/free-brands-svg-icons";
 import {useContactStore} from "@/store/contactsStore";
+import {useLocale, useTranslations} from "next-intl";
 
 const ContactInfoCard = () => {
     const contact = useContactStore(state => state.contact);
-    if (!contact) return <p>Данные контактов не загружены</p>;
+    const tContacts = useTranslations("ContactsPage");
+    const locale = useLocale() as "ky" | "ru"
+
+    if (!contact) return <p>{tContacts("noContacts")}</p>;
 
     const linkClass = "inline-flex items-center space-x-2 group hover:text-blue-600 transition-colors duration-300";
     const iconClass = "w-5 h-5 text-muted-foreground group-hover:text-blue-600 duration-300";
@@ -19,7 +23,7 @@ const ContactInfoCard = () => {
                 <div className="p-2 bg-blue-100 rounded-lg">
                     <Mail className="h-6 w-6 text-blue-700"/>
                 </div>
-                <h2 className="text-xl font-semibold">Контактная информация</h2>
+                <h2 className="text-xl font-semibold">{tContacts("contactsInfo")}</h2>
             </CardHeader>
 
             <CardContent className="space-y-6 text-gray-700">
@@ -32,7 +36,7 @@ const ContactInfoCard = () => {
                             className={linkClass}
                         >
                             <MapPin className={iconClass}/>
-                            <span>{contact.location}</span>
+                            <span>{contact.location[locale]}</span>
                         </a>
                     </li>
                     <li>

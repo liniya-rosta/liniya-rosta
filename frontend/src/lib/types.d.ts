@@ -1,27 +1,36 @@
 export interface GalleryForm {
     image: File | null,
-    alt?: string,
+    alt?: {ru: string},
 }
 
 export interface PortfolioMutation {
-    description: string;
-    coverAlt: string;
+    description: {ru: string};
+    coverAlt: {ru: string};
     cover: File | null;
     gallery: GalleryForm[];
 }
 
 export interface PortfolioItemPreview {
     _id: string;
-    description: string;
+    description: {
+        ru: string;
+        ky: string;
+    };
     cover: string;
-    coverAlt: string;
+    coverAlt: {
+        ru: string;
+        ky: string;
+    };
     galleryCount: number;
 }
 
 export interface GalleryItem {
     _id: string;
     image: string;
-    alt: string;
+    alt: {
+        ru: string;
+        ky: string;
+    };
 }
 
 export interface PortfolioItemDetail extends PortfolioItemPreview {
@@ -82,18 +91,42 @@ export interface IRequestMutation {
 
 export interface Contact {
     _id: string;
-    location: string;
+    location: {
+        ru: string;
+        ky?: string;
+    };
     phone1: string;
     phone2?: string;
     email: string;
     workingHours: {
-        monday: string;
-        tuesday: string;
-        wednesday: string;
-        thursday: string;
-        friday: string;
-        saturday: string;
-        sunday: string;
+        monday: {
+            ru: string;
+            ky?: string;
+        };
+        tuesday: {
+            ru: string;
+            ky?: string;
+        };
+        wednesday: {
+            ru: string;
+            ky?: string;
+        };
+        thursday: {
+            ru: string;
+            ky?: string;
+        };
+        friday: {
+            ru: string;
+            ky?: string;
+        };
+        saturday: {
+            ru: string;
+            ky?: string;
+        };
+        sunday: {
+            ru: string;
+            ky?: string;
+        };
     };
     linkLocation: string;
     mapLocation: string;
@@ -168,8 +201,14 @@ export interface IRequest {
 }
 
 export interface ServiceForm {
-    title: string;
-    description?: string;
+    title: {
+        ru: string;
+        ky: string;
+    };
+    description?: {
+        ru: string;
+        ky: string;
+    };
 }
 
 export interface Service extends ServiceForm {

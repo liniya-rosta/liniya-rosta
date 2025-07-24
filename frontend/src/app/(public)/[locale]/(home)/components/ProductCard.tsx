@@ -4,8 +4,8 @@ import {AspectRatio} from '@/src/components/ui/aspect-ratio';
 import {Card, CardContent, CardFooter} from '@/src/components/ui/card';
 import {Button} from '@/src/components/ui/button';
 import {Badge} from '@/src/components/ui/badge';
-import {API_BASE_URL} from '@/lib/globalConstants';
-import {Product} from "@/lib/types";
+import {API_BASE_URL} from '@/src/lib/globalConstants';
+import {Product} from "@/src/lib/types";
 
 interface Props {
     product: Product;

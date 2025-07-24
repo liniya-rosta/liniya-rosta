@@ -6,7 +6,7 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/src/components/ui/dialog';
-import {CreatePostData, Post, UpdatePostData} from '@/lib/types';
+import {CreatePostData, Post, UpdatePostData} from '@/src/lib/types';
 import PostForm from './PostForm';
 
 interface PostModalProps {

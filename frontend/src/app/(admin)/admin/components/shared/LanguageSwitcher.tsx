@@ -2,8 +2,8 @@
 
 import * as React from 'react';
 import {usePathname, useRouter} from '@/src/i18n/navigation';
-import {useLocale} from 'use-intl';
-import { Earth } from 'lucide-react';
+import {useLocale} from 'next-intl';
+import {Earth} from 'lucide-react';
 import {
     Select,
     SelectTrigger,
@@ -23,8 +23,11 @@ export default function LanguageSwitcher() {
 
     return (
         <Select value={locale} onValueChange={handleChange}>
-            <SelectTrigger className="min-w-[140px] text-white">
-                <Earth color="white" /> <SelectValue />
+            <SelectTrigger className="md-min-w-[140px] text-white">
+                <Earth color="white"/>
+                <span className="hidden md:inline">
+                    <SelectValue/>
+                 </span>
             </SelectTrigger>
             <SelectContent>
                 <SelectItem value="ru" className='hover:bg-gray-500'>Русский</SelectItem>

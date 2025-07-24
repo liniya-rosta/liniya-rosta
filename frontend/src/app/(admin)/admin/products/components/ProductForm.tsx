@@ -22,14 +22,14 @@ import {
     SelectValue,
 } from "@/src/components/ui/select";
 import { Alert, AlertDescription } from "@/src/components/ui/alert";
-import { Category, Product } from "@/lib/types";
-import { API_BASE_URL } from "@/lib/globalConstants";
+import { Category, Product } from "@/src/lib/types";
+import { API_BASE_URL } from "@/src/lib/globalConstants";
 import {
     CreateProductFormData,
     createProductSchema,
     UpdateProductFormData,
     updateProductSchema
-} from "@/lib/zodSchemas/productSchema";
+} from "@/src/lib/zodSchemas/productSchema";
 
 interface ProductFormProps {
     isEditing: boolean;

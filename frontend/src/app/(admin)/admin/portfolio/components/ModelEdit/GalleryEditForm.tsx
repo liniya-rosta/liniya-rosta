@@ -2,10 +2,10 @@ import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {useSuperAdminPortfolioStore} from "@/store/superadmin/superAdminPortfolio";
 import React, {useEffect, useState} from "react";
-import {GalleryEditValues} from "@/lib/types";
+import {GalleryEditValues} from "@/src/lib/types";
 import {Input} from "@/src/components/ui/input";
 import Image from "next/image";
-import {API_BASE_URL} from "@/lib/globalConstants";
+import {API_BASE_URL} from "@/src/lib/globalConstants";
 import {Button} from "@/src/components/ui/button";
 import { editGalleryItem } from "@/actions/superadmin/portfolios";
 import LoaderIcon from "@/src/components/ui/LoaderIcon";
@@ -16,7 +16,7 @@ import {fetchPortfolioItem} from "@/actions/portfolios";
 import {Eye} from "lucide-react";
 import {Label} from "@/src/components/ui/label";
 import ImageModal from "@/src/app/(admin)/admin/portfolio/components/ImageModal";
-import { gallerySchema } from "@/lib/zodSchemas/portfolioSchema";
+import { gallerySchema } from "@/src/lib/zodSchemas/portfolioSchema";
 
 interface Props {
     onSaved: () => void;
@@ -47,7 +47,7 @@ const GalleryEditForm: React.FC<Props> = ({onSaved}) => {
     useEffect(() => {
         if (galleryItem) {
             reset({
-                alt: galleryItem.alt,
+                alt: {ru: galleryItem.alt.ru},
             });
         }
     }, [galleryItem, reset]);
@@ -99,7 +99,7 @@ const GalleryEditForm: React.FC<Props> = ({onSaved}) => {
                         className="mb-2"
                         type="text"
                         disabled={editLoading}
-                        {...register("alt")}
+                        {...register("alt.ru")}
                     />
                     {errors.alt && (
                         <p className="text-red-500 text-sm mb-4">{errors.alt.message}</p>
@@ -142,7 +142,7 @@ const GalleryEditForm: React.FC<Props> = ({onSaved}) => {
                         <div className="relative w-[200px] h-[200px]">
                             <Image
                                 src={API_BASE_URL + "/" + galleryItem.image}
-                                alt={galleryItem.alt}
+                                alt={galleryItem.alt.ru}
                                 fill
                                 sizes="(max-width: 768px) 100vw, 200px"
                                 className="object-contain rounded"

@@ -2,18 +2,36 @@ import express from "express";
 import {Error, Types} from "mongoose";
 import Service from "../../models/Service";
 import {ServiceUpdate} from "../../../types";
+import {translateYandex} from "../../../translateYandex";
 
 const servicesSuperAdminRouter = express.Router();
 
 servicesSuperAdminRouter.post("/", async (req, res, next) => {
     try {
-        const newService = new Service({
-            title: req.body.title,
-            description: req.body.description,
-        });
+        const { title, description } = req.body;
 
-        await newService.save();
-        res.send(newService);
+        if (!title?.ru) {
+            res.status(400).send({ error: "Поле title.ru обязательно" })
+            return;
+        }
+
+        const translatedTitle = await translateYandex(title.ru, "ky");
+        const translatedDescription = description?.ru
+            ? await translateYandex(description.ru, "ky")
+            : null;
+
+        const service = new Service({
+            title: {
+                ru: title.ru,
+                ky: translatedTitle,
+            },
+            description: {
+                ru: description?.ru || null,
+                ky: translatedDescription,
+            },
+        });
+        await service.save();
+        res.send(service);
     } catch (error) {
         if (error instanceof Error.ValidationError) {
             res.status(400).send(error);
@@ -26,6 +44,7 @@ servicesSuperAdminRouter.post("/", async (req, res, next) => {
 servicesSuperAdminRouter.patch("/:id", async (req, res, next) => {
     try {
         const {id} = req.params;
+        const { title, description } = req.body;
 
         if (!Types.ObjectId.isValid(id)) {
             res.status(400).send({error: "Неверный формат ID услуг"});
@@ -34,12 +53,20 @@ servicesSuperAdminRouter.patch("/:id", async (req, res, next) => {
 
         const updateData: ServiceUpdate = {};
 
-        if (req.body.title !== undefined) {
-            updateData.title = req.body.title;
+        if (title !== undefined) {
+            const translatedTitle: string = await translateYandex(title.ru, "ky");
+            updateData.title = {
+                ru: title.ru,
+                ky: translatedTitle
+            };
         }
 
-        if (req.body.description !== undefined) {
-            updateData.description = req.body.description;
+        if (description !== undefined) {
+            const translatedDescription: string = await translateYandex(description.ru, "ky");
+            updateData.description = {
+                ru: description.ru,
+                ky: translatedDescription
+            }
         }
 
         const updatedService = await Service.findByIdAndUpdate(

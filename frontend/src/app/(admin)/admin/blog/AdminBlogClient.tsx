@@ -2,7 +2,7 @@
 
 import React, {useEffect, useState} from 'react';
 import {Plus} from 'lucide-react';
-import {Post, CreatePostData, UpdatePostData} from "@/lib/types";
+import {Post, CreatePostData, UpdatePostData} from "@/src/lib/types";
 import {Button} from '@/src/components/ui/button';
 import {Alert, AlertDescription} from '@/src/components/ui/alert';
 import {createPost, deletePost, updatePost} from "@/actions/posts";

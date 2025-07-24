@@ -1,5 +1,5 @@
 import React from 'react';
-import {Category, Product} from "@/lib/types";
+import {Category, Product} from "@/src/lib/types";
 import {fetchProducts} from "@/actions/products";
 import {fetchCategories} from "@/actions/categories";
 import ProductsClient from "@/src/app/(admin)/admin/products/ProductsClient";

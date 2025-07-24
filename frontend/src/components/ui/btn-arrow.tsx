@@ -1,5 +1,5 @@
 import React from 'react';
-import {cn} from "@/lib/utils";
+import {cn} from "@/src/lib/utils";
 import {ChevronLeftIcon, ChevronRightIcon} from "lucide-react";
 import {Button} from "@/src/components/ui/button";
 

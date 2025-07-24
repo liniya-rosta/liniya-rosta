@@ -4,9 +4,9 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
 import { usePostsStore } from "@/store/postsStore";
-import { Post } from "@/lib/types";
+import { Post } from "@/src/lib/types";
 import Loading from "@/src/components/ui/Loading/Loading";
-import { API_BASE_URL } from "@/lib/globalConstants";
+import { API_BASE_URL } from "@/src/lib/globalConstants";
 import Image from "next/image";
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card';

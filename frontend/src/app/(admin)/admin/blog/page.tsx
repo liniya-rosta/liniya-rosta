@@ -1,5 +1,5 @@
 import React from "react";
-import {Post} from "@/lib/types";
+import {Post} from "@/src/lib/types";
 import {fetchPosts} from "@/actions/posts";
 import AdminBlogClient from "@/src/app/(admin)/admin/blog/AdminBlogClient";
 

@@ -5,6 +5,7 @@ import RequestForm from "@/src/components/shared/RequestForm";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faWhatsapp} from "@fortawesome/free-brands-svg-icons";
 import {useContactStore} from "@/store/contactsStore";
+import {useTranslations} from "next-intl";
 
 interface Props {
     title: string;
@@ -13,6 +14,8 @@ interface Props {
 const HeroSection: React.FC<Props> = ({title}) => {
     const {contact} = useContactStore();
     const [isModalTopOpen, setIsModalTopOpen] = React.useState(false);
+
+    const tBtn = useTranslations("Buttons");
 
     return (
         <section aria-labelledby="hero-heading" className="text-center space-y-6 mb-20">
@@ -43,7 +46,7 @@ const HeroSection: React.FC<Props> = ({title}) => {
                                         size="lg"
                                         className="min-w-[180px] bg-[#D2691E] text-white font-semibold shadow-md hover:scale-105
                                                     hover:bg-[#a35213] hover:border-[#D2691E] duration-500">
-                                        Оставить заявку
+                                        {tBtn("requestBtn1")}
                                     </Button>
                                 </DialogTrigger>
                                 <RequestForm closeModal={() => setIsModalTopOpen(false)}/>
@@ -57,7 +60,7 @@ const HeroSection: React.FC<Props> = ({title}) => {
                             >
                                 <a href={`https://wa.me/${contact?.whatsapp}`} target="_blank" rel="noopener noreferrer">
                                     <FontAwesomeIcon icon={faWhatsapp}/>
-                                    Написать в WhatsApp
+                                    WhatsApp
                                 </a>
                             </Button>
                         </div>

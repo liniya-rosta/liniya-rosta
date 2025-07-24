@@ -1,24 +1,28 @@
 import React from 'react';
 import Link from "next/link";
-import ErrorMsg from "@/src/components/ui/ErrorMsg";
 import {Swiper, SwiperSlide} from "swiper/react";
 import {Navigation, Pagination} from "swiper/modules";
 import ProductCard from "@/src/app/(public)/[locale]/(home)/components/ProductCard";
 import {useProductStore} from "@/store/productsStore";
+import {useTranslations} from "next-intl";
 
 const ProductsSection = () => {
     const {products, fetchProductsError} = useProductStore();
 
+    const tHome = useTranslations("HomePage");
+    const tError = useTranslations("Errors");
+    const tBtn = useTranslations("Buttons");
+
     return (
         <section className="space-y-6" aria-labelledby="products-heading">
             <div role="presentation" className="flex justify-between items-center">
-                <h2 id="products-heading" className="text-3xl font-bold">Наши товары</h2>
+                <h2 id="products-heading" className="text-3xl font-bold">{tHome("productsTitle")}</h2>
                 <Link href="/products" className="text-primary text-sm font-medium hover:underline">
-                    Все товары →
+                    {tBtn("allProductBtn")} →
                 </Link>
             </div>
             {fetchProductsError && (
-                <ErrorMsg error={fetchProductsError} label='продуктов'/>
+                tError("productsError")
             )}
             {products.length > 0 ? (
                 <Swiper
@@ -47,7 +51,7 @@ const ProductsSection = () => {
                     ))}
                 </Swiper>
             ) : (
-                !fetchProductsError && <p className="text-center">Нет продуктов</p>
+                !fetchProductsError && <p className="text-center">{tHome("noProducts")}</p>
             )}
         </section>
     );

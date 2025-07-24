@@ -2,7 +2,7 @@
 
 import ServicesContent from "@/src/app/(public)/[locale]/services/components/ServicesContent";
 import React, {useEffect} from "react";
-import { ServiceResponse } from "@/lib/types";
+import { ServiceResponse } from "@/src/lib/types";
 import {useServiceStore} from "@/store/serviceStore";
 import LoadingFullScreen from "@/src/components/ui/Loading/LoadingFullScreen";
 import ErrorMsg from "@/src/components/ui/ErrorMsg";
@@ -10,9 +10,11 @@ import ErrorMsg from "@/src/components/ui/ErrorMsg";
 interface Props {
     data: ServiceResponse | null;
     error: string | null;
+    servicesText: string;
 }
 
-const ServiceClient: React.FC<Props> = ({data, error}) => {
+
+const ServiceClient: React.FC<Props> = ({data, error, servicesText}) => {
     const {setAllServices, fetchLoadingService, setFetchServiceLoading} = useServiceStore();
 
     useEffect(() => {
@@ -24,7 +26,7 @@ const ServiceClient: React.FC<Props> = ({data, error}) => {
     if (error) return <ErrorMsg error={error}/>
 
     return (
-        <ServicesContent/>
+        <ServicesContent text={servicesText}/>
     )
 };
 

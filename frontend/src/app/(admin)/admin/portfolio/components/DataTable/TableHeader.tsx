@@ -9,7 +9,7 @@ import {
 import {ChevronDown} from "lucide-react";
 import React, {useState} from "react";
 import {Table as TanStackTable} from "@tanstack/react-table";
-import {PortfolioItemPreview} from "@/lib/types";
+import {PortfolioItemPreview} from "@/src/lib/types";
 import {useSuperAdminPortfolioStore} from "@/store/superadmin/superAdminPortfolio";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/src/components/ui/select";
 
@@ -113,7 +113,7 @@ const CustomTableHeader: React.FC<Props> = ({table, showConfirm, setGalleryDelet
                                     key={column.id}
                                     checked={column.getIsVisible()}
                                     onCheckedChange={(value) =>
-                                        column.toggleVisibility(!!value)
+                                        column.toggleVisibility(value)
                                     }
                                 >
                                     {columnLabels[column.id] ?? column.id}

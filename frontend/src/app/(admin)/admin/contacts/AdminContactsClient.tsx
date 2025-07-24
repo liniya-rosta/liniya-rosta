@@ -1,7 +1,7 @@
 'use client';
 
 import React, {useEffect} from 'react';
-import {Contact} from '@/lib/types';
+import {Contact} from '@/src/lib/types';
 import Loading from '@/src/components/ui/Loading/Loading';
 import ErrorMsg from '@/src/components/ui/ErrorMsg';
 import AdminContactForm from './components/AdminContactForm';
@@ -32,7 +32,7 @@ const AdminContactsClient: React.FC<Props> = ({data, error}) => {
     }, [data, error, setContact, setFetchError, setFetchLoading, setUpdateLoading]);
 
     if (fetchLoading) return <Loading/>;
-    if (fetchError) return <ErrorMsg error={fetchError} label="контактов"/>;
+    if (fetchError) return <ErrorMsg error={fetchError}/>;
 
     return (
         <div>

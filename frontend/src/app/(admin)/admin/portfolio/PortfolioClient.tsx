@@ -3,7 +3,7 @@
 import React, {useEffect, useState} from "react";
 import {isAxiosError} from "axios";
 import {toast} from "react-toastify";
-import {PortfolioItemPreview} from "@/lib/types";
+import {PortfolioItemPreview} from "@/src/lib/types";
 import {useSuperAdminPortfolioStore} from "@/store/superadmin/superAdminPortfolio";
 import {fetchGalleryItem, fetchPortfolioItem, fetchPortfolioPreviews} from "@/actions/portfolios";
 import {deleteGalleryItem, deletePortfolio } from "@/actions/superadmin/portfolios";

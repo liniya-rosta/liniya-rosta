@@ -1,5 +1,5 @@
-import axiosAPI from "@/lib/axiosAPI";
-import {FetchRequestsResponse, IRequest, RequestMutation} from "@/lib/types";
+import axiosAPI from "@/src/lib/axiosAPI";
+import {FetchRequestsResponse, IRequest, RequestMutation} from "@/src/lib/types";
 
 export const fetchAllRequests = async (
     params?: {

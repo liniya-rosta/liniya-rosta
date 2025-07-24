@@ -1,6 +1,6 @@
 'use client'
 
-import {ServiceResponse} from "@/lib/types";
+import {ServiceResponse} from "@/src/lib/types";
 import React, {useEffect, useState} from "react";
 import {useSuperAdminServicesStore} from "@/store/superadmin/superAdminServices";
 import DataSkeleton from "@/src/components/ui/Loading/DataSkeleton";
@@ -191,6 +191,7 @@ const AdminServiceClient: React.FC<Props> = ({data, error}) => {
                     }
                 }}
                 loading={deleteServiceLoading}
+                text={"Выбранные элеменеты будет удалены навсегда"}
             />
         </div>
     )

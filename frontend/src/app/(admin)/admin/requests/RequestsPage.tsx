@@ -1,7 +1,7 @@
 'use client'
 
 import React, {useEffect} from 'react';
-import {FetchRequestsResponse} from "@/lib/types";
+import {FetchRequestsResponse} from "@/src/lib/types";
 import {fetchAllRequests} from "@/actions/superadmin/requests";
 import {useAdminRequestsStore} from "@/store/superadmin/adminRequestsStore";
 import {DataTable} from "@/src/app/(admin)/admin/requests/components/requestTable/Data-table";

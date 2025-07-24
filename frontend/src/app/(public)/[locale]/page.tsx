@@ -1,7 +1,7 @@
 import React from 'react';
 import {fetchCategories} from '@/actions/categories';
 import {fetchProducts} from '@/actions/products';
-import {Category, Contact, PortfolioItemPreview, Product, ServiceResponse} from '@/lib/types';
+import {Category, Contact, PortfolioItemPreview, Product, ServiceResponse} from '@/src/lib/types';
 import {fetchPortfolioPreviews} from "@/actions/portfolios";
 import {fetchContacts} from "@/actions/contacts";
 import HomePageClient from "@/src/app/(public)/[locale]/(home)/HomeClient";
@@ -68,10 +68,12 @@ const HomePage = async () => {
         serviceError,
     };
 
-    const t = await getTranslations('HomePage');
+    const tHome = await getTranslations('HomePage');
 
     return (
-        <HomePageClient {...initialProps} title={t('mainText')} />
+        <HomePageClient {...initialProps}
+                        title={tHome("mainText")}
+        />
     );
 };
 

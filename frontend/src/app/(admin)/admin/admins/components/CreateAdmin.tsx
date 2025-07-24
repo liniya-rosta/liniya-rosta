@@ -16,7 +16,7 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import {createAdmin} from "@/actions/superadmin/admins";
 import {AxiosError} from "axios";
 import {toast} from "react-toastify";
-import createAdminSchema from "@/lib/zodSchemas/admin/createAdminSchema";
+import createAdminSchema from "@/src/lib/zodSchemas/admin/createAdminSchema";
 import {useSuperadminAdminsStore} from "@/store/superadmin/superadminAdminsStore";
 import ErrorMsg from "@/src/components/ui/ErrorMsg";
 
@@ -92,7 +92,7 @@ const CreateAdmin: React.FC<Props> = ({closeModal}) => {
                     <DialogDescription>Введите данные для создания нового администратора.</DialogDescription>
                 </DialogHeader>
 
-                {createAdminError && <ErrorMsg label="при создании админа" error={createAdminError}/>}
+                {createAdminError && <ErrorMsg error={createAdminError}/>}
 
                 <div className="grid gap-4 py-4">
                     <div className="grid gap-1">

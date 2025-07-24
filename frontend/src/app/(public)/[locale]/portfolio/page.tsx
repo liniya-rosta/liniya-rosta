@@ -1,13 +1,17 @@
 import React from 'react';
 import PortfolioClient from "@/src/app/(public)/[locale]/portfolio/PortfolioClient";
 import {fetchPortfolioPreviews} from "@/actions/portfolios";
-import {PaginatedPortfolioResponse} from "@/lib/types";
+import {PaginatedPortfolioResponse} from "@/src/lib/types";
 import {isAxiosError} from "axios";
+import {getTranslations} from "next-intl/server";
 
 const PortfolioPage = async () => {
     let errorMessage: string | null = null;
     let portfolioData: PaginatedPortfolioResponse | null = null;
     const limit = "8";
+
+    const tPortfolio = await getTranslations("PortfolioPage");
+    const tErrors = await getTranslations("Errors");
 
     try {
         portfolioData = await fetchPortfolioPreviews(limit);
@@ -18,7 +22,7 @@ const PortfolioPage = async () => {
         } else if (error instanceof Error) {
             errorMessage = error.message;
         } else {
-            errorMessage = "Неизвестная ошибка при загрузке портфолио";
+            errorMessage = tErrors("portfolioError");
         }
     }
 
@@ -27,10 +31,12 @@ const PortfolioPage = async () => {
             <h1 className="text-3xl font-bold text-foreground mb-5">
                 Портфолио
                 <span className="block font-medium text-muted-foreground text-sm tracking-wider uppercase">
-                    Идеи, воплощённые в реальность
+                    {tPortfolio("portfolioSubtitle")}
                 </span>
             </h1>
-            <PortfolioClient data={portfolioData} error={errorMessage} limit={limit}/>
+            <PortfolioClient data={portfolioData}
+                             error={errorMessage}
+                             limit={limit}/>
         </main>
     );
 };

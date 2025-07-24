@@ -1,7 +1,7 @@
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/src/components/ui/table";
 import React from "react";
 import {flexRender, Table as TanStackTable} from "@tanstack/react-table";
-import {PortfolioItemPreview} from "@/lib/types";
+import {PortfolioItemPreview} from "@/src/lib/types";
 
 interface Props {
     table: TanStackTable<PortfolioItemPreview>,

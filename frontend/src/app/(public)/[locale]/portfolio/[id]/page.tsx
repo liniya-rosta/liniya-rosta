@@ -3,6 +3,7 @@ import React from "react";
 import {fetchPortfolioItem} from "@/actions/portfolios";
 import GalleryClient from './GalleryClient';
 import {isAxiosError} from "axios";
+import {getLocale, getTranslations} from "next-intl/server";
 
 interface Params {
     id: string
@@ -11,6 +12,10 @@ interface Params {
 const GalleryPage = async ({params}: { params: Promise<Params> }) => {
     let errorMessage: string | null = null;
     let detailItem = null;
+
+    const tPortfolio = await getTranslations("PortfolioPage");
+    const tErrors = await getTranslations("Errors");
+    const locale = (await getLocale()) as "ru" | "ky";
 
     try {
         const {id} = await params;
@@ -21,7 +26,7 @@ const GalleryPage = async ({params}: { params: Promise<Params> }) => {
         } else if (error instanceof Error) {
             errorMessage = error.message;
         } else {
-            errorMessage = "Неизвестная ошибка при загрузке  галереи";
+            errorMessage = tErrors("galleryError");
         }
     }
 
@@ -30,8 +35,8 @@ const GalleryPage = async ({params}: { params: Promise<Params> }) => {
             <h1 className="text-3xl font-bold text-foreground">
                 Галерея
             </h1>
-            <p className="mb-8 text-lg text-muted-foreground">{detailItem?.description}</p>
-            <GalleryClient detailItem={detailItem} error={errorMessage}/>
+            <p className="mb-8 text-lg text-muted-foreground">{detailItem?.description[locale]}</p>
+            <GalleryClient detailItem={detailItem} error={errorMessage} emptyGalleryText={tPortfolio("noElementOnGallery")} />
         </main>
     );
 };

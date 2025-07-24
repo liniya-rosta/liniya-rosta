@@ -1,5 +1,5 @@
 import {ColumnDef} from "@tanstack/react-table"
-import {IRequest} from "@/lib/types";
+import {IRequest} from "@/src/lib/types";
 import {ArrowUpDown} from "lucide-react";
 import {Checkbox} from "@/src/components/ui/checkbox";
 import dayjs from "dayjs";

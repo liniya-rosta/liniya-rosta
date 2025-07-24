@@ -1,6 +1,6 @@
 import {Dialog, DialogContent} from "@/src/components/ui/dialog";
 import {DialogTitle} from "@radix-ui/react-dialog";
-import {API_BASE_URL} from "@/lib/globalConstants";
+import {API_BASE_URL} from "@/src/lib/globalConstants";
 import Image from "next/image";
 import React from "react";
 

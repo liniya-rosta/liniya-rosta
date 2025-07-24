@@ -1,4 +1,4 @@
-import { Contact } from '@/lib/types';
+import { Contact } from '@/src/lib/types';
 import {fetchContacts} from "@/actions/contacts";
 import AdminContactsClient from "@/src/app/(admin)/admin/contacts/AdminContactsClient";
 

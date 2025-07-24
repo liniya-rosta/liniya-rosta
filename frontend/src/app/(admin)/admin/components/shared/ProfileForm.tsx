@@ -16,9 +16,9 @@ import {
 import {Input} from '@/src/components/ui/input';
 import {Label} from '@/src/components/ui/label';
 import {Loader2} from 'lucide-react';
-import {profileSchema} from '@/lib/zodSchemas/profileSchema';
+import {profileSchema} from '@/src/lib/zodSchemas/profileSchema';
 import {editProfile} from '@/actions/users';
-import {EditProfileForm} from "@/lib/types";
+import {EditProfileForm} from "@/src/lib/types";
 import useUserStore from '@/store/usersStore';
 import {AxiosError} from "axios";
 

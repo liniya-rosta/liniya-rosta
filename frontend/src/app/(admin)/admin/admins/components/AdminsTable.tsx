@@ -20,8 +20,8 @@ const AdminsTable = () => {
     return (
         <div className="rounded-md border p-2 mt-3">
 
-            {editAdminError && <ErrorMsg error={editAdminError} label='админов'/>}
-            {deleteAdminError && <ErrorMsg error={deleteAdminError} label='админов'/>}
+            {editAdminError && <ErrorMsg error={editAdminError}/>}
+            {deleteAdminError && <ErrorMsg error={deleteAdminError}/>}
 
             <div className="w-full overflow-x-auto">
                 <Table className="min-w-[600px]">

@@ -1,7 +1,7 @@
 import {Button} from "@/src/components/ui/button";
 import React from "react";
 import {Table as TanStackTable} from "@tanstack/table-core";
-import {PortfolioItemPreview} from "@/lib/types";
+import {PortfolioItemPreview} from "@/src/lib/types";
 import {Tooltip, TooltipContent, TooltipTrigger} from "@/src/components/ui/tooltip";
 import {useSuperAdminPortfolioStore} from "@/store/superadmin/superAdminPortfolio";
 

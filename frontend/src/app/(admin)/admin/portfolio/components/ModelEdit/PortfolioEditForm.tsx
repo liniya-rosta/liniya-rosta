@@ -2,11 +2,11 @@
 
 import {zodResolver} from "@hookform/resolvers/zod";
 import {useForm} from "react-hook-form";
-import {PortfolioEditValues} from "@/lib/types";
+import {PortfolioEditValues} from "@/src/lib/types";
 import {Input} from "@/src/components/ui/input";
 import {Button} from "@/src/components/ui/button";
 import React, {useEffect, useState} from "react";
-import {API_BASE_URL} from "@/lib/globalConstants";
+import {API_BASE_URL} from "@/src/lib/globalConstants";
 import Image from "next/image";
 import {useSuperAdminPortfolioStore} from "@/store/superadmin/superAdminPortfolio";
 import {editPortfolioItem} from "@/actions/superadmin/portfolios";
@@ -18,7 +18,7 @@ import {Tooltip, TooltipContent, TooltipTrigger} from "@/src/components/ui/toolt
 import {Eye} from "lucide-react";
 import ImageModal from "@/src/app/(admin)/admin/portfolio/components/ImageModal";
 import {Label} from "@/src/components/ui/label";
-import {portfolioItemSchema} from "@/lib/zodSchemas/portfolioSchema";
+import {portfolioItemSchema} from "@/src/lib/zodSchemas/portfolioSchema";
 
 interface Props {
     onSaved: () => void;
@@ -48,8 +48,8 @@ const PortfolioEditForm: React.FC<Props> = ({onSaved, updatePaginationAndData}) 
     useEffect(() => {
         if (detailItem) {
             reset({
-                description: detailItem.description,
-                coverAlt: detailItem.coverAlt,
+                description: {ru: detailItem.description.ru},
+                coverAlt: {ru: detailItem.coverAlt.ru},
             });
         }
     }, [detailItem, reset]);
@@ -94,9 +94,9 @@ const PortfolioEditForm: React.FC<Props> = ({onSaved, updatePaginationAndData}) 
                         <Input
                             className="mb-2"
                             type="text"
-                            id="description"
+                            id="description.ru"
                             disabled={editLoading}
-                            {...register("description")}
+                            {...register("description.ru")}
                         />
                         {errors.description && (
                             <FormErrorMessage>{errors.description.message}</FormErrorMessage>
@@ -108,10 +108,10 @@ const PortfolioEditForm: React.FC<Props> = ({onSaved, updatePaginationAndData}) 
                         <Input
                             className="mb-2"
                             type="text"
-                            id="coverAlt"
+                            id="coverAlt.ru"
                             disabled={editLoading}
                             placeholder="Натяжной потолок с LED-подсветкой в гостиной"
-                            {...register("coverAlt")}
+                            {...register("coverAlt.ru")}
                         />
                         {errors.coverAlt && (
                             <FormErrorMessage>{errors.coverAlt.message}</FormErrorMessage>
@@ -156,7 +156,7 @@ const PortfolioEditForm: React.FC<Props> = ({onSaved, updatePaginationAndData}) 
                             <div className="relative w-[200px] h-[200px]">
                                 <Image
                                     src={API_BASE_URL + "/" + detailItem.cover}
-                                    alt={detailItem.coverAlt}
+                                    alt={detailItem.coverAlt.ru}
                                     fill
                                     sizes="(max-width: 768px) 100vw, 200px"
                                     className="object-contain rounded"

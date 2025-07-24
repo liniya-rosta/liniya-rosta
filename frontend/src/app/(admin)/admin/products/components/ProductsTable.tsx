@@ -38,7 +38,7 @@ import {
 } from "@/src/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
 import { getProductTableColumns } from "./ProductTableColumns";
-import {Category, Product} from "@/lib/types";
+import {Category, Product} from "@/src/lib/types";
 import CategoryFilter from "@/src/app/(admin)/admin/products/components/CategoryFilter";
 import ConfirmDialog from "@/src/components/ui/ConfirmDialog";
 

@@ -3,7 +3,7 @@ import { Input } from "@/src/components/ui/input";
 
 import { ChevronDown } from "lucide-react";
 import {Table as TanStackTable} from "@tanstack/table-core";
-import {Service} from "@/lib/types";
+import {Service} from "@/src/lib/types";
 import React from "react";
 import {TableBody, TableCell, TableHead, TableHeader, TableRow, Table } from "@/src/components/ui/table";
 import { flexRender } from "@tanstack/react-table";
@@ -59,7 +59,7 @@ return (
                                         key={column.id}
                                         checked={column.getIsVisible()}
                                         onCheckedChange={(value) =>
-                                            column.toggleVisibility(!!value)
+                                            column.toggleVisibility(value)
                                         }
                                     >
                                         {columnLabels[column.id] ?? column.id}

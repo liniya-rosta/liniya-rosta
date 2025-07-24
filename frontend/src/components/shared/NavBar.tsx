@@ -3,19 +3,22 @@
 import Link from "next/link";
 import {usePathname} from "next/navigation";
 import Burger from "@/src/components/ui/Burger";
+import { useTranslations } from "next-intl";
 
-const navItems = [
-    {href: "/", label: "Главная"},
-    {href: "/ceilings", label: "Натяжные потолки"},
-    {href: "/spc", label: "SPC ламинат"},
-    {href: "/services", label: "Услуги"},
-    {href: "/portfolio", label: "Портфолио"},
-    {href: "/blog", label: "Блог"},
-    {href: "/contacts", label: "Контакты"},
-];
-
-export default function NavBar() {
+const NavBar = () => {
     const pathName = usePathname();
+
+    const tHeader = useTranslations("Header");
+
+    const navItems = [
+        {href: "/", label: tHeader("headerLinks.home")},
+        {href: "/ceilings", label: tHeader("headerLinks.stretchCeilings")},
+        {href: "/spc", label: "SPC ламинат"},
+        {href: "/services", label: tHeader("headerLinks.services")},
+        {href: "/portfolio", label: "Портфолио"},
+        {href: "/blog", label: "Блог"},
+        {href: "/contacts", label: tHeader("headerLinks.contacts")},
+    ];
 
     return (
         <nav className="w-full p-4 text-white">
@@ -40,4 +43,5 @@ export default function NavBar() {
             <Burger navItems={navItems}/>
         </nav>
     );
-}
+};
+export default NavBar

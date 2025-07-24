@@ -2,11 +2,9 @@
 
 import {useForm, useFieldArray} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {portfolioSchema} from "@/lib/zodSchemas/portfolioSchema";
 import {Input} from "@/src/components/ui/input";
 import {Button} from "@/src/components/ui/button";
 import React, { useState } from "react";
-import {PortfolioMutation} from "@/lib/types";
 import {Eye, Plus} from "lucide-react";
 import {useRouter} from "next/navigation";
 import { createPortfolio } from "@/actions/superadmin/portfolios";
@@ -16,11 +14,22 @@ import {toast} from "react-toastify";
 import FormErrorMessage from "@/src/components/ui/FormErrorMessage";
 import LoaderIcon from "@/src/components/ui/LoaderIcon";
 import ImageModal from "@/src/app/(admin)/admin/portfolio/components/ImageModal";
+import {z} from "zod";
+import {portfolioSchema} from "@/src/lib/zodSchemas/portfolioSchema";
+import {PortfolioMutation} from "@/src/lib/types";
 
 const PortfolioForm= () => {
     const {
         register, handleSubmit, setValue, control, trigger, formState: {errors, isDirty}
-    } = useForm({resolver: zodResolver(portfolioSchema),});
+    } = useForm<z.infer<typeof portfolioSchema>>({
+        resolver: zodResolver(portfolioSchema),
+        defaultValues: {
+            gallery: [],
+            cover: null,
+            description: { ru: "" },
+            coverAlt: { ru: "" },
+        },
+    });
 
     const {createLoading, setPortfolioCreateLoading} = useSuperAdminPortfolioStore();
     const { fields, append, remove } = useFieldArray({control, name: "gallery",});
@@ -51,7 +60,7 @@ const PortfolioForm= () => {
     };
 
     const handleAltChange = (index: number, value: string) => {
-        setValue(`gallery.${index}.alt`, value, { shouldValidate: true });
+        setValue(`gallery.${index}.alt.ru`, value, { shouldValidate: true });
     };
 
     const onSubmit = async (data: PortfolioMutation) => {
@@ -83,7 +92,7 @@ const PortfolioForm= () => {
                            type="text"
                            placeholder="Описание"
                            disabled={createLoading}
-                           {...register("description")}
+                           {...register("description.ru")}
                        />
                        {errors.description && (
                            <FormErrorMessage>{errors.description.message}</FormErrorMessage>
@@ -96,7 +105,7 @@ const PortfolioForm= () => {
                            type="text"
                            placeholder="Алтернативное название обложки"
                            disabled={createLoading}
-                           {...register("coverAlt")}
+                           {...register("coverAlt.ru")}
                        />
                        {errors.coverAlt && (
                            <FormErrorMessage>{errors.coverAlt.message}</FormErrorMessage>
@@ -140,7 +149,7 @@ const PortfolioForm= () => {
                        type="button"
                        variant="outline"
                        size="sm"
-                       onClick={() => append({ alt: "", image: null })}
+                       onClick={() => append({ alt: {ru: ""}, image: null })}
                        disabled={createLoading}
                        className="flex items-center gap-1 mb-4"
                    >
@@ -157,12 +166,12 @@ const PortfolioForm= () => {
                                <Input
                                    type="text"
                                    placeholder="Альтернативное название изображения"
-                                   {...register(`gallery.${index}.alt`)}
+                                   {...register(`gallery.${index}.alt.ru`)}
                                    disabled={createLoading}
                                    onChange={(e) => handleAltChange(index, e.target.value)}
                                    className="mb-3"
                                />
-                               {errors.gallery?.[index]?.alt && (
+                               {errors.gallery?.[index]?.alt?.ru && (
                                    <FormErrorMessage>
                                        {errors.gallery[index]?.alt?.message}
                                    </FormErrorMessage>
@@ -188,7 +197,7 @@ const PortfolioForm= () => {
                                        onClick={() => {
                                            const file = control._formValues.gallery?.[index]?.image;
                                            if (file instanceof File) {
-                                               showImagePreview(file, control._formValues.gallery[index]?.alt);
+                                               showImagePreview(file, control._formValues.gallery[index]?.alt.ru);
                                            }
                                        }}
                                    >

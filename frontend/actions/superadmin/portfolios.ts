@@ -1,5 +1,5 @@
-import axiosAPI from "@/lib/axiosAPI";
-import {GalleryEditValues, PortfolioEditValues, PortfolioMutation} from "@/lib/types";
+import axiosAPI from "@/src/lib/axiosAPI";
+import {GalleryEditValues, PortfolioEditValues, PortfolioMutation} from "@/src/lib/types";
 
 export const createPortfolio = async (item: PortfolioMutation) => {
     const formData = new FormData();
@@ -8,13 +8,13 @@ export const createPortfolio = async (item: PortfolioMutation) => {
         formData.append("cover", item.cover);
     }
 
-    formData.append("description", item.description);
-    formData.append("coverAlt", item.coverAlt);
+    formData.append("description", item.description.ru);
+    formData.append("coverAlt", item.coverAlt.ru);
 
     item.gallery.forEach((galleryItem) => {
         if (galleryItem.image instanceof File) {
             formData.append("gallery", galleryItem.image);
-            formData.append("alt", galleryItem.alt || "Элемент галереи");
+            formData.append("alt", galleryItem.alt?.ru || "Элемент галереи");
         }
     });
 
@@ -31,11 +31,11 @@ export const editPortfolioItem = async (
     }
 
     if (item.description) {
-        formData.append("description", item.description);
+        formData.append("description", item.description.ru);
     }
 
     if (item.coverAlt) {
-        formData.append("coverAlt", item.coverAlt);
+        formData.append("coverAlt", item.coverAlt.ru);
     }
 
     await axiosAPI.patch("/superadmin/portfolio/" + id, formData);
@@ -53,7 +53,7 @@ export const editGalleryItem = async ({item, gallery_id}: {
 
     if (item.alt) {
         console.log(item.alt)
-        formData.append("alt", item.alt);
+        formData.append("alt", item.alt.ru);
     }
 
     await axiosAPI.patch("superadmin/portfolio/gallery/" + gallery_id, formData);

@@ -4,11 +4,11 @@ import {Input} from "@/src/components/ui/input";
 import {Button} from "@/src/components/ui/button";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {UserForm} from "@/lib/types";
+import {UserForm} from "@/src/lib/types";
 import {login} from "@/actions/users";
 import useUserStore from "@/store/usersStore";
 
-import {userLoginSchema} from "@/lib/zodSchemas/userSchema";
+import {userLoginSchema} from "@/src/lib/zodSchemas/userSchema";
 import {useRouter} from "next/navigation";
 import FormErrorMessage from "@/src/components/ui/FormErrorMessage";
 import {isAxiosError} from "axios";

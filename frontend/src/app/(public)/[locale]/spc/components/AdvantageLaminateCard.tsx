@@ -18,7 +18,7 @@ const AdvantageLaminateCard: React.FC<Props> = ({title, text, icon}) => {
                     <h3 className="font-medium text-lg text-center line-clamp-2 min-h-[48px] flex items-center justify-start mb-3">
                         {title}
                     </h3>
-                    <p>
+                    <p className="text-center">
                         {text}
                     </p>
             </CardContent>

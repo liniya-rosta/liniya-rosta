@@ -1,5 +1,5 @@
-import {GalleryItem, PaginatedPortfolioResponse, PortfolioItemDetail} from "@/lib/types";
-import axiosAPI from "@/lib/axiosAPI";
+import {GalleryItem, PaginatedPortfolioResponse, PortfolioItemDetail} from "@/src/lib/types";
+import axiosAPI from "@/src/lib/axiosAPI";
 
 export const fetchPortfolioPreviews = async (
     limit?: string, page?: string, coverAlt?: string, description?: string) => {

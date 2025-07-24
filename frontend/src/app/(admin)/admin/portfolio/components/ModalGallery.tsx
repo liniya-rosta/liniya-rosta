@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import {Card, CardContent, CardFooter} from "@/src/components/ui/card";
 import {Button} from "@/src/components/ui/button";
-import {API_BASE_URL} from "@/lib/globalConstants";
+import {API_BASE_URL} from "@/src/lib/globalConstants";
 import {useSuperAdminPortfolioStore} from "@/store/superadmin/superAdminPortfolio";
 import {Checkbox} from "@/src/components/ui/checkbox";
 
@@ -97,7 +97,7 @@ const ModalGallery: React.FC<Props> = ({open, openChange, isOpenModalEdit, onReq
                                         )}
                                         <Image
                                             src={imageUrl}
-                                            alt={item.alt}
+                                            alt={item.alt.ru}
                                             fill
                                             className="object-cover"
                                             sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
@@ -105,7 +105,7 @@ const ModalGallery: React.FC<Props> = ({open, openChange, isOpenModalEdit, onReq
                                     </a>
 
                                     <CardContent className="flex-1">
-                                        <div className="text-sm text-gray-700 line-clamp-2">{item.alt}</div>
+                                        <div className="text-sm text-gray-700 line-clamp-2">{item.alt.ru}</div>
                                     </CardContent>
 
                                     <CardFooter className="flex justify-between gap-2">

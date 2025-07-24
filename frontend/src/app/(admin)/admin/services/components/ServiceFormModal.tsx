@@ -1,9 +1,9 @@
 import {Dialog, DialogContent, DialogHeader, DialogTitle} from "@/src/components/ui/dialog";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {serviceEditSchema, serviceSchema} from "@/lib/zodSchemas/serviceSchema";
+import {serviceEditSchema, serviceSchema} from "@/src/lib/zodSchemas/serviceSchema";
 import {useSuperAdminServicesStore} from "@/store/superadmin/superAdminServices";
-import {ServiceForm} from "@/lib/types";
+import {ServiceForm} from "@/src/lib/types";
 import {isAxiosError} from "axios";
 import {toast} from "react-toastify";
 import {createService, fetchServiceById, updateService} from "@/actions/superadmin/services";
@@ -44,8 +44,12 @@ const ServiceFormModal: React.FC<Props> = ({open, openChange, id}) => {
     useEffect(() => {
         if (open && !isEditMode) {
             reset({
-                title: "",
-                description: "",
+                title: {
+                    ru: "",
+                },
+                description: {
+                    ru: "",
+                },
             });
         }
 
@@ -71,17 +75,23 @@ const ServiceFormModal: React.FC<Props> = ({open, openChange, id}) => {
 
     const onSubmit = async (data: z.infer<typeof schema>) => {
         try {
+            const safeData: ServiceForm = {
+                title: {
+                    ru: data.title!.ru,
+                    ky: "",
+                },
+                description: {
+                    ru: data.description?.ru ?? "",
+                    ky: "",
+                },
+            };
             if (isEditMode && id) {
                 setUpdateServiceLoading(true);
-                await updateService(id, data);
+                await updateService(id, safeData);
                 toast.success("Услуга успешно обновлена");
-            } else if( data.title ){
-                const safeData: ServiceForm = {
-                    title: data.title,
-                    description: data.description,
-                };
-                await createService(safeData);
+            } else if (data.title) {
                 setCreateServiceLoading(true);
+                await createService(safeData);
                 toast.success("Услуга успешно создана");
             }
 
@@ -118,7 +128,7 @@ const ServiceFormModal: React.FC<Props> = ({open, openChange, id}) => {
                             type="text"
                             placeholder="Название услуги"
                             disabled={createServiceLoading}
-                            {...register("title")}
+                            {...register("title.ru")}
                         />
                         {errors.title && (
                             <FormErrorMessage>{errors.title.message}</FormErrorMessage>
@@ -129,7 +139,7 @@ const ServiceFormModal: React.FC<Props> = ({open, openChange, id}) => {
                             className="mb-2"
                             placeholder="Описание"
                             disabled={createServiceLoading}
-                            {...register("description")}
+                            {...register("description.ru")}
                         />
                         {errors.description && (
                             <FormErrorMessage>{errors.description.message}</FormErrorMessage>

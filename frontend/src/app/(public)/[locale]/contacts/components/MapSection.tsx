@@ -1,13 +1,16 @@
 import {useContactStore} from "@/store/contactsStore";
+import {useTranslations} from "next-intl";
 
-const MapSection = () => {
+const MapSection= () => {
     const contact = useContactStore(state => state.contact);
     if (!contact || !contact.linkLocation) return null;
+
+    const tContacts = useTranslations("ContactsPage")
 
     return (
         <section aria-labelledby="map-heading" lang="ru">
             <h2 id="map-heading" className="text-xl font-semibold mb-4 text-gray-900">
-                Наше местоположение
+                {tContacts("locationTitle")}
             </h2>
             <div className="w-full h-[300px] rounded-xl overflow-hidden">
                 <iframe
@@ -16,7 +19,7 @@ const MapSection = () => {
                     allowFullScreen
                     loading="lazy"
                     referrerPolicy="no-referrer-when-downgrade"
-                    title="Карта Линии Роста"
+                    title="Карта"
                 />
             </div>
         </section>

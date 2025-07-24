@@ -1,5 +1,5 @@
 import { Loader2Icon } from "lucide-react"
-import {cn} from "@/lib/utils";
+import {cn} from "@/src/lib/utils";
 import React from "react";
 
 interface Props {

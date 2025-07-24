@@ -14,8 +14,8 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/src/components/ui/dropdown-menu';
-import { Post } from '@/lib/types';
-import { API_BASE_URL } from '@/lib/globalConstants';
+import { Post } from '@/src/lib/types';
+import { API_BASE_URL } from '@/src/lib/globalConstants';
 
 export const getPostTableColumns = (
     onEditPost: (post: Post) => void,

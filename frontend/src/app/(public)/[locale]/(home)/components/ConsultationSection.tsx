@@ -3,24 +3,28 @@ import {Dialog, DialogTrigger} from "@/src/components/ui/dialog";
 import {Button} from "@/src/components/ui/button";
 import RequestForm from "@/src/components/shared/RequestForm";
 import {useContactStore} from "@/store/contactsStore";
+import {useTranslations} from "next-intl";
 
 const ConsultationSection = () => {
     const {contact} = useContactStore();
     const [isModalBottomOpen, setIsModalBottomOpen] = React.useState(false);
 
+    const tHome = useTranslations("HomePage")
+    const tBtn = useTranslations("Buttons");
+
     return (
         <section
             className="bg-gradient-to-r from-primary to-amber-600 rounded-2xl p-8 text-center text-white space-y-6">
-            <h2 className="text-3xl font-bold">Хотите начать ремонт?</h2>
+            <h2 className="text-3xl font-bold">{tHome("requestTitle")}</h2>
             <p className="max-w-2xl mx-auto text-primary-foreground/90">
-                Свяжитесь с нами — мы проконсультируем и подберём решения под ваш бюджет.
+                {tHome("requestText")}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Dialog open={isModalBottomOpen} onOpenChange={setIsModalBottomOpen}>
                     <DialogTrigger asChild>
                         <Button variant="secondary" className="cursor-pointer duration-500 hover:scale-105"
                                 size="lg">
-                            Получить консультацию
+                            {tBtn("requestBtn2")}
                         </Button>
                     </DialogTrigger>
                     <RequestForm closeModal={() => setIsModalBottomOpen(false)}/>

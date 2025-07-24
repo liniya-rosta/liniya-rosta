@@ -6,8 +6,8 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/src/components/ui/dialog";
-import { Category, Product } from "@/lib/types";
-import { CreateProductFormData, UpdateProductFormData } from "@/lib/zodSchemas/productSchema";
+import { Category, Product } from "@/src/lib/types";
+import { CreateProductFormData, UpdateProductFormData } from "@/src/lib/zodSchemas/productSchema";
 import ProductForm from "./ProductForm";
 
 interface ProductModalProps {

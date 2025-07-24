@@ -4,11 +4,13 @@ import ServicesTitle from "@/src/app/(public)/[locale]/services/components/Servi
 import ServiceClient from "@/src/app/(public)/[locale]/services/ServiceClient";
 import {isAxiosError} from "axios";
 import {fetchAllServices} from "@/actions/services";
-import { ServiceResponse } from '@/lib/types';
+import { ServiceResponse } from '@/src/lib/types';
+import {getTranslations} from "next-intl/server";
 
 const ServicePage = async () => {
     let serviceData:  ServiceResponse | null = null;
     let errorMessage: string | null = null;
+    const tError = await getTranslations("Errors");
 
     try {
         serviceData = await fetchAllServices();
@@ -18,9 +20,11 @@ const ServicePage = async () => {
         } else if (error instanceof Error) {
             errorMessage = error.message;
         } else {
-            errorMessage = "Неизвестная ошибка при загрузке портфолио";
+            errorMessage = tError("PortfolioError");
         }
     }
+
+    const tServices = await getTranslations("ServicesPage");
 
     return (
         <section className="min-h-screen bg-white -mt-8">
@@ -29,11 +33,10 @@ const ServicePage = async () => {
                 <div
                     className="max-w-7xl mx-auto min-h-full px-6 py-15 md:py-0 flex flex-col md:flex-row items-center justify-between gap-10">
                     <ServicesTitle/>
-                    <ServicesForm/>
+                    <ServicesForm />
                 </div>
             </div>
-
-            <ServiceClient data={serviceData} error={errorMessage}/>
+            <ServiceClient data={serviceData} error={errorMessage} servicesText={tServices("servicesSubtitle")} />
         </section>
     );
 };

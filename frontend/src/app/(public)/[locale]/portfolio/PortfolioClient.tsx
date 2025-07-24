@@ -2,9 +2,9 @@
 
 import {usePortfolioStore} from "@/store/portfolioItemStore";
 import React, {useEffect, useState} from "react";
-import {API_BASE_URL} from "@/lib/globalConstants";
+import {API_BASE_URL} from "@/src/lib/globalConstants";
 import {CartPortfolio} from '@/src/app/(public)/[locale]/portfolio/components/CartPortfolio';
-import {PaginatedPortfolioResponse} from "@/lib/types";
+import {PaginatedPortfolioResponse} from "@/src/lib/types";
 import Link from "next/link";
 import ErrorMsg from "@/src/components/ui/ErrorMsg";
 import LoadingFullScreen from "@/src/components/ui/Loading/LoadingFullScreen";
@@ -12,9 +12,10 @@ import {Button} from "@/src/components/ui/button";
 import {isAxiosError} from "axios";
 import {toast} from "react-toastify";
 import {fetchPortfolioPreviews} from "@/actions/portfolios";
-import {getPaginationButtons} from "@/lib/utils";
+import {getPaginationButtons} from "@/src/lib/utils";
 import EmptyState from "@/src/components/ui/emptyState";
 import {BtnArrow} from "@/src/components/ui/btn-arrow";
+import {useLocale, useTranslations} from "next-intl";
 
 interface Props {
     data: PaginatedPortfolioResponse | null;
@@ -31,6 +32,10 @@ const PortfolioClient: React.FC<Props> = ({data, error, limit ="8"}) => {
         setPortfolioLoading,
         setPaginationPortfolio,
     } = usePortfolioStore();
+
+    const tPortfolio = useTranslations("PortfolioPage");
+    const tError = useTranslations("Errors")
+    const locale = useLocale() as "ru" | "ky";
 
     useEffect(() => {
         if (data) {
@@ -57,7 +62,7 @@ const PortfolioClient: React.FC<Props> = ({data, error, limit ="8"}) => {
             setPortfolioPreview(updated.items);
             setPage(newPage);
         } catch (error) {
-            let errorMessage = "Неизвестная ошибка при загрузке портфолио";
+            let errorMessage = tError("portfolioError");
             if (isAxiosError(error) && error.response) {
                 errorMessage = error.response.data.error;
             } else if (error instanceof Error) {
@@ -84,16 +89,15 @@ const PortfolioClient: React.FC<Props> = ({data, error, limit ="8"}) => {
                         return (
                             <Link key={item._id} href={pageUrl}>
                                 <CartPortfolio
-                                    alt={item.coverAlt}
+                                    alt={item.coverAlt[locale]}
                                     imageSrc={imageUrl}
-                                    textBtn="Смотреть все"
                                 />
                             </Link>
                         );
                     })
                 ) : (
                     <div className="flex flex-col items-center justify-center col-span-full min-h-[300px]">
-                        <EmptyState message="Нет данных" />
+                        <EmptyState message={tPortfolio("noData")} />
                     </div>
                 )}
             </div>

@@ -1,5 +1,5 @@
 import axios from "axios";
-import {API_BASE_URL} from "@/lib/globalConstants";
+import {API_BASE_URL} from "@/src/lib/globalConstants";
 import {refreshAccessToken} from "@/actions/users";
 import useUserStore from "@/store/usersStore";
 

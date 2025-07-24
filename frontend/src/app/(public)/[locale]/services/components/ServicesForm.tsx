@@ -11,13 +11,19 @@ import {Input} from '@/src/components/ui/input';
 import {Label} from '@/src/components/ui/label';
 import {Alert, AlertDescription} from '@/src/components/ui/alert';
 
-import {IRequestMutation} from '@/lib/types';
+import {IRequestMutation} from '@/src/lib/types';
 import {useRequestStore} from '@/store/requestStore';
 import {createRequest} from '@/actions/requestActions';
-import requestSchema from '@/lib/zodSchemas/requestSchema';
+import {getRequestSchema} from '@/src/lib/zodSchemas/requestSchema';
+import {useTranslations} from "next-intl";
 
 const ServicesForm = () => {
     const {createLoading, createError, errorMessage, setLoading, setError} = useRequestStore();
+    const tForm = useTranslations("FormModal");
+    const tToast = useTranslations("Toasts");
+    const tBtn = useTranslations("Buttons")
+    const tFormErrors = useTranslations("FormErrors");
+    const schema = getRequestSchema(tFormErrors);
 
     const {
         register,
@@ -25,7 +31,7 @@ const ServicesForm = () => {
         formState: {errors},
         reset,
     } = useForm<IRequestMutation>({
-        resolver: zodResolver(requestSchema),
+        resolver: zodResolver(schema),
     });
 
     const onSubmit = async (data: IRequestMutation) => {
@@ -41,7 +47,7 @@ const ServicesForm = () => {
             setError(response);
             toast.error(errorMessage);
         } else {
-            toast.success('Заявка отправлена! Менеджер свяжется с вами.');
+            toast.success(tToast("success.submitRequest"));
             reset();
         }
     };
@@ -50,9 +56,9 @@ const ServicesForm = () => {
         <div className="bg-white rounded-lg p-8 shadow-lg max-w-md w-full my-6">
 
             <div className="mb-6 text-center">
-                <h2 className="text-2xl font-semibold">Услуги с выездом на дом</h2>
+                <h2 className="text-2xl font-semibold">{tForm("formTitle")}</h2>
                 <p className="text-gray-600 mt-2">
-                    Заполните форму, и наш специалист свяжется с вами для уточнения деталей.
+                    {tForm("formSubtitle")}
                 </p>
             </div>
 
@@ -65,10 +71,10 @@ const ServicesForm = () => {
                 )}
 
                 <div className="grid gap-1">
-                    <Label htmlFor="name">Имя</Label>
+                    <Label htmlFor="name">{tForm("form.name")}</Label>
                     <Input
                         id="name"
-                        placeholder="Вася Пупкин"
+                        placeholder="Иван Иванов"
                         disabled={createLoading}
                         {...register('name')}
                         aria-invalid={errors.name ? 'true' : 'false'}
@@ -108,7 +114,7 @@ const ServicesForm = () => {
                     disabled={createLoading}
                 >
                     {createLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin"/>}
-                    Отправить
+                    {tBtn("submitBtn")}
                 </Button>
             </form>
         </div>

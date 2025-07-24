@@ -1,5 +1,5 @@
-import axiosAPI from "@/lib/axiosAPI";
-import {CreatePostData, Post, UpdatePostData} from "@/lib/types";
+import axiosAPI from "@/src/lib/axiosAPI";
+import {CreatePostData, Post, UpdatePostData} from "@/src/lib/types";
 import {isAxiosError} from "axios";
 
 export const fetchPosts = async (): Promise<Post[]> => {

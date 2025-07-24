@@ -5,16 +5,16 @@ import {Navigation, Pagination} from "swiper/modules";
 import {Swiper, SwiperSlide} from "swiper/react";
 import LaminateCard from "@/src/app/(public)/[locale]/spc/components/LaminateCard";
 import Loading from "@/src/components/ui/Loading/Loading";
-import {Product} from "@/lib/types";
+import {Product} from "@/src/lib/types";
 import {useProductStore} from "@/store/productsStore";
+import {useTranslations} from "next-intl";
 
 interface Props {
     initialData: Product[] | null;
     error: string | null;
-    categoryName: string;
 }
 
-const SpcLaminatePage: React.FC<Props> = ({initialData, error, categoryName}) => {
+const SpcLaminatePage: React.FC<Props> = ({initialData, error}) => {
     const {
         products,
         setProducts,
@@ -24,6 +24,9 @@ const SpcLaminatePage: React.FC<Props> = ({initialData, error, categoryName}) =>
         setFetchProductsError,
     } = useProductStore();
 
+    const tSpc = useTranslations("SpcPage");
+    const tError = useTranslations("Errors")
+
     useEffect(() => {
         if (initialData) setProducts(initialData);
         setFetchProductsLoading(false);
@@ -32,7 +35,7 @@ const SpcLaminatePage: React.FC<Props> = ({initialData, error, categoryName}) =>
 
     return (
         <div className="mb-[55px]">
-            <h3 className="sm:text-2xl text-xl mb-8 text-center">Каталог {categoryName ? `${categoryName}` : ''}</h3>
+            <h3 className="sm:text-2xl text-xl mb-8 text-center">{tSpc("catalogTitle")}</h3>
             <Swiper
                 slidesPerView={1}
                 navigation
@@ -46,7 +49,7 @@ const SpcLaminatePage: React.FC<Props> = ({initialData, error, categoryName}) =>
                     </SwiperSlide>
                 ) : fetchProductsError ? (
                     <SwiperSlide>
-                        <h4>Ошибка загрузки: {fetchProductsError}</h4>
+                        <h4>{tError("spcError")}</h4>
                     </SwiperSlide>
                 ) : (
                     products.map(item => (

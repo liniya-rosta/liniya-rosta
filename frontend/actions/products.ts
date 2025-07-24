@@ -1,5 +1,5 @@
-import axiosAPI from '@/lib/axiosAPI';
-import { Product, ProductWithoutId } from '@/lib/types';
+import axiosAPI from '@/src/lib/axiosAPI';
+import { Product, ProductWithoutId } from '@/src/lib/types';
 import { isAxiosError } from "axios";
 
 export const fetchProducts = async (categoryId?: string) => {
