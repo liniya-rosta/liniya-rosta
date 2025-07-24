@@ -20,7 +20,7 @@ const port = 8000;
 
 app.use(
     cors({
-        origin: "*",
+        origin: "http://localhost:3000",
         credentials: true,
     }),
 );
