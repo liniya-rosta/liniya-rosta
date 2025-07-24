@@ -25,7 +25,7 @@ import {
 } from "@/app/(admin)/admin/portfolio/components/DataTable";
 import ImageModal from "@/app/(admin)/admin/portfolio/components/ImageModal";
 import {ModalEdit, PortfolioEditForm, GalleryEditForm} from "@/app/(admin)/admin/portfolio/components/ModelEdit";
-import DataSkeleton from "@/components/ui/Loading/DataSkeleton";
+import DataSkeleton from "@/components/shared/DataSkeleton";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import Link from "next/link";
 import {Button} from "@/components/ui/button";

@@ -17,7 +17,7 @@ import {
 import {useSuperAdminPostStore} from "@/store/superadmin/superAdminPostsStore";
 import {getPostTableColumns} from './components/DataTable/PostTableColumns';
 import PostsTable from "@/app/(admin)/admin/blog/components/DataTable/PostsTable";
-import DataSkeleton from "@/components/ui/Loading/DataSkeleton";
+import DataSkeleton from "@/components/shared/DataSkeleton";
 import ErrorMsg from "@/components/ui/ErrorMsg";
 import TablePostControls from "@/app/(admin)/admin/blog/components/DataTable/TablePostControls";
 import TablePostPagination from "@/app/(admin)/admin/blog/components/DataTable/TablePostPagination";

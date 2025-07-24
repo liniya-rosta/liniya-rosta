@@ -32,7 +32,9 @@ export const CartPortfolio: React.FC<Props> = ({className, imageSrc, alt = "imag
             <div className="absolute bottom-4 left-4 right-4 z-20 ">
                 {paginationPortfolio?.total !== undefined && (
                     <div>
-                        <span className="text-xs font-medium text-white bg-white/20 backdrop-blur-sm px-2 py-1 rounded">{paginationPortfolio.total} фото</span>
+                        <span className="text-xs font-medium text-white bg-white/20 backdrop-blur-sm px-2 py-1 rounded">
+                            {paginationPortfolio.total} фото
+                        </span>
                     </div>
 
                 )}

@@ -6,7 +6,7 @@ import {fetchAllRequests} from "@/actions/superadmin/requests";
 import {useAdminRequestsStore} from "@/store/superadmin/adminRequestsStore";
 import {DataTable} from "@/app/(admin)/admin/requests/components/requestTable/Data-table";
 import {columns} from "@/app/(admin)/admin/requests/components/requestTable/Columns";
-import DataSkeleton from "@/components/ui/Loading/DataSkeleton";
+import DataSkeleton from "@/components/shared/DataSkeleton";
 import ErrorMsg from "@/components/ui/ErrorMsg";
 
 const RequestsPage = () => {

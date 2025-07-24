@@ -35,7 +35,7 @@ const Burger: React.FC<BurgerProps> = ({navItems, isAdmin}) => {
 
                 <SheetContent
                     side="left"
-                    className="px-6 py-8 w-full flex flex-col justify-between bg-[var(--header-footer-background)]"
+                    className="px-6 py-8 w-full flex flex-col justify-between sidebar-container"
                     aria-describedby="menu-description"
                 >
                     <DialogTitle asChild>
@@ -55,10 +55,10 @@ const Burger: React.FC<BurgerProps> = ({navItems, isAdmin}) => {
                                         <Link
                                             href={href}
                                             className={cn(
-                                                "block text-base px-4 py-2 rounded-lg border transition-all duration-200",
+                                                "block text-base px-4 py-2 rounded-lg border transition-all duration-200 border-transparent",
                                                 isActive
-                                                    ? "bg-primary text-primary-foreground border-primary shadow-md"
-                                                    : "text-foreground hover:bg-secondary hover:text-secondary-foreground border-transparent"
+                                                    ? "sidebar-link-active"
+                                                    : "sidebar-link-inactive"
                                             )}
                                         >
                                             {label}

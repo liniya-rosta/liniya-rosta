@@ -10,7 +10,7 @@ import ProductsTable from "@/app/(admin)/admin/products/components/ProductTable/
 import {Category, Product} from "@/lib/types";
 import {toast} from "react-toastify";
 import {useAdminProductStore} from "@/store/superadmin/superadminProductsStore";
-import DataSkeleton from "@/components/ui/Loading/DataSkeleton";
+import DataSkeleton from "@/components/shared/DataSkeleton";
 import ErrorMsg from "@/components/ui/ErrorMsg";
 import Link from "next/link";
 import {useAdminCategoryStore} from "@/store/superadmin/superadminCategoriesStore";

@@ -3,7 +3,7 @@
 import {ServiceResponse} from "@/lib/types";
 import React, {useEffect, useState} from "react";
 import {useSuperAdminServicesStore} from "@/store/superadmin/superAdminServices";
-import DataSkeleton from "@/components/ui/Loading/DataSkeleton";
+import DataSkeleton from "@/components/shared/DataSkeleton";
 import ErrorMsg from "@/components/ui/ErrorMsg";
 import {
     ColumnFiltersState,
