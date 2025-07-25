@@ -46,7 +46,7 @@ const PortfolioClient: React.FC<Props> = ({data, error, limit = "8"}) => {
 
     return (
         <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 mb-15">
+            <div className="grid grid-cols-[repeat(auto-fit,minmax(290px,1fr))] gap-3 mb-15">
                 {items && items.length > 0 ? (
                     items.map((item) => {
                         const imageUrl = API_BASE_URL + "/" + item.cover;

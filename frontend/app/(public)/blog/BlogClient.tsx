@@ -6,6 +6,7 @@ import {PostResponse} from "@/lib/types";
 import CardSkeleton from "@/app/(public)/blog/components/CardSkeleton";
 import PostCard from "@/app/(public)/blog/components/PostCard";
 import ErrorMsg from "@/components/ui/ErrorMsg";
+import {Container} from "@/components/shared/Container";
 
 interface Props {
     data: PostResponse | null;
@@ -33,10 +34,8 @@ const BlogClient: React.FC<Props> = ({data, error}) => {
     if (error) return <ErrorMsg error={error}/>
 
     return (
-        <div className="container mx-auto px-4 py-8">
-            <h1 className="text-4xl font-bold text-center mb-12 text-foreground">Блог</h1>
+        <Container>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-
                 {posts && posts.length > 0 ? (
                     posts.map((post) => (
                         <PostCard
@@ -52,7 +51,7 @@ const BlogClient: React.FC<Props> = ({data, error}) => {
                 </div>
                 }
             </div>
-        </div>
+        </Container>
     );
 };
 

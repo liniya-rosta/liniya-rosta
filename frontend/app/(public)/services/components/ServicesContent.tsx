@@ -1,20 +1,15 @@
 import React from 'react';
 import ServiceContentCard from "@/app/(public)/services/components/ServiceContentCard";
 import {useServiceStore} from "@/store/serviceStore";
+import { Container } from '@/components/shared/Container';
 
 const ServicesContent = () => {
     const { allServices } =useServiceStore();
 
     return (
-        <section className="bg-gray-100 py-16">
-            <div className="container mx-auto p-4">
-                <div className="text-center mb-12">
-                    <h2 className="text-4xl font-bold text-gray-900 mb-4">Наши услуги</h2>
-                    <p className="text-gray-600">
-                        Предлагаем большой спектр работ для вашего комфорта — от замеров до профессионального монтажа и
-                        расчётов.
-                    </p>
-                </div>
+        <section className="bg-gray-100 py-16 mb-20">
+            <Container>
+                <h2 className="main-section-title text-center text-23-30-1_5">Наши услуги</h2>
 
                 <div className="flex flex-wrap justify-center gap-8 mt-8">
                     {allServices?.length ? (
@@ -37,7 +32,7 @@ const ServicesContent = () => {
                         </div>
                     )}
                 </div>
-            </div>
+            </Container>
         </section>
     );
 };

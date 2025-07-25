@@ -3,11 +3,11 @@ import {Check} from "lucide-react";
 
 const ServicesTitle = () => {
     return (
-        <div className="max-w-lg text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.85)]">
+        <div className="max-w-lg text-popover drop-shadow-[0_1px_2px_rgba(0,0,0,0.85)]">
             <h1 className="text-4xl font-bold mb-8">
                 Линия роста —{' '}
-                <span className="text-accent">мы работаем</span>,{' '}
-                <span className="text-white/90">вы отдыхаете.</span>
+                <span className="text-highlight-light">мы работаем</span>,{' '}
+                <span className="text-popover/90">вы отдыхаете.</span>
             </h1>
 
             <h2 className="text-2xl font-semibold mb-4">Наши преимущества:</h2>
@@ -18,7 +18,7 @@ const ServicesTitle = () => {
                     'Уникальная технология производства натяжных потолков',
                     'Идеальный SPC ламинат'].map((text) => (
                     <li key={text} className="flex items-center space-x-3">
-                        <Check className="w-6 h-6 text-accent flex-shrink-0"/>
+                        <Check className="w-6 h-6 text-highlight-light flex-shrink-0"/>
                         <span>{text}</span>
                     </li>
                 ))}

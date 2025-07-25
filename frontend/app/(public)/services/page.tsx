@@ -6,6 +6,7 @@ import {isAxiosError} from "axios";
 import {fetchAllServices} from "@/actions/services";
 import { ServiceResponse } from '@/lib/types';
 import {Metadata} from "next";
+import { Container } from '@/components/shared/Container';
 
 export const revalidate = 1800;
 
@@ -46,14 +47,16 @@ const ServicePage = async () => {
     }
 
     return (
-        <section className="min-h-screen bg-white -mt-8">
+        <section className="min-h-screen -mt-8">
             <div
-                className="w-full min-h-[560px] md:h-[560px] bg-black/50 bg-[url('/images/services/main-service.JPG')] bg-cover bg-center bg-blend-overlay mb-10">
-                <div
-                    className="max-w-7xl mx-auto min-h-full px-6 py-15 md:py-0 flex flex-col md:flex-row items-center justify-between gap-10">
-                    <ServicesTitle/>
-                    <ServicesForm/>
-                </div>
+                className="w-full min-h-[560px] md:h-[560px] bg-black/50 bg-[url('/images/services/main-service.JPG')] bg-cover bg-center bg-blend-overlay mb-20">
+                <Container>
+                    <div
+                        className="min-h-full px-6 py-15 md:py-0 flex flex-col md:flex-row items-center justify-between gap-10">
+                        <ServicesTitle/>
+                        <ServicesForm/>
+                    </div>
+                </Container>
             </div>
 
             <ServiceClient data={serviceData} error={errorMessage}/>

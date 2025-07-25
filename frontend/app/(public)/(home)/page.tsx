@@ -53,7 +53,7 @@ const HomePage = async () => {
                 categoriesError = e instanceof Error ? e.message : String(e);
             }),
 
-        fetchProducts()
+        fetchProducts({})
             .then(data => productsData = data.items)
             .catch(e => {
                 productsError = e instanceof Error ? e.message : String(e);

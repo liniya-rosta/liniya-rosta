@@ -1,17 +1,17 @@
-import ProductDetailView from "@/app/(public)/products/[slug]/ProductDetailView";
+import ProductDetailView from "@/app/(public)/ceilings/[id]/ProductDetailView";
 import {Product} from "@/lib/types";
-import {fetchProductBySlug} from "@/actions/products";
+import {fetchProductById} from "@/actions/products";
 import {isAxiosError} from "axios";
 import {Metadata} from "next";
 
 type Props = {
-    params: Promise<{ slug: string }>;
+    params: Promise<{ id: string }>;
 };
 
 export async function generateMetadata({params}: Props): Promise<Metadata> {
     try {
-        const {slug} = await params;
-        const product = await fetchProductBySlug(slug);
+        const {id} = await params;
+        const product = await fetchProductById(id);
 
         return {
             title: product.seoTitle || product.title,
@@ -37,12 +37,12 @@ export async function generateMetadata({params}: Props): Promise<Metadata> {
 }
 
 export default async function ProductDetailPage({params}: Props) {
-    const {slug} = await params;
+    const {id} = await params;
     let product: Product | null = null;
     let fetchProductError: string | null = null;
 
     try {
-        product = await fetchProductBySlug(slug);
+        product = await fetchProductById(id);
     } catch (e) {
         fetchProductError =
             isAxiosError(e) && e.response?.data?.error

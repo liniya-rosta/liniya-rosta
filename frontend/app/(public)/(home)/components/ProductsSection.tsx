@@ -6,12 +6,13 @@ import {useProductStore} from "@/store/productsStore";
 import {BtnArrow} from "@/components/ui/btn-arrow";
 import {Pagination, Navigation, Autoplay} from 'swiper/modules';
 import {Swiper, SwiperSlide} from 'swiper/react';
+import SectionAnimation from "@/app/(public)/(home)/components/SectionAnimation";
 
 const ProductsSection = () => {
     const {products, fetchProductsError} = useProductStore();
 
     return (
-        <section aria-labelledby="products-heading" className="px-4 py-12">
+        <SectionAnimation ariaLabelledby="products-heading" className="px-4 py-12">
             <div className="flex flex-col-reverse lg:flex-row items-center lg:items-start gap-8">
                 <div className="w-full lg:w-1/2 flex flex-col items-center gap-4">
                     {fetchProductsError && (
@@ -50,7 +51,7 @@ const ProductsSection = () => {
                 </div>
 
                 <div className="w-full lg:w-1/2 space-y-4 my-auto">
-                    <h2 id="products-heading" className="text-20-30-1_2 main-section-title">Продукция</h2>
+                    <h2 id="products-heading" className="text-23-30-1_5 main-section-title">Продукция</h2>
 
                     <div className="text-gray-600 leading-relaxed space-y-2">
                         <p className="hidden md:block">
@@ -64,14 +65,14 @@ const ProductsSection = () => {
                         </p>
                     </div>
 
-                    <BtnArrow isLeft className="btn-hover-scale">
+                    <BtnArrow className="btn-hover-scale">
                         <Link href="/ceilings" className="text-sm font-medium">
                             Все товары
                         </Link>
                     </BtnArrow>
                 </div>
             </div>
-        </section>
+        </SectionAnimation>
     );
 };
 

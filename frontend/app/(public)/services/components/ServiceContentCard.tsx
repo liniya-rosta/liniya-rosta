@@ -22,7 +22,7 @@ const ServiceContentCard: React.FC<Props> = ({title, description}) => {
                 >
                 <h3 className="text-xl font-semibold mb-2">{title}</h3>
                     <p className="text-gray-700">{description}</p>
-                    <CheckCircle className="w-6 h-6 mt-4 text-[var(--color-orange-light)]"/>
+                    <CheckCircle className="w-6 h-6 mt-4 text-highlight-light "/>
                 </div>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">

@@ -4,15 +4,16 @@ import {Button} from "@/components/ui/button";
 import RequestForm from "@/components/shared/RequestForm";
 import {useContactStore} from "@/store/contactsStore";
 import { CopyPhoneButton } from '@/app/(public)/(home)/components/CopyPhoneButton';
+import SectionAnimation from "@/app/(public)/(home)/components/SectionAnimation";
 
 const ConsultationSection = () => {
     const {contact} = useContactStore();
     const [isModalBottomOpen, setIsModalBottomOpen] = React.useState(false);
 
     return (
-        <section
+        <SectionAnimation
             className="bg-gradient-to-r from-[#b9c8d6] to-[#e68210] rounded-2xl p-8 text-center text-white space-y-6">
-            <h2 className="text-20-30-1_2 main-section-title">Хотите начать ремонт?</h2>
+            <h2 className="text-23-30-1_5 main-section-title">Хотите начать ремонт?</h2>
             <p className="max-w-2xl mx-auto text-primary-foreground/90">
                 Свяжитесь с нами — мы проконсультируем и подберём решения под ваш бюджет.
             </p>
@@ -30,7 +31,7 @@ const ConsultationSection = () => {
                 </Dialog>
                 {contact && <CopyPhoneButton phone={contact?.phone2 || contact?.phone1}/>}
             </div>
-        </section>
+        </SectionAnimation>
     );
 };
 

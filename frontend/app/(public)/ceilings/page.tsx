@@ -19,15 +19,19 @@ export const generateMetadata = async (): Promise<Metadata> => ({
 
 const CeilingsPage = async () => {
     try {
-        const [products, categories] = await Promise.all([
-            fetchProducts(),
+        const categorySlug = 'spc';
+        const categories = await fetchCategories(categorySlug);
+        const spcCategory = categories[0];
+
+        const [products, allCategories] = await Promise.all([
+            fetchProducts({categoryExclude: spcCategory._id}),
             fetchCategories()
         ]);
 
         return (
             <CeilingsClient
                 initialProducts={products.items}
-                initialCategories={categories}
+                initialCategories={allCategories}
             />
         );
     } catch (error) {

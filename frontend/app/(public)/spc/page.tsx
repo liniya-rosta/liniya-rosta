@@ -6,6 +6,7 @@ import AdvantagesLaminate from "@/app/(public)/spc/components/AdvantagesLaminate
 import InfoAboutSpcLaminate from "@/app/(public)/spc/components/InfoAboutSpcLaminate";
 import SpcLaminatePage from "@/app/(public)/spc/SpcLaminatePage";
 import {Metadata} from "next";
+import {Container} from "@/components/shared/Container";
 
 export const revalidate = 3600;
 
@@ -40,7 +41,7 @@ const SpcPage = async () => {
         const spcCategory = categories[0];
 
         categoryName = spcCategory.title;
-        const laminateResponse = await fetchProducts(spcCategory._id);
+        const laminateResponse = await fetchProducts({ categoryId: spcCategory._id });
         laminateData = laminateResponse.items;
     } catch (e) {
         if (e instanceof Error) {
@@ -53,10 +54,10 @@ const SpcPage = async () => {
     return (
         <>
             <InfoAboutSpcLaminate/>
-            <div className="container mx-auto px-4">
+            <Container>
                 <AdvantagesLaminate/>
                 <SpcLaminatePage initialData={laminateData} error={error} categoryName={categoryName}/>
-            </div>
+            </Container>
         </>
 
     );

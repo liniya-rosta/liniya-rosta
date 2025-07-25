@@ -11,13 +11,13 @@ const ContactInfoCard = () => {
     if (!contact) return <p>Данные контактов не загружены</p>;
 
     const linkClass = "inline-flex items-center space-x-2 group hover:text-blue-600 transition-colors duration-300";
-    const iconClass = "w-5 h-5 text-muted-foreground group-hover:text-blue-600 duration-300";
+    const iconClass = "w-5 h-5 text-highlight group-hover:text-primary duration-300";
 
     return (
         <Card className="w-full h-full">
             <CardHeader className="flex items-center space-x-4">
-                <div className="p-2 bg-blue-100 rounded-lg">
-                    <Mail className="h-6 w-6 text-blue-700"/>
+                <div className="p-2 bg-muted rounded-lg">
+                    <Mail className="h-6 w-6 text-highlight"/>
                 </div>
                 <h2 className="text-xl font-semibold">Контактная информация</h2>
             </CardHeader>

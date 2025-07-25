@@ -3,6 +3,7 @@
 import Link from "next/link";
 import {usePathname} from "next/navigation";
 import Burger from "@/components/ui/Burger";
+import { motion } from "motion/react"
 
 const navItems = [
     {href: "/", label: "Главная"},
@@ -24,15 +25,24 @@ export default function NavBar() {
                     const isActive = pathName === href;
 
                     return (
-                        <Link
-                            key={href}
-                            href={href}
-                            className={`py-1.5 border-b transition-colors ${
-                                isActive ? "border-b-primary font-semibold" : "border-b-transparent hover:border-b-primary"
-                            }`}
-                        >
-                            {label}
-                        </Link>
+                        <div key={href} className="relative">
+                            <Link
+                                href={href}
+                                className={`py-1.5 transition-colors ${
+                                    isActive ? "text-primary font-semibold" : "border-b border-b-transparent hover:border-b-primary"
+                                }`}
+                            >
+                                {label}
+                            </Link>
+
+                            {isActive && (
+                                <motion.div
+                                    layoutId="underline"
+                                    className="absolute left-0 right-0 -bottom-0.5 h-[2px] bg-primary rounded-sm"
+                                    transition={{ type: "spring", stiffness: 200, damping: 50 }}
+                                />
+                            )}
+                        </div>
                     );
                 })}
             </div>
