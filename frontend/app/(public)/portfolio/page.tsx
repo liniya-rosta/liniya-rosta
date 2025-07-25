@@ -39,12 +39,6 @@ const PortfolioPage = async () => {
 
     return (
         <main className="container mx-auto px-8">
-            <h1 className="text-3xl font-bold text-foreground mb-5">
-                Портфолио
-                <span className="block font-medium text-muted-foreground text-sm tracking-wider uppercase">
-                    Идеи, воплощённые в реальность
-                </span>
-            </h1>
             <PortfolioClient data={portfolioData} error={errorMessage} limit={limit}/>
         </main>
     );
