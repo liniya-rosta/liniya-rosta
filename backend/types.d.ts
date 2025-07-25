@@ -4,6 +4,34 @@ export interface Category {
     slug?: string;
 }
 
+export interface ImageItem {
+    alt: string | null;
+    url: string;
+}
+
+export interface IProduct {
+    _id: string;
+    category: string;
+    title: string;
+    slug: string;
+    seoTitle: string | null;
+    seoDescription: string | null;
+    description: string | null;
+    cover: ImageItem[];
+    images: ImageItem[];
+    characteristics: {
+        key: string;
+        value: string;
+    }[];
+    sale: {
+        isOnSale: boolean;
+        label: string | null;
+    };
+    icon: ImageItem;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
 export interface UserFields {
     email: string;
     password: string;
@@ -42,12 +70,6 @@ export interface ContactFields {
     whatsapp: string;
 }
 
-export interface PortfolioUpdate {
-    cover?: string;
-    description?: string;
-    coverAlt?: string;
-}
-
 export interface GalleryUpdate {
     "gallery.$.image"?: string;
     "gallery.$.alt"?: string;
@@ -57,11 +79,6 @@ export interface GalleryUpdate {
 export interface ServiceUpdate {
     title?: string;
     description?: string;
-}
-
-export interface ImageItem {
-    alt?: string;
-    image: string;
 }
 
 export interface updatePost {
