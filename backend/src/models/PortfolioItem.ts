@@ -3,51 +3,66 @@ import slugify from "slugify";
 
 const GalleryItemSchema = new Schema({
     image: {type: String, required: true},
-    alt: {type: String, default: null, maxLength: 150},
+    alt:{
+        ru: {type: String, default: null, maxLength: 150},
+        ky: {type: String, default: null, maxLength: 150}
+    },
 });
 
 const PortfolioItemSchema = new mongoose.Schema({
-        cover: {
+    cover: {
+        type: String,
+        required: [true, "Поле обложки портфолио обязательно"],
+    },
+    coverAlt: {
+        ru: {
             type: String,
-            required: [true, "Поле обложки портфолио обязательно"],
-        },
-        coverAlt: {
-            type: String,
-            required: [true, "Альтер-ое название обложки портфолио обязательно"],
+            required:[true, "Альтер-ое название обложки портфолио обязательно"],
             maxLength: 150,
         },
-        gallery: {
-            type: [GalleryItemSchema],
-            required: true,
-        },
-        description: {
+        ky: {
             type: String,
-            default: null,
-        },
-        slug: {
-            type: String,
-            required: true,
-            unique: true,
-        },
-        seoTitle: {
-            type: String,
-            default: null,
-            maxLength: 120,
-        },
-        seoDescription: {
-            type: String,
-            default: null,
-            maxLength: 300,
+            required:true,
+            maxLength: 150,
         }
     },
-    {
-        timestamps: true
+    gallery: {
+        type: [GalleryItemSchema],
+        required: true,
+    },
+    description: {
+        ru: {
+            type: String,
+            default: null,
+        },
+        ky: {
+            type: String,
+            default: null,
+        },
+    },
+    slug: {
+        type: String,
+        required: true,
+        unique: true,
+    },
+    seoTitle: {
+        type: String,
+        default: null,
+        maxLength: 120,
+    },
+    seoDescription: {
+        type: String,
+        default: null,
+        maxLength: 300,
     }
-);
+}, {
+    timestamps: true
+});
+
 
 PortfolioItemSchema.pre("validate", async function (next) {
     if (this.coverAlt && !this.slug) {
-        let baseSlug = slugify(this.coverAlt, {lower: true, strict: true});
+        let baseSlug = slugify(this.coverAlt.ru, {lower: true, strict: true});
         let uniqueSlug = baseSlug;
         let counter = 1;
 

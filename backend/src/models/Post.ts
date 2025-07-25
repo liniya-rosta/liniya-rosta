@@ -3,29 +3,47 @@ import slugify from "slugify";
 
 export interface ImageItem {
     image: string;
-    alt?: string;
+    alt?: {
+        ru: string;
+        ky: string;
+    };
 }
 
 export interface PostDocument extends Document {
-    title: string;
+    title: {
+        ru: string;
+        ky: string;
+    };
     slug: string;
     seoTitle?: string | null;
     seoDescription?: string | null;
-    description: string;
+    description: {
+        ru: string;
+        ky: string;
+    };
     images: ImageItem[];
     createdAt: Date;
     updatedAt: Date;
 }
 
 const ImageSchema = new Schema<ImageItem>({
-    image: {type: String, required: true},
-    alt: {type: String, default: null, maxLength: 150},
-}, {_id: false});
+    image: { type: String, required: true },
+    alt: {
+        ru: { type: String, required: true, maxLength: 150 },
+        ky: { type: String, required: true, maxLength: 150 },
+    },
+}, { _id: false });
 
 const PostSchema = new Schema<PostDocument>({
     title: {
-        type: String,
-        required: [true, "Поле заголовка обязательно для заполнения"],
+        ru: {
+            type: String,
+            required: [true, "Поле заголовка обязательно для заполнения"]
+        },
+        ky: {
+            type: String,
+            required: true
+        },
     },
     slug: {
         type: String,
@@ -43,8 +61,14 @@ const PostSchema = new Schema<PostDocument>({
         maxLength: 300,
     },
     description: {
-        type: String,
-        required: [true, "Поле описания обязательно для заполнения"],
+        ru: {
+            type: String,
+            required: [true, "Поле заголовка обязательно для заполнения"]
+        },
+        ky: {
+            type: String,
+            required: true
+        },
     },
     images: {
         type: [ImageSchema],
@@ -58,7 +82,7 @@ const PostSchema = new Schema<PostDocument>({
 
 PostSchema.pre("validate", async function (next) {
     if (this.title && !this.slug) {
-        let baseSlug = slugify(this.title, {lower: true, strict: true});
+        let baseSlug = slugify(this.title.ru, {lower: true, strict: true});
         let uniqueSlug = baseSlug;
         let counter = 1;
 

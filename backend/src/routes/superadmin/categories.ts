@@ -2,6 +2,7 @@ import express from 'express';
 import Category from "../../models/Category";
 import Product from "../../models/Product";
 import mongoose from "mongoose";
+import {translateYandex} from "../../../translateYandex";
 
 const categoriesSuperAdminRouter = express.Router();
 
@@ -18,8 +19,8 @@ categoriesSuperAdminRouter.post("/", async (req, res, next) => {
             res.status(400).send({error: "Категория с таким названием уже существует"});
             return;
         }
-
-        const category = new Category({title});
+        const titleKy = await translateYandex(title.ru, "ky");
+        const category = new Category({title: {ru: title.ru, ky: titleKy}});
         await category.save();
         res.send({message: "Категория создана успешно", category});
     } catch (e) {
@@ -31,8 +32,8 @@ categoriesSuperAdminRouter.patch("/:id", async (req, res, next) => {
     try {
         const {id} = req.params;
         const {title} = req.body;
-        if (!title || !title.trim()) {
-            res.status(400).send({error: "Заголовок обязателен"});
+        if (!title || !title.ru || !title.ru.trim()) {
+            res.status(400).send({ error: "Заголовок обязателен" });
             return;
         }
 
@@ -47,7 +48,7 @@ categoriesSuperAdminRouter.patch("/:id", async (req, res, next) => {
             return;
         }
 
-        if (category.title === title) {
+        if (category.title && category.title.ru === title.ru.trim()) {
             res.send({
                 message: "Название категории не изменилось",
                 category
@@ -62,8 +63,8 @@ categoriesSuperAdminRouter.patch("/:id", async (req, res, next) => {
             });
             return;
         }
-
-        category.title = title.trim();
+        const titleKy = await translateYandex(title.ru, "ky");
+        category.title = {ru: title.ru.trim(), ky: titleKy};
         await category.save();
         res.send({message: "Категория обновлена успешно", category});
     } catch (e) {

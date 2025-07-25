@@ -2,12 +2,12 @@ import mongoose from "mongoose";
 import config from "./config";
 import User from "./src/models/User";
 import Category from "./src/models/Category";
+import Product from "./src/models/Product";
 import Post from "./src/models/Post";
 import {PortfolioItem} from "./src/models/PortfolioItem";
 import RequestFromClient from "./src/models/Request";
 import Contact from "./src/models/Contact";
 import Service from "./src/models/Service";
-import Product from "./src/models/Product";
 
 const run = async () => {
     await mongoose.connect(config.db);
@@ -44,7 +44,10 @@ const run = async () => {
     );
 
     await Contact.create({
-        location: "г. Бишкек, Улица Куренкеева, 49",
+        location: {
+            ru: "г. Бишкек, ул. Куренкеева 49",
+            ky: "Бишкек ш., Куренкеев көч. 49",
+        },
         phone1: "+996700123456",
         phone2: "+996555654321",
         email: "liniyarosta49@gmail.com",
@@ -52,538 +55,609 @@ const run = async () => {
         instagram: "https://www.instagram.com/liniya_rosta.kg/",
         mapLocation: "https://2gis.kg/bishkek/firm/70000001094990183?m=74.623804%2C42.890143%2F16",
         workingHours: {
-            monday: "09:00–15:00",
-            tuesday: "09:00–17:00",
-            wednesday: "09:00–17:00",
-            thursday: "09:00–17:00",
-            friday: "09:00–17:00",
-            saturday: "09:00–15:00",
-            sunday: "Выходной"
+            monday: {
+                ru: "09:00–15:00",
+                ky: "09:00–15:00",
+            },
+            tuesday: {
+                ru: "09:00–17:00",
+                ky: "09:00–17:00",
+            },
+            wednesday: {
+                ru: "09:00–17:00",
+                ky: "09:00–17:00",
+            },
+            thursday: {
+                ru: "09:00–17:00",
+                ky: "09:00–17:00",
+            },
+            friday: {
+                ru: "09:00–17:00",
+                ky: "09:00–17:00",
+            },
+            saturday: {
+                ru: "09:00–15:00",
+                ky: "09:00–15:00",
+            },
+            sunday: {
+                ru: "Выходной день",
+                ky: "Эс алуу күнү",
+            },
         },
-        linkLocation: "https://www.openstreetmap.org/export/embed.html?bbox=74.619%2C42.887%2C74.628%2C42.892&layer=mapnik&marker=42.890104%2C74.623837"
+        linkLocation:
+            "https://www.openstreetmap.org/export/embed.html?bbox=74.619%2C42.887%2C74.628%2C42.892&layer=mapnik&marker=42.890104%2C74.623837",
     });
 
 
     const [lightingTechnology, film, spatula, ventilationGrilles, spc] = await Category.create(
         {
-            title: 'Светотехника',
+            title: {
+                ru: 'Светотехника',
+                ky: 'Жарык техникасы',
+            },
         },
         {
-            title: 'Пленка',
+            title: {
+                ru: 'Пленка',
+                ky: 'Пленка',
+            },
         },
         {
-            title: 'Шпатель',
+            title: {
+                ru: 'Шпатель',
+                ky: 'Шпатель',
+            },
         },
         {
-            title: 'Вентиляционные решетки',
+            title: {
+                ru: 'Вентиляционные решетки',
+                ky: 'Желдетүү торлору',
+            },
         },
         {
-            title: "SPC",
-            slug: "spc"
+            title: {
+                ru: 'SPC',
+                ky: 'SPC',
+            },
+            slug: 'spc',
         }
     );
 
     await Product.create(
         {
             category: lightingTechnology,
-            title: 'Светодиодная лента leds power',
-            description: 'световой поток: 1000 Лм/м, мощность: 10 Вт/м, длина: 5 м, ширина: 8 мм',
+            title: { ru: "Светодиодная лента leds power", ky: "Светодиоддук лента leds power" },
+            description: {
+                ru: "световой поток: 1000 Лм/м, мощность: 10 Вт/м, длина: 5 м, ширина: 8 мм",
+                ky: "жарык агымы: 1000 Лм/м, кубаттуулугу: 10 Вт/м, узундугу: 5 м, туурасы: 8 мм"
+            },
             cover: {
-                url: 'test/lightingTechnology1.jpg',
-                alt: 'a;lskdjf'
+                url: "test/lightingTechnology1.jpg",
+                alt: { ru: "светодиодная лента", ky: "светодиоддук лента" }
             },
             characteristics: [
-                {key: 'Пример характеристики', value: 'Значение'}
+                { key: { ru: "Пример характеристики", ky: "Үлгү мүнөздөмөсү" }, value: { ru: "Значение", ky: "Маани" } }
             ],
-            sale: {
-                isOnSale: false,
-                label: null
-            }
+            sale: { isOnSale: false, label: { ru: null, ky: null } }
         },
         {
             category: lightingTechnology,
-            title: 'Светодиодная лента vacco group',
-            description: 'световой поток: 1000 Лм/м, мощность: 10 Вт/м, длина: 5 м, ширина: 8 мм',
+            title: { ru: "Светодиодная лента vacco group", ky: "Светодиоддук лента vacco group" },
+            description: {
+                ru: "световой поток: 1000 Лм/м, мощность: 10 Вт/м, длина: 5 м, ширина: 8 мм",
+                ky: "жарык агымы: 1000 Лм/м, кубаттуулугу: 10 Вт/м, узундугу: 5 м, туурасы: 8 мм"
+            },
             cover: {
-                url: 'test/lightingTechnology1.jpg',
-                alt: null
+                url: "test/lightingTechnology1.jpg",
+                alt: { ru: "", ky: "" }
             },
             characteristics: [
-                {key: 'Пример характеристики', value: 'Значение'}
+                { key: { ru: "Пример характеристики", ky: "Үлгү мүнөздөмөсү" }, value: { ru: "Значение", ky: "Маани" } }
             ],
-            sale: {
-                isOnSale: false,
-                label: null
-            }
+            sale: { isOnSale: false, label: { ru: null, ky: null } }
         },
         {
             category: film,
-            title: 'Пленка ПВХ LEGEND',
-            description: 'ЛАК:; толщина - 0,18±0,01 мм; ГР/М; плотность - 210 г/м2; ширина полотна - 320 см',
+            title: { ru: "Пленка ПВХ LEGEND", ky: "ПВХ пленка LEGEND" },
+            description: {
+                ru: "ЛАК:; толщина - 0,18±0,01 мм; ГР/М; плотность - 210 г/м2; ширина полотна - 320 см",
+                ky: "ЛАК:; калыңдыгы - 0,18±0,01 мм; ГР/М; тыгыздыгы - 210 г/м2; туурасы - 320 см"
+            },
             cover: {
-                url: 'test/legend-paint.jpg',
-                alt: "свет"
+                url: "test/legend-paint.jpg",
+                alt: { ru: "свет", ky: "жарык" }
             },
             characteristics: [
-                {key: 'Пример характеристики', value: 'Значение'}
+                { key: { ru: "Пример характеристики", ky: "Үлгү мүнөздөмөсү" }, value: { ru: "Значение", ky: "Маани" } }
             ],
-            sale: {
-                isOnSale: false,
-                label: null
-            }
+            sale: { isOnSale: false, label: { ru: null, ky: null } }
         },
         {
             category: film,
-            title: 'Пленка ПВХ IDEAL',
-            description: 'ЛАК:; толщина - 0,18±0,01 мм; ГР/М; плотность - 210 г/м2; ширина полотна - 320 см',
+            title: { ru: "Пленка ПВХ IDEAL", ky: "ПВХ пленка IDEAL" },
+            description: {
+                ru: "ЛАК:; толщина - 0,18±0,01 мм; ГР/М; плотность - 210 г/м2; ширина полотна - 320 см",
+                ky: "ЛАК:; калыңдыгы - 0,18±0,01 мм; ГР/М; тыгыздыгы - 210 г/м2; туурасы - 320 см"
+            },
             cover: {
-                url: 'test/plenkaPBX.png',
-                alt: null
+                url: "test/plenkaPBX.png",
+                alt: { ru: "", ky: "" }
             },
             characteristics: [
-                {key: 'Пример характеристики', value: 'Значение'}
+                { key: { ru: "Пример характеристики", ky: "Үлгү мүнөздөмөсү" }, value: { ru: "Значение", ky: "Маани" } }
             ],
-            sale: {
-                isOnSale: false,
-                label: null
-            }
+            sale: { isOnSale: false, label: { ru: null, ky: null } }
         },
         {
             category: film,
-            title: 'Пленка ПВХ as;lkdf;sajf',
-            description: 'ЛАК:; толщина - 0,18±0,01 мм; ГР/М; плотность - 210 г/м2; ширина полотна - 320 см',
+            title: { ru: "Пленка ПВХ as;lkdf;sajf", ky: "ПВХ пленка as;lkdf;sajf" },
+            description: {
+                ru: "ЛАК:; толщина - 0,18±0,01 мм; ГР/М; плотность - 210 г/м2; ширина полотна - 320 см",
+                ky: "ЛАК:; калыңдыгы - 0,18±0,01 мм; ГР/М; тыгыздыгы - 210 г/м2; туурасы - 320 см"
+            },
             cover: {
-                url: 'test/plenkaPBX.png',
-                alt: null
+                url: "test/plenkaPBX.png",
+                alt: { ru: "", ky: "" }
             },
             characteristics: [
-                {key: 'Пример характеристики', value: 'Значение'}
+                { key: { ru: "Пример характеристики", ky: "Үлгү мүнөздөмөсү" }, value: { ru: "Значение", ky: "Маани" } }
             ],
-            sale: {
-                isOnSale: false,
-                label: null
-            }
+            sale: { isOnSale: false, label: { ru: null, ky: null } }
         },
         {
             category: spc,
-            title: 'Тис Альпик',
-            description: 'Размер: 180x1220x4,0/0,3+1ммIXPE',
+            title: { ru: "Тис Альпик", ky: "Тис Альпик" },
+            description: {
+                ru: "Размер: 180x1220x4,0/0,3+1ммIXPE",
+                ky: "Өлчөмү: 180x1220x4,0/0,3+1ммIXPE"
+            },
             cover: {
-                url: 'test/laminate1.JPG',
-                alt: null
+                url: "test/laminate1.JPG",
+                alt: { ru: "", ky: "" }
             },
             characteristics: [
-                {key: 'Пример характеристики', value: 'Значение'}
+                { key: { ru: "Пример характеристики", ky: "Үлгү мүнөздөмөсү" }, value: { ru: "Значение", ky: "Маани" } }
             ],
-            sale: {
-                isOnSale: false,
-                label: null
-            }
+            sale: { isOnSale: false, label: { ru: null, ky: null } }
         },
         {
             category: spc,
-            title: 'Тис Латте',
-            description: 'Размер: 180x1220x4,0/0,3+1ммIXPE',
+            title: { ru: "Тис Латте", ky: "Тис Латте" },
+            description: {
+                ru: "Размер: 180x1220x4,0/0,3+1ммIXPE",
+                ky: "Өлчөмү: 180x1220x4,0/0,3+1ммIXPE"
+            },
             cover: {
-                url: 'test/laminate2.JPG',
-                alt: null
+                url: "test/laminate2.JPG",
+                alt: { ru: "", ky: "" }
             },
             characteristics: [
-                {key: 'Пример характеристики', value: 'Значение'}
+                { key: { ru: "Пример характеристики", ky: "Үлгү мүнөздөмөсү" }, value: { ru: "Значение", ky: "Маани" } }
             ],
-            sale: {
-                isOnSale: false,
-                label: null
-            }
+            sale: { isOnSale: false, label: { ru: null, ky: null } }
         },
         {
             category: spc,
-            title: 'Бук Шале',
-            description: 'Размер: 180x1220x4,0/0,3+1ммIXPE',
+            title: { ru: "Бук Шале", ky: "Бук Шале" },
+            description: {
+                ru: "Размер: 180x1220x4,0/0,3+1ммIXPE",
+                ky: "Өлчөмү: 180x1220x4,0/0,3+1ммIXPE"
+            },
             cover: {
-                url: 'test/laminate3.JPG',
-                alt: null
+                url: "test/laminate3.JPG",
+                alt: { ru: "", ky: "" }
             },
             characteristics: [
-                {key: 'Пример характеристики', value: 'Значение'}
+                { key: { ru: "Пример характеристики", ky: "Үлгү мүнөздөмөсү" }, value: { ru: "Значение", ky: "Маани" } }
             ],
-            sale: {
-                isOnSale: false,
-                label: null
-            }
+            sale: { isOnSale: false, label: { ru: null, ky: null } }
         },
         {
             category: spc,
-            title: 'Орех Шато',
-            description: 'Размер: 180x1220x4,0/0,3+1ммIXPE',
+            title: { ru: "Орех Шато", ky: "Орех Шато" },
+            description: {
+                ru: "Размер: 180x1220x4,0/0,3+1ммIXPE",
+                ky: "Өлчөмү: 180x1220x4,0/0,3+1ммIXPE"
+            },
             cover: {
-                url: 'test/laminate4.JPG',
-                alt: null
+                url: "test/laminate4.JPG",
+                alt: { ru: "", ky: "" }
             },
             characteristics: [
-                {key: 'Пример характеристики', value: 'Значение'}
+                { key: { ru: "Пример характеристики", ky: "Үлгү мүнөздөмөсү" }, value: { ru: "Значение", ky: "Маани" } }
             ],
-            sale: {
-                isOnSale: false,
-                label: null
-            }
+            sale: { isOnSale: false, label: { ru: null, ky: null } }
         },
         {
             category: spc,
-            title: 'Дуб Классик',
-            description: 'Размер: 180x1220x4,0/0,3+1ммIXPE',
+            title: { ru: "Дуб Классик", ky: "Дуб Классик" },
+            description: {
+                ru: "Размер: 180x1220x4,0/0,3+1ммIXPE",
+                ky: "Өлчөмү: 180x1220x4,0/0,3+1ммIXPE"
+            },
             cover: {
-                url: 'test/laminate5.JPG',
-                alt: null
+                url: "test/laminate5.JPG",
+                alt: { ru: "", ky: "" }
             },
             characteristics: [
-                {key: 'Пример характеристики', value: 'Значение'}
+                { key: { ru: "Пример характеристики", ky: "Үлгү мүнөздөмөсү" }, value: { ru: "Значение", ky: "Маани" } }
             ],
-            sale: {
-                isOnSale: false,
-                label: null
-            }
+            sale: { isOnSale: false, label: { ru: null, ky: null } }
         },
         {
             category: lightingTechnology,
-            title: 'Светильник POINT 600',
-            description: 'Мощность: 24 Вт, свет: холодный белый 6000К, диаметр: 300 мм',
+            title: { ru: "Светильник POINT 600", ky: "Чырак POINT 600" },
+            description: {
+                ru: "Мощность: 24 Вт, свет: холодный белый 6000К, диаметр: 300 мм",
+                ky: "Кубаттуулугу: 24 Вт, жарык: муздак ак 6000К, диаметри: 300 мм"
+            },
             cover: {
-                url: 'test/lightingTechnology1.jpg',
-                alt: 'Светильник POINT 600'
+                url: "test/lightingTechnology1.jpg",
+                alt: { ru: "Светильник POINT 600", ky: "Чырак POINT 600" }
             },
             characteristics: [
-                {key: 'Мощность', value: '24 Вт'},
-                {key: 'Цветовая температура', value: '6000К'}
+                { key: { ru: "Мощность", ky: "Кубаттуулук" }, value: { ru: "24 Вт", ky: "24 Вт" } },
+                { key: { ru: "Цветовая температура", ky: "Түс температурасы" }, value: { ru: "6000К", ky: "6000К" } }
             ],
-            sale: {
-                isOnSale: false,
-                label: null
-            }
+            sale: { isOnSale: false, label: { ru: null, ky: null } }
         },
         {
             category: lightingTechnology,
-            title: 'Лента SMD 2835',
-            description: '120 LED/м, 12 В, IP65, ширина: 8 мм, катушка 5 м',
+            title: { ru: "Лента SMD 2835", ky: "Лента SMD 2835" },
+            description: {
+                ru: "120 LED/м, 12 В, IP65, ширина: 8 мм, катушка 5 м",
+                ky: "120 LED/м, 12 В, IP65, туурасы: 8 мм, катушка 5 м"
+            },
             cover: {
-                url: 'test/lightingTechnology1.jpg',
-                alt: 'Лента SMD 2835'
+                url: "test/lightingTechnology1.jpg",
+                alt: { ru: "Лента SMD 2835", ky: "Лента SMD 2835" }
             },
             characteristics: [
-                {key: 'Светодиоды', value: 'SMD 2835'},
-                {key: 'Длина', value: '5 м'}
+                { key: { ru: "Светодиоды", ky: "Жарык берүүчү диоддор" }, value: { ru: "SMD 2835", ky: "SMD 2835" } },
+                { key: { ru: "Длина", ky: "Узундук" }, value: { ru: "5 м", ky: "5 м" } }
             ],
-            sale: {
-                isOnSale: true,
-                label: 'Топ продаж'
-            }
+            sale: { isOnSale: true, label: { ru: "Топ продаж", ky: "Топ сатуу" } }
         },
         {
             category: film,
-            title: 'Пленка ПВХ SATIN',
-            description: 'Сатиновая текстура, ширина 3.2 м, толщина 0.2 мм',
+            title: { ru: "Пленка ПВХ SATIN", ky: "ПВХ пленка SATIN" },
+            description: {
+                ru: "Сатиновая текстура, ширина 3.2 м, толщина 0.2 мм",
+                ky: "Сатин текстурасы, туурасы 3.2 м, калыңдыгы 0.2 мм"
+            },
             cover: {
-                url: 'test/plenkaPBX.png',
-                alt: 'Пленка SATIN'
+                url: "test/plenkaPBX.png",
+                alt: { ru: "Пленка SATIN", ky: "Пленка SATIN" }
             },
             characteristics: [
-                {key: 'Поверхность', value: 'Сатиновая'},
-                {key: 'Толщина', value: '0.2 мм'}
+                { key: { ru: "Поверхность", ky: "Бети" }, value: { ru: "Сатиновая", ky: "Сатин" } },
+                { key: { ru: "Толщина", ky: "Калыңдыгы" }, value: { ru: "0.2 мм", ky: "0.2 мм" } }
             ],
-            sale: {
-                isOnSale: false,
-                label: null
-            }
+            sale: { isOnSale: false, label: { ru: null, ky: null } }
         },
         {
             category: film,
-            title: 'Пленка ПВХ BLACK MIRROR',
-            description: 'Глянцевая черная, плотность 220 г/м2, ширина 3.2 м',
+            title: { ru: "Пленка ПВХ BLACK MIRROR", ky: "ПВХ пленка BLACK MIRROR" },
+            description: {
+                ru: "Глянцевая черная, плотность 220 г/м2, ширина 3.2 м",
+                ky: "Жалтырак кара, тыгыздыгы 220 г/м2, туурасы 3.2 м"
+            },
             cover: {
-                url: 'test/legend-paint.jpg',
-                alt: 'Пленка BLACK MIRROR'
+                url: "test/legend-paint.jpg",
+                alt: { ru: "Пленка BLACK MIRROR", ky: "Пленка BLACK MIRROR" }
             },
             characteristics: [
-                {key: 'Цвет', value: 'Черный'},
-                {key: 'Поверхность', value: 'Глянец'}
+                { key: { ru: "Цвет", ky: "Түс" }, value: { ru: "Черный", ky: "Кара" } },
+                { key: { ru: "Поверхность", ky: "Бети" }, value: { ru: "Глянец", ky: "Жалтырак" } }
             ],
-            sale: {
-                isOnSale: false,
-                label: null
-            }
+            sale: { isOnSale: false, label: { ru: null, ky: null } }
         },
         {
             category: spc,
-            title: 'SPC Ясень Серый',
-            description: 'SPC ламинат с тиснением, замковое соединение, размер 180x1220',
+            title: { ru: "SPC Ясень Серый", ky: "SPC Күрөң Ашык" },
+            description: {
+                ru: "SPC ламинат с тиснением, замковое соединение, размер 180x1220",
+                ky: "SPC ламинат, тиштүү, кулпулуу туташуусу, өлчөмү 180x1220"
+            },
             cover: {
-                url: 'test/laminate1.JPG',
-                alt: 'SPC Ясень Серый'
+                url: "test/laminate1.JPG",
+                alt: { ru: "SPC Ясень Серый", ky: "SPC Күрөң Ашык" }
             },
             characteristics: [
-                {key: 'Порода', value: 'Ясень'},
-                {key: 'Цвет', value: 'Серый'}
+                { key: { ru: "Порода", ky: "Түрү" }, value: { ru: "Ясень", ky: "Ашык" } },
+                { key: { ru: "Цвет", ky: "Түс" }, value: { ru: "Серый", ky: "Күрөң" } }
             ],
-            sale: {
-                isOnSale: true,
-                label: 'Новинка'
-            }
+            sale: { isOnSale: true, label: { ru: "Новинка", ky: "Жаңы" } }
         },
         {
             category: spc,
-            title: 'SPC Дуб Молочный',
-            description: '180x1220x4.0/0.3 мм, IXPE, влагостойкий',
+            title: { ru: "SPC Дуб Молочный", ky: "SPC Сүттүк Дуб" },
+            description: {
+                ru: "180x1220x4.0/0.3 мм, IXPE, влагостойкий",
+                ky: "180x1220x4.0/0.3 мм, IXPE, нымга туруктуу"
+            },
             cover: {
-                url: 'test/laminate2.JPG',
-                alt: 'SPC Дуб Молочный'
+                url: "test/laminate2.JPG",
+                alt: { ru: "SPC Дуб Молочный", ky: "SPC Сүттүк Дуб" }
             },
             characteristics: [
-                {key: 'Цвет', value: 'Молочный'},
-                {key: 'Подложка', value: 'IXPE'}
+                { key: { ru: "Цвет", ky: "Түс" }, value: { ru: "Молочный", ky: "Сүттүк" } },
+                { key: { ru: "Подложка", ky: "Төмөнкү катмар" }, value: { ru: "IXPE", ky: "IXPE" } }
             ],
-            sale: {
-                isOnSale: false,
-                label: null
-            }
-        },
-        {
-            category: spc,
-            title: 'SPC Клен Канадский',
-            description: 'SPC 4 мм + 1 мм подложка, прочный, светлый тон',
-            cover: {
-                url: 'test/laminate3.JPG',
-                alt: 'SPC Клен Канадский'
-            },
-            characteristics: [
-                {key: 'Цвет', value: 'Светлый'},
-                {key: 'Порода', value: 'Клен'}
-            ],
-            sale: {
-                isOnSale: false,
-                label: null
-            }
+            sale: { isOnSale: false, label: { ru: null, ky: null } }
         },
         {
             category: spatula,
-            title: 'Шпатель усиленный 30 см',
-            description: 'Алюминиевый шпатель с резиновой вставкой, ручка soft-touch',
+            title: { ru: "Шпатель усиленный 30 см", ky: "30 см күчөтүлгөн шпатель" },
+            description: {
+                ru: "Алюминиевый шпатель с резиновой вставкой, ручка soft-touch",
+                ky: "Резина вставкасы бар алюминий шпатель, жумшак тутка"
+            },
             cover: {
-                url: 'test/laminate4.JPG',
-                alt: 'Шпатель усиленный'
+                url: "test/laminate4.JPG",
+                alt: { ru: "Шпатель усиленный", ky: "Күчөтүлгөн шпатель" }
             },
             characteristics: [
-                {key: 'Длина', value: '30 см'},
-                {key: 'Особенность', value: 'Усиленный'}
+                { key: { ru: "Длина", ky: "Узундук" }, value: { ru: "30 см", ky: "30 см" } },
+                { key: { ru: "Материал", ky: "Материал" }, value: { ru: "Алюминий", ky: "Алюминий" } }
             ],
-            sale: {
-                isOnSale: false,
-                label: null
-            }
-        },
-        {
-            category: spatula,
-            title: 'Шпатель 15 см',
-            description: 'Компактный шпатель для мелких работ, пластик',
-            cover: {
-                url: 'test/laminate5.JPG',
-                alt: 'Шпатель 15 см'
-            },
-            characteristics: [
-                {key: 'Длина', value: '15 см'},
-                {key: 'Материал', value: 'Пластик'}
-            ],
-            sale: {
-                isOnSale: false,
-                label: null
-            }
+            sale: { isOnSale: false, label: { ru: null, ky: null } }
         },
         {
             category: ventilationGrilles,
-            title: 'Решетка вентиляционная металлическая',
-            description: 'Металлическая вентиляция, 150х150 мм, окрашенная',
+            title: { ru: "Решетка вентиляционная металлическая", ky: "Металл вентиляция тору" },
+            description: {
+                ru: "Металлическая вентиляция, 150х150 мм, окрашенная",
+                ky: "Металл вентиляция, 150х150 мм, боёлгон"
+            },
             cover: {
-                url: 'test/laminate1.JPG',
-                alt: 'Вентиляция металлическая'
+                url: "test/laminate1.JPG",
+                alt: { ru: "Вентиляция металлическая", ky: "Металл вентиляция" }
             },
             characteristics: [
-                {key: 'Материал', value: 'Металл'},
-                {key: 'Размер', value: '150x150 мм'}
+                { key: { ru: "Материал", ky: "Материал" }, value: { ru: "Металл", ky: "Металл" } },
+                { key: { ru: "Размер", ky: "Өлчөмү" }, value: { ru: "150x150 мм", ky: "150x150 мм" } }
             ],
-            sale: {
-                isOnSale: false,
-                label: null
-            }
+            sale: { isOnSale: false, label: { ru: null, ky: null } }
         },
         {
             category: ventilationGrilles,
-            title: 'Решетка с обратным клапаном',
-            description: 'Квадратная, белая, обратный клапан против запахов',
+            title: { ru: "Решетка с обратным клапаном", ky: "Кайтарма клапан тору" },
+            description: {
+                ru: "Квадратная, белая, обратный клапан против запахов",
+                ky: "Тоголок, ак, жытка каршы клапан"
+            },
             cover: {
-                url: 'test/laminate2.JPG',
-                alt: 'Решетка с клапаном'
+                url: "test/laminate2.JPG",
+                alt: { ru: "Решетка с клапаном", ky: "Клапан тору" }
             },
             characteristics: [
-                {key: 'Форма', value: 'Квадрат'},
-                {key: 'Особенность', value: 'Обратный клапан'}
+                { key: { ru: "Форма", ky: "Форма" }, value: { ru: "Квадрат", ky: "Тоголок" } },
+                { key: { ru: "Особенность", ky: "Өзгөчөлүк" }, value: { ru: "Обратный клапан", ky: "Кайтарма клапан" } }
             ],
-            sale: {
-                isOnSale: false,
-                label: null
-            }
+            sale: { isOnSale: false, label: { ru: null, ky: null } }
         }
     );
 
-    await Post.create(
+
+
+    await Post.create([
         {
-            title: 'Тестовый пост №1',
-            description: 'Lorem ipsum',
+            title: {
+                ru: 'Тестовый пост №1',
+                ky: 'Тесттик пост №1'
+            },
+            description: {
+                ru: 'Основной текст поста',
+                ky: 'Посттун негизги тексти'
+            },
             images: [
-                {image: 'test/news1.jpg', alt: 'Новость 1'},
-                {image: 'test/news2.png', alt: 'Доп. изображение 1'},
+                {
+                    image: 'test/news1.jpg',
+                    alt: {
+                        ru: "Новость 1",
+                        ky: "Жаңылык 1"
+                    }
+                },
+                {image: 'test/news2.png',
+                    alt: {
+                        ru: "Доп изображение 1",
+                        ky: "Кошумча сүрөт 1"
+                    }},
             ],
         },
         {
-            title: 'Тестовый пост №2',
-            description: 'Lorem ipsum',
+            title: {
+                ru: 'Тестовый пост №2',
+                ky: 'Тесттик пост №2'
+            },
+            description: {
+                ru: 'Основной текст поста',
+                ky: 'Посттун негизги тексти'
+            },
             images: [
-                {image: 'test/news1.jpg', alt: 'Новость 1'},
-                {image: 'test/news2.png', alt: 'Доп. изображение 1'},
+                {image: 'test/news1.jpg',
+                    alt: {
+                        ru: "Новость 2",
+                        ky: "Жаңылык 2"
+                    }},
+                {image: 'test/news2.png',
+                    alt: {
+                        ru: "Доп изображение 2",
+                        ky: "Кошумча сүрөт 2"
+                    }},
             ],
         },
         {
-            title: 'Тестовый пост №3',
-            description: 'Lorem ipsum',
+            title: {
+                ru: 'Тестовый пост №3',
+                ky: 'Тесттик пост №3'
+            },
+            description: {
+                ru: 'Основной текст поста',
+                ky: 'Посттун негизги тексти'
+            },
             images: [
-                {image: 'test/news1.jpg', alt: 'Новость 1'},
-                {image: 'test/news2.png', alt: 'Доп. изображение 1'},
+                {image: 'test/news1.jpg',
+                    alt: {
+                        ru: "Новость 3",
+                        ky: "Жаңылык 3"
+                    }},
+                {image: 'test/news2.png',
+                    alt: {
+                        ru: "Доп изображение 3",
+                        ky: "Кошумча сүрөт 3"
+                    }},
             ],
         },
         {
-            title: 'Тестовый пост №4',
-            description: 'Lorem ipsum',
+            title: {
+                ru: 'Тестовый пост №4',
+                ky: 'Тесттик пост №4'
+            },
+            description: {
+                ru: 'Основной текст поста',
+                ky: 'Посттун негизги тексти'
+            },
             images: [
-                {image: 'test/news1.jpg', alt: 'Новость 1'},
-                {image: 'test/news2.png', alt: 'Доп. изображение 1'},
+                {image: 'test/news1.jpg',
+                    alt: {
+                        ru: "Новость 4",
+                        ky: "Жаңылык 4"
+                    }},
+                {image: 'test/news2.png',
+                    alt: {
+                        ru: "Доп изображение 4",
+                        ky: "Кошумча сүрөт 4"
+                    }},
             ],
         },
         {
-            title: 'Тестовый пост №5',
-            description: 'Lorem ipsum',
+            title: {
+                ru: 'Тестовый пост №5',
+                ky: 'Тесттик пост №5'
+            },
+            description: {
+                ru: 'Основной текст поста',
+                ky: 'Посттун негизги тексти'
+            },
             images: [
-                {image: 'test/news1.jpg', alt: 'Новость 1'},
-                {image: 'test/news2.png', alt: 'Доп. изображение 1'},
+                {image: 'test/news1.jpg',
+                    alt: {
+                        ru: "Новость 5",
+                        ky: "Жаңылык 5"
+                    }},
+                {image: 'test/news2.png',
+                    alt: {
+                        ru: "Доп изображение 5",
+                        ky: "Кошумча сүрөт 5"
+                    }},
             ],
         },
         {
-            title: 'Тестовый пост №6',
-            description: 'Lorem ipsum',
+            title: {
+                ru: 'Тестовый пост №6',
+                ky: 'Тесттик пост №6'
+            },
+            description: {
+                ru: 'Основной текст поста',
+                ky: 'Посттун негизги тексти'
+            },
             images: [
-                {image: 'test/news1.jpg', alt: 'Новость 1'},
-                {image: 'test/news2.png', alt: 'Доп. изображение 1'},
+                {image: 'test/news1.jpg',
+                    alt: {
+                        ru: "Новость 6",
+                        ky: "Жаңылык 6"
+                    }},
+                {image: 'test/news2.png',
+                    alt: {
+                        ru: "Доп изображение 6",
+                        ky: "Кошумча сүрөт 6"
+                    }},
             ],
         },
-        {
-            title: 'Тестовый пост №7',
-            description: 'Lorem ipsum',
-            images: [
-                {image: 'test/news1.jpg', alt: 'Новость 1'},
-                {image: 'test/news2.png', alt: 'Доп. изображение 1'},
-            ],
-        },
-        {
-            title: 'Тестовый пост №8',
-            description: 'Lorem ipsum',
-            images: [
-                {image: 'test/news1.jpg', alt: 'Новость 1'},
-                {image: 'test/news2.png', alt: 'Доп. изображение 1'},
-            ],
-        },
-        {
-            title: 'Тестовый пост №9',
-            description: 'Lorem ipsum',
-            images: [
-                {image: 'test/news1.jpg', alt: 'Новость 1'},
-                {image: 'test/news2.png', alt: 'Доп. изображение 1'},
-            ],
-        },
-        {
-            title: 'Тестовый пост №10',
-            description: 'Lorem ipsum',
-            images: [
-                {image: 'test/news1.jpg', alt: 'Новость 1'},
-                {image: 'test/news2.png', alt: 'Доп. изображение 1'},
-            ],
-        },
-    );
+    ]);
 
     await PortfolioItem.create([
         {
             cover: 'test/IMG_0448.jpg',
-            coverAlt: 'Обложка проекта 1',
+            coverAlt: {ru: 'Обложка проекта 1', ky: 'Долбоордун мукабасы 1'},
             gallery: [
-                {image: 'test/IMG_0450.jpg', alt: 'Галерея 1 - 1'},
-                {image: 'test/IMG_0451.jpg', alt: 'Галерея 1 - 2'},
-                {image: 'test/IMG_0449.jpg', alt: 'Галерея 1 - 3'},
-                {image: 'test/IMG_0453.jpg', alt: 'Галерея 1 - 4'},
-                {image: 'test/IMG_0454.jpg', alt: 'Галерея 1 - 5'},
-                {image: 'test/IMG_0455.jpg', alt: 'Галерея 1 - 6'},
-                {image: 'test/IMG_0610.jpg', alt: 'Галерея 1 - 7'},
-                {image: 'test/IMG_0611.jpg', alt: 'Галерея 1 - 8'},
+                {image: 'test/IMG_0450.jpg', alt: {ru: 'Галерея 1', ky: 'Галерея 1'}},
+                {image: 'test/IMG_0451.jpg', alt: {ru: 'Галерея 2', ky: 'Галерея 2'}},
+                {image: 'test/IMG_0449.jpg', alt: {ru: 'Галерея 3', ky: 'Галерея 3'}},
+                {image: 'test/IMG_0453.jpg', alt: {ru: 'Галерея 4', ky: 'Галерея 4'}},
+                {image: 'test/IMG_0454.jpg', alt: {ru: 'Галерея 5', ky: 'Галерея 5'}},
+                {image: 'test/IMG_0455.jpg', alt: {ru: 'Галерея 6', ky: 'Галерея 6'}},
+                {image: 'test/IMG_0610.jpg', alt: {ru: 'Галерея 7', ky: 'Галерея 7'}},
+                {image: 'test/IMG_0611.jpg', alt: {ru: 'Галерея 8', ky: 'Галерея 8'}},
             ],
-            description: 'Современная гостиная с натяжным потолком',
+            description: {
+                ru: 'Современная гостиная с натяжным потолком',
+                ky: 'Заманбап конок бөлмө чоюлма шып менен',
+            }
         },
         {
             cover: 'test/IMG_2687.jpg',
-            coverAlt: 'Обложка проекта 2',
+            coverAlt: {ru: 'Обложка проекта 2', ky: 'Долбоордун мукабасы 2'},
             gallery: [
-                {image: 'test/IMG_2683.jpg', alt: 'Галерея 2 - 1'},
-                {image: 'test/IMG_2682.jpg', alt: 'Галерея 2 - 2'},
-                {image: 'test/IMG_2688.jpg', alt: 'Галерея 2 - 3'},
-                {image: 'test/IMG_2685.jpg', alt: 'Галерея 2 - 4'},
-                {image: 'test/IMG_2689.jpg', alt: 'Галерея 2 - 5'},
-                {image: 'test/IMG_2690.jpg', alt: 'Галерея 2 - 6'},
-                {image: 'test/IMG_2691.jpg', alt: 'Галерея 2 - 7'},
-                {image: 'test/IMG_2692.jpg', alt: 'Галерея 2 - 8'},
-                {image: 'test/IMG_2683.jpg', alt: 'Галерея 2 - 9'},
-                {image: 'test/IMG_2682.jpg', alt: 'Галерея 2 - 10'},
+                {image: 'test/IMG_2683.jpg', alt: {ru: 'Галерея 1', ky: 'Галерея 1'}},
+                {image: 'test/IMG_2682.jpg', alt: {ru: 'Галерея 2', ky: 'Галерея 2'}},
+                {image: 'test/IMG_2688.jpg', alt: {ru: 'Галерея 3', ky: 'Галерея 3'}},
+                {image: 'test/IMG_2685.jpg', alt: {ru: 'Галерея 4', ky: 'Галерея 4'}},
+                {image: 'test/IMG_2689.jpg', alt: {ru: 'Галерея 5', ky: 'Галерея 5'}},
+                {image: 'test/IMG_2690.jpg', alt: {ru: 'Галерея 6', ky: 'Галерея 6'}},
+                {image: 'test/IMG_2691.jpg', alt: {ru: 'Галерея 7', ky: 'Галерея 7'}},
+                {image: 'test/IMG_2692.jpg', alt: {ru: 'Галерея 8', ky: 'Галерея 8'}},
+                {image: 'test/IMG_2683.jpg', alt: {ru: 'Галерея 9', ky: 'Галерея 9'}},
+                {image: 'test/IMG_2682.jpg', alt: {ru: 'Галерея 10', ky: 'Галерея 10'}},
             ],
-            description: 'Современная гостиная с натяжным потолком',
+            description: {
+                ru: 'Современная гостиная с натяжным потолком',
+                ky: 'Заманбап конок бөлмө чоюлма шып менен',
+            },
         },
         {
             cover: 'test/IMG_0450.jpg',
-            coverAlt: 'Обложка проекта 3',
+            coverAlt: {ru: 'Обложка проекта 3', ky: 'Долбоордун мукабасы 3'},
             gallery: [
-                {image: 'test/IMG_0450.jpg', alt: 'Галерея 3 - 1'},
-                {image: 'test/IMG_0451.jpg', alt: 'Галерея 3 - 2'},
-                {image: 'test/IMG_0449.jpg', alt: 'Галерея 3 - 3'},
-                {image: 'test/IMG_0453.jpg', alt: 'Галерея 3 - 4'},
-                {image: 'test/IMG_0454.jpg', alt: 'Галерея 3 - 5'},
-                {image: 'test/IMG_0455.jpg', alt: 'Галерея 3 - 6'},
-                {image: 'test/IMG_0610.jpg', alt: 'Галерея 3 - 7'},
-                {image: 'test/IMG_0611.jpg', alt: 'Галерея 3 - 8'},
+                {image: 'test/IMG_0450.jpg', alt: {ru: 'Галерея 1', ky: 'Галерея 1'}},
+                {image: 'test/IMG_0451.jpg', alt: {ru: 'Галерея 2', ky: 'Галерея 2'}},
+                {image: 'test/IMG_0449.jpg', alt: {ru: 'Галерея 3', ky: 'Галерея 3'}},
+                {image: 'test/IMG_0453.jpg', alt: {ru: 'Галерея 4', ky: 'Галерея 4'}},
+                {image: 'test/IMG_0454.jpg', alt: {ru: 'Галерея 5', ky: 'Галерея 5'}},
+                {image: 'test/IMG_0455.jpg', alt: {ru: 'Галерея 6', ky: 'Галерея 6'}},
+                {image: 'test/IMG_0610.jpg', alt: {ru: 'Галерея 7', ky: 'Галерея 7'}},
+                {image: 'test/IMG_0611.jpg', alt: {ru: 'Галерея 8', ky: 'Галерея 8'}},
             ],
-            description: 'Современная гостиная с натяжным потолком',
+            description: {
+                ru: 'Современная гостиная с натяжным потолком',
+                ky: 'Заманбап конок бөлмө чоюлма шып менен',
+            },
         },
         {
             cover: 'test/IMG_2688.jpg',
-            coverAlt: 'Обложка проекта 4',
+            coverAlt: {ru: 'Обложка проекта 4', ky: 'Долбоордун мукабасы 4'},
             gallery: [
-                {image: 'test/IMG_2683.jpg', alt: 'Галерея 4 - 1'},
-                {image: 'test/IMG_2682.jpg', alt: 'Галерея 4 - 2'},
-                {image: 'test/IMG_2688.jpg', alt: 'Галерея 4 - 3'},
-                {image: 'test/IMG_2685.jpg', alt: 'Галерея 4 - 4'},
-                {image: 'test/IMG_2689.jpg', alt: 'Галерея 4 - 5'},
-                {image: 'test/IMG_2690.jpg', alt: 'Галерея 4 - 6'},
-                {image: 'test/IMG_2691.jpg', alt: 'Галерея 4 - 7'},
-                {image: 'test/IMG_2692.jpg', alt: 'Галерея 4 - 8'},
-                {image: 'test/IMG_2683.jpg', alt: 'Галерея 4 - 9'},
-                {image: 'test/IMG_2682.jpg', alt: 'Галерея 4 - 10'},
+                {image: 'test/IMG_2683.jpg', alt: {ru: 'Галерея 1', ky: 'Галерея 1'}},
+                {image: 'test/IMG_2682.jpg', alt: {ru: 'Галерея 2', ky: 'Галерея 2'}},
+                {image: 'test/IMG_2688.jpg', alt: {ru: 'Галерея 3', ky: 'Галерея 3'}},
+                {image: 'test/IMG_2685.jpg', alt: {ru: 'Галерея 4', ky: 'Галерея 4'}},
+                {image: 'test/IMG_2689.jpg', alt: {ru: 'Галерея 5', ky: 'Галерея 5'}},
+                {image: 'test/IMG_2690.jpg', alt: {ru: 'Галерея 6', ky: 'Галерея 6'}},
+                {image: 'test/IMG_2691.jpg', alt: {ru: 'Галерея 7', ky: 'Галерея 7'}},
+                {image: 'test/IMG_2692.jpg', alt: {ru: 'Галерея 8', ky: 'Галерея 8'}},
+                {image: 'test/IMG_2683.jpg', alt: {ru: 'Галерея 9', ky: 'Галерея 9'}},
+                {image: 'test/IMG_2682.jpg', alt: {ru: 'Галерея 10', ky: 'Галерея 10'}},
             ],
-            description: 'Современная гостиная с натяжным потолком',
+            description: {
+                ru: 'Современная гостиная с натяжным потолком',
+                ky: 'Заманбап конок бөлмө чоюлма шып менен',
+            },
         },
         {
             cover: 'test/IMG_0454.jpg',
-            coverAlt: 'Обложка проекта 5',
+            coverAlt: {ru: 'Обложка проекта 5', ky: 'Долбоордун мукабасы 5'},
             gallery: [
                 {image: 'test/IMG_0450.jpg', alt: 'Галерея 1 - 1'},
                 {image: 'test/IMG_0451.jpg', alt: 'Галерея 1 - 2'},
@@ -594,88 +668,106 @@ const run = async () => {
                 {image: 'test/IMG_0610.jpg', alt: 'Галерея 1 - 7'},
                 {image: 'test/IMG_0611.jpg', alt: 'Галерея 1 - 8'},
             ],
-            description: 'Современная гостиная с натяжным потолком',
+            description: {
+                ru: 'Современная гостиная с натяжным потолком',
+                ky: 'Заманбап конок бөлмө чоюлма шып менен',
+            },
         },
         {
             cover: 'test/IMG_2682.jpg',
-            coverAlt: 'Обложка проекта 6',
+            coverAlt: {ru: 'Обложка проекта 6', ky: 'Долбоордун мукабасы 6'},
             gallery: [
-                {image: 'test/IMG_2683.jpg', alt: 'Галерея 2 - 1'},
-                {image: 'test/IMG_2682.jpg', alt: 'Галерея 2 - 2'},
-                {image: 'test/IMG_2688.jpg', alt: 'Галерея 2 - 3'},
-                {image: 'test/IMG_2685.jpg', alt: 'Галерея 2 - 4'},
-                {image: 'test/IMG_2689.jpg', alt: 'Галерея 2 - 5'},
-                {image: 'test/IMG_2690.jpg', alt: 'Галерея 2 - 6'},
-                {image: 'test/IMG_2691.jpg', alt: 'Галерея 2 - 7'},
-                {image: 'test/IMG_2692.jpg', alt: 'Галерея 2 - 8'},
-                {image: 'test/IMG_2683.jpg', alt: 'Галерея 2 - 9'},
-                {image: 'test/IMG_2682.jpg', alt: 'Галерея 2 - 10'},
+                {image: 'test/IMG_2683.jpg', alt: {ru: 'Галерея 1', ky: 'Галерея 1'}},
+                {image: 'test/IMG_2682.jpg', alt: {ru: 'Галерея 2', ky: 'Галерея 2'}},
+                {image: 'test/IMG_2688.jpg', alt: {ru: 'Галерея 3', ky: 'Галерея 3'}},
+                {image: 'test/IMG_2685.jpg', alt: {ru: 'Галерея 4', ky: 'Галерея 4'}},
+                {image: 'test/IMG_2689.jpg', alt: {ru: 'Галерея 5', ky: 'Галерея 5'}},
+                {image: 'test/IMG_2690.jpg', alt: {ru: 'Галерея 6', ky: 'Галерея 6'}},
+                {image: 'test/IMG_2691.jpg', alt: {ru: 'Галерея 7', ky: 'Галерея 7'}},
+                {image: 'test/IMG_2692.jpg', alt: {ru: 'Галерея 8', ky: 'Галерея 8'}},
+                {image: 'test/IMG_2683.jpg', alt: {ru: 'Галерея 9', ky: 'Галерея 9'}},
+                {image: 'test/IMG_2682.jpg', alt: {ru: 'Галерея 10', ky: 'Галерея 10'}},
             ],
-            description: 'Современная гостиная с натяжным потолком',
+            description: {
+                ru: 'Современная гостиная с натяжным потолком',
+                ky: 'Заманбап конок бөлмө чоюлма шып менен',
+            },
         },
         {
             cover: 'test/IMG_0454.jpg',
-            coverAlt: 'Обложка проекта 7',
+            coverAlt: {ru: 'Обложка проекта 7', ky: 'Долбоордун мукабасы 7'},
             gallery: [
-                {image: 'test/IMG_0450.jpg', alt: 'Галерея 1 - 1'},
-                {image: 'test/IMG_0451.jpg', alt: 'Галерея 1 - 2'},
-                {image: 'test/IMG_0449.jpg', alt: 'Галерея 1 - 3'},
-                {image: 'test/IMG_0453.jpg', alt: 'Галерея 1 - 4'},
-                {image: 'test/IMG_0454.jpg', alt: 'Галерея 1 - 5'},
-                {image: 'test/IMG_0455.jpg', alt: 'Галерея 1 - 6'},
-                {image: 'test/IMG_0610.jpg', alt: 'Галерея 1 - 7'},
-                {image: 'test/IMG_0611.jpg', alt: 'Галерея 1 - 8'},
+                {image: 'test/IMG_0450.jpg', alt: {ru: 'Галерея 1', ky: 'Галерея 1'}},
+                {image: 'test/IMG_0451.jpg', alt: {ru: 'Галерея 2', ky: 'Галерея 2'}},
+                {image: 'test/IMG_0449.jpg', alt: {ru: 'Галерея 3', ky: 'Галерея 3'}},
+                {image: 'test/IMG_0453.jpg', alt: {ru: 'Галерея 4', ky: 'Галерея 4'}},
+                {image: 'test/IMG_0454.jpg', alt: {ru: 'Галерея 5', ky: 'Галерея 5'}},
+                {image: 'test/IMG_0455.jpg', alt: {ru: 'Галерея 6', ky: 'Галерея 6'}},
+                {image: 'test/IMG_0610.jpg', alt: {ru: 'Галерея 7', ky: 'Галерея 7'}},
+                {image: 'test/IMG_0611.jpg', alt: {ru: 'Галерея 8', ky: 'Галерея 8'}},
             ],
-            description: 'Современная гостиная с натяжным потолком',
+            description: {
+                ru: 'Современная гостиная с натяжным потолком',
+                ky: 'Заманбап конок бөлмө чоюлма шып менен',
+            },
         },
         {
             cover: 'test/IMG_2687.jpg',
-            coverAlt: 'Обложка проекта 8',
+            coverAlt: {ru: 'Обложка проекта 8', ky: 'Долбоордун мукабасы 8'},
             gallery: [
-                {image: 'test/IMG_2683.jpg', alt: 'Галерея 2 - 1'},
-                {image: 'test/IMG_2682.jpg', alt: 'Галерея 2 - 2'},
-                {image: 'test/IMG_2688.jpg', alt: 'Галерея 2 - 3'},
-                {image: 'test/IMG_2685.jpg', alt: 'Галерея 2 - 4'},
-                {image: 'test/IMG_2689.jpg', alt: 'Галерея 2 - 5'},
-                {image: 'test/IMG_2690.jpg', alt: 'Галерея 2 - 6'},
-                {image: 'test/IMG_2691.jpg', alt: 'Галерея 2 - 7'},
-                {image: 'test/IMG_2692.jpg', alt: 'Галерея 2 - 8'},
-                {image: 'test/IMG_2683.jpg', alt: 'Галерея 2 - 9'},
-                {image: 'test/IMG_2682.jpg', alt: 'Галерея 2 - 10'},
+                {image: 'test/IMG_2683.jpg', alt: {ru: 'Галерея 1', ky: "Галерея 1"}},
+                {image: 'test/IMG_2682.jpg', alt: {ru: 'Галерея 2 ', ky: "Галерея 2"}},
+                {image: 'test/IMG_2688.jpg', alt: {ru: 'Галерея 3', ky: "Галерея 3"}},
+                {image: 'test/IMG_2685.jpg', alt: {ru: 'Галерея 4', ky: "Галерея 4"}},
+                {image: 'test/IMG_2689.jpg', alt: {ru: 'Галерея 5', ky: "Галерея 5"}},
+                {image: 'test/IMG_2690.jpg', alt: {ru: 'Галерея 6', ky: "Галерея 6"}},
+                {image: 'test/IMG_2691.jpg', alt: {ru: 'Галерея 7', ky: "Галерея 7"}},
+                {image: 'test/IMG_2692.jpg', alt: {ru: 'Галерея 8', ky: "Галерея 8"}},
+                {image: 'test/IMG_2683.jpg', alt: {ru: 'Галерея 9', ky: "Галерея 9"}},
+                {image: 'test/IMG_2682.jpg', alt: {ru: 'Галерея 10', ky: "Галерея 10"}},
             ],
-            description: 'Современная гостиная с натяжным потолком',
+            description: {
+                ru: 'Современная гостиная с натяжным потолком',
+                ky: 'Заманбап конок бөлмө чоюлма шып менен',
+            },
         },
         {
             cover: 'test/IMG_0448.jpg',
-            coverAlt: 'Обложка проекта 9',
+            coverAlt: {ru: 'Обложка проекта 9', ky: 'Долбоордун мукабасы 9'},
             gallery: [
-                {image: 'test/IMG_0450.jpg', alt: 'Галерея 1 - 1'},
-                {image: 'test/IMG_0451.jpg', alt: 'Галерея 1 - 2'},
-                {image: 'test/IMG_0449.jpg', alt: 'Галерея 1 - 3'},
-                {image: 'test/IMG_0453.jpg', alt: 'Галерея 1 - 4'},
-                {image: 'test/IMG_0454.jpg', alt: 'Галерея 1 - 5'},
-                {image: 'test/IMG_0455.jpg', alt: 'Галерея 1 - 6'},
-                {image: 'test/IMG_0610.jpg', alt: 'Галерея 1 - 7'},
-                {image: 'test/IMG_0611.jpg', alt: 'Галерея 1 - 8'},
+                {image: 'test/IMG_0450.jpg', alt: {ru: 'Галерея 1', ky: 'Галерея 1'}},
+                {image: 'test/IMG_0451.jpg', alt: {ru: 'Галерея 2', ky: 'Галерея 2'}},
+                {image: 'test/IMG_0449.jpg', alt: {ru: 'Галерея 3', ky: 'Галерея 3'}},
+                {image: 'test/IMG_0453.jpg', alt: {ru: 'Галерея 4', ky: 'Галерея 4'}},
+                {image: 'test/IMG_0454.jpg', alt: {ru: 'Галерея 5', ky: 'Галерея 5'}},
+                {image: 'test/IMG_0455.jpg', alt: {ru: 'Галерея 6', ky: 'Галерея 6'}},
+                {image: 'test/IMG_0610.jpg', alt: {ru: 'Галерея 7', ky: 'Галерея 7'}},
+                {image: 'test/IMG_0611.jpg', alt: {ru: 'Галерея 8', ky: 'Галерея 8'}},
             ],
-            description: 'Современная гостиная с натяжным потолком',
+            description: {
+                ru: 'Современная гостиная с натяжным потолком',
+                ky: 'Заманбап конок бөлмө чоюлма шып менен',
+            },
         },
         {
             cover: 'test/IMG_2687.jpg',
-            coverAlt: 'Обложка проекта 10',
+            coverAlt: {ru: 'Обложка проекта 10', ky: 'Долбоордун мукабасы 10'},
             gallery: [
-                {image: 'test/IMG_2683.jpg', alt: 'Галерея 2 - 1'},
-                {image: 'test/IMG_2682.jpg', alt: 'Галерея 2 - 2'},
-                {image: 'test/IMG_2688.jpg', alt: 'Галерея 2 - 3'},
-                {image: 'test/IMG_2685.jpg', alt: 'Галерея 2 - 4'},
-                {image: 'test/IMG_2689.jpg', alt: 'Галерея 2 - 5'},
-                {image: 'test/IMG_2690.jpg', alt: 'Галерея 2 - 6'},
-                {image: 'test/IMG_2691.jpg', alt: 'Галерея 2 - 7'},
-                {image: 'test/IMG_2692.jpg', alt: 'Галерея 2 - 8'},
-                {image: 'test/IMG_2683.jpg', alt: 'Галерея 2 - 9'},
-                {image: 'test/IMG_2682.jpg', alt: 'Галерея 2 - 10'},
+                {image: 'test/IMG_2683.jpg', alt: {ru: 'Галерея 1', ky: 'Галерея 1'}},
+                {image: 'test/IMG_2682.jpg', alt: {ru: 'Галерея 2', ky: 'Галерея 2'}},
+                {image: 'test/IMG_2688.jpg', alt: {ru: 'Галерея 3', ky: 'Галерея 3'}},
+                {image: 'test/IMG_2685.jpg', alt: {ru: 'Галерея 4', ky: 'Галерея 4'}},
+                {image: 'test/IMG_2689.jpg', alt: {ru: 'Галерея 5', ky: 'Галерея 5'}},
+                {image: 'test/IMG_2690.jpg', alt: {ru: 'Галерея 6', ky: 'Галерея 6'}},
+                {image: 'test/IMG_2691.jpg', alt: {ru: 'Галерея 7', ky: 'Галерея 7'}},
+                {image: 'test/IMG_2692.jpg', alt: {ru: 'Галерея 8', ky: 'Галерея 8'}},
+                {image: 'test/IMG_2683.jpg', alt: {ru: 'Галерея 9', ky: 'Галерея 9'}},
+                {image: 'test/IMG_2682.jpg', alt: {ru: 'Галерея 10', ky: 'Галерея 10'}},
             ],
-            description: 'Современная гостиная с натяжным потолком',
+            description: {
+                ru: 'Современная гостиная с натяжным потолком',
+                ky: 'Заманбап конок бөлмө чоюлма шып менен',
+            },
         }
     ]);
 
@@ -702,16 +794,28 @@ const run = async () => {
 
     await Service.create(
         {
-            title: "Выезд на замер",
-            description: "Наш специалист приедет к вам в удобное время, сделает точные замеры и даст рекомендации",
+            title: {ru: "Выезд на замер", ky: "Өлчөө үчүн баруу"},
+            description: {
+                ru: "Наш специалист приедет к вам в удобное время, сделает точные замеры и даст рекомендации",
+                ky: "Биздин адис сизге ыңгайлуу убакта келип, так өлчөөлөрдү жүргүзүп, сунуштарын берет."
+            },
         },
         {
-            title: "Монтаж потолков и ламината",
-            description: "Профессиональный монтаж натяжных потолков и укладка ламината любой сложности",
+            title: {ru: "Монтаж потолков и ламината", ky: "Шыптар менен ламинатты орнотуу"},
+            description: {
+                ru: "Профессиональный монтаж натяжных потолков и укладка ламината любой сложности",
+                ky: "Каалаган татаалдыктардагы керме шыптарды кесипкөй орнотуу жана ламинат төшөө"
+            },
         },
         {
-            title: "Расчет освещенности",
-            description: "Точный расчет освещения вашего помещения с учетом всех особенностей и пожеланий",
+            title: {
+                ru: "Расчет освещенности",
+                ky: "Жарыктын эсептөөсү"
+            },
+            description: {
+                ru: "Точный расчет освещения вашего помещения с учетом всех особенностей и пожеланий",
+                ky: "Сиздин бөлмөңүздүн бардык өзгөчөлүктөрүн жана каалоолоруңузду эске алуу менен жарыктандыруунун так эсептөөсү"
+            },
         }
     );
     await db.close();

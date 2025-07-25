@@ -1,4 +1,4 @@
-import axiosAPI from "@/lib/axiosAPI";
+import axiosAPI from "@/src/lib/axiosAPI";
 
 
 export const fetchLaminateItems = async () => {

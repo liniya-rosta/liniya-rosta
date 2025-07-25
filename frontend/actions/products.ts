@@ -1,5 +1,5 @@
-import axiosAPI from '@/lib/axiosAPI';
-import {Product} from '@/lib/types';
+import axiosAPI from '@/src/lib/axiosAPI';
+import {Product} from '@/src/lib/types';
 
 export const fetchProducts = async (
     limit = "10",

@@ -1,0 +1,13 @@
+import React, {PropsWithChildren} from "react";
+import {cn} from "@/src/lib/utils";
+
+interface Props {
+    className?: string
+}
+
+const FormErrorMessage: React.FC<PropsWithChildren<Props>> = ({children, className}) => {
+    return (
+        <p className={cn("text-red-500 text-sm", className)}>{children}</p>
+    )
+};
+export default FormErrorMessage

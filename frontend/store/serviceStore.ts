@@ -1,4 +1,4 @@
-import {Service} from "@/lib/types";
+import {Service} from "@/src/lib/types";
 import {create} from "zustand/react";
 
 interface ServiceState {

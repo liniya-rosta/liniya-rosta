@@ -1,4 +1,4 @@
-import {GalleryItem, PaginationMeta, PortfolioItemDetail, PortfolioItemPreview} from "@/lib/types";
+import {GalleryItem, PaginationMeta, PortfolioItemDetail, PortfolioItemPreview} from "@/src/lib/types";
 import {create} from "zustand/react";
 
 interface PortfolioState {

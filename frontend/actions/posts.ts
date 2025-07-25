@@ -1,5 +1,5 @@
-import axiosAPI from "@/lib/axiosAPI";
-import {Post, PostResponse} from "@/lib/types";
+import axiosAPI from "@/src/lib/axiosAPI";
+import {Post, PostResponse} from "@/src/lib/types";
 import {isAxiosError} from "axios";
 
 export const fetchPosts = async (limit?: string, page?: string, title?: string, description?: string) => {

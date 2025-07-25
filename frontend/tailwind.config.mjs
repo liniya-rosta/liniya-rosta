@@ -1,3 +1,4 @@
+
 import animatePlugin from "tailwindcss-animate"
 
 const createFluidFontSize = (mobileSize, desktopSize, lineHeight) => {

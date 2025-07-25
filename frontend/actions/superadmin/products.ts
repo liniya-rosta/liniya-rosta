@@ -1,13 +1,13 @@
-import {Product, ProductMutation, ProductUpdateMutation} from "@/lib/types";
-import axiosAPI from "@/lib/axiosAPI";
+import {Product, ProductMutation, ProductUpdateMutation} from "@/src/lib/types";
+import axiosAPI from "@/src/lib/axiosAPI";
 
 export const createProduct = async (productData: ProductMutation): Promise<Product> => {
     const formData = new FormData();
     formData.append('category', productData.category);
-    formData.append('title', productData.title);
+    formData.append('title', productData.title.ru);
 
     if (productData.description) {
-        formData.append('description', productData.description);
+        formData.append('description', productData.description.ru);
     }
 
     if (productData.seoTitle) {
@@ -23,13 +23,13 @@ export const createProduct = async (productData: ProductMutation): Promise<Produ
     }
 
     if (productData.coverAlt) {
-        formData.append('coverAlt', productData.coverAlt);
+        formData.append('coverAlt', productData.coverAlt.ru);
     }
 
     productData.images.forEach((img) => {
         if (img.url instanceof File) {
             formData.append("images", img.url);
-            formData.append("alt", img.alt || "Элемент галереи");
+            formData.append("alt", img.alt?.ru || "Элемент галереи");
         }
     });
 
@@ -40,7 +40,7 @@ export const createProduct = async (productData: ProductMutation): Promise<Produ
     if (productData.sale) {
         formData.append('isOnSale', String(productData.sale.isOnSale));
         if (productData.sale.label) {
-            formData.append('saleLabel', productData.sale.label);
+            formData.append('saleLabel', productData.sale.label.ru);
         }
     }
 
@@ -49,7 +49,7 @@ export const createProduct = async (productData: ProductMutation): Promise<Produ
     }
 
     if (productData.iconAlt) {
-        formData.append('iconAlt', productData.iconAlt);
+        formData.append('iconAlt', productData.iconAlt.ru);
     }
 
     const res = await axiosAPI.post<{ message: string, product: Product }>('/superadmin/products', formData, {
@@ -68,11 +68,11 @@ export const updateProduct = async (id: string, productData: ProductUpdateMutati
     }
 
     if (productData.title) {
-        formData.append('title', productData.title);
+        formData.append('title', productData.title.ru);
     }
 
     if (productData.description) {
-        formData.append('description', productData.description);
+        formData.append('description', productData.description.ru);
     }
 
     if (productData.seoTitle) {
@@ -88,7 +88,7 @@ export const updateProduct = async (id: string, productData: ProductUpdateMutati
     }
 
     if (productData.coverAlt) {
-        formData.append('coverAlt', productData.coverAlt);
+        formData.append('coverAlt', productData.coverAlt.ru);
     }
 
     if (productData.characteristics) {
@@ -98,7 +98,7 @@ export const updateProduct = async (id: string, productData: ProductUpdateMutati
     if (productData.sale) {
         formData.append('isOnSale', String(productData.sale.isOnSale));
         if (productData.sale.label) {
-            formData.append('saleLabel', productData.sale.label);
+            formData.append('saleLabel', productData.sale.label.ru);
         }
     }
 
@@ -107,7 +107,7 @@ export const updateProduct = async (id: string, productData: ProductUpdateMutati
     }
 
     if (productData.iconAlt) {
-        formData.append('iconAlt', productData.iconAlt);
+        formData.append('iconAlt', productData.iconAlt.ru);
     }
 
     const res = await axiosAPI.patch<{ message: string, product: Product }>(

@@ -2,12 +2,24 @@ import mongoose, {Schema} from "mongoose";
 
 const ServiceSchema = new Schema({
     title: {
-        type: String,
-        required: [true, "Поле заголовка обязательно для заполнения"],
+        ru: {
+            type: String,
+            required: [true, "Поле заголовка обязательно для заполнения"],
+        },
+        ky: {
+            type: String,
+            required: true,
+        }
     },
     description: {
-        type: String,
-        default: null,
+        ru: {
+            type: String,
+            default: null,
+        },
+        ky: {
+            type: String,
+            default: null,
+        }
     },
 });
 

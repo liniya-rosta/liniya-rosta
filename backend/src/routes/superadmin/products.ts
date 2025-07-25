@@ -4,6 +4,7 @@ import Category from "../../models/Category";
 import mongoose from "mongoose";
 import {productImage} from "../../middleware/multer";
 import slugify from "slugify";
+import {translateYandex} from "../../../translateYandex";
 
 const productsSuperAdminRouter = express.Router();
 
@@ -14,7 +15,7 @@ productsSuperAdminRouter.post("/", productImage.fields([
 ]), async (req, res, next) => {
     try {
         const files = req.files as {
-            [fieldname: string]: Express.Multer.File[];
+            [fieldName: string]: Express.Multer.File[];
         };
 
         const coverFile = files.cover?.[0];
@@ -39,31 +40,60 @@ productsSuperAdminRouter.post("/", productImage.fields([
         }
 
         const alts: string[] = Array.isArray(req.body.alt) ? req.body.alt : [req.body.alt];
+        const altsKy = await Promise.all(alts.map(alt => translateYandex(alt, "ky")));
+
+
         const images = imagesFiles.map((file, i) => ({
             url: "product/" + file.filename,
-            alt: alts[i] || null,
+            alt: {
+                ru: alts[i],
+                ky: altsKy[i]
+            },
         }));
-        const parsedCharacteristics = req.body.characteristics ? JSON.parse(req.body.characteristics) : [];
+
+        let parsedCharacteristics = [];
+
+        if (req.body.characteristics) {
+            const original = JSON.parse(req.body.characteristics);
+            parsedCharacteristics = await Promise.all(
+                original.map(async (char: {name: string; value: string}) => ({
+                    name: {
+                        ru: char.name,
+                        ky: await translateYandex(char.name, "ky")
+                    },
+                    value: {
+                        ru: char.value,
+                        ky: await translateYandex(char.value, "ky")
+                    }
+                }))
+            );
+        }
+
+        const titleKy = await translateYandex(title, "ky");
+        const desKy = await translateYandex(description, "ky");
+        const coverAltKy = await translateYandex(req.body.coverAlt, "ky")
+        const labelKy = await translateYandex(req.body.label, "ky");
+        const iconAltKy = await translateYandex(req.body.icon, "ky");
 
         const product = new Product({
             category,
-            title: title.trim(),
+            title: {ru: title.trim(), ky: titleKy},
             seoTitle: seoTitle?.trim() || null,
             seoDescription: seoDescription?.trim() || null,
-            description: description?.trim() || null,
+            description: {ru: description?.trim(), ky: desKy},
             cover: {
                 url: `product/${coverFile.filename}`,
-                alt: req.body.coverAlt || null,
+                alt: {ru: req.body.coverAlt, ky: coverAltKy},
             },
             images,
             characteristics: parsedCharacteristics,
             sale: {
                 isOnSale: req.body.isOnSale === 'true',
-                label: req.body.saleLabel || null,
+                label: {ru: req.body.label, ky: labelKy},
             },
             icon: {
                 url: iconFile ? `product/${iconFile.filename}` : null,
-                alt: req.body.iconAlt || null,
+                alt: {ru: req.body.iconAlt, ky: iconAltKy},
             },
         });
 
@@ -96,11 +126,6 @@ productsSuperAdminRouter.patch("/:id", productImage.fields([
             return;
         }
 
-        if (!category && !title && !description && !coverFile && !req.body.images && !req.body.characteristics) {
-            res.status(400).send({error: "Не указаны поля для обновления"});
-            return;
-        }
-
         const product = await Product.findById(id);
         if (!product) {
             res.status(404).send({error: "Продукт не найден"});
@@ -118,32 +143,15 @@ productsSuperAdminRouter.patch("/:id", productImage.fields([
                 res.status(400).send({error: "Указанная категория не существует"});
                 return;
             }
-        }
 
-        if (title && !title.trim()) {
-            res.status(400).send({error: "Заголовок не может быть пустым"});
-            return;
+            product.category = category;
         }
-
-        if (seoTitle !== undefined) {
-            product.seoTitle = seoTitle?.trim() || null;
-        }
-
-        if (seoDescription !== undefined) {
-            product.seoDescription = seoDescription?.trim() || null;
-        }
-
-        if (description?.trim() === '') {
-            res.status(400).send({error: "Описание не может быть пустым"});
-            return;
-        }
-
-        if (category) product.category = category;
 
         if (title) {
-            product.title = title.trim();
+            const titleKy = await translateYandex(title, "ky");
+            product.title = {ru: title.trim(), ky: titleKy};
 
-            const baseSlug = slugify(product.title, {lower: true, strict: true});
+            const baseSlug = slugify(title, {lower: true, strict: true});
             let uniqueSlug = baseSlug;
             let counter = 1;
 
@@ -155,37 +163,63 @@ productsSuperAdminRouter.patch("/:id", productImage.fields([
             product.slug = uniqueSlug;
         }
 
-        if (description !== undefined) product.description = description;
+        if (seoTitle !== undefined) {
+            product.seoTitle = seoTitle?.trim() || null;
+        }
 
-        if (req.body.images) {
-            try {
-                product.images = JSON.parse(req.body.images);
-            } catch {
-                res.status(400).send({error: "Некорректный формат images"});
-                return;
-            }
+        if (seoDescription !== undefined) {
+            product.seoDescription = seoDescription?.trim() || null;
+        }
+
+        if (description) {
+            const desKy = await translateYandex(description, "ky");
+            product.description = {ru: description.trim(), ky: desKy};
         }
 
         if (req.body.characteristics) {
             try {
-                product.characteristics = JSON.parse(req.body.characteristics);
+                const original = JSON.parse(req.body.characteristics);
+                const translatedChars = await Promise.all(
+                    original.map(async (char: {name: string; value: string}) => ({
+                        name: {
+                            ru: char.name,
+                            ky: await translateYandex(char.name, "ky")
+                        },
+                        value: {
+                            ru: char.value,
+                            ky: await translateYandex(char.value, "ky")
+                        }
+                    }))
+                );
+
+                product.set('characteristics', translatedChars);
             } catch {
                 res.status(400).send({error: "Некорректный формат characteristics"});
                 return;
             }
         }
 
-        if (imagesFiles.length > 0) {
-            const alts: string[] = Array.isArray(req.body.alt) ? req.body.alt : [req.body.alt];
+        if (req.body.images) {
+            try {
+                const alts: string[] = Array.isArray(req.body.alt) ? req.body.alt : [req.body.alt];
+                const altsKy = await Promise.all(alts.map((alt) => translateYandex(alt, "ky")));
 
-            product.set('images', imagesFiles.map((file, i) => ({
-                url: "product/" + file.filename,
-                alt: alts[i] || null,
-            })));
+                const images = JSON.parse(req.body.images);
+                product.images = images.map((img: any, i: number) => ({
+                    url: img.url,
+                    alt: {
+                        ru: alts[i] || '',
+                        ky: altsKy[i] || '',
+                    },
+                }));
+            } catch {
+                res.status(400).send({error: "Некорректный формат images"});
+                return;
+            }
         }
 
         if (!product.sale) {
-            product.sale = {isOnSale: false, label: ''};
+            product.sale = {isOnSale: false, label: {ru: '', ky: ''}};
         }
 
         if (req.body.isOnSale !== undefined) {
@@ -193,22 +227,39 @@ productsSuperAdminRouter.patch("/:id", productImage.fields([
         }
 
         if (req.body.saleLabel !== undefined) {
-            product.sale.label = typeof req.body.saleLabel === 'string' ? req.body.saleLabel : '';
+            const labelKy = await translateYandex(req.body.saleLabel || '', "ky");
+            product.sale.label = {
+                ru: req.body.saleLabel || '',
+                ky: labelKy
+            };
         }
 
         if (iconFile) {
+            const iconAltRu = req.body.iconAlt || '';
+            const iconAltKy = await translateYandex(iconAltRu, "ky");
+
             product.icon = {
                 url: `product/${iconFile.filename}`,
-                alt: typeof req.body.iconAlt === 'string' ? req.body.iconAlt : '',
+                alt: {
+                    ru: iconAltRu,
+                    ky: iconAltKy
+                },
             };
         }
 
         if (coverFile) {
+            const coverAltRu = req.body.coverAlt || '';
+            const coverAltKy = await translateYandex(coverAltRu, "ky");
+
             product.cover = {
                 url: `product/${coverFile.filename}`,
-                alt: typeof req.body.coverAlt === 'string' ? req.body.coverAlt : '',
+                alt: {
+                    ru: coverAltRu,
+                    ky: coverAltKy
+                },
             };
         }
+
         await product.save();
         const updatedProduct = await Product.findById(product._id).populate("category");
         res.send({message: "Продукт обновлен успешно", product: updatedProduct});
@@ -216,6 +267,7 @@ productsSuperAdminRouter.patch("/:id", productImage.fields([
         next(e);
     }
 });
+
 
 productsSuperAdminRouter.patch("/images/:imageId", productImage.fields([{
     name: "images",

@@ -1,9 +1,10 @@
 import express from "express";
-import {Types, Error as MongooseError} from "mongoose";
 import {PortfolioItem} from "../../models/PortfolioItem";
 import {portfolioImage} from "../../middleware/multer";
+import mongoose, {Types} from "mongoose";
 import {deleteOrReplaceImages} from "../../middleware/deleteImages";
 import {deleteOrReplaceGalleryImage} from "../../middleware/deleteImagesGallery";
+import {translateYandex} from "../../../translateYandex";
 import {GalleryUpdate} from "../../../types";
 import slugify from "slugify";
 
@@ -18,7 +19,7 @@ portfolioSuperAdminRouter.post(
     async (req, res, next) => {
         try {
             const files = req.files as {
-                [fieldname: string]: Express.Multer.File[];
+                [fieldName: string]: Express.Multer.File[];
             };
 
             const coverFile = files.cover?.[0];
@@ -33,16 +34,30 @@ portfolioSuperAdminRouter.post(
                 ? req.body.alt
                 : [req.body.alt];
 
+            const altsKy = await Promise.all(alts.map(alt => translateYandex(alt, "ky")));
+
             const gallery = galleryFiles.map((file, i) => ({
-                image: `portfolio/${file.filename}`,
-                alt: alts[i],
+                image: "portfolio/" + file.filename,
+                alt: {
+                    ru: alts[i],
+                    ky: altsKy[i]
+                },
             }));
+
+            const descriptionKy = await translateYandex(req.body.description, "ky");
+            const coverAltKy = await translateYandex(req.body.coverAlt, "ky");
 
             const newItem = new PortfolioItem({
                 cover: coverFile ? `portfolio/${coverFile.filename}` : null,
                 gallery,
-                description: req.body.description,
-                coverAlt: req.body.coverAlt,
+                description: {
+                    ru: req.body.description,
+                    ky: descriptionKy
+                },
+                coverAlt: {
+                    ru: req.body.coverAlt,
+                    ky: coverAltKy
+                },
                 seoTitle: req.body.seoTitle || null,
                 seoDescription: req.body.seoDescription || null,
             });
@@ -50,7 +65,7 @@ portfolioSuperAdminRouter.post(
             await newItem.save();
             res.send(newItem);
         } catch (e) {
-            if (e instanceof MongooseError.ValidationError) {
+            if (e instanceof mongoose.Error.ValidationError) {
                 res.status(400).send(e);
                 return
             }
@@ -71,15 +86,32 @@ portfolioSuperAdminRouter.patch(
     async (req, res, next) => {
         try {
             const {id} = req.params;
+
             if (!Types.ObjectId.isValid(id)) {
                 res.status(400).send({error: "Неверный формат ID обложки портфолио"});
                 return;
             }
 
             const updateData: any = {};
-            if (req.file) updateData.cover = `portfolio/${req.file.filename}`;
-            if (req.body.description !== undefined) updateData.description = req.body.description;
-            if (req.body.coverAlt !== undefined) updateData.coverAlt = req.body.coverAlt;
+
+            const descriptionKy = await translateYandex(req.body.description, "ky");
+            const coverAltKy = await translateYandex(req.body.coverAlt, "ky");
+
+            if (req.file) {
+                updateData.cover = "portfolio/" + req.file.filename;
+            }
+            if (req.body.description !== undefined) {
+                updateData.description = {
+                    ru: req.body.description,
+                    ky: descriptionKy
+                };
+            }
+            if (req.body.coverAlt !== undefined) {
+                updateData.coverAlt = {
+                    ru: req.body.coverAlt,
+                    ky: coverAltKy
+                };
+            }
             if (req.body.seoTitle !== undefined) updateData.seoTitle = req.body.seoTitle;
             if (req.body.seoDescription !== undefined) updateData.seoDescription = req.body.seoDescription;
             if (req.body.slug !== undefined) updateData.slug = req.body.slug;
@@ -111,7 +143,7 @@ portfolioSuperAdminRouter.patch(
 
             res.send(updatedItem);
         } catch (e) {
-            if (e instanceof MongooseError.ValidationError) {
+            if (e instanceof mongoose.Error.ValidationError) {
                 res.status(400).send(e);
                 return;
             }
@@ -137,7 +169,11 @@ portfolioSuperAdminRouter.patch(
 
             const updateFields: GalleryUpdate = {};
             if (file) updateFields["gallery.$.image"] = `portfolio/${file.filename}`;
-            if (newAlt) updateFields["gallery.$.alt"] = newAlt;
+            if (newAlt !== undefined) {
+                const altKy = await translateYandex(newAlt, "ky");
+                updateFields["gallery.$.alt.ru"] = newAlt;
+                updateFields["gallery.$.alt.ky"] = altKy;
+            }
 
             if (Object.keys(updateFields).length === 0) {
                 res.status(400).send({error: "Нет данных для обновления"});
