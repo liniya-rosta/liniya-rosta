@@ -4,9 +4,9 @@ import Image from "next/image";
 import {API_BASE_URL} from "@/src/lib/globalConstants";
 
 interface Props {
-    title: string;
+    title?: string;
     image: string;
-    description: string | null;
+    description?: string | null;
 }
 
 const LaminateCard: React.FC<Props> = ({title, description, image}) => {
@@ -15,7 +15,7 @@ const LaminateCard: React.FC<Props> = ({title, description, image}) => {
             <div className="w-full aspect-[3/2] relative">
                 <Image
                     src={API_BASE_URL + "/" + image}
-                    alt={title}
+                    alt={title || "Изображение ламината"}
                     fill
                     priority
                 />

@@ -69,7 +69,7 @@ const ProductCover: React.FC<Props> = ({form}) => {
             <div className="flex flex-col">
                 <FormField
                     control={form.control}
-                    name="coverAlt"
+                    name="coverAlt.ru"
                     render={({field}) => (
                         <FormItem>
                             <FormLabel>Альтернативный текст для обложки</FormLabel>

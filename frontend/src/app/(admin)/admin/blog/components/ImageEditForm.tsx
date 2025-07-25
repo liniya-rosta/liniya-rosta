@@ -50,7 +50,7 @@ const ImageEditForm: React.FC<React.PropsWithChildren<Props>> = (
     useEffect(() => {
         if (found) {
             reset({
-                alt: found.alt,
+                alt: {ru: found.alt?.ru},
                 imageUrl,
             });
         }
@@ -160,7 +160,7 @@ const ImageEditForm: React.FC<React.PropsWithChildren<Props>> = (
                                 <div className="relative w-[200px] h-[200px]">
                                     <Image
                                         src={API_BASE_URL + "/" + found.image}
-                                        alt={found.alt}
+                                        alt={found.alt?.ru || "Изображение"}
                                         fill
                                         sizes="(max-width: 768px) 100vw, 200px"
                                         className="object-contain rounded"

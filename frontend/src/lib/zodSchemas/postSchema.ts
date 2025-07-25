@@ -1,34 +1,37 @@
 import { z } from "zod";
 
+const langString = z.object({
+    ru: z.string().min(1, "Обязательное поле"),
+});
+
+const altSchema = z.object({
+    ru: z.string().min(1, "Описание alt на русском обязательно"),
+});
+
 export const createPostSchema = z.object({
-    title: z.string().min(1, "Заголовок обязателен"),
-    description: z.string().min(1, "Описание обязательно"),
+    title: langString,
+    description: langString,
     images: z.array(
         z.object({
             file: z.instanceof(File).nullable(),
-            alt: z.string().optional(),
+            alt: altSchema.optional(),
         })
-    ) .min(1, "Добавьте хотя бы одно изображение")
+    ).min(1, "Добавьте хотя бы одно изображение"),
 });
 
 export const updatePostSchema = z
     .object({
-        title: z.string().min(1, "Заголовок не может быть пустым").optional(),
-        description: z
-            .string()
-            .min(1, "Описание не может быть пустым")
-            .optional(),
+        title: langString.optional(),
+        description: langString.optional(),
         images: z.array(
             z.object({
                 file: z.instanceof(File, { message: "Файл обязателен" }).nullable(),
-                alt: z.string().optional(),
+                alt: altSchema.optional(),
             })
-        )
-        .optional()
+        ).optional(),
     })
     .refine(
-        (data) =>
-            data.title || data.description || data.images,
+        (data) => data.title || data.description || data.images,
         {
             message: "Хотя бы одно поле должно быть передано",
         }
@@ -36,7 +39,7 @@ export const updatePostSchema = z
 
 export const updatePostImageSchema = z.object({
     imageUrl: z.string().min(1, "Ссылка на изображение обязательна"),
-    alt: z.string().optional(),
+    alt: altSchema.optional(),
     newImage: z.instanceof(File).optional(),
 });
 

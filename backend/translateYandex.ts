@@ -19,12 +19,9 @@ export async function translateYandex(text: string, targetLang = "ky") {
         }),
     });
 
-    console.log("YANDEX_API_KEY =", process.env.YANDEX_API_KEY);
-    console.log("YANDEX_FOLDER_ID =", process.env.YANDEX_FOLDER_ID);
-
     const data = await response.json();
 
-    console.log("Yandex translate API response:", data);
+    console.log(data);
 
     if (data.translations && data.translations.length > 0) {
         return data.translations[0].text;

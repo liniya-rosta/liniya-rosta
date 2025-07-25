@@ -8,13 +8,13 @@ export function useProductsTableLogic() {
     const {setUpdateError, setProductDetail} = useAdminProductStore();
 
     // Модалки
-    const [previewImage, setPreviewImage] = useState<{ url: string; alt: string } | null>(null);
+    const [previewImage, setPreviewImage] = useState<{ url: string; alt: {ru: string, ky: string} } | null>(null);
     const [saleLabel, setSaleLabel] = useState<string | null>(null);
     const [isImagesModalOpen, setIsImagesModalOpen] = useState(false);
     const [showConfirmDialog, setShowConfirmDialog] = useState(false);
     const [idsToDelete, setIdsToDelete] = useState<string[]>([]);
 
-    const onImageClick = useCallback((image: { url: string; alt: string }) => {
+    const onImageClick = useCallback((image: { url: string; alt: {ru: string, ky: string} }) => {
         setPreviewImage(image);
     }, []);
 
@@ -24,7 +24,7 @@ export function useProductsTableLogic() {
 
     const onImages = useCallback(async (data: {
         productId: string;
-        images: { url: string; alt?: string | null; _id: string }[];
+        images: { url: string; alt?: {ru: string, ky: string} | null; _id: string }[];
     }) => {
         try {
             setUpdateError(null);

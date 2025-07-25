@@ -69,7 +69,10 @@ export interface PortfolioResponse extends PaginationMeta {
 
 export interface Category {
     _id: string;
-    title: string;
+    title: {
+        ru: string;
+        ky: string;
+    };
 }
 
 export interface ValidationError {
@@ -166,9 +169,15 @@ export interface EditProfileForm {
 
 export interface Post {
     _id: string;
-    title: string;
-    description: string;
-    images: Image[];
+    title: {
+        ru: string;
+        ky: string;
+    };
+    description: {
+        ru: string;
+        ky: string;
+    };
+    images: ImageObject[];
     imageCount: number;
     slug: string;
     createdAt: string;
@@ -183,46 +192,46 @@ export interface PostResponse extends PaginationMeta {
 
 export interface UpdateImagePost {
     imageUrl: string;
-    alt?: string;
+    alt?: {ru: string};
     newImage?: File;
 }
 
 export interface ProductImagesForm {
     url: File | null;
-    alt?: string;
+    alt?: {ru: string};
 }
 
 interface ImageItem {
     _id: string;
     url: string;
-    alt: string;
+    alt: {ru: string, ky?: string;};
 }
 
 export interface Product {
     _id: string;
-    title: string;
+    title: {ru: string, ky?: string;};
     seoTitle: string;
     seoDescription: string;
     category: {
         _id: string;
-        title: string;
+        title: {ru: string, ky?: string;};
     };
-    description: string | null;
+    description: {ru: string, ky: string} | null;
     cover: {
         url: string;
-        alt: string;
+        alt: {ru: string, ky?: string;};
     };
     images: ImageItem[];
     characteristics?: {
-        key: string;
-        value: string;
+        key: {ru: string, ky?: string};
+        value: {ru: string, ky?: string};
     }[];
     sale?: {
         isOnSale: boolean;
-        label?: string;
+        label?: {ru: string, ky?: string};
     };
     icon?: {
-        alt?: string;
+        alt?: {ru: string, ky?: string;};
         url: string | null;
     };
     slug: string;
@@ -232,23 +241,23 @@ export interface Product {
 
 export interface ProductMutation {
     category: string;
-    title: string;
+    title: {ru: string};
     seoTitle?: string | null;
     seoDescription?: string | null;
-    description?: string;
-    coverAlt?: string | null;
+    description?: {ru: string} | null;
+    coverAlt?: {ru: string} | null;
     cover?: File | null;
     images: ProductImagesForm[];
     characteristics?: {
-        key: string;
-        value: string;
+        key: {ru: string};
+        value: {ru: string};
     }[];
     sale?: {
         isOnSale: boolean;
-        label?: string | null;
+        label?: {ru: string} | null;
     };
     icon?: File | null;
-    iconAlt?: string | null;
+    iconAlt?: {ru: string} | null;
 }
 
 type ImagesEditValues = Partial<GalleryForm>;

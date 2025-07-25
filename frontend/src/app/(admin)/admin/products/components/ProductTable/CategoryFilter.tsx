@@ -24,7 +24,7 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
                 <SelectItem value="all">Все категории</SelectItem>
                 {categories.map((category) => (
                     <SelectItem key={category._id} value={category._id}>
-                        {category.title}
+                        {category.title.ru}
                     </SelectItem>
                 ))}
             </SelectContent>

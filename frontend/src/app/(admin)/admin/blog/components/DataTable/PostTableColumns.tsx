@@ -69,7 +69,10 @@ export const getPostTableColumns = (
                     </Button>
                 );
             },
-            cell: ({ row }) => <div className="font-medium max-w-[200px] truncate">{row.getValue('title')}</div>,
+            cell: ({ row }) =>
+                <div className="font-medium max-w-[200px] truncate">
+                    {row.original.title.ru}
+                </div>,
             filterFn: 'includesString',
         },
         {
@@ -77,7 +80,7 @@ export const getPostTableColumns = (
             header: 'Описание',
             cell: ({ row }) => (
                 <div className="line-clamp-2 max-w-sm text-sm text-muted-foreground">
-                    {row.getValue('description')}
+                    {row.original.description.ru}
                 </div>
             ),
             filterFn: 'includesString',
@@ -108,7 +111,7 @@ export const getPostTableColumns = (
                             >
                                 <Image
                                     src={`${API_BASE_URL}/${imageUrl}`}
-                                    alt={row.original.title}
+                                    alt={row.original.title.ru}
                                     fill
                                     sizes="64px"
                                     className="object-cover rounded-md"

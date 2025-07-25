@@ -56,8 +56,8 @@ const EditPostForm: React.FC<Props> = ({openImagesModal, setPreviewImage, setIsP
 
     useEffect(() => {
         if (detailPost) reset({
-            title: detailPost.title,
-            description: detailPost.description,
+            title: {ru: detailPost.title.ru},
+            description: {ru: detailPost.description.ru},
         });
     }, [detailPost]);
 
@@ -66,8 +66,8 @@ const EditPostForm: React.FC<Props> = ({openImagesModal, setPreviewImage, setIsP
     const onCancelReplace = () => {
         setReplaceAllImages(false);
         reset({
-            title: detailPost.title,
-            description: detailPost.description,
+            title: {ru: detailPost.title.ru},
+            description: {ru: detailPost.description.ru},
         });
     };
 
@@ -80,7 +80,7 @@ const EditPostForm: React.FC<Props> = ({openImagesModal, setPreviewImage, setIsP
         if (confirmType === "replace") {
             setReplaceAllImages(true);
             remove();
-            append({alt: '', file: null});
+            append({alt: {ru: ""}, file: null});
         } else if (confirmType === "backToPage") {
             router.push('/admin/blog');
         }
@@ -93,7 +93,7 @@ const EditPostForm: React.FC<Props> = ({openImagesModal, setPreviewImage, setIsP
     };
 
     const handleAltChange = (index: number, value: string) => {
-        setValue(`images.${index}.alt`, value, {shouldValidate: true});
+        setValue(`images.${index}.alt.ru`, value, {shouldValidate: true});
     };
 
     const onSubmit = async (data: UpdatePostFormData) => {
@@ -136,7 +136,7 @@ const EditPostForm: React.FC<Props> = ({openImagesModal, setPreviewImage, setIsP
                     <Input
                         type="text"
                         placeholder="Заголовок"
-                        {...register('title')}
+                        {...register('title.ru')}
                         disabled={updateLoading}
                         className="mb-2"
                     />
@@ -145,7 +145,7 @@ const EditPostForm: React.FC<Props> = ({openImagesModal, setPreviewImage, setIsP
                     <Input
                         type="text"
                         placeholder="Описание"
-                        {...register('description')}
+                        {...register('description.ru')}
                         disabled={updateLoading}
                         className="mb-4"
                     />
@@ -159,7 +159,7 @@ const EditPostForm: React.FC<Props> = ({openImagesModal, setPreviewImage, setIsP
                         <Button
                             type="button"
                             variant="outline"
-                            onClick={() => append({alt: '', file: null})}
+                            onClick={() => append({alt: {ru: ""}, file: null})}
                             disabled={updateLoading}
                             className="mb-4"
                         >

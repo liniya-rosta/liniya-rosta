@@ -29,7 +29,7 @@ const ProductImages: React.FC<Props> = ({form}) => {
                 onClick={() => {
                     const lastImage = form.getValues("images")?.at(-1);
                     if (lastImage && !(lastImage.url instanceof File)) return;
-                    append({alt: "", url: null});
+                    append({alt: {ru: ""}, url: null});
                 }}
                 className='cursor-pointer'
                 disabled={createLoading}
@@ -53,7 +53,15 @@ const ProductImages: React.FC<Props> = ({form}) => {
                                 <FormItem>
                                     <FormLabel>Альтернативный текст одного изображения</FormLabel>
                                     <FormControl>
-                                        <Input {...field} disabled={createLoading} placeholder="Например: Изображение SPC ламината Дуб Сканди"/>
+                                        <Input
+                                            value={field.value?.ru || ""}
+                                            onChange={(e) => field.onChange({ ru: e.target.value })}
+                                            name={field.name}
+                                            ref={field.ref}
+                                            onBlur={field.onBlur}
+                                            disabled={createLoading}
+                                            placeholder="Например: Изображение SPC ламината Дуб Сканди"
+                                        />
                                     </FormControl>
                                     {form.formState.errors.images?.[index]?.alt?.message && (
                                         <FormErrorMessage>
@@ -85,7 +93,7 @@ const ProductImages: React.FC<Props> = ({form}) => {
                                 return (
                                     <Image
                                         src={objectUrl}
-                                        alt={form.watch(`images.${index}.alt`) || "предпросмотр"}
+                                        alt={form.watch(`images.${index}.alt.ru`) || "предпросмотр"}
                                         width={96}
                                         height={96}
                                         className="rounded border object-cover w-24 h-24"

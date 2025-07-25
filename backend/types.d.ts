@@ -93,14 +93,14 @@ export interface ServiceUpdate {
 }
 
 export interface ImageItem {
-    alt?: string;
+    alt?: {ru: string, ky: string;};
     image: string;
 }
 
 export interface updatePost {
-    title?: string;
-    description?: string;
-    images?: { alt?: string, image: string }[];
+    title?: {ru: string, ky: string};
+    description?: {ru: string, ky: string};
+    images?: { alt?: {ru: string, ky: string}, image: string }[];
     seoTitle?: string;
     seoDescription?: string;
     slug?: string;

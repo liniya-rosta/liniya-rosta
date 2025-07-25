@@ -10,6 +10,7 @@ import {Navigation} from "swiper/modules";
 import LoadingFullScreen from "@/src/components/ui/Loading/LoadingFullScreen";
 import {useProductStore} from "@/store/productsStore";
 import ImagePreviewModal from "@/src/app/(admin)/admin/products/components/Modal/ImagePreviewModal";
+import {useLocale, useTranslations} from "next-intl";
 
 interface Props {
     productData: Product | null;
@@ -26,7 +27,11 @@ const ProductDetailView: React.FC<Props> = ({productData, fetchProductError}) =>
         fetchProductsLoading
     } = useProductStore();
 
-    const [previewImage, setPreviewImage] = React.useState<{ url: string; alt: string } | null>(null);
+    const [previewImage, setPreviewImage] = React.useState<{ url: string; alt: {ru: string, ky?: string} | null } | null>(null);
+
+    const tError = useTranslations("Errors");
+    const tCeilings = useTranslations("CeilingsPage");
+    const locale = useLocale() as "ky" | "ru";
 
     useEffect(() => {
         if (productData) setProduct(productData);
@@ -35,7 +40,7 @@ const ProductDetailView: React.FC<Props> = ({productData, fetchProductError}) =>
     }, [fetchProductError, productData, setFetchProductsError, setFetchProductsLoading, setProduct]);
 
     if (fetchProductsLoading) return <LoadingFullScreen/>;
-    if (fetchProductsError) return <p>Произошла ошибка при загркзки продукта</p>
+    if (fetchProductsError) return <p>{tError("CeilingDetailError")}</p>
 
     if (product) return (
         <div
@@ -45,7 +50,7 @@ const ProductDetailView: React.FC<Props> = ({productData, fetchProductError}) =>
                     className="relative w-full h-[360px] sm:h-[440px] md:h-[500px] rounded-xl overflow-hidden border shadow-lg">
                     <Image
                         src={`${API_BASE_URL}/${product.cover.url}`}
-                        alt={product.cover.alt || product.title}
+                        alt={product.cover.alt[locale] || product.title[locale] || "Изображение"}
                         fill
                         className="object-cover"
                     />
@@ -63,14 +68,14 @@ const ProductDetailView: React.FC<Props> = ({productData, fetchProductError}) =>
                             {product.images.map((img) => (
                                 <SwiperSlide key={img._id}
                                              className="!w-[300px]"
-                                             onClick={() => setPreviewImage({url: img.url, alt: img.alt})}
+                                             onClick={() => setPreviewImage({url: img.url, alt: img.alt || { ru: "Изображение", ky: "Сүрөт" } })}
 
                                 >
                                     <div
                                         className="relative w-full h-[200px] rounded-lg overflow-hidden shadow-md border hover:scale-105 transition-transform duration-300">
                                         <Image
                                             src={`${API_BASE_URL}/${img.url}`}
-                                            alt={img.alt}
+                                            alt={img.alt?.[locale] || "Изображение"}
                                             fill
                                             className="object-cover"
                                             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -84,10 +89,10 @@ const ProductDetailView: React.FC<Props> = ({productData, fetchProductError}) =>
             </div>
 
             <div className="space-y-6">
-                <h1 className="text-3xl font-bold">{product.title}</h1>
-                <p className="text-muted-foreground text-lg">{product.description}</p>
+                <h1 className="text-3xl font-bold">{product.title[locale]}</h1>
+                <p className="text-muted-foreground text-lg">{product.description?.[locale]}</p>
                 <Badge variant="secondary" className="text-sm px-3 py-1">
-                    {product.category.title}
+                    {product.category.title[locale]}
                 </Badge>
 
                 {Array.isArray(product.characteristics) && product.characteristics.length > 0 ? (
@@ -96,15 +101,14 @@ const ProductDetailView: React.FC<Props> = ({productData, fetchProductError}) =>
                         <ul className="list-disc list-inside space-y-1 text-base">
                             {product.characteristics.map((c, index) => (
                                 <li key={`${c.key}-${index}`}>
-                                    <strong>{c.key}:</strong> {c.value}
+                                    <strong>{c.key[locale]}:</strong> {c.value[locale]}
                                 </li>
                             ))}
                         </ul>
                     </div>
                 ) : (
                     <div className="mt-4 text-sm text-muted-foreground">
-                        Характеристики отсутствуют. <br/>
-                        Свяжитесь с нами и мы сразу же проконсультируем вас
+                        {tCeilings("noCharacteristics")}
                     </div>
                 )}
             </div>

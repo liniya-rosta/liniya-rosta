@@ -3,6 +3,7 @@ import {isAxiosError} from "axios";
 import {fetchPostBySlug} from "@/actions/posts";
 import {Post} from "@/src/lib/types";
 import PostClient from "@/src/app/(public)/[locale]/blog/[slug]/PostClient";
+import {getTranslations} from "next-intl/server";
 
 type Props = {
     params: Promise<{ slug: string }>;
@@ -14,15 +15,15 @@ export async function generateMetadata({params}: Props): Promise<Metadata> {
         const post = await fetchPostBySlug(slug);
 
         return {
-            title: post.seoTitle || post.title,
+            title: post.seoTitle || post.title.ru,
             description: post.seoDescription || `Статья: ${post.title}`,
             openGraph: {
-                title: post.seoTitle || post.title,
+                title: post.seoTitle || post.title.ru,
                 description: post.seoDescription || `Подробности о посте "${post.title}"`,
                 images: post.images?.length
                     ? post.images.map(image => ({
-                        url: image.url,
-                        alt: image.alt || post.title,
+                        url: image.image,
+                        alt: image.alt?.ru || post.title.ru,
                     }))
                     : [],
                 type: "article",
@@ -38,6 +39,7 @@ export async function generateMetadata({params}: Props): Promise<Metadata> {
 
 export default async function PostPage({params}: Props) {
     const {slug} = await params;
+    const tError = await getTranslations("Errors")
 
     let post: Post | null = null;
     let postError: string | null = null;
@@ -48,7 +50,7 @@ export default async function PostPage({params}: Props) {
         postError =
             isAxiosError(e) && e.response?.data?.error
                 ? e.response.data.error
-                : "Ошибка при загрузке поста";
+                : tError("onePostError");
     }
 
     return (

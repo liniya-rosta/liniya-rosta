@@ -11,7 +11,7 @@ import {isAxiosError} from "axios";
 import LoaderIcon from "@/src/components/ui/Loading/LoaderIcon";
 
 const CreateCategoryForm: React.FC<{ open: boolean; onClose: () => void }> = ({ open, onClose }) => {
-    const [title, setTitle] = useState("");
+    const [title, setTitle] = useState<{ ru: string }>({ ru: "" });
     const [loading, setLoading] = useState(false);
     const { setCategories, categories, setCreateCategoryError } = useAdminCategoryStore();
 
@@ -21,7 +21,7 @@ const CreateCategoryForm: React.FC<{ open: boolean; onClose: () => void }> = ({ 
             const res = await axiosAPI.post("/superadmin/categories", { title });
             toast.success("Категория успешно создана");
             setCategories([...categories, res.data.category]);
-            setTitle("");
+            setTitle({ru: ""});
             onClose();
         } catch (e) {
             const message =
@@ -45,11 +45,11 @@ const CreateCategoryForm: React.FC<{ open: boolean; onClose: () => void }> = ({ 
                 <div className="space-y-4">
                     <Input
                         placeholder="Название категории"
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
+                        value={title.ru}
+                        onChange={(e) => setTitle({ru: e.target.value})}
                         disabled={loading}
                     />
-                    <Button onClick={handleSubmit} disabled={loading || !title.trim()} className="w-full">
+                    <Button onClick={handleSubmit} disabled={loading || !title.ru.trim()} className="w-full">
                         {loading ? <LoaderIcon/> : "Создать"}
                     </Button>
                 </div>

@@ -44,13 +44,27 @@ const ProductEditModal: React.FC<Props> = ({open, onClose, product, refresh}) =>
         defaultValues: {
             title: product.title,
             category: product.category._id,
-            description: product.description || "",
+            description: {
+                ru: product.description?.ru ?? ""
+            },
             seoTitle: product.seoTitle || "",
             seoDescription: product.seoDescription || "",
-            coverAlt: product.cover?.alt || "",
-            iconAlt: product.icon?.alt || "",
-            sale: product.sale || {isOnSale: false, label: ""},
-            characteristics: product.characteristics || [],
+            coverAlt: {
+                ru: product.cover?.alt?.ru ?? ""
+            },
+            iconAlt: {
+                ru: product.icon?.alt?.ru ?? ""
+            },
+            sale: product.sale
+                ? {
+                    isOnSale: product.sale.isOnSale,
+                    label: product.sale.label,
+                }
+                : {isOnSale: false, label: null},
+            characteristics: product.characteristics?.map(char => ({
+                key: char.key ?? '',
+                value: char.value ?? ''
+            })) || []
         },
     });
 
@@ -115,7 +129,7 @@ const ProductEditModal: React.FC<Props> = ({open, onClose, product, refresh}) =>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <FormField
                                 control={form.control}
-                                name="title"
+                                name="title.ru"
                                 render={({field}) => (
                                     <FormItem>
                                         <FormLabel>Название</FormLabel>
@@ -145,7 +159,7 @@ const ProductEditModal: React.FC<Props> = ({open, onClose, product, refresh}) =>
                                             <SelectContent>
                                                 {categories.map((cat) => (
                                                     <SelectItem key={cat._id} value={cat._id}>
-                                                        {cat.title}
+                                                        {cat.title.ru}
                                                     </SelectItem>
                                                 ))}
                                             </SelectContent>
@@ -157,7 +171,7 @@ const ProductEditModal: React.FC<Props> = ({open, onClose, product, refresh}) =>
 
                         <FormField
                             control={form.control}
-                            name="description"
+                            name="description.ru"
                             render={({field}) => (
                                 <FormItem>
                                     <FormLabel>Описание</FormLabel>
@@ -233,7 +247,7 @@ const ProductEditModal: React.FC<Props> = ({open, onClose, product, refresh}) =>
                             />
                             <FormField
                                 control={form.control}
-                                name="coverAlt"
+                                name="coverAlt.ru"
                                 render={({field}) => (
                                     <FormItem>
                                         <FormLabel>Alt текст обложки</FormLabel>
@@ -281,7 +295,7 @@ const ProductEditModal: React.FC<Props> = ({open, onClose, product, refresh}) =>
                             />
                             <FormField
                                 control={form.control}
-                                name="iconAlt"
+                                name="iconAlt.ru"
                                 render={({field}) => (
                                     <FormItem>
                                         <FormLabel>Alt текст иконки</FormLabel>
@@ -330,7 +344,7 @@ const ProductEditModal: React.FC<Props> = ({open, onClose, product, refresh}) =>
                             />
                             <FormField
                                 control={form.control}
-                                name="sale.label"
+                                name="sale.label.ru"
                                 render={({field}) => (
                                     <FormItem>
                                         <FormLabel>Текст акции</FormLabel>
@@ -346,7 +360,7 @@ const ProductEditModal: React.FC<Props> = ({open, onClose, product, refresh}) =>
                         <div className="space-y-4">
                             <Button
                                 type="button"
-                                onClick={() => appendCharacteristic({key: "", value: ""})}
+                                onClick={() => appendCharacteristic({key: {ru:""}, value: {ru: ""}})}
                                 disabled={updateLoading}
                             >
                                 Добавить характеристику
@@ -356,7 +370,7 @@ const ProductEditModal: React.FC<Props> = ({open, onClose, product, refresh}) =>
                                 <div key={item.id} className="grid grid-cols-9 gap-4 items-end">
                                     <FormField
                                         control={form.control}
-                                        name={`characteristics.${index}.key`}
+                                        name={`characteristics.${index}.key.ru`}
                                         render={({field}) => (
                                             <FormItem className="col-span-4">
                                                 <FormControl>
@@ -367,7 +381,7 @@ const ProductEditModal: React.FC<Props> = ({open, onClose, product, refresh}) =>
                                     />
                                     <FormField
                                         control={form.control}
-                                        name={`characteristics.${index}.value`}
+                                        name={`characteristics.${index}.value.ru`}
                                         render={({field}) => (
                                             <FormItem className="col-span-4">
                                                 <FormControl>

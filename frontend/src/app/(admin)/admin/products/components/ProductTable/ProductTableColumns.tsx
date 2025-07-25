@@ -6,7 +6,12 @@ import {Tooltip, TooltipContent, TooltipTrigger} from "@/src/components/ui/toolt
 import {Category, Product} from "@/src/lib/types";
 import {API_BASE_URL} from "@/src/lib/globalConstants";
 import {Button} from "@/src/components/ui/button";
-import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from "@/src/components/ui/dropdown-menu";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger
+} from "@/src/components/ui/dropdown-menu";
 import {Edit2, Images, MoreHorizontal, Trash2} from "lucide-react";
 import {Badge} from "@/src/components/ui/badge";
 
@@ -15,18 +20,18 @@ export const getProductTableColumns = (
     onEditProduct: (product: Product) => void,
     onDeleteProduct: (id: string) => void,
     actionLoading: boolean,
-    onImageClick: (image: { url: string; alt: string }) => void,
+    onImageClick: (image: { url: string; alt: {ru: string, ky: string} }) => void,
     onSaleLabelClick: (label: string) => void,
     onImagesClick: (data: {
         productId: string;
-        images: { url: string; alt?: string | null; _id: string }[]
+        images: { url: string; alt?: {ru: string, ky: string} | null; _id: string }[]
     }) => void): ColumnDef<Product>[] => {
     const getCategoryTitle = (category: string | Category) => {
         if (typeof category === "object" && category !== null) {
-            return category.title;
+            return category.title.ru;
         }
         const found = categories.find((cat) => cat._id === category);
-        return found ? found.title : String(category);
+        return found ? found.title.ru : String(category);
     };
     return [
         {
@@ -58,11 +63,14 @@ export const getProductTableColumns = (
                         <TooltipTrigger asChild>
                             <div
                                 className="w-16 h-16 relative cursor-pointer"
-                                onClick={() => onImageClick({url: imageUrl, alt: row.original.cover?.alt || "cover"})}
+                                onClick={() => onImageClick({
+                                    url: imageUrl,
+                                    alt: { ru:row.original.cover?.alt?.ru || "Обложка", ky: ""}
+                                })}
                             >
                                 <Image
                                     src={`${API_BASE_URL}/${imageUrl}`}
-                                    alt={row.original.cover?.alt || "Обложка"}
+                                    alt={row.original.cover?.alt?.ru || "Обложка"}
                                     fill
                                     sizes="64px"
                                     className="object-cover rounded-md"
@@ -84,14 +92,14 @@ export const getProductTableColumns = (
         {
             accessorKey: "title",
             header: "Название",
-            cell: ({row}) => row.original.title || "—",
+            cell: ({row}) => row.original.title.ru || "—",
         },
         {
             accessorKey: "category",
             header: "Категория",
             cell: ({row}) => (
                 <Badge variant="outline">
-                    {getCategoryTitle(row.original.category)}
+                    {getCategoryTitle(row.original.category.title.ru)}
                 </Badge>
             ),
             filterFn: (row, value) => {
@@ -109,7 +117,7 @@ export const getProductTableColumns = (
             header: "Описание",
             cell: ({row}) => (
                 <div className="w-60 max-h-24 overflow-auto text-sm break-words whitespace-pre-wrap">
-                    {row.original.description || (
+                    {row.original.description?.ru || (
                         <span className="text-muted-foreground italic">Нет описания</span>
                     )}
                 </div>
@@ -130,7 +138,7 @@ export const getProductTableColumns = (
                         <ul className="list-disc ml-4 space-y-1 text-sm pr-2">
                             {characteristics.map((char, idx) => (
                                 <li key={idx}>
-                                    <span className="font-medium">{char.key}:</span> {char.value}
+                                    <span className="font-medium">{char.key.ru}:</span> {char.value.ru}
                                 </li>
                             ))}
                         </ul>
@@ -148,11 +156,11 @@ export const getProductTableColumns = (
                         <TooltipTrigger asChild>
                             <div
                                 className="w-8 h-8 relative cursor-pointer"
-                                onClick={() => onImageClick({url: iconUrl, alt: row.original.icon?.alt || "icon"})}
+                                onClick={() => onImageClick({url: iconUrl, alt: {ru:row.original.icon?.alt?.ru || "Иконка", ky: ""}})}
                             >
                                 <Image
                                     src={`${API_BASE_URL}/${iconUrl}`}
-                                    alt={row.original.icon?.alt || "Иконка"}
+                                    alt={row.original.icon?.alt?.ru || "Иконка"}
                                     fill
                                     sizes="32px"
                                     className="object-cover rounded"
@@ -180,7 +188,7 @@ export const getProductTableColumns = (
                             <TooltipTrigger asChild>
                                 <div
                                     className="w-8 h-8 relative cursor-pointer"
-                                    onClick={() => onSaleLabelClick(saleLabel)}
+                                    onClick={() => onSaleLabelClick(saleLabel.ru)}
                                 >
                                     {row.original.sale?.isOnSale ? 'Да' : '—'}
                                 </div>
@@ -200,12 +208,12 @@ export const getProductTableColumns = (
         {
             accessorKey: "seoTitle",
             header: "SEO заголовок",
-            cell: ({ row }) => row.original.seoTitle || "—",
+            cell: ({row}) => row.original.seoTitle || "—",
         },
         {
             accessorKey: "seoDescription",
             header: "SEO описание",
-            cell: ({ row }) => (
+            cell: ({row}) => (
                 <div className="w-60 max-h-24 overflow-auto text-sm break-words whitespace-pre-wrap">
                     {row.original.seoDescription || (
                         <span className="text-muted-foreground italic">Нет описания</span>
@@ -241,7 +249,13 @@ export const getProductTableColumns = (
                             </DropdownMenuItem>
 
                             <DropdownMenuItem
-                                onClick={() => onImagesClick({productId: product._id, images: product.images})}
+                                onClick={() => onImagesClick({
+                                    productId: product._id,
+                                    images: product.images.map((img) => ({
+                                        ...img,
+                                        alt: {ru: img.alt?.ru || "-", ky: ""},
+                                    })),
+                                })}
                                 className="cursor-pointer"
                             >
                                 <Images className="mr-2 h-4 w-4"/>

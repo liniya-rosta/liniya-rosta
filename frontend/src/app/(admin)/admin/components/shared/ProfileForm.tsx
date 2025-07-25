@@ -92,6 +92,9 @@ const ProfileForm: React.FC<Props> = ({closeModal}) => {
             <form onSubmit={handleSubmit(onSubmit)} noValidate>
                 <DialogHeader>
                     <DialogTitle>Редактировать профиль</DialogTitle>
+                    <DialogDescription>
+                        Сохраните свои данные, чтобы обновить изменения.
+                    </DialogDescription>
                     <DialogDescription>Сохраните свои данные, чтобы обновить изменения.</DialogDescription>
                 </DialogHeader>
 

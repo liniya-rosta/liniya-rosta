@@ -7,7 +7,7 @@ import LaminateCard from "@/src/app/(public)/[locale]/spc/components/LaminateCar
 import Loading from "@/src/components/ui/Loading/Loading";
 import {Product} from "@/src/lib/types";
 import {useProductStore} from "@/store/productsStore";
-import {useTranslations} from "next-intl";
+import {useLocale, useTranslations} from "next-intl";
 
 interface Props {
     initialData: Product[] | null;
@@ -25,7 +25,8 @@ const SpcLaminatePage: React.FC<Props> = ({initialData, error}) => {
     } = useProductStore();
 
     const tSpc = useTranslations("SpcPage");
-    const tError = useTranslations("Errors")
+    const tError = useTranslations("Errors");
+    const locale = useLocale() as "ru" | "ky";
 
     useEffect(() => {
         if (initialData) setProducts(initialData);
@@ -54,7 +55,7 @@ const SpcLaminatePage: React.FC<Props> = ({initialData, error}) => {
                 ) : (
                     products.map(item => (
                         <SwiperSlide key={item._id}>
-                            <LaminateCard title={item.title} image={item.cover.url} description={item.description}/>
+                            <LaminateCard title={item.title[locale]} image={item.cover.url} description={item.description?.[locale]}/>
                         </SwiperSlide>
                     ))
                 )}

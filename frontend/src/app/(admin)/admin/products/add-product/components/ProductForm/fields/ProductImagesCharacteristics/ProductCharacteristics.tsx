@@ -24,7 +24,7 @@ const ProductCharacteristics: React.FC<Props> = ({form}) => {
         <div className="flex flex-col">
             <Button
                 type="button"
-                onClick={() => appendCharacteristic({key: "", value: ""})}
+                onClick={() => appendCharacteristic({key: {ru: ""}, value: {ru: ""}})}
                 disabled={createLoading}
             >
                 Добавить характеристику
@@ -35,7 +35,7 @@ const ProductCharacteristics: React.FC<Props> = ({form}) => {
                     <div key={item.id} className="grid grid-cols-9 gap-4 w-full">
                         <FormField
                             control={form.control}
-                            name={`characteristics.${index}.key`}
+                            name={`characteristics.${index}.key.ru`}
                             render={({field}) => (
                                 <FormItem className="flex flex-col col-span-4">
                                     <FormControl>
@@ -51,7 +51,7 @@ const ProductCharacteristics: React.FC<Props> = ({form}) => {
                         />
                         <FormField
                             control={form.control}
-                            name={`characteristics.${index}.value`}
+                            name={`characteristics.${index}.value.ru`}
                             render={({field}) => (
                                 <FormItem className="flex flex-col col-span-4">
                                     <FormControl>

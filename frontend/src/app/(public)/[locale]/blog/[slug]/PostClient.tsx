@@ -12,6 +12,7 @@ import {useEffect, useState } from "react";
 import {API_BASE_URL} from "@/src/lib/globalConstants";
 import {Separator} from "@radix-ui/react-separator";
 import Image from "next/image";
+import {useLocale, useTranslations} from "next-intl";
 
 interface Props {
     data: Post | null;
@@ -20,6 +21,10 @@ interface Props {
 
 const PostClient: React.FC<Props> = ({data, error}) => {
     const router = useRouter();
+    const tError = useTranslations("Errors");
+    const tBtn = useTranslations("Buttons");
+    const tBlog = useTranslations("BlogPage");
+    const locale = useLocale() as "ru" | "ky";
 
     const {
         setFetchPostsError,
@@ -43,9 +48,9 @@ const PostClient: React.FC<Props> = ({data, error}) => {
             <div className="container mx-auto px-4 py-8 flex justify-center items-center min-h-[calc(100vh-100px)]">
                 <Alert variant="destructive" className="max-w-md">
                     <Terminal className="h-4 w-4"/>
-                    <AlertTitle>Ошибка!</AlertTitle>
+                    <AlertTitle>{tError("loadingError")}</AlertTitle>
                     <AlertDescription>
-                        Ошибка при загрузке поста: {storeError}
+                        {tError("oneNewsError")}
                     </AlertDescription>
                 </Alert>
             </div>
@@ -57,9 +62,9 @@ const PostClient: React.FC<Props> = ({data, error}) => {
             <div className="container mx-auto px-4 py-8 flex justify-center items-center min-h-[calc(100vh-100px)]">
                 <Card className="max-w-md w-full">
                     <CardContent className="pt-6 text-center">
-                        <p className="text-muted-foreground text-lg">Пост не найден.</p>
+                        <p className="text-muted-foreground text-lg">{tBlog("notFoundPost")}</p>
                         <Button onClick={() => router.push('/blog')} className="mt-4">
-                            Вернуться к блогу
+                            {tBtn("returnToBlog")}
                         </Button>
                     </CardContent>
                 </Card>
@@ -75,7 +80,7 @@ const PostClient: React.FC<Props> = ({data, error}) => {
                 className="mb-6 pl-0 text-muted-foreground hover:text-foreground"
             >
                 <ArrowLeft className="mr-2 h-4 w-4"/>
-                Вернуться к блогу
+                {tBtn("returnToBlog")}
             </Button>
 
             <Card className="overflow-hidden">
@@ -84,20 +89,21 @@ const PostClient: React.FC<Props> = ({data, error}) => {
                         src={`${API_BASE_URL}/${data.images[0].image}`}
                         fill
                         sizes="(max-width: 768px) 100vw, 1200px"
+                        priority
                         onError={(e) => {
                             (e.target as HTMLImageElement).src =
                                 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=800&h=400&fit=crop';
                         }}
-                        alt={data.title}
+                        alt={data.title[locale]}
                         className="object-cover"
                     />
                 </div>
 
                 <CardHeader className="space-y-4 pt-6 pb-4">
                     <CardTitle
-                        className="text-4xl font-extrabold leading-tight text-foreground">{data.title}</CardTitle>
+                        className="text-4xl font-extrabold leading-tight text-foreground">{data.title[locale]}</CardTitle>
                     <div className="prose prose-lg max-w-none text-muted-foreground">
-                        <p className="leading-relaxed text-lg">{data.description}</p>
+                        <p className="leading-relaxed text-lg">{data.description[locale]}</p>
                     </div>
                 </CardHeader>
 
@@ -109,7 +115,7 @@ const PostClient: React.FC<Props> = ({data, error}) => {
                             onClick={() => router.push('/blog')}
                             className="text-muted-foreground hover:text-foreground"
                         >
-                            ← Все посты
+                            ← {tBtn("allPosts")}
                         </Button>
                     </div>
                 </CardContent>

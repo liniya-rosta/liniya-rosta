@@ -21,15 +21,15 @@ const ProductBasicInfo: React.FC<Props> = ({form}) => {
             <div className="flex flex-col">
                 <FormField
                     control={form.control}
-                    name="title"
-                    render={({field}) => (
+                    name="title.ru"
+                    render={({ field }) => (
                         <FormItem>
                             <FormLabel>Название *</FormLabel>
                             <FormControl>
                                 <Input placeholder="Название продукта" disabled={createLoading} {...field} />
                             </FormControl>
-                            {form.formState.errors.title?.message && (
-                                <FormErrorMessage>{form.formState.errors.title.message}</FormErrorMessage>
+                            {form.formState.errors.title?.ru && (
+                                <FormErrorMessage>{form.formState.errors.title.ru.message}</FormErrorMessage>
                             )}
                         </FormItem>
                     )}
@@ -56,7 +56,7 @@ const ProductBasicInfo: React.FC<Props> = ({form}) => {
                                 <SelectContent>
                                     {categories.map((category) => (
                                         <SelectItem key={category._id} value={category._id}>
-                                            {category.title}
+                                            {category.title.ru}
                                         </SelectItem>
                                     ))}
                                 </SelectContent>

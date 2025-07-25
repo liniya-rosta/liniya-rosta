@@ -15,6 +15,7 @@ import { Button } from '@/src/components/ui/button';
 import { Input } from '@/src/components/ui/input';
 import { Badge } from '@/src/components/ui/badge';
 import { Skeleton } from '@/src/components/ui/skeleton';
+import {useLocale, useTranslations} from "next-intl";
 
 type Props = {
     initialProducts: Product[];
@@ -25,6 +26,9 @@ const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories })
     const [selectedCategory, setSelectedCategory] = useState<string>('all');
     const [showConsultationModal, setShowConsultationModal] = useState<boolean>(false);
     const [searchTerm, setSearchTerm] = useState<string>('');
+    const tCeilings = useTranslations("CeilingsPage");
+    const tBtn = useTranslations("Buttons");
+    const locale = useLocale() as "ky" | "ru";
 
     const {
         products,
@@ -66,8 +70,8 @@ const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories })
 
     const filteredProducts = useMemo(() => {
         return products.filter(product =>
-            product.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            (product.description && product.description.toLowerCase().includes(searchTerm.toLowerCase()))
+            product.title[locale]?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (product.description && product.description[locale].toLowerCase().includes(searchTerm.toLowerCase()))
         );
     }, [searchTerm, products]);
 
@@ -152,28 +156,20 @@ const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories })
                     fill
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     onError={handleImageError}
-                    alt={product.title || 'Product image'}
+                    alt={product.title[locale] || 'Product image'}
                     className="object-cover"
                     priority={false}
                 />
             </div>
             <CardHeader>
-                <CardTitle className="text-lg line-clamp-2">{product.title}</CardTitle>
+                <CardTitle className="text-lg line-clamp-2">{product.title[locale]}</CardTitle>
                 <CardDescription className="line-clamp-2">
-                    {product.description}
+                    {product.description?.[locale]}
                 </CardDescription>
                 <Badge variant="outline" className="w-fit">
-                    {product.category?.title || 'Без категории'}
+                    {product.category?.title[locale] || 'Без категории'}
                 </Badge>
             </CardHeader>
-            <CardFooter>
-                <Button
-                    onClick={() => handleProductConsultation()}
-                    className="w-full"
-                >
-                    Консультация по товару
-                </Button>
-            </CardFooter>
         </Card>
     );
 
@@ -188,7 +184,7 @@ const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories })
             }`}
         >
             <div className="flex justify-between items-center">
-                <span>{category.title}</span>
+                <span>{category.title[locale]}</span>
                 <Badge variant="secondary">{categoryCounts[category._id] || 0}</Badge>
             </div>
         </div>
@@ -199,13 +195,13 @@ const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories })
             <div className="border-b bg-card">
                 <div className="max-w-7xl mx-auto px-4 py-6 flex flex-col md:flex-row justify-between gap-4">
                     <div>
-                        <h1 className="text-3xl font-bold text-foreground">Натяжные потолки</h1>
-                        <p className="text-muted-foreground mt-1">Все необходимое для создания идеального потолка</p>
+                        <h1 className="text-3xl font-bold text-foreground">{tCeilings("title")}</h1>
+                        <p className="text-muted-foreground mt-1">{tCeilings("subTitle")}</p>
                     </div>
                     <div className="flex gap-3">
                         <Button onClick={openConsultationModal} className="gap-2">
                             <Phone className="h-4 w-4" />
-                            Консультация
+                            {tBtn("requestBtn1")}
                         </Button>
                         <Button asChild variant="secondary" className="gap-2">
                             <a href="https://wa.me/996552088988" target="_blank" rel="noopener noreferrer">
@@ -223,7 +219,7 @@ const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories })
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
                                 <Filter className="h-5 w-5" />
-                                Категории
+                                {tCeilings("filter.categoriesTitle")}
                             </CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-6">
@@ -231,7 +227,7 @@ const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories })
                                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                                 <Input
                                     type="text"
-                                    placeholder="Поиск товаров..."
+                                    placeholder={tCeilings("filter.filterSearch")}
                                     value={searchTerm}
                                     onChange={handleSearchChange}
                                     className="pl-10"
@@ -258,7 +254,7 @@ const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories })
                                     }`}
                                 >
                                     <div className="flex justify-between items-center">
-                                        <span>Все товары</span>
+                                        <span>{tCeilings("filter.allProducts")}</span>
                                         <Badge variant="secondary">{initialProducts.length}</Badge>
                                     </div>
                                 </div>
@@ -271,7 +267,7 @@ const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories })
                 <div className="flex-1">
                     <div className="flex justify-between items-center mb-6">
                         <p className="text-muted-foreground">
-                            Найдено товаров: <span className="font-semibold text-foreground">{filteredProducts.length}</span>
+                            {tCeilings("filter.countProductsTitle")} <span className="font-semibold text-foreground">{filteredProducts.length}</span>
                         </p>
                         {selectedCategory !== 'all' && (
                             <Button
@@ -281,7 +277,7 @@ const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories })
                                 className="gap-1"
                             >
                                 <X className="h-4 w-4" />
-                                Сбросить фильтр
+                                {tCeilings("filter.removeFilter")}
                             </Button>
                         )}
                     </div>

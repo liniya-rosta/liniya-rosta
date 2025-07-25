@@ -52,7 +52,7 @@ const CreatePostForm: React.FC<Props> = ({setIsPreviewOpen, setPreviewImage}) =>
     };
 
     const handleAltChange = (index: number, value: string) => {
-        setValue(`images.${index}.alt`, value, {shouldValidate: true});
+        setValue(`images.${index}.alt.ru`, value, {shouldValidate: true});
     };
 
     const onSubmit = async (data: CreatePostFormData) => {
@@ -82,7 +82,7 @@ const CreatePostForm: React.FC<Props> = ({setIsPreviewOpen, setPreviewImage}) =>
                     <Input
                         type="text"
                         placeholder="Заголовок"
-                        {...register('title')}
+                        {...register('title.ru')}
                         disabled={createLoading}
                         className="mb-2"
                     />
@@ -91,7 +91,7 @@ const CreatePostForm: React.FC<Props> = ({setIsPreviewOpen, setPreviewImage}) =>
                     <Input
                         type="text"
                         placeholder="Описание"
-                        {...register('description')}
+                        {...register('description.ru')}
                         disabled={createLoading}
                         className="mb-4"
                     />
@@ -105,7 +105,7 @@ const CreatePostForm: React.FC<Props> = ({setIsPreviewOpen, setPreviewImage}) =>
                         <Button
                             type="button"
                             variant="outline"
-                            onClick={() => append({alt: '',  file: null})}
+                            onClick={() => append({alt: {ru: ""},  file: null})}
                             disabled={createLoading}
                             className="mb-4"
                         >
@@ -134,7 +134,7 @@ const CreatePostForm: React.FC<Props> = ({setIsPreviewOpen, setPreviewImage}) =>
                                 <Input
                                     type="text"
                                     placeholder="Alt"
-                                    {...register(`images.${index}.alt`)}
+                                    {...register(`images.${index}.alt.ru`)}
                                     disabled={createLoading}
                                     onChange={(e) => handleAltChange(index, e.target.value)}
                                 />

@@ -19,7 +19,7 @@ import {imagesSchema} from "@/src/lib/zodSchemas/admin/productSchema";
 
 interface Props {
     onSaved: () => void;
-    image: { _id: string; url: string; alt: string };
+    image: { _id: string; url: string; alt?: {ru: string}};
 }
 
 const ImagesEditForm: React.FC<Props> = ({onSaved, image}) => {
@@ -35,14 +35,14 @@ const ImagesEditForm: React.FC<Props> = ({onSaved, image}) => {
     } = useForm<ImagesEditValues>({
         resolver: zodResolver(imagesSchema),
         defaultValues: {
-            alt: {ru: image.alt},
+            alt: {ru: image.alt?.ru},
             image: undefined,
         },
     });
 
     useEffect(() => {
         reset({
-            alt: {ru: image.alt},
+            alt: {ru: image.alt?.ru},
             image: undefined,
         });
 
@@ -86,10 +86,10 @@ const ImagesEditForm: React.FC<Props> = ({onSaved, image}) => {
                 <div className="mb-4">
                     <Label htmlFor="alt" className="mb-2">Альтернативное название</Label>
                     <Input
-                        id="alt"
+                        id="alt.ru"
                         type="text"
                         disabled={updateLoading}
-                        {...register("alt")}
+                        {...register("alt.ru")}
                     />
                     {errors.alt && (
                         <p className="text-red-500 text-sm mb-4">{errors.alt.message}</p>
@@ -117,7 +117,7 @@ const ImagesEditForm: React.FC<Props> = ({onSaved, image}) => {
                     <Image
                         key={previewUrl || image.url}
                         src={previewUrl || `${API_BASE_URL}/${image.url}`}
-                        alt={image.alt}
+                        alt={image.alt?.ru || "Изображение"}
                         fill
                         sizes="(max-width: 768px) 100vw, 200px"
                         className="object-contain rounded"

@@ -129,7 +129,12 @@ export const getColumns = (
                     <TooltipTrigger asChild>
                         <div
                             className="relative w-16 h-16 rounded overflow-hidden cursor-pointer"
-                            onClick={() => onImageClick({cover, alt})}
+                            onClick={() =>
+                                onImageClick({
+                                    cover,
+                                    alt,
+                                })
+                            }
                         >
                             <Image
                                 src={imageUrl}

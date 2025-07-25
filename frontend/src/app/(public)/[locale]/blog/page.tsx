@@ -4,6 +4,7 @@ import BlogClient from "@/src/app/(public)/[locale]/blog/BlogClient";
 import { fetchPosts } from "@/actions/posts";
 
 import type { Metadata } from "next";
+import {getTranslations} from "next-intl/server";
 
 export const revalidate = 1800;
 
@@ -32,6 +33,7 @@ export const generateMetadata = async (): Promise<Metadata> => {
 const BlogPage = async () => {
     let posts: PostResponse | null = null;
     let postsError: string | null = null;
+    const tBlog = await getTranslations("BlogPage");
 
     try {
         posts = await fetchPosts();
@@ -48,7 +50,7 @@ const BlogPage = async () => {
             <h1 className="text-3xl font-bold text-foreground mb-5">
                 Блог
                 <span className="block font-medium text-muted-foreground text-sm tracking-wider uppercase">
-                    Последние новости и статьи
+                    {tBlog("subTitle")}
                 </span>
             </h1>
             <BlogClient data={posts} error={postsError} />

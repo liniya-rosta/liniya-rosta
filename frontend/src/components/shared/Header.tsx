@@ -15,6 +15,7 @@ const Header = () => {
                         src={logo}
                         alt="Логотип компании 'Линия Роста'"
                         className="h-15 w-auto"
+                        priority
                     />
                         <NavBar/>
                 </div>

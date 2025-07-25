@@ -72,7 +72,7 @@ const ProductIcon: React.FC<Props> = ({form}) => {
             <div className="flex flex-col">
                 <FormField
                     control={form.control}
-                    name="iconAlt"
+                    name="iconAlt.ru"
                     render={({field}) => (
                         <FormItem>
                             <FormLabel>Альтернативный текст для иконки</FormLabel>

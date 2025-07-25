@@ -50,21 +50,21 @@ const ProductCreateForm: React.FC<Props> = ({initialCategories, initialCategorie
         resolver: zodResolver(createProductSchema) as Resolver<CreateProductFormData>,
         mode: "onChange",
         defaultValues: {
-            title: "",
+            title: {ru: ""},
             category: "",
-            description: "",
+            description: {ru: ""},
             seoTitle: "",
             seoDescription: "",
             cover: null,
-            coverAlt: "",
+            coverAlt: {ru: ""},
             images: [],
             characteristics: [],
             sale: {
                 isOnSale: false,
-                label: "",
+                label: {ru: ""},
             },
             icon: null,
-            iconAlt: "",
+            iconAlt: {ru: ""},
         },
     });
 

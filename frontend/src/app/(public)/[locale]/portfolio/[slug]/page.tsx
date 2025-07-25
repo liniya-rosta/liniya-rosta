@@ -1,7 +1,7 @@
 import {Metadata} from "next";
 import {fetchPortfolioItemBySlug} from "@/actions/portfolios";
 import GalleryClient from "@/src/app/(public)/[locale]/portfolio/[slug]/GalleryClient";
-import {getTranslations} from "next-intl/server";
+import {getLocale, getTranslations} from "next-intl/server";
 
 type Props = {
     params: Promise<{ slug: string }>;
@@ -39,7 +39,7 @@ const GalleryPage = async ({params}: Props) => {
     let errorMessage: string | null = null;
     let detailItem = null;
     const tError = await getTranslations("Errors")
-
+    const locale = await getLocale() as 'ru' | 'ky';
 
     try {
         const {slug} = await params;
@@ -53,7 +53,7 @@ const GalleryPage = async ({params}: Props) => {
             <h1 className="text-3xl font-bold text-foreground">
                 Галерея
             </h1>
-            <p className="mb-8 text-lg text-muted-foreground">{detailItem?.description.ru}</p>
+            <p className="mb-8 text-lg text-muted-foreground">{detailItem?.description[locale]}</p>
             <GalleryClient detailItem={detailItem} error={errorMessage} />
         </main>
     );

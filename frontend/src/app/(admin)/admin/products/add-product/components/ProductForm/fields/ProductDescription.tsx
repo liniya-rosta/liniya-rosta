@@ -16,7 +16,7 @@ const ProductDescription: React.FC<Props> = ({form}) => {
     return (
         <FormField
             control={form.control}
-            name="description"
+            name="description.ru"
             render={({field}) => (
                 <FormItem className="md:col-span-2">
                     <FormLabel>Описание</FormLabel>

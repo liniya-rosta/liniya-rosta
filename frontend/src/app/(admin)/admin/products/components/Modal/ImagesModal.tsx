@@ -157,7 +157,7 @@ const ImagesModal: React.FC<Props> = ({open, onClose}) => {
                                         )}
                                         <Image
                                             src={imageUrl}
-                                            alt={item.alt || "Изображение"}
+                                            alt={item.alt?.ru || "Изображение"}
                                             fill
                                             className="object-cover"
                                             sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
@@ -165,7 +165,7 @@ const ImagesModal: React.FC<Props> = ({open, onClose}) => {
                                     </a>
 
                                     <CardContent className="flex-1">
-                                        <div className="text-sm text-gray-700 line-clamp-2">{item.alt || "—"}</div>
+                                        <div className="text-sm text-gray-700 line-clamp-2">{item.alt?.ru || "—"}</div>
                                     </CardContent>
 
                                     <CardFooter className="flex justify-between gap-2 px-3 pb-3">
