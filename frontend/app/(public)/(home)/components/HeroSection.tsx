@@ -6,6 +6,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faWhatsapp} from "@fortawesome/free-brands-svg-icons";
 import {useContactStore} from "@/store/contactsStore";
 import {Container} from '@/components/shared/Container';
+import {motion} from "motion/react";
 
 const HeroSection = () => {
     const {contact} = useContactStore();
@@ -26,8 +27,11 @@ const HeroSection = () => {
 
                 <Container>
                     <div className="md:absolute md:inset-0 flex items-center justify-center md:text-white px-4">
-                        <div
-                            className="md:bg-black/40 md:backdrop-blur-sm p-6 md:rounded-2xl md:shadow-lg max-w-3xl mx-auto space-y-6">
+                        <motion.div
+                            className="md:bg-black/40 md:backdrop-blur-sm p-6 md:rounded-2xl md:shadow-lg max-w-3xl mx-auto space-y-6"
+                            initial={{ opacity: 0, y: 30 }}
+                            animate={{opacity: 1, y: 0 }}
+                            transition={{ duration: 0.8, ease: "easeOut" }}>
                             <h1 className="main-heading">Линия роста</h1>
                             <p className="text-lg md:text-xl">
                                 Натяжные потолки, SPC ламинат и монтажные услуги. Сделаем ваш дом стильным и
@@ -63,7 +67,7 @@ const HeroSection = () => {
                                     </a>
                                 </Button>
                             </div>
-                        </div>
+                        </motion.div>
                     </div>
                 </Container>
             </div>
