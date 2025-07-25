@@ -11,6 +11,14 @@ export const createPortfolio = async (item: PortfolioMutation) => {
     formData.append("description", item.description.ru);
     formData.append("coverAlt", item.coverAlt.ru);
 
+    if (item.seoTitle) {
+        formData.append("seoTitle", item.seoTitle);
+    }
+
+    if (item.seoDescription) {
+        formData.append("seoDescription", item.seoDescription);
+    }
+
     item.gallery.forEach((galleryItem) => {
         if (galleryItem.image instanceof File) {
             formData.append("gallery", galleryItem.image);
@@ -22,7 +30,7 @@ export const createPortfolio = async (item: PortfolioMutation) => {
 }
 
 export const editPortfolioItem = async (
-    {item, id} : {item: PortfolioEditValues, id: string}
+    {item, id}: { item: PortfolioEditValues, id: string }
 ) => {
     const formData = new FormData();
 
@@ -38,6 +46,14 @@ export const editPortfolioItem = async (
         formData.append("coverAlt", item.coverAlt.ru);
     }
 
+    if (item.seoTitle) {
+        formData.append("seoTitle", item.seoTitle);
+    }
+
+    if (item.seoDescription) {
+        formData.append("seoDescription", item.seoDescription);
+    }
+
     await axiosAPI.patch("/superadmin/portfolio/" + id, formData);
 }
 
@@ -48,11 +64,10 @@ export const editGalleryItem = async ({item, gallery_id}: {
     const formData = new FormData();
 
     if (item.image) {
-        formData.append("image", item.image);
+        formData.append("gallery", item.image);
     }
 
     if (item.alt) {
-        console.log(item.alt)
         formData.append("alt", item.alt.ru);
     }
 

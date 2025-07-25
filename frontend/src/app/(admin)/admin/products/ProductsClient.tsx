@@ -1,166 +1,86 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { Plus } from "lucide-react";
-import { Button } from "@/src/components/ui/button";
-import { Alert, AlertDescription } from "@/src/components/ui/alert";
-import { CardContent } from "@/src/components/ui/card";
-import { AxiosError } from "axios";
-import { useCategoryStore } from "@/store/categoriesStore";
-import { CreateProductFormData, UpdateProductFormData } from "@/src/lib/zodSchemas/productSchema";
-import { createProduct, deleteProduct, updateProduct } from "@/actions/products";
-import ProductModal from "@/src/app/(admin)/admin/products/components/ProductModal";
-import ProductsTable from "@/src/app/(admin)/admin/products/components/ProductsTable";
-import { Category, Product } from "@/src/lib/types";
-import { toast } from 'react-toastify';
+import React, {useEffect} from "react";
+import {Plus} from "lucide-react";
+import {Button} from "@/src/components/ui/button";
+import {CardContent} from "@/src/components/ui/card";
+import {AxiosError} from "axios";
+import {deleteProduct} from "@/actions/superadmin/products";
+import ProductsTable from "@/src/app/(admin)/admin/products/components/ProductTable/ProductsTable";
+import {Category, Product} from "@/src/lib/types";
+import {toast} from "react-toastify";
 import {useAdminProductStore} from "@/store/superadmin/superadminProductsStore";
 import DataSkeleton from "@/src/components/ui/Loading/DataSkeleton";
+import ErrorMsg from "@/src/components/ui/ErrorMsg";
+import Link from "next/link";
+import {useAdminCategoryStore} from "@/store/superadmin/superadminCategoriesStore";
 
 interface ProductsClientProps {
     initialProducts: Product[];
     initialCategories: Category[];
-    initialError: string | null;
+    initialProductsError: string | null;
+    initialCategoriesError: string | null;
 }
 
-const ProductsClient: React.FC<ProductsClientProps> = ({ initialProducts, initialCategories, initialError }) => {
+const ProductsClient: React.FC<ProductsClientProps> = ({
+                                                           initialProducts,
+                                                           initialCategories,
+                                                           initialProductsError,
+                                                           initialCategoriesError,
+                                                       }) => {
     const {
         products,
         setProducts,
+
         fetchLoading,
+        setFetchLoading,
+
+        fetchError,
+        setFetchError,
+
+        deleteLoading,
+        setDeleteLoading,
+
         createLoading,
         updateLoading,
-        deleteLoading,
-        fetchError,
-        createError,
-        updateError,
-        setFetchLoading,
-        setCreateLoading,
-        setUpdateLoading,
-        setDeleteLoading,
-        setFetchError,
+
         setCreateError,
         setUpdateError,
         setDeleteError,
     } = useAdminProductStore();
 
-    const { categories, setCategories } = useCategoryStore();
-
-    const [isHydrating, setIsHydrating] = useState(true);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+    const {setCategories, fetchCategoriesError, setFetchCategoriesError} = useAdminCategoryStore();
 
     const anyLoading = createLoading || updateLoading || deleteLoading;
+    const overallError = fetchError || fetchCategoriesError;
 
     useEffect(() => {
         if (initialProducts) setProducts(initialProducts);
         if (initialCategories) setCategories(initialCategories);
-        if (initialError) setFetchError(initialError);
+        if (initialProductsError) setFetchError(initialProductsError);
+        if (initialCategoriesError) setFetchCategoriesError(initialCategoriesError);
         setFetchLoading(false);
-        setIsHydrating(false);
     }, [
         initialProducts,
         initialCategories,
-        initialError,
+        initialProductsError,
+        initialCategoriesError,
         setProducts,
         setCategories,
         setFetchError,
         setFetchLoading,
+        setFetchCategoriesError,
     ]);
-
-    const resetAndCloseModal = () => {
-        setEditingProduct(null);
-        setIsModalOpen(false);
-        setCreateError(null);
-        setUpdateError(null);
-    };
-
-    const openCreateModal = () => {
-        setEditingProduct(null);
-        setIsModalOpen(true);
-        resetErrors();
-    };
-
-    const openEditModal = (product: Product) => {
-        setEditingProduct(product);
-        setIsModalOpen(true);
-        resetErrors();
-    };
 
     const resetErrors = () => {
         setFetchError(null);
+        setFetchCategoriesError(null);
         setCreateError(null);
         setUpdateError(null);
         setDeleteError(null);
     };
 
-    const onSubmit = async (formData: CreateProductFormData | UpdateProductFormData, isEditingMode: boolean) => {
-        resetErrors();
-        try {
-            let resultProduct: Product;
-            if (isEditingMode) {
-                setUpdateLoading(true);
-                const updateFormData = formData as UpdateProductFormData;
-                if (!editingProduct) throw new Error("Редактируемый продукт не найден.");
-
-                const productDataForUpdate = {
-                    category: updateFormData.category,
-                    title: updateFormData.title,
-                    description: updateFormData.description || "",
-                };
-
-                const imageFileOrNull = updateFormData.image === null ? undefined : updateFormData.image instanceof File ? updateFormData.image : undefined;
-
-                resultProduct = await updateProduct(
-                    editingProduct._id,
-                    productDataForUpdate,
-                    imageFileOrNull
-                );
-                setProducts(
-                    products.map((product) =>
-                        product._id === editingProduct._id ? resultProduct : product
-                    )
-                );
-                toast.success("Товар успешно обновлен!");
-            } else {
-                setCreateLoading(true);
-                const createFormData = formData as CreateProductFormData;
-
-                const productDataForCreate = {
-                    category: createFormData.category,
-                    title: createFormData.title,
-                    description: createFormData.description || "",
-                    image: createFormData.image,
-                };
-
-                resultProduct = await createProduct(
-                    productDataForCreate,
-                    productDataForCreate.image
-                );
-                setProducts([...products, resultProduct]);
-                toast.success("Товар успешно создан!");
-            }
-            resetAndCloseModal();
-        } catch (err) {
-            const errorMessage =
-                err instanceof AxiosError
-                    ? err.response?.data?.error
-                    : err instanceof Error
-                        ? err.message
-                        : "Неизвестная ошибка при сохранении товара";
-            if (isEditingMode) {
-                setUpdateError(errorMessage);
-            } else {
-                setCreateError(errorMessage);
-            }
-            toast.error(errorMessage);
-        } finally {
-            setCreateLoading(false);
-            setUpdateLoading(false);
-        }
-    };
-
     const handleDeleteProduct = async (id: string) => {
-
         resetErrors();
         setDeleteLoading(true);
         try {
@@ -168,7 +88,10 @@ const ProductsClient: React.FC<ProductsClientProps> = ({ initialProducts, initia
             setProducts(products.filter((product) => product._id !== id));
             toast.success("Товар успешно удален!");
         } catch (err) {
-            const errorMessage = err instanceof AxiosError ? err.response?.data?.error : "Неизвестная ошибка при удалении товара";
+            const errorMessage =
+                err instanceof AxiosError
+                    ? err.response?.data?.error
+                    : "Неизвестная ошибка при удалении товара";
             setDeleteError(errorMessage);
             toast.error(errorMessage);
         } finally {
@@ -186,7 +109,10 @@ const ProductsClient: React.FC<ProductsClientProps> = ({ initialProducts, initia
             setProducts(products.filter((product) => !ids.includes(product._id)));
             toast.success("Выбранные товары успешно удалены!");
         } catch (err) {
-            const errorMessage = err instanceof AxiosError ? err.response?.data?.error : "Неизвестная ошибка при удалении выбранных товаров";
+            const errorMessage =
+                err instanceof AxiosError
+                    ? err.response?.data?.error
+                    : "Неизвестная ошибка при удалении выбранных товаров";
             setDeleteError(errorMessage);
             toast.error(errorMessage);
         } finally {
@@ -194,19 +120,9 @@ const ProductsClient: React.FC<ProductsClientProps> = ({ initialProducts, initia
         }
     };
 
-    if (isHydrating || fetchLoading) return <DataSkeleton />;
+    if (fetchLoading) return <DataSkeleton/>;
 
-    if (fetchError) {
-        return (
-            <div className="flex items-center justify-center min-h-64">
-                <Alert variant="destructive" className="max-w-md">
-                    <AlertDescription>
-                        Ошибка при загрузке продуктов: {fetchError}
-                    </AlertDescription>
-                </Alert>
-            </div>
-        );
-    }
+    if (overallError) return <ErrorMsg error={overallError}/>
 
     return (
         <div className="space-y-6">
@@ -219,14 +135,13 @@ const ProductsClient: React.FC<ProductsClientProps> = ({ initialProducts, initia
                         Создавайте и редактируйте товары
                     </p>
                 </div>
-                <Button
-                    onClick={openCreateModal}
-                    disabled={anyLoading}
-                    className="flex items-center gap-2 w-full sm:w-auto"
-                >
-                    <Plus size={16} />
-                    Добавить продукт
-                </Button>
+                <Link href="/admin/products/add-product">
+                    <Button className="flex items-center gap-2 w-full sm:w-auto" disabled={anyLoading}
+                    >
+                        <Plus size={16}/>
+                        Создать продукт
+                    </Button>
+                </Link>
             </div>
 
             <CardContent className="px-0">
@@ -239,27 +154,12 @@ const ProductsClient: React.FC<ProductsClientProps> = ({ initialProducts, initia
                     </div>
                 ) : (
                     <ProductsTable
-                        products={products}
-                        categories={categories}
-                        onEditProduct={openEditModal}
                         onDeleteProduct={handleDeleteProduct}
                         onDeleteSelectedProducts={handleDeleteSelectedProducts}
                         actionLoading={anyLoading}
                     />
                 )}
             </CardContent>
-
-            <ProductModal
-                isOpen={isModalOpen}
-                onClose={resetAndCloseModal}
-                isEditing={!!editingProduct}
-                editingProduct={editingProduct}
-                categories={categories}
-                loading={createLoading || updateLoading}
-                onSubmit={onSubmit}
-                createError={createError}
-                updateError={updateError}
-            />
         </div>
     );
 };

@@ -1,10 +1,12 @@
 import express from "express";
 import {PortfolioItem} from "../../models/PortfolioItem";
 import {portfolioImage} from "../../middleware/multer";
-import {Error, Types} from "mongoose";
+import mongoose, {Types} from "mongoose";
 import {deleteOrReplaceImages} from "../../middleware/deleteImages";
 import {deleteOrReplaceGalleryImage} from "../../middleware/deleteImagesGallery";
 import {translateYandex} from "../../../translateYandex";
+import {GalleryUpdate} from "../../../types";
+import slugify from "slugify";
 
 const portfolioSuperAdminRouter = express.Router();
 
@@ -28,7 +30,9 @@ portfolioSuperAdminRouter.post(
                 return;
             }
 
-            const alts: string[] = Array.isArray(req.body.alt) ? req.body.alt : [req.body.alt];
+            const alts: string[] = Array.isArray(req.body.alt)
+                ? req.body.alt
+                : [req.body.alt];
 
             const altsKy = await Promise.all(alts.map(alt => translateYandex(alt, "ky")));
 
@@ -44,7 +48,7 @@ portfolioSuperAdminRouter.post(
             const coverAltKy = await translateYandex(req.body.coverAlt, "ky");
 
             const newItem = new PortfolioItem({
-                cover: coverFile ? "portfolio/" + coverFile.filename : null,
+                cover: coverFile ? `portfolio/${coverFile.filename}` : null,
                 gallery,
                 description: {
                     ru: req.body.description,
@@ -54,14 +58,16 @@ portfolioSuperAdminRouter.post(
                     ru: req.body.coverAlt,
                     ky: coverAltKy
                 },
+                seoTitle: req.body.seoTitle || null,
+                seoDescription: req.body.seoDescription || null,
             });
 
             await newItem.save();
             res.send(newItem);
         } catch (e) {
-            if (e instanceof Error.ValidationError) {
+            if (e instanceof mongoose.Error.ValidationError) {
                 res.status(400).send(e);
-                return;
+                return
             }
             next(e);
         }
@@ -71,14 +77,12 @@ portfolioSuperAdminRouter.post(
 portfolioSuperAdminRouter.patch(
     "/:id",
     portfolioImage.single("cover"),
-
     deleteOrReplaceImages(
         PortfolioItem,
         doc => (doc.cover ? [doc.cover] : []),
-        req => req.file ? [`portfolio/${req.file.filename}`] : [],
+        req => (req.file ? [`portfolio/${req.file.filename}`] : []),
         "replace"
     ),
-
     async (req, res, next) => {
         try {
             const {id} = req.params;
@@ -96,19 +100,34 @@ portfolioSuperAdminRouter.patch(
             if (req.file) {
                 updateData.cover = "portfolio/" + req.file.filename;
             }
-
             if (req.body.description !== undefined) {
                 updateData.description = {
                     ru: req.body.description,
                     ky: descriptionKy
                 };
             }
-
             if (req.body.coverAlt !== undefined) {
                 updateData.coverAlt = {
                     ru: req.body.coverAlt,
                     ky: coverAltKy
                 };
+            }
+            if (req.body.seoTitle !== undefined) updateData.seoTitle = req.body.seoTitle;
+            if (req.body.seoDescription !== undefined) updateData.seoDescription = req.body.seoDescription;
+            if (req.body.slug !== undefined) updateData.slug = req.body.slug;
+
+            if (req.body.slug === undefined && (req.body.coverAlt || req.body.description)) {
+                const baseSlug = slugify(req.body.coverAlt || req.body.description || "portfolio", {
+                    lower: true,
+                    strict: true
+                });
+                let uniqueSlug = baseSlug;
+                let counter = 1;
+                while (await PortfolioItem.exists({slug: uniqueSlug, _id: {$ne: id}})) {
+                    uniqueSlug = `${baseSlug}-${counter}`;
+                    counter++;
+                }
+                updateData.slug = uniqueSlug;
             }
 
             const updatedItem = await PortfolioItem.findByIdAndUpdate(
@@ -124,7 +143,7 @@ portfolioSuperAdminRouter.patch(
 
             res.send(updatedItem);
         } catch (e) {
-            if (e instanceof Error.ValidationError) {
+            if (e instanceof mongoose.Error.ValidationError) {
                 res.status(400).send(e);
                 return;
             }
@@ -135,33 +154,30 @@ portfolioSuperAdminRouter.patch(
 
 portfolioSuperAdminRouter.patch(
     "/gallery/:galleryId",
-    portfolioImage.fields([{name: "gallery", maxCount: 1}]),
-
+    portfolioImage.single("gallery"),
     deleteOrReplaceGalleryImage(PortfolioItem, "replace"),
-
     async (req, res, next) => {
         try {
             const {galleryId} = req.params;
             if (!Types.ObjectId.isValid(galleryId)) {
                 res.status(400).send({error: "Неверный формат ID элемента галереи"});
-                return
+                return;
             }
 
-            const file = (req.files as { [fieldName: string]: Express.Multer.File[] })?.gallery?.[0];
+            const file = req.file;
             const newAlt = req.body.alt;
 
-            const updateFields: any = {};
-            if (file) updateFields["gallery.$.image"] = "portfolio/" + file.filename;
+            const updateFields: GalleryUpdate = {};
+            if (file) updateFields["gallery.$.image"] = `portfolio/${file.filename}`;
             if (newAlt !== undefined) {
                 const altKy = await translateYandex(newAlt, "ky");
                 updateFields["gallery.$.alt.ru"] = newAlt;
                 updateFields["gallery.$.alt.ky"] = altKy;
             }
 
-
             if (Object.keys(updateFields).length === 0) {
                 res.status(400).send({error: "Нет данных для обновления"});
-                return
+                return;
             }
 
             const updated = await PortfolioItem.updateOne(
@@ -171,7 +187,7 @@ portfolioSuperAdminRouter.patch(
 
             if (updated.modifiedCount === 0) {
                 res.status(400).send({error: "Обновление не выполнено"});
-                return
+                return;
             }
 
             const refreshed = await PortfolioItem.findOne({"gallery._id": galleryId});
@@ -197,7 +213,7 @@ portfolioSuperAdminRouter.delete(
             const item = await PortfolioItem.findByIdAndDelete(req.params.id);
             if (!item) {
                 res.status(404).send({error: "Элемент не найден"});
-                return;
+                return
             }
             res.send({message: "Удаление портфолио успешно"});
         } catch (e) {
@@ -209,7 +225,6 @@ portfolioSuperAdminRouter.delete(
 portfolioSuperAdminRouter.delete(
     "/gallery/:galleryId",
     deleteOrReplaceGalleryImage(PortfolioItem, "delete"),
-
     async (req, res, next) => {
         try {
             const {galleryId} = req.params;

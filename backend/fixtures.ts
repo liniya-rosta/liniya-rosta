@@ -113,74 +113,431 @@ const run = async () => {
             category: lightingTechnology,
             title: 'Светодиодная лента leds power',
             description: 'световой поток: 1000 Лм/м, мощность: 10 Вт/м, длина: 5 м, ширина: 8 мм',
-            image: 'test/lightingTechnology1.jpg',
+            cover: {
+                url: 'test/lightingTechnology1.jpg',
+                alt: 'a;lskdjf'
+            },
+            characteristics: [
+                {key: 'Пример характеристики', value: 'Значение'}
+            ],
+            sale: {
+                isOnSale: false,
+                label: null
+            }
         },
         {
             category: lightingTechnology,
             title: 'Светодиодная лента vacco group',
             description: 'световой поток: 1000 Лм/м, мощность: 10 Вт/м, длина: 5 м, ширина: 8 мм',
-            image: 'test/lightingTechnology1.jpg',
+            cover: {
+                url: 'test/lightingTechnology1.jpg',
+                alt: null
+            },
+            characteristics: [
+                {key: 'Пример характеристики', value: 'Значение'}
+            ],
+            sale: {
+                isOnSale: false,
+                label: null
+            }
         },
         {
             category: film,
             title: 'Пленка ПВХ LEGEND',
             description: 'ЛАК:; толщина - 0,18±0,01 мм; ГР/М; плотность - 210 г/м2; ширина полотна - 320 см',
-            image: 'test/legend-paint.jpg',
+            cover: {
+                url: 'test/legend-paint.jpg',
+                alt: "свет"
+            },
+            characteristics: [
+                {key: 'Пример характеристики', value: 'Значение'}
+            ],
+            sale: {
+                isOnSale: false,
+                label: null
+            }
         },
         {
             category: film,
             title: 'Пленка ПВХ IDEAL',
             description: 'ЛАК:; толщина - 0,18±0,01 мм; ГР/М; плотность - 210 г/м2; ширина полотна - 320 см',
-            image: 'test/plenkaPBX.png',
+            cover: {
+                url: 'test/plenkaPBX.png',
+                alt: null
+            },
+            characteristics: [
+                {key: 'Пример характеристики', value: 'Значение'}
+            ],
+            sale: {
+                isOnSale: false,
+                label: null
+            }
         },
         {
             category: film,
             title: 'Пленка ПВХ as;lkdf;sajf',
             description: 'ЛАК:; толщина - 0,18±0,01 мм; ГР/М; плотность - 210 г/м2; ширина полотна - 320 см',
-            image: 'test/plenkaPBX.png',
+            cover: {
+                url: 'test/plenkaPBX.png',
+                alt: null
+            },
+            characteristics: [
+                {key: 'Пример характеристики', value: 'Значение'}
+            ],
+            sale: {
+                isOnSale: false,
+                label: null
+            }
         },
         {
             category: spc,
             title: 'Тис Альпик',
             description: 'Размер: 180x1220x4,0/0,3+1ммIXPE',
-            image: 'test/laminate1.JPG',
+            cover: {
+                url: 'test/laminate1.JPG',
+                alt: null
+            },
+            characteristics: [
+                {key: 'Пример характеристики', value: 'Значение'}
+            ],
+            sale: {
+                isOnSale: false,
+                label: null
+            }
         },
         {
             category: spc,
             title: 'Тис Латте',
             description: 'Размер: 180x1220x4,0/0,3+1ммIXPE',
-            image: 'test/laminate2.JPG',
+            cover: {
+                url: 'test/laminate2.JPG',
+                alt: null
+            },
+            characteristics: [
+                {key: 'Пример характеристики', value: 'Значение'}
+            ],
+            sale: {
+                isOnSale: false,
+                label: null
+            }
         },
         {
             category: spc,
             title: 'Бук Шале',
             description: 'Размер: 180x1220x4,0/0,3+1ммIXPE',
-            image: 'test/laminate3.JPG',
+            cover: {
+                url: 'test/laminate3.JPG',
+                alt: null
+            },
+            characteristics: [
+                {key: 'Пример характеристики', value: 'Значение'}
+            ],
+            sale: {
+                isOnSale: false,
+                label: null
+            }
         },
         {
             category: spc,
             title: 'Орех Шато',
             description: 'Размер: 180x1220x4,0/0,3+1ммIXPE',
-            image: 'test/laminate4.JPG',
+            cover: {
+                url: 'test/laminate4.JPG',
+                alt: null
+            },
+            characteristics: [
+                {key: 'Пример характеристики', value: 'Значение'}
+            ],
+            sale: {
+                isOnSale: false,
+                label: null
+            }
         },
         {
             category: spc,
             title: 'Дуб Классик',
             description: 'Размер: 180x1220x4,0/0,3+1ммIXPE',
-            image: 'test/laminate5.JPG',
+            cover: {
+                url: 'test/laminate5.JPG',
+                alt: null
+            },
+            characteristics: [
+                {key: 'Пример характеристики', value: 'Значение'}
+            ],
+            sale: {
+                isOnSale: false,
+                label: null
+            }
         },
+        {
+            category: lightingTechnology,
+            title: 'Светильник POINT 600',
+            description: 'Мощность: 24 Вт, свет: холодный белый 6000К, диаметр: 300 мм',
+            cover: {
+                url: 'test/lightingTechnology1.jpg',
+                alt: 'Светильник POINT 600'
+            },
+            characteristics: [
+                {key: 'Мощность', value: '24 Вт'},
+                {key: 'Цветовая температура', value: '6000К'}
+            ],
+            sale: {
+                isOnSale: false,
+                label: null
+            }
+        },
+        {
+            category: lightingTechnology,
+            title: 'Лента SMD 2835',
+            description: '120 LED/м, 12 В, IP65, ширина: 8 мм, катушка 5 м',
+            cover: {
+                url: 'test/lightingTechnology1.jpg',
+                alt: 'Лента SMD 2835'
+            },
+            characteristics: [
+                {key: 'Светодиоды', value: 'SMD 2835'},
+                {key: 'Длина', value: '5 м'}
+            ],
+            sale: {
+                isOnSale: true,
+                label: 'Топ продаж'
+            }
+        },
+        {
+            category: film,
+            title: 'Пленка ПВХ SATIN',
+            description: 'Сатиновая текстура, ширина 3.2 м, толщина 0.2 мм',
+            cover: {
+                url: 'test/plenkaPBX.png',
+                alt: 'Пленка SATIN'
+            },
+            characteristics: [
+                {key: 'Поверхность', value: 'Сатиновая'},
+                {key: 'Толщина', value: '0.2 мм'}
+            ],
+            sale: {
+                isOnSale: false,
+                label: null
+            }
+        },
+        {
+            category: film,
+            title: 'Пленка ПВХ BLACK MIRROR',
+            description: 'Глянцевая черная, плотность 220 г/м2, ширина 3.2 м',
+            cover: {
+                url: 'test/legend-paint.jpg',
+                alt: 'Пленка BLACK MIRROR'
+            },
+            characteristics: [
+                {key: 'Цвет', value: 'Черный'},
+                {key: 'Поверхность', value: 'Глянец'}
+            ],
+            sale: {
+                isOnSale: false,
+                label: null
+            }
+        },
+        {
+            category: spc,
+            title: 'SPC Ясень Серый',
+            description: 'SPC ламинат с тиснением, замковое соединение, размер 180x1220',
+            cover: {
+                url: 'test/laminate1.JPG',
+                alt: 'SPC Ясень Серый'
+            },
+            characteristics: [
+                {key: 'Порода', value: 'Ясень'},
+                {key: 'Цвет', value: 'Серый'}
+            ],
+            sale: {
+                isOnSale: true,
+                label: 'Новинка'
+            }
+        },
+        {
+            category: spc,
+            title: 'SPC Дуб Молочный',
+            description: '180x1220x4.0/0.3 мм, IXPE, влагостойкий',
+            cover: {
+                url: 'test/laminate2.JPG',
+                alt: 'SPC Дуб Молочный'
+            },
+            characteristics: [
+                {key: 'Цвет', value: 'Молочный'},
+                {key: 'Подложка', value: 'IXPE'}
+            ],
+            sale: {
+                isOnSale: false,
+                label: null
+            }
+        },
+        {
+            category: spc,
+            title: 'SPC Клен Канадский',
+            description: 'SPC 4 мм + 1 мм подложка, прочный, светлый тон',
+            cover: {
+                url: 'test/laminate3.JPG',
+                alt: 'SPC Клен Канадский'
+            },
+            characteristics: [
+                {key: 'Цвет', value: 'Светлый'},
+                {key: 'Порода', value: 'Клен'}
+            ],
+            sale: {
+                isOnSale: false,
+                label: null
+            }
+        },
+        {
+            category: spatula,
+            title: 'Шпатель усиленный 30 см',
+            description: 'Алюминиевый шпатель с резиновой вставкой, ручка soft-touch',
+            cover: {
+                url: 'test/laminate4.JPG',
+                alt: 'Шпатель усиленный'
+            },
+            characteristics: [
+                {key: 'Длина', value: '30 см'},
+                {key: 'Особенность', value: 'Усиленный'}
+            ],
+            sale: {
+                isOnSale: false,
+                label: null
+            }
+        },
+        {
+            category: spatula,
+            title: 'Шпатель 15 см',
+            description: 'Компактный шпатель для мелких работ, пластик',
+            cover: {
+                url: 'test/laminate5.JPG',
+                alt: 'Шпатель 15 см'
+            },
+            characteristics: [
+                {key: 'Длина', value: '15 см'},
+                {key: 'Материал', value: 'Пластик'}
+            ],
+            sale: {
+                isOnSale: false,
+                label: null
+            }
+        },
+        {
+            category: ventilationGrilles,
+            title: 'Решетка вентиляционная металлическая',
+            description: 'Металлическая вентиляция, 150х150 мм, окрашенная',
+            cover: {
+                url: 'test/laminate1.JPG',
+                alt: 'Вентиляция металлическая'
+            },
+            characteristics: [
+                {key: 'Материал', value: 'Металл'},
+                {key: 'Размер', value: '150x150 мм'}
+            ],
+            sale: {
+                isOnSale: false,
+                label: null
+            }
+        },
+        {
+            category: ventilationGrilles,
+            title: 'Решетка с обратным клапаном',
+            description: 'Квадратная, белая, обратный клапан против запахов',
+            cover: {
+                url: 'test/laminate2.JPG',
+                alt: 'Решетка с клапаном'
+            },
+            characteristics: [
+                {key: 'Форма', value: 'Квадрат'},
+                {key: 'Особенность', value: 'Обратный клапан'}
+            ],
+            sale: {
+                isOnSale: false,
+                label: null
+            }
+        }
     );
 
     await Post.create(
         {
             title: 'Тестовый пост №1',
             description: 'Lorem ipsum',
-            image: 'test/news1.jpg',
+            images: [
+                {image: 'test/news1.jpg', alt: 'Новость 1'},
+                {image: 'test/news2.png', alt: 'Доп. изображение 1'},
+            ],
         },
         {
             title: 'Тестовый пост №2',
             description: 'Lorem ipsum',
-            image: 'test/news2.png',
+            images: [
+                {image: 'test/news1.jpg', alt: 'Новость 1'},
+                {image: 'test/news2.png', alt: 'Доп. изображение 1'},
+            ],
+        },
+        {
+            title: 'Тестовый пост №3',
+            description: 'Lorem ipsum',
+            images: [
+                {image: 'test/news1.jpg', alt: 'Новость 1'},
+                {image: 'test/news2.png', alt: 'Доп. изображение 1'},
+            ],
+        },
+        {
+            title: 'Тестовый пост №4',
+            description: 'Lorem ipsum',
+            images: [
+                {image: 'test/news1.jpg', alt: 'Новость 1'},
+                {image: 'test/news2.png', alt: 'Доп. изображение 1'},
+            ],
+        },
+        {
+            title: 'Тестовый пост №5',
+            description: 'Lorem ipsum',
+            images: [
+                {image: 'test/news1.jpg', alt: 'Новость 1'},
+                {image: 'test/news2.png', alt: 'Доп. изображение 1'},
+            ],
+        },
+        {
+            title: 'Тестовый пост №6',
+            description: 'Lorem ipsum',
+            images: [
+                {image: 'test/news1.jpg', alt: 'Новость 1'},
+                {image: 'test/news2.png', alt: 'Доп. изображение 1'},
+            ],
+        },
+        {
+            title: 'Тестовый пост №7',
+            description: 'Lorem ipsum',
+            images: [
+                {image: 'test/news1.jpg', alt: 'Новость 1'},
+                {image: 'test/news2.png', alt: 'Доп. изображение 1'},
+            ],
+        },
+        {
+            title: 'Тестовый пост №8',
+            description: 'Lorem ipsum',
+            images: [
+                {image: 'test/news1.jpg', alt: 'Новость 1'},
+                {image: 'test/news2.png', alt: 'Доп. изображение 1'},
+            ],
+        },
+        {
+            title: 'Тестовый пост №9',
+            description: 'Lorem ipsum',
+            images: [
+                {image: 'test/news1.jpg', alt: 'Новость 1'},
+                {image: 'test/news2.png', alt: 'Доп. изображение 1'},
+            ],
+        },
+        {
+            title: 'Тестовый пост №10',
+            description: 'Lorem ipsum',
+            images: [
+                {image: 'test/news1.jpg', alt: 'Новость 1'},
+                {image: 'test/news2.png', alt: 'Доп. изображение 1'},
+            ],
         },
     );
 

@@ -5,7 +5,6 @@ import {getTranslations} from "next-intl/server";
 const InfoAboutSpcLaminate = async () => {
 
     const tSpc = await getTranslations('SpcPage');
-    const tBtn = await getTranslations('Buttons');
 
     return (
             <div className="relative w-full h-[450px] flex items-center justify-center text-white mt-[-32px] mb-[70px] sm:mb-[48px]">
@@ -16,7 +15,7 @@ const InfoAboutSpcLaminate = async () => {
                     <p className="sm:text-base max-w-[600px] mb-5 text-sm">
                         {tSpc('description')}
                     </p>
-                    <ClientActions btnText={tBtn('requestBtn1')} />
+                    <ClientActions />
                 </div>
             </div>
     );

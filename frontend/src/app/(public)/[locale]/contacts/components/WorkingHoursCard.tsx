@@ -34,7 +34,7 @@ const WorkingHoursCard: React.FC<Props> = ({workingHours}) => {
                 <ul className="space-y-3.5">
                     {Object.entries(dayLabels).map(([key, label]) => {
                         const time = workingHours[key][locale];
-                        const isDayOff = time === 'Выходной' || time === 'Эс алуу';
+                        const isDayOff = time === 'Выходной день' || time === 'Эс алуу күнү';
 
                         return (
                             <li key={key} className="flex justify-between items-center">

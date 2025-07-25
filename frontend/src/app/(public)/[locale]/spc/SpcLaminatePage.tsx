@@ -54,7 +54,7 @@ const SpcLaminatePage: React.FC<Props> = ({initialData, error}) => {
                 ) : (
                     products.map(item => (
                         <SwiperSlide key={item._id}>
-                            <LaminateCard title={item.title} image={item.image} description={item.description}/>
+                            <LaminateCard title={item.title} image={item.cover.url} description={item.description}/>
                         </SwiperSlide>
                     ))
                 )}

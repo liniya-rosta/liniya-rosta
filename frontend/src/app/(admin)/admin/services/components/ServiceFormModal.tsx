@@ -11,7 +11,7 @@ import {Input} from "@/src/components/ui/input";
 import FormErrorMessage from "@/src/components/ui/FormErrorMessage";
 import React, {useEffect} from "react";
 import {Button} from "@/src/components/ui/button";
-import LoaderIcon from "@/src/components/ui/LoaderIcon";
+import LoaderIcon from "@/src/components/ui/Loading/LoaderIcon";
 import {Textarea} from "@/src/components/ui/textarea";
 import {fetchAllServices} from "@/actions/services";
 import {z} from "zod"

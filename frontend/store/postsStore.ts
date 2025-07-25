@@ -6,7 +6,7 @@ interface PostsState {
     fetchPostsLoading: boolean;
     fetchPostsError: string | null;
     setPosts: (posts: Post[]) => void;
-    setfetchPostsLoading: (loading: boolean) => void;
+    setFetchPostsLoading: (loading: boolean) => void;
     setFetchPostsError: (error: string | null) => void;
 }
 
@@ -16,6 +16,6 @@ export const usePostsStore = create<PostsState>((set) => ({
     fetchPostsError: null,
 
     setPosts: (posts) => set({posts}),
-    setfetchPostsLoading: (loading) => set({fetchPostsLoading: loading}),
+    setFetchPostsLoading: (loading) => set({fetchPostsLoading: loading}),
     setFetchPostsError: (error) => set({fetchPostsError: error}),
 }));

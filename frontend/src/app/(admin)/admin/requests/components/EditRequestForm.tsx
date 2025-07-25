@@ -13,7 +13,7 @@ import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from '@/
 import {Textarea} from "@/src/components/ui/textarea";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/src/components/ui/select';
 import {DialogFooter} from "@/src/components/ui/dialog";
-import LoaderIcon from "@/src/components/ui/LoaderIcon";
+import LoaderIcon from "@/src/components/ui/Loading/LoaderIcon";
 
 
 interface Props {
@@ -77,7 +77,7 @@ const EditRequestForm: React.FC<Props> = ({request, onClose}) => {
             setRequests(requests.data);
             toast.success("Заявка успешно обновлена!");
             onClose();
-        } catch (e) {
+        } catch {
             toast.error("Ошибка при обновлении заявки");
             setUpdateLoading(false);
         } finally {

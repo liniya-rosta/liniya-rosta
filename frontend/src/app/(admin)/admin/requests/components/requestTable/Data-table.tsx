@@ -31,7 +31,7 @@ import {Button} from "@/src/components/ui/button";
 import {useAdminRequestsStore} from "@/store/superadmin/adminRequestsStore";
 
 interface DataTableProps {
-    columns: ColumnDef<IRequest, any>[]
+    columns: ColumnDef<IRequest, unknown>[]
     data: IRequest[]
     error: string | null
     loading: boolean

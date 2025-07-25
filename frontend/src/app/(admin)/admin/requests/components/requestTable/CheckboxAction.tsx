@@ -87,7 +87,7 @@ const CheckboxAction: React.FC<Props> = ({table}) => {
                 await goToPage(1);
             }
 
-        } catch (error) {
+        } catch {
             setDeleteLoading(false)
             toast.error("Ошибка при удалении заявок");
         } finally {

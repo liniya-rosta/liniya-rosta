@@ -6,7 +6,7 @@ import {toast} from "react-toastify";
 import {PortfolioItemPreview} from "@/src/lib/types";
 import {useSuperAdminPortfolioStore} from "@/store/superadmin/superAdminPortfolio";
 import {fetchGalleryItem, fetchPortfolioItem, fetchPortfolioPreviews} from "@/actions/portfolios";
-import {deleteGalleryItem, deletePortfolio } from "@/actions/superadmin/portfolios";
+import {deleteGalleryItem, deletePortfolio} from "@/actions/superadmin/portfolios";
 import {
     ColumnFiltersState,
     getCoreRowModel,
@@ -17,31 +17,32 @@ import {
     useReactTable,
     VisibilityState,
 } from "@tanstack/react-table"
-import {CustomTable, getColumns, CustomTableHeader, TablePagination} from "@/src/app/(admin)/admin/portfolio/components/DataTable";
+import {
+    CustomTable,
+    getColumns,
+    TableControls,
+    TablePagination
+} from "@/src/app/(admin)/admin/portfolio/components/DataTable";
 import ImageModal from "@/src/app/(admin)/admin/portfolio/components/ImageModal";
 import {ModalEdit, PortfolioEditForm, GalleryEditForm} from "@/src/app/(admin)/admin/portfolio/components/ModelEdit";
-import ModalGallery from "@/src/app/(admin)/admin/portfolio/components/ModalGallery";
 import DataSkeleton from "@/src/components/ui/Loading/DataSkeleton";
 import ConfirmDialog from "@/src/components/ui/ConfirmDialog";
 import Link from "next/link";
 import {Button} from "@/src/components/ui/button";
 import {Plus} from "lucide-react";
 import ErrorMsg from "@/src/components/ui/ErrorMsg";
+import {usePersistedPageSize} from "@/hooks/usePersistedPageSize";
+import ModalGallery from "@/src/components/shared/ModalGallery";
 
 interface Props {
     error?: string | null;
-    limit?: string;
 }
 
-const AdminPortfolioClient: React.FC<Props> = ({ error, limit = "10"}) => {
+const AdminPortfolioClient: React.FC<Props> = ({ error}) => {
     const [sorting, setSorting] = useState<SortingState>([]);
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
     const [rowSelection, setRowSelection] = useState({});
-    const [pagination, setPagination] = useState({
-        pageIndex: 0,
-        pageSize: Number(limit),
-    });
 
     const [isModalOpenCover, setIsModalOpenCover] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -51,6 +52,13 @@ const AdminPortfolioClient: React.FC<Props> = ({ error, limit = "10"}) => {
     const [selectedCover, setSelectedCover] = useState<{ cover: string; alt?: string } | null>(null);
     const [isGalleryEdit, setIsGalleryEditing] = useState<boolean>(false);
     const [isGalleryDelete, setGalleryDelete] = useState<boolean>(false);
+    const [galleryEditSelectionMode, setGalleryEditSelectionMode] = useState(false);
+
+    const [pageSize, setPageSize] = usePersistedPageSize("admin_portfolio_table_size");
+    const [pagination, setPagination] = useState({
+        pageIndex: 0,
+        pageSize: pageSize,
+    });
 
     const {
         items,
@@ -70,7 +78,6 @@ const AdminPortfolioClient: React.FC<Props> = ({ error, limit = "10"}) => {
 
      const updatePaginationAndData = async (searchValue = "", searchField = "coverAlt") => {
        try {
-           setPortfolioFetchLoading(true);
            const filters = {
                coverAlt: "",
                description: "",
@@ -101,8 +108,6 @@ const AdminPortfolioClient: React.FC<Props> = ({ error, limit = "10"}) => {
            }
 
            toast.error(errorMessage);
-       } finally {
-           setPortfolioFetchLoading(false)
        }
     };
 
@@ -212,6 +217,7 @@ const AdminPortfolioClient: React.FC<Props> = ({ error, limit = "10"}) => {
             toast.error(errorMessage);
         }
     }
+
     const openEditModalGalleryItem = async (id: string) => {
        try {
            const galleryItem = await fetchGalleryItem(id)
@@ -319,7 +325,6 @@ const AdminPortfolioClient: React.FC<Props> = ({ error, limit = "10"}) => {
         void updatePaginationAndData(value, column);
     };
 
-
     if (fetchPortfolioLoading) return <DataSkeleton/>
     if (error) return <ErrorMsg error={error}/>
 
@@ -342,11 +347,12 @@ const AdminPortfolioClient: React.FC<Props> = ({ error, limit = "10"}) => {
                 </Link>
             </div>
 
-           <CustomTableHeader
+           <TableControls
                table={table}
                showConfirm={setShowConfirm}
                setGalleryDelete={setGalleryDelete}
                onFilterChange={handleFilterChange}
+               setPersistedPageSize={setPageSize}
            />
             <div className="rounded-md border">
                 <CustomTable table={table}/>
@@ -374,15 +380,25 @@ const AdminPortfolioClient: React.FC<Props> = ({ error, limit = "10"}) => {
                 }
             </ModalEdit>
 
-            <ModalGallery
-                open={isModalOpenGallery}
-                openChange={() => setIsModalOpenGallery(!isModalOpenGallery)}
-                isOpenModalEdit={openEditModalGalleryItem}
-                onRequestDelete={() => {
-                    setGalleryDelete(true);
-                    setShowConfirm(true);
-                }}
-            />
+            {detailItem &&
+                <ModalGallery
+                    open={isModalOpenGallery}
+                    openChange={() => setIsModalOpenGallery(false)}
+                    items={detailItem.gallery}
+                    keyBy="id"
+                    selectedKeys={selectedToDelete}
+                    setSelectedKeys={setSelectedToDelete}
+                    selectionMode={galleryEditSelectionMode}
+                    setSelectionMode={setGalleryEditSelectionMode}
+                    isOpenModalEdit={(key) => openEditModalGalleryItem(key)}
+                    onRequestDelete={() => {
+                        setGalleryDelete(true);
+                        setShowConfirm(true);
+                    }}
+                    deleteLoading={deleteLoading}
+                />
+            }
+
 
             <ConfirmDialog
                 open={showConfirm}
