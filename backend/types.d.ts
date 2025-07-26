@@ -118,6 +118,7 @@ export interface updatePost {
 
 export interface FileRequestFiles {
     [fieldname: string]: Express.Multer.File[];
+    body: T;
 }
 
 export interface RequestWithFiles extends Express.Request {
@@ -128,50 +129,89 @@ export interface RequestWithFile extends Express.Request {
     file?: Express.Multer.File;
 }
 
-export interface GalleryItem {
-    _id: Types.ObjectId;
-    image: string;
-    alt?: string;
-}
-
-export interface DocumentWithGallery extends Document {
-    gallery: GalleryItem[];
-}
-
-export interface DocumentWithImages extends Document, IDocumentWithImages {}
-
-export interface IDocumentWithImages {
-    image?: string;
-    cover?: string;
-    gallery?: IGalleryItem[];
-}
-
 export interface IGalleryItem {
     _id: Types.ObjectId;
     image: string;
     alt?: string;
 }
 
-export interface IProduct extends IDocumentWithImages {
+export interface GalleryItem extends IGalleryItem {}
+
+export interface IProductItem {
+    _id: Types.ObjectId;
+    image: string;
+    alt?: string;
+}
+
+export interface GalleryItem extends IGalleryItem {}
+
+export interface DocumentWithGallery extends Document {
+    gallery: GalleryItem[];
+}
+
+export interface ImageItem {
+    image: string;
+    alt?: string | null;
+}
+
+export interface IDocumentWithImages {
+    image?: string;
+    cover?: string | {url: string; alt?: string | null};
+    gallery?: IGalleryItem[];
+    images?: IProductItem[];
+}
+
+export interface DocumentWithImages extends Document, IDocumentWithImages {}
+
+export interface ProductImage {
+    url: string;
+    alt?: string | null;
+}
+
+export interface ICharacteristicItem {
+    key: string;
+    value: string;
+}
+
+export interface ISale {
+    isOnSale: boolean;
+    label?: string | null;
+}
+
+export interface Icon {
+    url?: string;
+    alt?: string | null;
+}
+
+export interface IProduct {
     category: Types.ObjectId;
     title: string;
-    description?: string;
-    image: string;
+    description?: string | null;
+    cover: {
+        url: string;
+        alt?: string | null;
+    };
+    images: ProductImage[];
+    characteristics: ICharacteristicItem[];
+    sale: ISale;
+    icon?: Icon;
 }
 
-export interface IPost extends IDocumentWithImages {
+export type ProductDocument = Document & IProduct;
+
+export interface IPost {
     title: string;
     description: string;
-    image: string;
+    images: ImageItem[];
 }
 
-export interface IPortfolioItem extends IDocumentWithGallery {
+export type PostDocument = Document & IPost;
+
+export interface IPortfolioItem extends DocumentWithGallery {
     cover?: string;
     coverAlt?: string;
     description?: string;
     gallery: IGalleryItem[];
 }
 
-export type ProductDocument = Document & IProduct;
-export type PostDocument = Document & IPost;
 export type PortfolioItemDocument = Document & IPortfolioItem;

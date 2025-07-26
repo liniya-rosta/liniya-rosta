@@ -3,10 +3,11 @@ import Product from "../../models/Product";
 import Category from "../../models/Category";
 import mongoose, {Types} from "mongoose";
 import {productImage} from "../../middleware/multer";
+import {deleteOrReplaceImages} from "../../middleware/deleteImages/deleteImages";
+import {deleteOrReplaceSubImage} from "../../middleware/deleteImages/deleteImagesGallery";
+import {deleteOrReplaceIconImage} from "../../middleware/deleteImages/deleteImagesIcons";
 import slugify from "slugify";
 import {translateYandex} from "../../../translateYandex";
-import {deleteOrReplaceImages} from "../../middleware/deleteImages";
-import {deleteOrReplaceSubImage} from "../../middleware/deleteImagesGallery";
 
 const productsSuperAdminRouter = express.Router();
 
@@ -46,7 +47,7 @@ productsSuperAdminRouter.post("/", productImage.fields([
 
 
         const images = imagesFiles.map((file, i) => ({
-            url: "product/" + file.filename,
+            url: "products/" + file.filename,
             alt: {
                 ru: alts[i],
                 ky: altsKy[i]
@@ -84,7 +85,7 @@ productsSuperAdminRouter.post("/", productImage.fields([
             seoDescription: seoDescription?.trim() || null,
             description: {ru: description?.trim(), ky: desKy},
             cover: {
-                url: `product/${coverFile.filename}`,
+                url: `products/${coverFile.filename}`,
                 alt: {ru: req.body.coverAlt, ky: coverAltKy},
             },
             images,
@@ -94,7 +95,7 @@ productsSuperAdminRouter.post("/", productImage.fields([
                 label: {ru: req.body.label, ky: labelKy},
             },
             icon: {
-                url: iconFile ? `product/${iconFile.filename}` : null,
+                url: iconFile ? `products/${iconFile.filename}` : null,
                 alt: {ru: req.body.iconAlt, ky: iconAltKy},
             },
         });
@@ -116,21 +117,23 @@ productsSuperAdminRouter.patch(
 
     deleteOrReplaceImages(
         Product,
-        (doc) => {
-            const urls: string[] = [];
-            if (doc.cover?.url) urls.push(doc.cover.url);
-            if (doc.icon?.url) urls.push(doc.icon.url);
-            return urls;
-        },
+        (doc) => doc.cover?.url ? [doc.cover.url] : [],
         (req) => {
             const files = req.files as Record<string, Express.Multer.File[]>;
             const result: string[] = [];
-            if (files.cover?.[0]) result.push(`products/${files.cover[0].filename}`);
-            if (files.icon?.[0]) result.push(`products/${files.icon[0].filename}`);
+            if (files.cover?.[0]) {
+                result.push(`products/${files.cover[0].filename}`);
+            }
             return result;
         },
         "replace"
     ),
+
+    deleteOrReplaceIconImage(Product, {
+        path: "icon",
+        key: "url",
+        mode: "replace",
+    }),
 
     async (req, res, next) => {
     try {
@@ -312,7 +315,7 @@ productsSuperAdminRouter.patch(
 
 productsSuperAdminRouter.patch(
     "/images/:imageId",
-    productImage.single("images"),
+    productImage.single("image"),
     deleteOrReplaceSubImage(Product, {
         path: "images",
         key: "url",

@@ -127,7 +127,7 @@ export const updateProductImage = async (
         alt?: string
     ): Promise<Product> => {
         const formData = new FormData();
-        if (file) formData.append("images", file);
+        if (file) formData.append("image", file);
         if (alt) formData.append("alt", alt);
 
         const res = await axiosAPI.patch<{ product: Product }>(

@@ -3,6 +3,8 @@ import Post from "../../models/Post";
 import mongoose from "mongoose";
 import {postImage} from "../../middleware/multer";
 import {updatePost} from "../../../types";
+import {deleteOrReplaceImages} from "../../middleware/deleteImages/deleteImages";
+import {deleteOrReplacePostImage} from "../../middleware/deleteImages/deleteImagesPosts";
 import {deleteOrReplaceImages} from "../../middleware/deleteImages";
 import {deleteOrReplacePostImage} from "../../middleware/deleteImagesPosts";
 import slugify from "slugify";

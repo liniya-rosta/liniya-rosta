@@ -2,12 +2,11 @@ import express from "express";
 import {PortfolioItem} from "../../models/PortfolioItem";
 import {portfolioImage} from "../../middleware/multer";
 import mongoose, {Types} from "mongoose";
-import {deleteOrReplaceImages} from "../../middleware/deleteImages";
-import {deleteOrReplaceGalleryImage} from "../../middleware/deleteImagesGallery";
 import {translateYandex} from "../../../translateYandex";
+import {deleteOrReplaceImages} from "../../middleware/deleteImages/deleteImages";
 import {GalleryUpdate} from "../../../types";
 import slugify from "slugify";
-import {deleteOrReplaceSubImage} from "../../middleware/deleteImagesGallery";
+import {deleteOrReplaceSubImage} from "../../middleware/deleteImages/deleteImagesGallery";
 
 const portfolioSuperAdminRouter = express.Router();
 

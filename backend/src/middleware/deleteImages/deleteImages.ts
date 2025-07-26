@@ -1,8 +1,8 @@
 import { RequestHandler } from "express";
 import { promises as fs } from "fs";
 import path from "path";
-import config from "../../config";
-import {DocumentWithImages, RequestWithFile} from "../../types";
+import config from "../../../config";
+import {DocumentWithImages, RequestWithFile} from "../../../types";
 import {Model} from "mongoose";
 
 type Mode = "delete" | "replace";
@@ -29,6 +29,11 @@ export const deleteOrReplaceImages = <T extends DocumentWithImages>(
                     return next();
                 }
                 const newImages = getImagePathsFromReq(req);
+
+                if (!newImages || newImages.length === 0) {
+                    return next();
+                }
+
                 toDelete = oldImages.filter(oldPath => !newImages.includes(oldPath));
             }
 
