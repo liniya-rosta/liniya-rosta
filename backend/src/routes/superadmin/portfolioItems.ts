@@ -165,8 +165,8 @@ portfolioSuperAdminRouter.patch(
         try {
             const {id} = req.params;
             if (!Types.ObjectId.isValid(id)) {
-                res.status(400).send({ error: "Неверный формат ID элемента галереи" });
-                return;
+                res.status(400).send({error: "Неверный формат ID элемента галереи"});
+                return
             }
 
             const file = req.file;
@@ -195,7 +195,7 @@ portfolioSuperAdminRouter.patch(
                 return;
             }
 
-            const refreshed = await PortfolioItem.findOne({ "gallery._id": id });
+            const refreshed = await PortfolioItem.findOne({"gallery._id": id});
             res.send(refreshed);
         } catch (e) {
             next(e);
@@ -208,7 +208,7 @@ portfolioSuperAdminRouter.delete(
     deleteOrReplaceImages(
         PortfolioItem,
         (doc) => {
-            const images = doc.gallery.map((item: { image: string }) => item.image);
+            const images = doc.gallery.map((item: {image: string}) => item.image);
             if (doc.cover) images.push(doc.cover);
             return images;
         }
@@ -238,7 +238,7 @@ portfolioSuperAdminRouter.delete(
         try {
             const {id} = req.params;
             if (!Types.ObjectId.isValid(id)) {
-                res.status(400).send({ error: "Неверный формат ID элемента галереи" });
+                res.status(400).send({error: "Неверный формат ID элемента галереи"});
                 return;
             }
 
@@ -249,7 +249,7 @@ portfolioSuperAdminRouter.delete(
 
             if (updated.modifiedCount === 0) {
                 res.status(404).send({error: "Элемент галереи не найден"});
-                return
+                return;
             }
 
             res.send({message: "Изображение галереи удалено"});

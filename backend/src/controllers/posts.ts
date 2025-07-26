@@ -11,8 +11,8 @@ export const getPosts = async (req: Request, res: Response, next: NextFunction) 
         const skip = (parsedPage - 1) * parsedLimit;
 
         const matchStage: Partial<{
-            description: { $regex: string; $options: string };
-            title: { $regex: string; $options: string };
+            description: {$regex: string; $options: string};
+            title: {$regex: string; $options: string};
         }> = {};
 
         if (description && typeof description === "string") {

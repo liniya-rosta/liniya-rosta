@@ -34,13 +34,18 @@ export const updatePost = async (
     await axiosAPI.patch(`/superadmin/posts/${postId}`, formData);
 };
 
-export const updatePostImage = async (postId: string, data: UpdateImagePost) => {
+export const updatePostImage = async (
+    postId: string,
+    data: UpdateImagePost
+) => {
     const formData = new FormData();
     formData.append("imageUrl", data.imageUrl);
-    formData.append("alt", data.alt ? data.alt?.ru : "");
+    if (data.alt) formData.append("alt", data.alt?.ru);
     if (data.newImage) formData.append("newImage", data.newImage);
 
-    await axiosAPI.patch(`/superadmin/posts/${postId}/update-image`, formData);
+    await axiosAPI.patch(`/superadmin/posts/${postId}/update-image`, formData,{
+        headers: {'Content-Type': 'multipart/form-data'}
+    });
 };
 
 export const reorderPostImages = async (postId: string, newOrder: ImageObject[]) => {
