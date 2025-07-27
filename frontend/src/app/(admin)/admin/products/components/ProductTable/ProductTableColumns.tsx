@@ -20,11 +20,11 @@ export const getProductTableColumns = (
     onEditProduct: (product: Product) => void,
     onDeleteProduct: (id: string) => void,
     actionLoading: boolean,
-    onImageClick: (image: { url: string; alt: {ru: string, ky: string} }) => void,
+    onImageClick: (image: { url: string; alt: { ru: string, ky: string } }) => void,
     onSaleLabelClick: (label: string) => void,
     onImagesClick: (data: {
         productId: string;
-        images: { url: string; alt?: {ru: string, ky: string} | null; _id: string }[]
+        images: { url: string; alt?: { ru: string, ky: string } | null; _id: string }[]
     }) => void): ColumnDef<Product>[] => {
     const getCategoryTitle = (category: string | Category) => {
         if (typeof category === "object" && category !== null) {
@@ -65,7 +65,7 @@ export const getProductTableColumns = (
                                 className="w-16 h-16 relative cursor-pointer"
                                 onClick={() => onImageClick({
                                     url: imageUrl,
-                                    alt: { ru:row.original.cover?.alt?.ru || "Обложка", ky: ""}
+                                    alt: {ru: row.original.cover?.alt?.ru || "Обложка", ky: ""}
                                 })}
                             >
                                 <Image
@@ -115,34 +115,59 @@ export const getProductTableColumns = (
         {
             accessorKey: "description",
             header: "Описание",
-            cell: ({row}) => (
-                <div className="w-60 max-h-24 overflow-auto text-sm break-words whitespace-pre-wrap">
-                    {row.original.description?.ru || (
-                        <span className="text-muted-foreground italic">Нет описания</span>
-                    )}
-                </div>
-            ),
+            cell: ({row}) => {
+                const text = row.original.description?.ru || "—";
+                if (text === "—") return text;
+
+                const preview = text.length > 30 ? text.slice(0, 30) + "..." : text;
+                return (
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <span
+                                className="cursor-pointer text-sm"
+                                onClick={() => onSaleLabelClick(text)}
+                            >
+                                {preview}
+                            </span>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>Нажмите чтобы посмотреть полное описание</p>
+                        </TooltipContent>
+                    </Tooltip>
+                );
+            },
         },
         {
             accessorKey: "characteristics",
             header: "Характеристики",
             cell: ({row}) => {
-                const characteristics = row.original.characteristics;
+                const chars = row.original.characteristics || [];
 
-                if (!Array.isArray(characteristics) || characteristics.length === 0) {
-                    return "—";
-                }
+                if (!Array.isArray(chars) || chars.length === 0) return "—";
+
+                const preview = chars
+                    .slice(0, 3)
+                    .map((c) => `${c.key.ru}: ${c.value.ru}`)
+                    .join(", ") + (chars.length > 3 ? ", ..." : "");
+
+                const fullText = chars
+                    .map((c) => `${c.key.ru}: ${c.value.ru}`)
+                    .join("\n");
 
                 return (
-                    <div className="max-h-24 overflow-y-auto">
-                        <ul className="list-disc ml-4 space-y-1 text-sm pr-2">
-                            {characteristics.map((char, idx) => (
-                                <li key={idx}>
-                                    <span className="font-medium">{char.key.ru}:</span> {char.value.ru}
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <span
+                                className="cursor-pointer min-w-[400px] text-sm whitespace-normal block"
+                                onClick={() => onSaleLabelClick(fullText)}
+                            >
+                                {preview}
+                            </span>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>Нажмите чтобы посмотреть все характеристики</p>
+                        </TooltipContent>
+                    </Tooltip>
                 );
             },
         },
@@ -156,7 +181,10 @@ export const getProductTableColumns = (
                         <TooltipTrigger asChild>
                             <div
                                 className="w-8 h-8 relative cursor-pointer"
-                                onClick={() => onImageClick({url: iconUrl, alt: {ru:row.original.icon?.alt?.ru || "Иконка", ky: ""}})}
+                                onClick={() => onImageClick({
+                                    url: iconUrl,
+                                    alt: {ru: row.original.icon?.alt?.ru || "Иконка", ky: ""}
+                                })}
                             >
                                 <Image
                                     src={`${API_BASE_URL}/${iconUrl}`}
@@ -182,28 +210,28 @@ export const getProductTableColumns = (
             cell: ({row}) => {
                 const saleLabel = row.original.sale?.label;
 
-                if (saleLabel) {
+                if (!row.original.sale?.isOnSale) return "—";
+
+                if (saleLabel?.ru) {
                     return (
                         <Tooltip>
                             <TooltipTrigger asChild>
-                                <div
-                                    className="w-8 h-8 relative cursor-pointer"
+                                <span
+                                    className="inline-flex items-center justify-center w-8 h-8 cursor-pointer"
                                     onClick={() => onSaleLabelClick(saleLabel.ru)}
                                 >
-                                    {row.original.sale?.isOnSale ? 'Да' : '—'}
-                                </div>
+                                    Да
+                                </span>
                             </TooltipTrigger>
                             <TooltipContent>
-                                <p>Нажмите чтобы подробнее подробнее посмотреть акцию</p>
+                                <p>Нажмите чтобы подробнее посмотреть акцию</p>
                             </TooltipContent>
                         </Tooltip>
                     );
                 } else {
-                    return (
-                        row.original.sale?.isOnSale ? 'Да' : "—"
-                    );
+                    return 'Да';
                 }
-            }
+            },
         },
         {
             accessorKey: "seoTitle",
@@ -213,13 +241,28 @@ export const getProductTableColumns = (
         {
             accessorKey: "seoDescription",
             header: "SEO описание",
-            cell: ({row}) => (
-                <div className="w-60 max-h-24 overflow-auto text-sm break-words whitespace-pre-wrap">
-                    {row.original.seoDescription || (
-                        <span className="text-muted-foreground italic">Нет описания</span>
-                    )}
-                </div>
-            ),
+            cell: ({row}) => {
+                const text = row.original.seoDescription || "—";
+                if (text === "—") return text;
+
+                const preview = text.length > 30 ? text.slice(0, 30) + "..." : text;
+
+                return (
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <span
+                                className="cursor-pointer text-sm"
+                                onClick={() => onSaleLabelClick(text)}
+                            >
+                                {preview}
+                            </span>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>Нажмите чтобы посмотреть полное SEO описание</p>
+                        </TooltipContent>
+                    </Tooltip>
+                );
+            },
         },
         {
             accessorKey: "images",
@@ -240,11 +283,12 @@ export const getProductTableColumns = (
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => onEditProduct(product)}
-                                              disabled={actionLoading}
-                                              className="cursor-pointer">
+                            <DropdownMenuItem
+                                onClick={() => onEditProduct(product)}
+                                disabled={actionLoading}
+                                className="cursor-pointer"
+                            >
                                 <Edit2 className="mr-2 h-4 w-4"/>
-
                                 Редактировать
                             </DropdownMenuItem>
 
@@ -262,9 +306,10 @@ export const getProductTableColumns = (
                                 Изображения
                             </DropdownMenuItem>
 
-                            <DropdownMenuItem onClick={() => onDeleteProduct(product._id)}
-                                              disabled={actionLoading}
-                                              className="text-red-600 focus:text-red-600 cursor-pointer"
+                            <DropdownMenuItem
+                                onClick={() => onDeleteProduct(product._id)}
+                                disabled={actionLoading}
+                                className="text-red-600 focus:text-red-600 cursor-pointer"
                             >
                                 <Trash2 className="mr-2 h-4 w-4 text-red-600 focus:text-red-600"/>
                                 Удалить
