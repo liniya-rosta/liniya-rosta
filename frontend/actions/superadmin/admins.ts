@@ -1,5 +1,5 @@
-import axiosAPI from "@/lib/axiosAPI";
-import {AdminForm, User} from "@/lib/types";
+import axiosAPI from "@/src/lib/axiosAPI";
+import {AdminForm, User} from "@/src/lib/types";
 
 export const getAllAdmins = async () => {
     const response = await axiosAPI.get<User[]>("/superadmin/admins")

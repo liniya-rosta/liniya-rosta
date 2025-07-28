@@ -1,5 +1,5 @@
-import {Product, ProductMutation, ProductUpdateMutation} from "@/lib/types";
-import axiosAPI from "@/lib/axiosAPI";
+import {Product, ProductMutation, ProductUpdateMutation} from "@/src/lib/types";
+import axiosAPI from "@/src/lib/axiosAPI";
 
 export const createProduct = async (productData: ProductMutation): Promise<Product> => {
     const formData = new FormData();

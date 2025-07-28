@@ -1,6 +1,6 @@
-import axiosAPI from "@/lib/axiosAPI";
-import {ImageObject, Post, UpdateImagePost} from "@/lib/types";
-import {CreatePostFormData, UpdatePostFormData} from "@/lib/zodSchemas/postSchema";
+import axiosAPI from "@/src/lib/axiosAPI";
+import {ImageObject, Post, UpdateImagePost} from "@/src/lib/types";
+import {CreatePostFormData, UpdatePostFormData} from "@/src/lib/zodSchemas/postSchema";
 
 export const createPost = async (postData: CreatePostFormData) => {
     const formData = new FormData();

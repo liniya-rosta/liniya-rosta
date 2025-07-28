@@ -1,5 +1,5 @@
-import axiosAPI from "@/lib/axiosAPI";
-import {IRequestMutation} from "@/lib/types";
+import axiosAPI from "@/src/lib/axiosAPI";
+import {IRequestMutation} from "@/src/lib/types";
 
 export const createRequest = async (data: IRequestMutation) => {
     try {

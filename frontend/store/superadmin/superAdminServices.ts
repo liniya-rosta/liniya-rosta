@@ -1,4 +1,4 @@
-import {ServiceResponse} from "@/lib/types";
+import {ServiceResponse} from "@/src/lib/types";
 import {create} from "zustand/react";
 
 interface AdminServicesState {

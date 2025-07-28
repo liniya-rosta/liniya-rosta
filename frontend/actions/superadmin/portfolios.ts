@@ -1,5 +1,5 @@
-import axiosAPI from "@/lib/axiosAPI";
-import {GalleryEditValues, PortfolioEditValues, PortfolioMutation} from "@/lib/types";
+import axiosAPI from "@/src/lib/axiosAPI";
+import {GalleryEditValues, PortfolioEditValues, PortfolioMutation} from "@/src/lib/types";
 
 export const createPortfolio = async (item: PortfolioMutation) => {
     const formData = new FormData();

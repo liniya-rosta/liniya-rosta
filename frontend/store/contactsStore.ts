@@ -1,5 +1,5 @@
 import {create} from 'zustand';
-import {Contact} from '@/lib/types';
+import {Contact} from '@/src/lib/types';
 
 interface ContactState {
     contact: Contact | null;

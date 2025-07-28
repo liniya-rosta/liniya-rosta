@@ -1,4 +1,4 @@
-import {IRequest} from "@/lib/types";
+import {IRequest} from "@/src/lib/types";
 import {create} from "zustand/index";
 
 interface RequestsState {

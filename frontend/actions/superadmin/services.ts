@@ -1,5 +1,5 @@
-import {ServiceForm, ServiceUpdate} from "@/lib/types";
-import axiosAPI from "@/lib/axiosAPI";
+import {ServiceForm, ServiceUpdate} from "@/src/lib/types";
+import axiosAPI from "@/src/lib/axiosAPI";
 
 export const fetchServiceById = async (id: string) => {
     const response =  await  axiosAPI.get(`/services/${id}`);

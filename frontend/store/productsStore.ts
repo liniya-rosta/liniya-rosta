@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { Product } from '@/lib/types';
+import { Product } from '@/src/lib/types';
 
 interface ProductState {
     products: Product[];

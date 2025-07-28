@@ -1,6 +1,6 @@
 import {create} from 'zustand';
-import axiosAPI from '@/lib/axiosAPI';
-import {Category, Product} from '@/lib/types';
+import axiosAPI from '@/src/lib/axiosAPI';
+import {Category, Product} from '@/src/lib/types';
 
 interface HomeStoreState {
     categories: Category[];

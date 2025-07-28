@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import {PaginationMeta, Post} from '@/lib/types';
+import {PaginationMeta, Post} from '@/src/lib/types';
 
 interface AdminPostState {
     posts: Post[];
