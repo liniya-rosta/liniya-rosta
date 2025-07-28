@@ -3,19 +3,30 @@ import ClientActions from "@/app/(public)/spc/components/ClientActions";
 
 const InfoAboutSpcLaminate = () => {
     return (
-            <div className="relative w-full h-[450px] flex items-center justify-center text-white mt-[-32] mb-[70px] sm:mb-[48px]">
-                <div className="absolute inset-0 bg-[url('/images/spc-laminate.png')] bg-cover bg-center
-                before:absolute before:inset-0 before:bg-black/65 before:content-[''] z-0" />
-                <div className="relative z-10 px-4 text-center max-w-[90%]">
-                    <h2 className="text-23-30-1_5 font-semibold mb-4">Что такое SPC ламинат?</h2>
-                    <p className="sm:text-base max-w-[600px] mb-5 text-sm">
-                        SPC-ламинат — это влагостойкое, прочное, долговечное покрытие нового поколения, подходящее
-                        практически для любых условий, включая ванные комнаты. Он выглядит как обычный ламинат, но
-                        по характеристикам ближе к виниловой плитке или плитке ПВХ.
-                    </p>
-                    <ClientActions />
-                </div>
+        <div className="relative w-full min-h-[480px] flex items-center mb-20 -mt-17 shadow-md">
+            <div
+                className="w-full h-[300px] md:h-[400px] bg-no-repeat bg-contain bg-left bg-center"
+                style={{
+                    backgroundImage: "url('/images/spc/main-bg-spc.png')",
+                }}
+            >
             </div>
+
+            <div className="mx-auto w-full py-10">
+                <h2 className="text-4xl font-bold leading-snug mb-4">
+                    Что такое <span className="text-highlight">SPC</span> ламинат?
+                </h2>
+                <p className="text-base text-muted-foreground max-w-prose">
+                    <strong>SPC-ламинат</strong> — это влагостойкое, прочное, долговечное покрытие нового
+                    поколения,
+                    подходящее практически для любых условий, включая ванные комнаты. Он выглядит как обычный
+                    ламинат,
+                    но по характеристикам ближе к виниловой плитке или плитке ПВХ.
+                </p>
+
+                <ClientActions/>
+            </div>
+        </div>
     );
 };
 

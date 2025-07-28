@@ -54,31 +54,6 @@ const SpcPage = async () => {
     return (
         <>
             <InfoAboutSpcLaminate/>
-            <section className="relative w-full min-h-[480px] flex items-center mb-20 overflow-hidden rounded-xl shadow-md px-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center w-full">
-                    <div
-                        className="w-full h-[300px] md:h-[400px] bg-no-repeat bg-contain bg-left bg-center"
-                        style={{
-                            backgroundImage: "url('/images/spc/spc.png')",
-                        }}
-                    />
-
-                    <div className="h-full flex items-center justify-center">
-                        <div>
-                            <h2 className="text-4xl font-bold leading-snug mb-4">
-                                Что такое <span className="text-highlight">SPC</span> ламинат?
-                            </h2>
-                            <p className="text-base text-muted-foreground max-w-prose mx-auto">
-                                <strong>SPC-ламинат</strong> — это влагостойкое, прочное, долговечное покрытие нового поколения,
-                                подходящее практически для любых условий, включая ванные комнаты. Он выглядит как обычный ламинат,
-                                но по характеристикам ближе к виниловой плитке или плитке ПВХ.
-                            </p>
-                        </div>
-                    </div>
-
-                </div>
-            </section>
-
             <Container>
                 <AdvantagesLaminate/>
                 <SpcLaminatePage initialData={laminateData} error={error} categoryName={categoryName}/>
