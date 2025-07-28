@@ -5,8 +5,6 @@ import {postImage} from "../../middleware/multer";
 import {updatePost} from "../../../types";
 import {deleteOrReplaceImages} from "../../middleware/deleteImages/deleteImages";
 import {deleteOrReplacePostImage} from "../../middleware/deleteImages/deleteImagesPosts";
-import {deleteOrReplaceImages} from "../../middleware/deleteImages";
-import {deleteOrReplacePostImage} from "../../middleware/deleteImagesPosts";
 import slugify from "slugify";
 import {translateYandex} from "../../../translateYandex";
 
@@ -132,7 +130,7 @@ postsSuperAdminRouter.patch("/:id", postImage.array("images"), async (req, res, 
 
         if (files && files.length > 0) {
             const newImages = files.map((file, index) => ({
-                image: `posts/${file.filename}`,
+                url: `posts/${file.filename}`,
                 alt: {
                     ru: alts[index],
                     ky: altsKy[index],
@@ -189,14 +187,14 @@ postsSuperAdminRouter.patch(
             return;
         }
 
-        const imageItem = post.images.find(img => img.image === imageUrl);
+        const imageItem = post.images.find(img => img.url === imageUrl);
         if (!imageItem) {
             res.status(404).json({error: "Изображение не найдено"});
             return;
         }
 
         if (req.file) {
-            imageItem.image = `posts/${req.file.filename}`;
+            imageItem.url = `posts/${req.file.filename}`;
         }
 
         if (alt !== undefined) imageItem.alt = alt;
@@ -225,7 +223,7 @@ postsSuperAdminRouter.patch("/:id/reorder-images", async (req, res, next) => {
             return
         }
 
-        const currentImages = post.images.map(img => img.image);
+        const currentImages = post.images.map(img => img.url);
         const isValid =
             newOrder.length === currentImages.length &&
             newOrder.every(img => currentImages.includes(img.image));
@@ -281,7 +279,7 @@ postsSuperAdminRouter.patch(
 postsSuperAdminRouter.delete("/:id",
     deleteOrReplaceImages(
         Post,
-        doc => doc.images.map(i => i.image),
+        doc => doc.images.map(i => i.url),
         () => [],
         "delete"
     ),

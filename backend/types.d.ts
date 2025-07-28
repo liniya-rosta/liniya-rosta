@@ -1,13 +1,5 @@
 import {Types} from "mongoose";
 
-export interface Product {
-    _id: string;
-    category: string;
-    title: string;
-    description: string | null;
-    image: string | null;
-}
-
 export interface Category {
     _id: string;
     title: string;
@@ -110,7 +102,7 @@ export interface ImageItem {
 export interface updatePost {
     title?: {ru: string, ky: string};
     description?: {ru: string, ky: string};
-    images?: { alt?: {ru: string, ky: string}, image: string }[];
+    images?: { alt?: {ru: string, ky: string}, url: string }[];
     seoTitle?: string;
     seoDescription?: string;
     slug?: string;
@@ -132,15 +124,7 @@ export interface RequestWithFile extends Express.Request {
 export interface IGalleryItem {
     _id: Types.ObjectId;
     image: string;
-    alt?: string;
-}
-
-export interface GalleryItem extends IGalleryItem {}
-
-export interface IProductItem {
-    _id: Types.ObjectId;
-    image: string;
-    alt?: string;
+    alt?: MultilangText;
 }
 
 export interface GalleryItem extends IGalleryItem {}
@@ -149,68 +133,90 @@ export interface DocumentWithGallery extends Document {
     gallery: GalleryItem[];
 }
 
-export interface ImageItem {
-    image: string;
-    alt?: string | null;
+interface MultilangText {
+    ru: string;
+    ky: string;
+}
+
+interface Image {
+    url: string;
+    alt?: MultilangText | null;
 }
 
 export interface IDocumentWithImages {
-    image?: string;
-    cover?: string | {url: string; alt?: string | null};
+    image?: Image;
+    cover?: Image;
     gallery?: IGalleryItem[];
-    images?: IProductItem[];
+    images?: ImageItem[];
+    icon?: Image;
 }
+
 
 export interface DocumentWithImages extends Document, IDocumentWithImages {}
 
 export interface ProductImage {
     url: string;
-    alt?: string | null;
+    alt?: MultilangText | null;
 }
 
 export interface ICharacteristicItem {
-    key: string;
-    value: string;
-}
-
-export interface ISale {
-    isOnSale: boolean;
-    label?: string | null;
-}
-
-export interface Icon {
-    url?: string;
-    alt?: string | null;
+    key: MultilangText;
+    value: MultilangText;
 }
 
 export interface IProduct {
     category: Types.ObjectId;
-    title: string;
-    description?: string | null;
+    title: MultilangText;
+    slug: string;
+    seoTitle?: string | null;
+    seoDescription?: string | null;
+    description: MultilangText;
     cover: {
         url: string;
-        alt?: string | null;
+        alt?: MultilangText | null;
     };
     images: ProductImage[];
     characteristics: ICharacteristicItem[];
-    sale: ISale;
-    icon?: Icon;
+    sale: {
+        isOnSale: boolean;
+        label: MultilangText;
+    };
+    icon?: {
+        url: string;
+        alt?: MultilangText | null;
+    };
 }
 
 export type ProductDocument = Document & IProduct;
 
 export interface IPost {
-    title: string;
-    description: string;
-    images: ImageItem[];
+    title: {
+        ru: string;
+        ky: string;
+    };
+    slug: string;
+    seoTitle?: string | null;
+    seoDescription?: string | null;
+    description: {
+        ru: string;
+        ky: string;
+    };
+    images: {
+        url: string;
+        alt?: {
+            ru: string;
+            ky: string;
+        };
+    }[];
 }
+
 
 export type PostDocument = Document & IPost;
 
 export interface IPortfolioItem extends DocumentWithGallery {
-    cover?: string;
-    coverAlt?: string;
-    description?: string;
+    cover?: Image;
+    coverAlt?: MultilangText;
+    description?: MultilangText;
     gallery: IGalleryItem[];
 }
 

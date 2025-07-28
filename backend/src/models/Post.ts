@@ -1,33 +1,17 @@
-import {Document, model, Schema} from "mongoose";
+import {model, Schema} from "mongoose";
 import slugify from "slugify";
+import {PostDocument} from "../../types";
 
 export interface ImageItem {
-    image: string;
+    url: string;
     alt?: {
         ru: string;
         ky: string;
     };
 }
 
-export interface PostDocument extends Document {
-    title: {
-        ru: string;
-        ky: string;
-    };
-    slug: string;
-    seoTitle?: string | null;
-    seoDescription?: string | null;
-    description: {
-        ru: string;
-        ky: string;
-    };
-    images: ImageItem[];
-    createdAt: Date;
-    updatedAt: Date;
-}
-
 const ImageSchema = new Schema<ImageItem>({
-    image: { type: String, required: true },
+    url: { type: String, required: true },
     alt: {
         ru: { type: String, required: true, maxLength: 150 },
         ky: { type: String, required: true, maxLength: 150 },

@@ -176,7 +176,8 @@ productsSuperAdminRouter.patch(
 
         if (title) {
             const titleKy = await translateYandex(title, "ky");
-            product.title = {ru: title.trim(), ky: titleKy};
+            product.title = titleKy.title
+
 
             const baseSlug = slugify(title, {lower: true, strict: true});
             let uniqueSlug = baseSlug;

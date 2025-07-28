@@ -79,7 +79,16 @@ portfolioSuperAdminRouter.patch(
     portfolioImage.single("cover"),
     deleteOrReplaceImages(
         PortfolioItem,
-        doc => (doc.cover ? [doc.cover] : []),
+        doc => {
+            const galleryImages = (doc.gallery ?? []).map(item => item.image);
+            const coverImage =
+                typeof doc.cover === "string"
+                    ? [doc.cover]
+                    : doc.cover?.url
+                        ? [doc.cover.url]
+                        : [];
+            return [...coverImage, ...galleryImages];
+        },
         req => (req.file ? [`portfolio/${req.file.filename}`] : []),
         "replace"
     ),
@@ -206,10 +215,15 @@ portfolioSuperAdminRouter.delete(
     "/:id",
     deleteOrReplaceImages(
         PortfolioItem,
-        (doc) => {
-            const images = doc.gallery.map((item: {image: string}) => item.image);
-            if (doc.cover) images.push(doc.cover);
-            return images;
+        doc => {
+            const galleryImages = (doc.gallery ?? []).map(item => item.image);
+            const coverImage =
+                typeof doc.cover === "string"
+                    ? [doc.cover]
+                    : doc.cover?.url
+                        ? [doc.cover.url]
+                        : [];
+            return [...coverImage, ...galleryImages];
         }
     ),
     async (req, res, next) => {
