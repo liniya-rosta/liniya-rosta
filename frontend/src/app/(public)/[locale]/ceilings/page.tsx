@@ -20,7 +20,7 @@ export const generateMetadata = async (): Promise<Metadata> => ({
 const CeilingsPage = async () => {
     try {
         const [products, categories] = await Promise.all([
-            fetchProducts(),
+            fetchProducts({}),
             fetchCategories()
         ]);
 

@@ -8,7 +8,6 @@ import { motion } from "motion/react"
 
 const NavBar = () => {
     const pathName = usePathname();
-    console.log(pathName);
 
     const segments = pathName.split("/").filter(Boolean);
     const cleanPathname =

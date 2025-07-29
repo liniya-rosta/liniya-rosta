@@ -23,7 +23,7 @@ const AdminProductsPage = async () => {
                 }
             }),
 
-        fetchProducts()
+        fetchProducts({})
             .then(data => products = data.items)
             .catch(e => {
                 if (e instanceof AxiosError) {

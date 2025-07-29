@@ -40,7 +40,7 @@ const SpcPage = async () => {
         const categories = await fetchCategories(categorySlug);
         const spcCategory = categories[0];
 
-        const laminateResponse = await fetchProducts(spcCategory._id);
+        const laminateResponse = await fetchProducts({categoryId: spcCategory._id});
         laminateData = laminateResponse.items;
     } catch (e) {
         if (e instanceof Error) {
