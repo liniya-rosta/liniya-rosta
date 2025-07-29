@@ -6,7 +6,7 @@ import ProductCard from "@/src/app/(public)/[locale]/(home)/components/ProductCa
 import {useProductStore} from "@/store/productsStore";
 import {useTranslations} from "next-intl";
 import {BtnArrow} from "@/src/components/ui/btn-arrow";
-import SectionAnimation from "@/src/components/shared/SectionAnimation";
+import SectionAnimation from "@/src/app/(public)/[locale]/(home)/components/SectionAnimation";
 
 const ProductsSection = () => {
     const {products, fetchProductsError} = useProductStore();

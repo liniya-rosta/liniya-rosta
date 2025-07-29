@@ -156,6 +156,15 @@
   "Toasts": {
     "success": {
       "submitRequest": "Өтүнмө жөнөтүлдү! Менеджер сиз менен байланышат."
-    }
+    },
+    "copyPhoneError": "Көчүрүү мүмкүн эмес"
+  },
+
+  "Tooltips": {
+    "copyPhoneBtn": "Чыкылдатуу көчүрүү үчүн"
+  },
+
+  "Actions": {
+    "copied": "Көчүрүлдү"
   }
 }

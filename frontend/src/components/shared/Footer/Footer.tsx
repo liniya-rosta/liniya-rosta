@@ -4,6 +4,7 @@ import {fetchContacts} from "@/actions/contacts";
 import FooterBtn from "@/src/components/shared/Footer/FooterBtn";
 import FooterContent from "@/src/components/shared/Footer/FooterContent";
 import {getTranslations} from "next-intl/server";
+import { Container } from '../Container';
 
 const Footer = async () => {
     let contactData: Contact | null = null;
@@ -21,14 +22,14 @@ const Footer = async () => {
     }
 
     return (
-        <>
-            <footer className="p-10 bg-gray-800 mt-10 text-white">
-                <div className="flex flex-wrap items-center justify-between w-full container mx-auto">
+        <footer className="py-10 mt-10">
+            <Container>
+                <div className="flex flex-wrap items-center justify-center sm:justify-between w-full">
                     <FooterContent contactData={contactData} contactError={contactError}/>
-                    <FooterBtn />
+                    <FooterBtn/>
                 </div>
-            </footer>
-        </>
+            </Container>
+        </footer>
     );
 };
 

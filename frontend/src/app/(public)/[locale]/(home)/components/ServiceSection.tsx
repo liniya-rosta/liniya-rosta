@@ -28,7 +28,7 @@ const ServiceSection = () => {
                             >
                                 <ServiceContentCard
                                     title={service.title[locale]}
-                                    description={service.description[locale]}
+                                    description={service.description?.[locale] || ""}
                                 />
                             </motion.div>
                         ))

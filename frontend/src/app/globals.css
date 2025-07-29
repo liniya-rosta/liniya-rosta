@@ -72,38 +72,6 @@
     --destructive: #af4f4f;
     --destructive-foreground: #FFFFFF;
 
-    /*---------------------------------------------------------------------------*/
-    /*оранжевая тема */
-    /*--header-footer-background: #dfb36f;*/
-    /*--header-footer-foreground: #6c4c2d;*/
-
-    /*--background: #F4EFE6;*/
-    /*--foreground: #222222;*/
-    /*--gradient-main: linear-gradient(to right, #3E555A, #9FADBD, #D48C39);*/
-
-    /*--card: #FFFFFF;*/
-    /*--card-foreground: #3E555A;*/
-
-    /*--popover: #FFFFFF;*/
-    /*--popover-foreground: #3E555A;*/
-
-    /*--primary: #D48C39;*/
-    /*--primary-foreground: #FFFFFF;*/
-
-    /*--secondary: #F2D499;*/
-    /*--secondary-foreground: #3E555A;*/
-
-    /*--color-orange-light: #f6c27d;*/
-
-    /*--muted: oklch(0.97 0 0);*/
-    /*--muted-foreground: oklch(0.45 0 0);*/
-
-    /*--accent: #9FADBD;*/
-    /*--accent-foreground: #2F3A40;*/
-
-    /*--destructive: #A0482C;*/
-    /*--destructive-foreground: #FFFFFF;*/
-
     --border: oklch(0.922 0 0);
     --input: oklch(0.922 0 0);
     --ring: oklch(0.708 0 0);
@@ -119,39 +87,39 @@
     --sidebar-ring: oklch(0.708 0 0);
 }
 
-/*.dark {*/
-/*    --background: oklch(0.145 0 0);*/
-/*    --foreground: oklch(0.985 0 0);*/
-/*    --card: oklch(0.205 0 0);*/
-/*    --card-foreground: oklch(0.985 0 0);*/
-/*    --popover: oklch(0.205 0 0);*/
-/*    --popover-foreground: oklch(0.985 0 0);*/
-/*    --primary: oklch(0.922 0 0);*/
-/*    --primary-foreground: oklch(0.205 0 0);*/
-/*    --secondary: oklch(0.269 0 0);*/
-/*    --secondary-foreground: oklch(0.985 0 0);*/
-/*    --muted: oklch(0.269 0 0);*/
-/*    --muted-foreground: oklch(0.708 0 0);*/
-/*    --accent: oklch(0.269 0 0);*/
-/*    --accent-foreground: oklch(0.985 0 0);*/
-/*    --destructive: oklch(0.704 0.191 22.216);*/
-/*    --border: oklch(1 0 0 / 10%);*/
-/*    --input: oklch(1 0 0 / 15%);*/
-/*    --ring: oklch(0.556 0 0);*/
-/*    --chart-1: oklch(0.488 0.243 264.376);*/
-/*    --chart-2: oklch(0.696 0.17 162.48);*/
-/*    --chart-3: oklch(0.769 0.188 70.08);*/
-/*    --chart-4: oklch(0.627 0.265 303.9);*/
-/*    --chart-5: oklch(0.645 0.246 16.439);*/
-/*    --sidebar: oklch(0.205 0 0);*/
-/*    --sidebar-foreground: oklch(0.985 0 0);*/
-/*    --sidebar-primary: oklch(0.488 0.243 264.376);*/
-/*    --sidebar-primary-foreground: oklch(0.985 0 0);*/
-/*    --sidebar-accent: oklch(0.269 0 0);*/
-/*    --sidebar-accent-foreground: oklch(0.985 0 0);*/
-/*    --sidebar-border: oklch(1 0 0 / 10%);*/
-/*    --sidebar-ring: oklch(0.556 0 0);*/
-/*}*/
+.dark {
+    --background: oklch(0.145 0 0);
+    --foreground: oklch(0.985 0 0);
+    --card: oklch(0.205 0 0);
+    --card-foreground: oklch(0.985 0 0);
+    --popover: oklch(0.205 0 0);
+    --popover-foreground: oklch(0.985 0 0);
+    --primary: oklch(0.922 0 0);
+    --primary-foreground: oklch(0.205 0 0);
+    --secondary: oklch(0.269 0 0);
+    --secondary-foreground: oklch(0.985 0 0);
+    --muted: oklch(0.269 0 0);
+    --muted-foreground: oklch(0.708 0 0);
+    --accent: oklch(0.269 0 0);
+    --accent-foreground: oklch(0.985 0 0);
+    --destructive: oklch(0.704 0.191 22.216);
+    --border: oklch(1 0 0 / 10%);
+    --input: oklch(1 0 0 / 15%);
+    --ring: oklch(0.556 0 0);
+    --chart-1: oklch(0.488 0.243 264.376);
+    --chart-2: oklch(0.696 0.17 162.48);
+    --chart-3: oklch(0.769 0.188 70.08);
+    --chart-4: oklch(0.627 0.265 303.9);
+    --chart-5: oklch(0.645 0.246 16.439);
+    --sidebar: oklch(0.205 0 0);
+    --sidebar-foreground: oklch(0.985 0 0);
+    --sidebar-primary: oklch(0.488 0.243 264.376);
+    --sidebar-primary-foreground: oklch(0.985 0 0);
+    --sidebar-accent: oklch(0.269 0 0);
+    --sidebar-accent-foreground: oklch(0.985 0 0);
+    --sidebar-border: oklch(1 0 0 / 10%);
+    --sidebar-ring: oklch(0.556 0 0);
+}
 
 @layer base {
     * {
@@ -171,12 +139,10 @@
     }
 }
 
-
-/* Минималистичные атомарные утилиты, часто используемые классы */
+/* Минималистичные утилиты, часто используемые классы */
 @layer utilities {
     .main-heading {
         @apply bg-gradient-to-r from-[#b9c8d6] to-[#e68210] text-transparent bg-clip-text font-bold w-fit mx-auto drop-shadow-md;
-        /*font-size: clamp(30px, 5vw, 48px);*/
         font-size: clamp(30px, calc(25px + (48 - 30) * ((100vw - 320px) / (1920 - 320))), 48px);
         line-height: 1.2;
         letter-spacing: -0.015em;
@@ -184,6 +150,25 @@
 
     .btn-hover-scale {
         @apply transition duration-500 hover:scale-105;
+    }
+
+    .btn-highlight {
+        background-color: var(--highlight);
+        @apply text-primary-foreground transition-colors;
+    }
+
+    .btn-highlight:hover {
+        background-color: color-mix(in oklab, var(--highlight), black 10%);
+    }
+
+    .text-20-30-1_2 {
+        font-size: clamp(20px, calc(20px + (30 - 20) * ((100vw - 320px) / (1920 - 320))), 30px);
+        line-height: 1.2;
+    }
+
+    .text-23-30-1_5 {
+        font-size: clamp(23px, calc(23px + (30 - 23) * ((100vw - 320px) / (1920 - 320))), 30px);
+        line-height: 1.5;
     }
 
     .text-highlight-light {
@@ -200,6 +185,10 @@
 
     .bg-highlight-light {
         background-color: var(--highlight-light);
+    }
+
+    .border-highlight {
+        border: 1px solid var(--highlight);
     }
 }
 
@@ -226,16 +215,6 @@
 
     .service-section-title {
         @apply mb-10 text-center
-    }
-
-    .text-20-30-1_2 {
-        font-size: clamp(20px, calc(20px + (30 - 20) * ((100vw - 320px) / (1920 - 320))), 30px);
-        line-height: 1.2;
-    }
-
-    .text-23-30-1_5 {
-        font-size: clamp(23px, calc(23px + (30 - 23) * ((100vw - 320px) / (1920 - 320))), 30px);
-        line-height: 1.5;
     }
 
     .swiper-pagination-bullets {

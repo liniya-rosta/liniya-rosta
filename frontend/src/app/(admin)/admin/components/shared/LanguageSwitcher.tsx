@@ -23,9 +23,9 @@ export default function LanguageSwitcher() {
 
     return (
         <Select value={locale} onValueChange={handleChange}>
-            <SelectTrigger className="md-min-w-[140px] text-white">
-                <Earth color="white"/>
-                <span className="hidden md:inline">
+            <SelectTrigger className="md-min-w-[140px] border-primary cursor-pointer">
+                <Earth className="text-primary"/>
+                <span className="hidden lg:inline">
                     <SelectValue/>
                  </span>
             </SelectTrigger>

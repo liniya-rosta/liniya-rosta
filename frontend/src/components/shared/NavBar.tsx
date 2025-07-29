@@ -29,7 +29,7 @@ const NavBar = () => {
 
     return (
         <nav className="py-4">
-            <div className="hidden md:flex flex-wrap gap-7.5 items-center justify-center">
+            <div className="hidden lg:flex flex-wrap gap-7.5 items-center justify-center">
                 {navItems.map(({href, label}) => {
                     const isActive = cleanPathname === href;
 
