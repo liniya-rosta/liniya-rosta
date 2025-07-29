@@ -13,6 +13,7 @@ import {
 import { Post } from '@/src/lib/types';
 import { API_BASE_URL } from '@/src/lib/globalConstants';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/src/components/ui/tooltip';
+import React from "react";
 
 export const getPostTableColumns = (
     onEditPost: (post: Post) => void,
@@ -95,6 +96,20 @@ export const getPostTableColumns = (
                         {count}
                     </div>
                 );
+            },
+        },
+        {
+            accessorKey: "seoTitle",
+            header: "SEO заголовок",
+            cell: ({row}) => row.original.seoTitle || "—",
+        },
+        {
+            accessorKey: "seoDescription",
+            header: "SEO описание",
+            cell: ({row}) => {
+                const text = row.original.seoDescription || "—";
+                if (text === "—") return text;
+                return text
             },
         },
         {

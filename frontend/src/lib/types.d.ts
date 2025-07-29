@@ -228,7 +228,7 @@ export interface Product {
     }[];
     sale?: {
         isOnSale: boolean;
-        label?: {ru: string, ky?: string};
+        label?: string;
     };
     icon?: {
         alt?: {ru: string, ky?: string;};
@@ -254,7 +254,7 @@ export interface ProductMutation {
     }[];
     sale?: {
         isOnSale: boolean;
-        label?: {ru: string} | null;
+        label?: string | null
     };
     icon?: File | null;
     iconAlt?: {ru: string} | null;

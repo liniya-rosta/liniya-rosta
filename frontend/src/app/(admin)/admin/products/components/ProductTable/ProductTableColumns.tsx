@@ -212,13 +212,13 @@ export const getProductTableColumns = (
 
                 if (!row.original.sale?.isOnSale) return "—";
 
-                if (saleLabel?.ru) {
+                if (saleLabel) {
                     return (
                         <Tooltip>
                             <TooltipTrigger asChild>
                                 <span
                                     className="inline-flex items-center justify-center w-8 h-8 cursor-pointer"
-                                    onClick={() => onSaleLabelClick(saleLabel.ru)}
+                                    onClick={() => onSaleLabelClick(saleLabel)}
                                 >
                                     Да
                                 </span>

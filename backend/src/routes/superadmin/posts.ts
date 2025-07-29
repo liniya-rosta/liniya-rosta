@@ -13,7 +13,7 @@ postsSuperAdminRouter.post("/", postImage.array("images"), async (req, res, next
         const {title, description, seoTitle, seoDescription} = req.body;
         const files = req.files as Express.Multer.File[];
 
-        if (!title || !description || !title.ru.trim() || !description.ru.trim()) {
+        if (!title || !description || !title.trim() || !description.trim()) {
             res.status(400).send({error: "Поля заголовка и описания обязательны для заполнения"});
             return;
         }
@@ -36,13 +36,13 @@ postsSuperAdminRouter.post("/", postImage.array("images"), async (req, res, next
         }));
 
         const kyTitle = await translateYandex(title, 'ky');
-        const kyDes = await translateYandex(title, 'ky');
+        const kyDes = await translateYandex(description, 'ky');
 
         const post = new Post({
-            title: {ru: title.trim(), ky: kyTitle},
-            description: {ru: description.trim(), ky: kyDes.trim()},
-            seoTitle: seoTitle?.trim() || null,
-            seoDescription: seoDescription?.trim() || null,
+            title: {ru: title, ky: kyTitle},
+            description: {ru: description, ky: kyDes},
+            seoTitle: seoTitle || null,
+            seoDescription: seoDescription || null,
             images,
         });
 
@@ -90,15 +90,14 @@ postsSuperAdminRouter.patch("/:id", postImage.array("images"), async (req, res, 
         }
 
         const updateData: updatePost = {};
-        if (title?.trim()) {
+        if (title.trim()) {
             const kyTitle = await translateYandex(title, 'ky');
-            const trimmedTitle = title.trim();
             updateData.title = {
-                ru: trimmedTitle,
+                ru: title,
                 ky: kyTitle
             };
 
-            const baseSlug = slugify(trimmedTitle, {lower: true, strict: true});
+            const baseSlug = slugify(title, {lower: true, strict: true});
             let uniqueSlug = baseSlug;
             let counter = 1;
 
@@ -113,7 +112,7 @@ postsSuperAdminRouter.patch("/:id", postImage.array("images"), async (req, res, 
         const kyDes = await translateYandex(title, 'ky');
 
         if (description?.trim()) updateData.description = {
-            ru: description.trim,
+            ru: description,
             ky: kyDes
         };
 

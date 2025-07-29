@@ -16,7 +16,7 @@ import {fetchPortfolioItem} from "@/actions/portfolios";
 import {Eye} from "lucide-react";
 import {Label} from "@/src/components/ui/label";
 import ImageModal from "@/src/app/(admin)/admin/portfolio/components/ImageModal";
-import { gallerySchema } from "@/src/lib/zodSchemas/portfolioSchema";
+import { gallerySchema } from "@/src/lib/zodSchemas/admin/portfolioSchema";
 
 interface Props {
     onSaved: () => void;

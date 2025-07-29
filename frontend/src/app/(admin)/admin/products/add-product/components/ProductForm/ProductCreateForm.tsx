@@ -61,7 +61,7 @@ const ProductCreateForm: React.FC<Props> = ({initialCategories, initialCategorie
             characteristics: [],
             sale: {
                 isOnSale: false,
-                label: {ru: ""},
+                label: "",
             },
             icon: null,
             iconAlt: {ru: ""},

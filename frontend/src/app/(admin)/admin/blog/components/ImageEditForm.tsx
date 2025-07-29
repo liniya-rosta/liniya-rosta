@@ -5,7 +5,7 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import {
     UpdatePostImageFormData,
     updatePostImageSchema
-} from "@/src/lib/zodSchemas/postSchema";
+} from "@/src/lib/zodSchemas/admin/postSchema";
 import {useSuperAdminPostStore} from "@/store/superadmin/superAdminPostsStore";
 import {Label} from "@/src/components/ui/label";
 import {Input} from "@/src/components/ui/input";
