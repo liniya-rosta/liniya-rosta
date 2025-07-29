@@ -3,8 +3,7 @@
 import React, { useEffect, useMemo, useState, useCallback } from 'react';
 import { Filter, MessageCircle, Phone, Search, X } from 'lucide-react';
 import RequestForm from "@/src/components/shared/RequestForm";
-import { ModalWindow } from '@/src/components/ui/modal-window';
-import { Dialog } from '@/src/components/ui/dialog';
+import { Dialog, DialogHeader } from '@/src/components/ui/dialog';
 import { Category, Product } from "@/src/lib/types";
 import { useCategoryStore } from "@/store/categoriesStore";
 import { useProductStore } from "@/store/productsStore";
@@ -16,6 +15,8 @@ import { Input } from '@/src/components/ui/input';
 import { Badge } from '@/src/components/ui/badge';
 import { Skeleton } from '@/src/components/ui/skeleton';
 import {useLocale, useTranslations} from "next-intl";
+import { Container } from '@/src/components/shared/Container';
+import {DialogTitle} from "@radix-ui/react-dialog";
 
 type Props = {
     initialProducts: Product[];
@@ -191,19 +192,19 @@ const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories })
     );
 
     return (
-        <div className="min-h-screen bg-background">
+        <Container>
             <div className="border-b bg-card">
-                <div className="max-w-7xl mx-auto px-4 py-6 flex flex-col md:flex-row justify-between gap-4">
-                    <div>
-                        <h1 className="text-3xl font-bold text-foreground">{tCeilings("title")}</h1>
+                <div className="py-6 flex flex-col md:flex-row md:justify-between gap-4">
+                    <div className="text-center md:text-left">
+                        <h1 className="text-23-30-1_5 font-bold">{tCeilings("title")}</h1>
                         <p className="text-muted-foreground mt-1">{tCeilings("subTitle")}</p>
                     </div>
-                    <div className="flex gap-3">
-                        <Button onClick={openConsultationModal} className="gap-2">
+                    <div className="flex gap-3 justify-center">
+                        <Button onClick={openConsultationModal} className="btn-hover-scale">
                             <Phone className="h-4 w-4" />
                             {tBtn("requestBtn1")}
                         </Button>
-                        <Button asChild variant="secondary" className="gap-2">
+                        <Button asChild variant="secondary" className="btn-hover-scale">
                             <a href="https://wa.me/996552088988" target="_blank" rel="noopener noreferrer">
                                 <MessageCircle className="h-4 w-4" />
                                 WhatsApp
@@ -213,8 +214,8 @@ const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories })
                 </div>
             </div>
 
-            <div className="max-w-7xl mx-auto px-4 py-8 flex flex-col lg:flex-row gap-8">
-                <div className="lg:w-80">
+            <div className="py-8 flex flex-col content-center md:flex-row gap-8">
+                <div className="lg:max-w-[300px]">
                     <Card className="sticky top-4">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
@@ -258,7 +259,9 @@ const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories })
                                         <Badge variant="secondary">{initialProducts.length}</Badge>
                                     </div>
                                 </div>
-                                {categories.map(renderCategoryFilter)}
+                                {categories
+                                    .filter(category => category.title[locale].toLowerCase() !== "spc")
+                                    .map(renderCategoryFilter)}
                             </div>
                         </CardContent>
                     </Card>
@@ -285,7 +288,7 @@ const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories })
                     {fetchProductsLoading ? (
                         renderSkeleton()
                     ) : filteredProducts.length > 0 ? (
-                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                        <div className="grid grid-cols-[repeat(auto-fit,minmax(260px,1fr))] gap-6 justify-center">
                             {filteredProducts.map(renderProductCard)}
                         </div>
                     ) : (
@@ -295,16 +298,14 @@ const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories })
             </div>
 
             {showConsultationModal && (
-                <ModalWindow
-                    isOpen={showConsultationModal}
-                    onClose={closeConsultationModal}
-                >
-                    <Dialog open={true} onOpenChange={closeConsultationModal}>
-                        <RequestForm closeModal={closeConsultationModal} />
-                    </Dialog>
-                </ModalWindow>
+                <Dialog open={showConsultationModal} onOpenChange={setShowConsultationModal}>
+                    <DialogHeader>
+                        <DialogTitle className="text-center">Форма заявки</DialogTitle>
+                    </DialogHeader>
+                    <RequestForm closeModal={() => setShowConsultationModal(false)}/>
+                </Dialog>
             )}
-        </div>
+        </Container>
     );
 };
 
