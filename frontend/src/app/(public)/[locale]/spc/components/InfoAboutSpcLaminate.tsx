@@ -1,7 +1,7 @@
 import React from 'react';
 import ClientActions from "@/src/app/(public)/[locale]/spc/components/ClientActions";
 import {getTranslations} from "next-intl/server";
-import AnimatedEntrance from "@/src/components/shared/AnimatedEntranceLeft";
+import AnimatedEntrance from "@/src/components/shared/AnimatedEntrance";
 
 const InfoAboutSpcLaminate = async () => {
     const tSpc = await getTranslations('SpcPage');

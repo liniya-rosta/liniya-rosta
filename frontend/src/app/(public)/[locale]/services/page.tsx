@@ -7,6 +7,7 @@ import {fetchAllServices} from "@/actions/services";
 import { ServiceResponse } from '@/src/lib/types';
 import {getTranslations} from "next-intl/server";
 import {Metadata} from "next";
+import { Container } from '@/src/components/shared/Container';
 
 export const revalidate = 1800;
 
@@ -50,16 +51,19 @@ const ServicePage = async () => {
     const tServices = await getTranslations("ServicesPage");
 
     return (
-        <section className="min-h-screen bg-white -mt-8">
+        <section className="min-h-screen -mt-8">
             <div
-                className="w-full min-h-[560px] md:h-[560px] bg-black/50 bg-[url('/images/services/main-service.JPG')] bg-cover bg-center bg-blend-overlay mb-10">
-                <div
-                    className="max-w-7xl mx-auto min-h-full px-6 py-15 md:py-0 flex flex-col md:flex-row items-center justify-between gap-10">
-                    <ServicesTitle/>
-                    <ServicesForm />
-                </div>
+                className="w-full min-h-[560px] lg:h-[560px] bg-black/50 bg-[url('/images/services/main-service.JPG')] py-14 bg-cover bg-center bg-blend-overlay mb-20">
+                <Container>
+                    <div
+                        className="min-h-full px-6 md:py-15 lg:py-0 grid grid-cols-1 lg:grid-cols-2 items-stretch justify-between gap-10">
+                        <ServicesTitle/>
+                        <ServicesForm/>
+                    </div>
+                </Container>
             </div>
-            <ServiceClient data={serviceData} error={errorMessage} servicesText={tServices("servicesSubtitle")} />
+
+            <ServiceClient data={serviceData} error={errorMessage} servicesText={tServices("servicesSubtitle")}/>
         </section>
     );
 };

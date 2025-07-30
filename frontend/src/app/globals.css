@@ -41,7 +41,6 @@
 }
 
 :root {
-    /*общий фон для шапки и футера голубоватый, цвет текста бирюзовый */
     --header-footer-background: #C2CEDA;
     --header-footer-foreground: #385157;
 
@@ -165,7 +164,7 @@
         line-height: 1.2;
     }
 
-    .text-20-30-1_2 {
+    .text-18-28-1_2 {
         font-size: clamp(20px, calc(20px + (30 - 20) * ((100vw - 320px) / (1920 - 320))), 30px);
         line-height: 1.2;
     }

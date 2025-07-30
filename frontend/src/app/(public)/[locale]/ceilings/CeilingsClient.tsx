@@ -17,6 +17,7 @@ import { Skeleton } from '@/src/components/ui/skeleton';
 import {useLocale, useTranslations} from "next-intl";
 import { Container } from '@/src/components/shared/Container';
 import {DialogTitle} from "@radix-ui/react-dialog";
+import AnimatedEntrance from "@/src/components/shared/AnimatedEntrance";
 
 type Props = {
     initialProducts: Product[];
@@ -86,14 +87,6 @@ const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories })
     }, [initialProducts]);
 
     const openConsultationModal = useCallback(() => {
-        setShowConsultationModal(true);
-    }, []);
-
-    const closeConsultationModal = useCallback(() => {
-        setShowConsultationModal(false);
-    }, []);
-
-    const handleProductConsultation = useCallback(() => {
         setShowConsultationModal(true);
     }, []);
 
@@ -195,11 +188,12 @@ const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories })
         <Container>
             <div className="border-b bg-card">
                 <div className="py-6 flex flex-col md:flex-row md:justify-between gap-4">
-                    <div className="text-center md:text-left">
+                    <AnimatedEntrance className="text-center md:text-left">
                         <h1 className="text-23-30-1_5 font-bold">{tCeilings("title")}</h1>
                         <p className="text-muted-foreground mt-1">{tCeilings("subTitle")}</p>
-                    </div>
-                    <div className="flex gap-3 justify-center">
+                    </AnimatedEntrance>
+
+                    <AnimatedEntrance direction="right" className="flex gap-3 justify-center">
                         <Button onClick={openConsultationModal} className="btn-hover-scale">
                             <Phone className="h-4 w-4" />
                             {tBtn("requestBtn1")}
@@ -210,12 +204,16 @@ const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories })
                                 WhatsApp
                             </a>
                         </Button>
-                    </div>
+                    </AnimatedEntrance>
                 </div>
             </div>
 
             <div className="py-8 flex flex-col content-center md:flex-row gap-8">
-                <div className="lg:max-w-[300px]">
+                <AnimatedEntrance
+                    direction="bottom"
+                    duration={0.8}
+                    className="lg:max-w-[300px]"
+                >
                     <Card className="sticky top-4">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
@@ -245,7 +243,7 @@ const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories })
                                 )}
                             </div>
 
-                            <div className="space-y-2">
+                            <AnimatedEntrance direction="bottom" className="space-y-2">
                                 <div
                                     onClick={() => handleCategoryChange('all')}
                                     className={`cursor-pointer p-3 rounded-lg transition-colors ${
@@ -262,10 +260,10 @@ const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories })
                                 {categories
                                     .filter(category => category.title[locale].toLowerCase() !== "spc")
                                     .map(renderCategoryFilter)}
-                            </div>
+                            </AnimatedEntrance>
                         </CardContent>
                     </Card>
-                </div>
+                </AnimatedEntrance>
 
                 <div className="flex-1">
                     <div className="flex justify-between items-center mb-6">
@@ -288,9 +286,9 @@ const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories })
                     {fetchProductsLoading ? (
                         renderSkeleton()
                     ) : filteredProducts.length > 0 ? (
-                        <div className="grid grid-cols-[repeat(auto-fit,minmax(260px,1fr))] gap-6 justify-center">
+                        <AnimatedEntrance direction="bottom" className="grid grid-cols-[repeat(auto-fit,minmax(260px,1fr))] gap-6 justify-center">
                             {filteredProducts.map(renderProductCard)}
-                        </div>
+                        </AnimatedEntrance>
                     ) : (
                         renderEmptyState()
                     )}

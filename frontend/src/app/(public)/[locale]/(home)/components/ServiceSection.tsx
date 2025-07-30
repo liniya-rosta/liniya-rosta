@@ -21,7 +21,7 @@ const ServiceSection = () => {
                         allServices.map((service, index) => (
                             <motion.div
                                 key={service._id}
-                                className="w-full sm:w-[calc(50%-1rem)] md:w-[calc(33.333%-1.333rem)]"
+                                className="w-full sm:w-[calc(50%-1rem)] md:w-[calc(33.333%-1.333rem)] md:min-w-[280px]"
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ type: "spring", stiffness: 100, damping: 20, delay: index * 0.1 }}

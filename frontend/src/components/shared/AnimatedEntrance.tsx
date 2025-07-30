@@ -5,10 +5,12 @@ import React from 'react';
 
 type Direction = 'left' | 'right' | 'top' | 'bottom';
 
-interface AnimatedEntranceProps extends React.PropsWithChildren {
+interface Props extends React.PropsWithChildren {
     direction?: Direction;
     duration?: number;
     delay?: number;
+    className?: string;
+
 }
 
 const getInitialPosition = (direction: Direction) => {
@@ -26,11 +28,12 @@ const getInitialPosition = (direction: Direction) => {
     }
 };
 
-const AnimatedEntrance: React.FC<AnimatedEntranceProps> = ({children, direction = 'left', duration = 0.6, delay = 0}) => {
+const AnimatedEntrance: React.FC<Props> = ({children, direction = 'left', duration = 0.6, delay = 0, className}) => {
     const initial = getInitialPosition(direction);
 
     return (
         <motion.div
+            className={className}
             initial={{ ...initial, opacity: 0 }}
             animate={{ x: 0, y: 0, opacity: 1 }}
             transition={{ duration, ease: 'easeOut', delay }}
