@@ -5,7 +5,7 @@ import React from "react";
 import {usePortfolioStore} from "@/store/portfolioItemStore";
 import { useTranslations } from "next-intl";
 import {BtnArrow} from "@/src/components/ui/btn-arrow";
-import SectionAnimation from "@/src/app/(public)/[locale]/(home)/components/SectionAnimation";
+import SectionAnimation from "@/src/components/shared/SectionAnimation";
 import {Swiper, SwiperSlide} from "swiper/react";
 import {Navigation, Pagination, Autoplay} from "swiper/modules";
 

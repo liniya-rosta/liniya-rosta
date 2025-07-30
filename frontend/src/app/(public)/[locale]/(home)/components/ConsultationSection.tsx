@@ -4,7 +4,7 @@ import {Button} from "@/src/components/ui/button";
 import RequestForm from "@/src/components/shared/RequestForm";
 import {useContactStore} from "@/store/contactsStore";
 import {useTranslations} from "next-intl";
-import SectionAnimation from "@/src/app/(public)/[locale]/(home)/components/SectionAnimation";
+import SectionAnimation from "@/src/components/shared/SectionAnimation";
 import { CopyPhoneButton } from '@/src/app/(public)/[locale]/(home)/components/CopyPhoneButton';
 
 const ConsultationSection = () => {

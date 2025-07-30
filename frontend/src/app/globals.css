@@ -142,9 +142,8 @@
 /* Минималистичные утилиты, часто используемые классы */
 @layer utilities {
     .main-heading {
-        @apply bg-gradient-to-r from-[#b9c8d6] to-[#e68210] text-transparent bg-clip-text font-bold w-fit mx-auto drop-shadow-md;
-        font-size: clamp(30px, calc(25px + (48 - 30) * ((100vw - 320px) / (1920 - 320))), 48px);
-        line-height: 1.2;
+        @apply bg-gradient-to-r from-[#b9c8d6] to-[#e68210]
+        text-transparent bg-clip-text font-bold w-fit mx-auto drop-shadow-md;
         letter-spacing: -0.015em;
     }
 
@@ -159,6 +158,11 @@
 
     .btn-highlight:hover {
         background-color: color-mix(in oklab, var(--highlight), black 10%);
+    }
+
+    .text-30-48-1_2 {
+        font-size: clamp(30px, calc(25px + (48 - 30) * ((100vw - 320px) / (1920 - 320))), 48px);
+        line-height: 1.2;
     }
 
     .text-20-30-1_2 {

@@ -39,7 +39,7 @@ const HeroSection: React.FC<Props> = ({title}) => {
                             initial={{ opacity: 0, y: 30 }}
                             animate={{opacity: 1, y: 0 }}
                             transition={{ duration: 0.8, ease: "easeOut" }}>
-                            <h1 className="main-heading">Линия роста</h1>
+                            <h1 className="main-heading text-30-48-1_2">Линия роста</h1>
                             <p className="text-lg md:text-xl">
                                 {title}
                             </p>

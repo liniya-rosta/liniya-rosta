@@ -1,6 +1,6 @@
 import { useTranslations } from 'next-intl';
 import React from 'react';
-import SectionAnimation from "@/src/app/(public)/[locale]/(home)/components/SectionAnimation";
+import SectionAnimation from "@/src/components/shared/SectionAnimation";
 
 const InstagramSection = () => {
     const tHome = useTranslations("HomePage");
