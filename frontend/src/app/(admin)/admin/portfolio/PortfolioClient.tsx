@@ -25,11 +25,8 @@ import {
 } from "@/src/app/(admin)/admin/portfolio/components/DataTable";
 import ImageModal from "@/src/app/(admin)/admin/portfolio/components/ImageModal";
 import {ModalEdit, PortfolioEditForm, GalleryEditForm} from "@/src/app/(admin)/admin/portfolio/components/ModelEdit";
-import DataSkeleton from "@/src/components/ui/Loading/DataSkeleton";
+import DataSkeleton from "@/src/components/shared/DataSkeleton";
 import ConfirmDialog from "@/src/components/ui/ConfirmDialog";
-import Link from "next/link";
-import {Button} from "@/src/components/ui/button";
-import {Plus} from "lucide-react";
 import ErrorMsg from "@/src/components/ui/ErrorMsg";
 import {usePersistedPageSize} from "@/hooks/usePersistedPageSize";
 import ModalGallery from "@/src/components/shared/ModalGallery";
@@ -330,23 +327,6 @@ const AdminPortfolioClient: React.FC<Props> = ({ error}) => {
 
     return (
         <>
-            <div className="flex flex-col sm:flex-row sm:justify-between items-center gap-4 mb-4">
-                <div>
-                    <h1 className="text-3xl font-bold text-foreground text-center sm:text-left">
-                        Управление портфолио
-                    </h1>
-                    <p className="text-muted-foreground mt-1 text-center sm:text-left">
-                        Создавайте и редактируйте портфолио
-                    </p>
-                </div>
-                <Link href="/admin/portfolio/add-portfolio" >
-                    <Button className="flex items-center gap-2 w-full sm:w-auto">
-                        <Plus size={16} />
-                        Создать портфолио
-                    </Button>
-                </Link>
-            </div>
-
            <TableControls
                table={table}
                showConfirm={setShowConfirm}

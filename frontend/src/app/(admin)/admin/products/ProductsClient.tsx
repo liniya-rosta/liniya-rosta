@@ -10,7 +10,7 @@ import ProductsTable from "@/src/app/(admin)/admin/products/components/ProductTa
 import {Category, Product} from "@/src/lib/types";
 import {toast} from "react-toastify";
 import {useAdminProductStore} from "@/store/superadmin/superadminProductsStore";
-import DataSkeleton from "@/src/components/ui/Loading/DataSkeleton";
+import DataSkeleton from "@/src/components/shared/DataSkeleton";
 import ErrorMsg from "@/src/components/ui/ErrorMsg";
 import Link from "next/link";
 import {useAdminCategoryStore} from "@/store/superadmin/superadminCategoriesStore";
@@ -128,7 +128,7 @@ const ProductsClient: React.FC<ProductsClientProps> = ({
         <div className="space-y-6">
             <div className="flex flex-col sm:flex-row sm:justify-between items-center gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold text-foreground text-center sm:text-left">
+                    <h1 className="text-23-30-1_5 font-bold text-center sm:text-left">
                         Управление продуктами
                     </h1>
                     <p className="text-muted-foreground mt-1 text-center sm:text-left">

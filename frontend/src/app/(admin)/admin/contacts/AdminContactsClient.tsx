@@ -36,7 +36,7 @@ const AdminContactsClient: React.FC<Props> = ({data, error}) => {
 
     return (
         <div>
-            <h1 className="text-3xl font-bold text-foreground text-center sm:text-left">
+            <h1 className="text-23-30-1_5 font-bold text-center sm:text-left">
                 Управление контактной информацией
             </h1>
             {contact && <AdminContactForm contact={contact}/>}

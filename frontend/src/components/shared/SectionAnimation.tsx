@@ -5,10 +5,11 @@ import React, {useRef} from 'react';
 
 interface Props {
     ariaLabelledby?: string;
-    className: string;
+    className?: string;
+    lang?: string;
 }
 
-const SectionAnimation: React.FC<React.PropsWithChildren<Props>> = ({ariaLabelledby, className, children}) => {
+const SectionAnimation: React.FC<React.PropsWithChildren<Props>> = ({ariaLabelledby, className, children, lang}) => {
     const ref = useRef(null);
     const isInView = useInView(ref, { once: true, margin: "-100px" });
 
@@ -20,6 +21,7 @@ const SectionAnimation: React.FC<React.PropsWithChildren<Props>> = ({ariaLabelle
             initial={{ opacity: 0, y: 30 }}
             animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
             transition={{ duration: 0.6, ease: "easeOut" }}
+            lang={lang}
         >
             {children}
         </motion.section>
