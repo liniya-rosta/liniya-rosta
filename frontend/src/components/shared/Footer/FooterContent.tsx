@@ -7,8 +7,11 @@ import {useContactStore} from "@/store/contactsStore";
 import {Contact} from "@/src/lib/types";
 import Loading from "@/src/components/ui/Loading/Loading";
 import ErrorMsg from "@/src/components/ui/ErrorMsg";
-import { useLocale } from 'next-intl';
+import {useLocale} from 'next-intl';
 import {Button} from "@/src/components/ui/button";
+import Link from "next/link";
+import Image from "next/image";
+import logo from "@/public/logo.png";
 
 interface ContactProps {
     contactData: Contact | null;
@@ -38,8 +41,17 @@ const FooterContent: React.FC<ContactProps> = ({contactData, contactError}) => {
 
     return (
         contact &&
-        <div className="flex flex-col gap-2 mb-7 sm:mb-0">
-            <div className="space-y-2 text-center sm:text-left">
+        <div className="w-[50%] flex flex-col lg:flex-row md:justify-between gap-4 mb-7 sm:mb-0">
+            <Link href={`/${locale}`} className="shrink-0 block mx-auto sm:mx-0">
+                <Image
+                    src={logo}
+                    alt="Логотип компании 'Линия Роста'"
+                    className="h-20 w-auto"
+                    priority
+                />
+            </Link>
+
+            <div className="space-y-4 md:space-y-2 text-center sm:text-left">
                 <p>
                     <a href={contact.mapLocation}
                        target="_blank"
@@ -48,6 +60,48 @@ const FooterContent: React.FC<ContactProps> = ({contactData, contactError}) => {
                     >{contact.location[locale]}
                     </a>
                 </p>
+                <p>
+                    <a href={`mailto:${contact.email}`}
+                       target="_blank"
+                       className="hover:underline"
+                    >{contact.email}
+                    </a>
+                </p>
+
+                <div className="flex justify-center sm:justify-normal items-center gap-3 mt-2">
+                    <Button
+                        variant="secondary"
+                        size="icon"
+                        className="w-9 h-9 rounded-full p-0"
+                    >
+                        <a
+                            href={contact.instagram}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="w-full h-full flex items-center justify-center text-foreground hover:text-primary transition hover:scale-110"
+                        >
+                            <FontAwesomeIcon icon={faInstagram} className="w-7 h-7 text-xl"/>
+                        </a>
+                    </Button>
+
+                    <Button
+                        variant="secondary"
+                        size="icon"
+                        className="w-9 h-9 rounded-full p-0"
+                    >
+                        <a
+                            href={`https://wa.me/${contact.whatsapp.replace('+', '')}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="w-full h-full flex items-center justify-center text-foreground hover:text-primary transition hover:scale-110"
+                        >
+                            <FontAwesomeIcon icon={faWhatsapp} className="w-7 h-7 text-xl"/>
+                        </a>
+                    </Button>
+                </div>
+            </div>
+
+            <div className="space-y-4 md:space-y-2 text-center sm:text-left">
                 <p>
                     <a href={`tel:${contact.phone1}`}
                        target="_blank"
@@ -62,45 +116,6 @@ const FooterContent: React.FC<ContactProps> = ({contactData, contactError}) => {
                     >{contact.phone2}
                     </a>
                 </p>
-                <p>
-                    <a href={`mailto:${contact.email}`}
-                       target="_blank"
-                       className="hover:underline"
-                    >{contact.email}
-                    </a>
-                </p>
-            </div>
-
-            <div className="flex justify-center sm:justify-normal items-center gap-3 mt-2">
-                <Button
-                    variant="secondary"
-                    size="icon"
-                    className="w-9 h-9 rounded-full p-0"
-                >
-                    <a
-                        href={contact.instagram}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="w-full h-full flex items-center justify-center text-foreground hover:text-primary transition hover:scale-110"
-                    >
-                        <FontAwesomeIcon icon={faInstagram} className="w-7 h-7 text-xl"/>
-                    </a>
-                </Button>
-
-                <Button
-                    variant="secondary"
-                    size="icon"
-                    className="w-9 h-9 rounded-full p-0"
-                >
-                    <a
-                        href={`https://wa.me/${contact.whatsapp.replace('+', '')}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="w-full h-full flex items-center justify-center text-foreground hover:text-primary transition hover:scale-110"
-                    >
-                        <FontAwesomeIcon icon={faWhatsapp} className="w-7 h-7 text-xl"/>
-                    </a>
-                </Button>
             </div>
         </div>
     );

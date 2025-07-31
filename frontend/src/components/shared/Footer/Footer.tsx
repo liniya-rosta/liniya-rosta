@@ -22,11 +22,16 @@ const Footer = async () => {
     }
 
     return (
-        <footer className="py-10 mt-10">
+        <footer className="py-20 mt-10">
             <Container>
                 <div className="flex flex-wrap items-center justify-center sm:justify-between w-full">
                     <FooterContent contactData={contactData} contactError={contactError}/>
-                    <FooterBtn/>
+
+                    <div className="w-full sm:w-auto">
+                        <div className="flex justify-center sm:block">
+                            <FooterBtn/>
+                        </div>
+                    </div>
                 </div>
             </Container>
         </footer>

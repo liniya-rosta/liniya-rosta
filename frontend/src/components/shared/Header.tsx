@@ -4,7 +4,7 @@ import React from 'react';
 import NavBar from "@/src/components/shared/NavBar";
 import LanguageSwitcher from "@/src/app/(admin)/admin/components/shared/LanguageSwitcher";
 import Image from "next/image";
-import logo from "../../../public/images/logo.png"
+import logo from "../../../public/logo.png"
 import { Container } from './Container';
 import Link from 'next/link';
 import { useLocale } from 'next-intl';

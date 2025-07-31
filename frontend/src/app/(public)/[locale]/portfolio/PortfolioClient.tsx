@@ -12,6 +12,9 @@ import {useLocale, useTranslations} from "next-intl";
 import LoadingFullScreen from "@/src/components/ui/Loading/LoadingFullScreen";
 import {usePortfolioFetcher} from "@/src/app/(public)/[locale]/portfolio/hooks/usePortfolioFetcher";
 import PaginationButtons from "@/src/components/shared/PaginationButtons";
+import AnimatedEntrance from "@/src/components/shared/AnimatedEntrance";
+import HeroSectionPortfolio from "@/src/app/(public)/[locale]/portfolio/components/HeroSectionPortfolio";
+import {Container} from "@/src/components/shared/Container";
 
 interface Props {
     data: PortfolioResponse | null;
@@ -19,7 +22,7 @@ interface Props {
     limit: string;
 }
 
-const PortfolioClient: React.FC<Props> = ({ data, error, limit }) => {
+const PortfolioClient: React.FC<Props> = ({data, error, limit}) => {
     const tPortfolio = useTranslations("PortfolioPage");
     const locale = useLocale() as "ru" | "ky";
 
@@ -49,27 +52,35 @@ const PortfolioClient: React.FC<Props> = ({ data, error, limit }) => {
     if (fetchErrorPortfolio) return <ErrorMsg error={fetchErrorPortfolio}/>;
 
     return (
-        <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mb-15">
-                {items && items.length > 0 ? (
-                    items.map((item) => {
-                        const imageUrl = API_BASE_URL + "/" + item.cover;
-                        const pageUrl = "/portfolio/" + item.slug;
-                        return (
-                            <Link key={item._id} href={pageUrl}>
-                                <CartPortfolio
-                                    alt={item.coverAlt[locale]}
-                                    imageSrc={imageUrl}
-                                />
-                            </Link>
-                        );
-                    })
-                ) : (
-                    <div className="flex flex-col items-center justify-center col-span-full min-h-[300px]">
-                        <EmptyState message={tPortfolio("noData")} />
-                    </div>
-                )}
-            </div>
+        <Container>
+            <AnimatedEntrance direction="bottom">
+                <HeroSectionPortfolio/>
+            </AnimatedEntrance>
+
+            <AnimatedEntrance direction="bottom" duration={0.8}>
+                <h3 className="text-23-30-1_5 font-bold text-center mb-5">{tPortfolio("sectionTitle")}</h3>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mb-15">
+                    {items && items.length > 0 ? (
+                        items.map((item) => {
+                            const imageUrl = API_BASE_URL + "/" + item.cover;
+                            const pageUrl = "/portfolio/" + item.slug;
+                            return (
+                                <Link key={item._id} href={pageUrl}>
+                                    <CartPortfolio
+                                        alt={item.coverAlt[locale]}
+                                        imageSrc={imageUrl}
+                                    />
+                                </Link>
+                            );
+                        })
+                    ) : (
+                        <div className="flex flex-col items-center justify-center col-span-full min-h-[300px]">
+                            <EmptyState message={tPortfolio("noData")}/>
+                        </div>
+                    )}
+                </div>
+            </AnimatedEntrance>
 
             {paginationPortfolio && paginationPortfolio.totalPages > 1 && (
                 <PaginationButtons
@@ -79,7 +90,7 @@ const PortfolioClient: React.FC<Props> = ({ data, error, limit }) => {
                     onPageChange={handlePageChange}
                 />
             )}
-        </>
+        </Container>
     );
 };
 
