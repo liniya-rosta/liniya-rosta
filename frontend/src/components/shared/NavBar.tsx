@@ -20,6 +20,7 @@ const NavBar = () => {
     const navItems = [
         {href: "/", label: tHeader("headerLinks.home")},
         {href: "/ceilings", label: tHeader("headerLinks.stretchCeilings")},
+        {href: "/wallpaper", label: tHeader("headerLinks.stretchWallpaper")},
         {href: "/spc", label: "SPC ламинат"},
         {href: "/services", label: tHeader("headerLinks.services")},
         {href: "/portfolio", label: "Портфолио"},
@@ -29,7 +30,7 @@ const NavBar = () => {
 
     return (
         <nav className="py-4">
-            <div className="hidden lg:flex flex-wrap gap-7.5 items-center justify-center">
+            <div className="hidden xl:flex flex-wrap gap-7.5 items-center justify-center">
                 {navItems.map(({href, label}) => {
                     const isActive = cleanPathname === href;
 

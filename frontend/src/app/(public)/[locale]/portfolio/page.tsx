@@ -5,6 +5,7 @@ import {PortfolioResponse} from "@/src/lib/types";
 import {isAxiosError} from "axios";
 import {getTranslations} from "next-intl/server";
 import {Metadata} from "next";
+import { Container } from '@/src/components/shared/Container';
 
 export const revalidate = 1800;
 
@@ -23,7 +24,7 @@ export const generateMetadata = async (): Promise<Metadata> => ({
 const PortfolioPage = async () => {
     let errorMessage: string | null = null;
     let portfolioData: PortfolioResponse | null = null;
-    const limit = "8";
+    const limit = "9";
 
     const tPortfolio = await getTranslations("PortfolioPage");
     const tErrors = await getTranslations("Errors");
@@ -42,17 +43,20 @@ const PortfolioPage = async () => {
     }
 
     return (
-        <main className="container mx-auto px-8">
-            <h1 className="text-3xl font-bold text-foreground mb-5">
-                Портфолио
-                <span className="block font-medium text-muted-foreground text-sm tracking-wider uppercase">
+        <Container>
+            <div>
+                <h1 className="text-3xl font-bold text-foreground mb-5">
+                    Портфолио
+                    <span className="block font-medium text-muted-foreground text-sm tracking-wider uppercase">
                     {tPortfolio("portfolioSubtitle")}
                 </span>
-            </h1>
+                </h1>
+            </div>
+
             <PortfolioClient data={portfolioData}
                              error={errorMessage}
                              limit={limit}/>
-        </main>
+        </Container>
     );
 };
 

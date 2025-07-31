@@ -27,7 +27,7 @@ const Burger: React.FC<BurgerProps> = ({navItems, isAdmin}) => {
             : pathname;
 
     return (
-        <div className={`flex justify-end ${isAdmin ? '' : 'lg:hidden'}`}>
+        <div className={`flex justify-end ${isAdmin ? '' : 'xl:hidden'}`}>
             <Sheet>
                 <SheetTrigger asChild>
                     <Button

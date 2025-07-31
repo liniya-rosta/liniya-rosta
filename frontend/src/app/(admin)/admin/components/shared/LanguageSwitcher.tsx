@@ -11,8 +11,13 @@ import {
     SelectContent,
     SelectItem,
 } from '@/src/components/ui/select';
+import {cn} from "@/src/lib/utils";
 
-export default function LanguageSwitcher() {
+interface Props {
+    className?: string;
+}
+
+const LanguageSwitcher: React.FC<Props> = ({className}) => {
     const locale = useLocale();
     const pathname = usePathname();
     const router = useRouter();
@@ -23,9 +28,9 @@ export default function LanguageSwitcher() {
 
     return (
         <Select value={locale} onValueChange={handleChange}>
-            <SelectTrigger className="md-min-w-[140px] border-primary cursor-pointer">
+            <SelectTrigger className={cn("md-min-w-[140px] border-primary cursor-pointer", className)}>
                 <Earth className="text-primary"/>
-                <span className="hidden lg:inline">
+                <span className="hidden sm:inline">
                     <SelectValue/>
                  </span>
             </SelectTrigger>
@@ -36,3 +41,5 @@ export default function LanguageSwitcher() {
         </Select>
     );
 }
+
+export default LanguageSwitcher;
