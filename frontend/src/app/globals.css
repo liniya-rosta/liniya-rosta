@@ -152,7 +152,7 @@
 
     .btn-highlight {
         background-color: var(--highlight);
-        @apply text-primary-foreground transition-colors;
+        @apply text-primary-foreground;
     }
 
     .btn-highlight:hover {
