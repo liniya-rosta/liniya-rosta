@@ -56,14 +56,14 @@ const FooterContent: React.FC<ContactProps> = ({contactData, contactError}) => {
                     <a href={contact.mapLocation}
                        target="_blank"
                        rel="noopener noreferrer"
-                       className="hover:underline"
+                       className="underline-animate"
                     >{contact.location[locale]}
                     </a>
                 </p>
                 <p>
                     <a href={`mailto:${contact.email}`}
                        target="_blank"
-                       className="hover:underline"
+                       className="underline-animate"
                     >{contact.email}
                     </a>
                 </p>
@@ -105,14 +105,14 @@ const FooterContent: React.FC<ContactProps> = ({contactData, contactError}) => {
                 <p>
                     <a href={`tel:${contact.phone1}`}
                        target="_blank"
-                       className="hover:underline"
+                       className="underline-animate"
                     >{contact.phone1}
                     </a>
                 </p>
                 <p>
                     <a href={`tel:${contact.phone2}`}
                        target="_blank"
-                       className="hover:underline"
+                       className="underline-animate"
                     >{contact.phone2}
                     </a>
                 </p>

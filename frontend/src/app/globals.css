@@ -193,6 +193,20 @@
     .border-highlight {
         border: 1px solid var(--highlight);
     }
+
+    .underline-animate {
+        @apply relative inline-block;
+    }
+
+    .underline-animate::after {
+        content: '';
+        @apply absolute left-0 -bottom-0.5 h-[1px] w-0 bg-current transition-all duration-300;
+    }
+
+    .underline-animate:hover::after {
+        @apply w-full;
+    }
+
 }
 
 /* Компоненты сайта: кнопки, карточки, секции, заголовки и т.д. */

@@ -177,7 +177,7 @@ const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories })
                     : 'hover:bg-muted'
             }`}
         >
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center gap-3">
                 <span>{category.title[locale]}</span>
                 <Badge variant="secondary">{categoryCounts[category._id] || 0}</Badge>
             </div>
