@@ -1,25 +1,26 @@
 "use client";
 
 import * as React from "react";
-import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow,} from "@/src/components/ui/table";
+import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/src/components/ui/table";
 import {useSuperadminAdminsStore} from "@/store/superadmin/superadminAdminsStore";
 import ErrorMsg from "@/src/components/ui/ErrorMsg";
 
-import RoleConfirm from "@/src/app/(admin)/admin/admins/components/RoleConfirm";
 import DeleteConfirm from "@/src/app/(admin)/admin/admins/components/DeleteConfirm";
+import AdminEditModal from "./AdminEditModal";
+import {User} from "@/src/lib/types";
 
 const AdminsTable = () => {
     const {
         admins,
-        setEditAdmin,
         setDeleteAdmin,
         editAdminError,
         deleteAdminError,
     } = useSuperadminAdminsStore();
 
+    const [selectedAdmin, setSelectedAdmin] = React.useState<User | null>(null);
+
     return (
         <div className="rounded-md border p-2 mt-3">
-
             {editAdminError && <ErrorMsg error={editAdminError}/>}
             {deleteAdminError && <ErrorMsg error={deleteAdminError}/>}
 
@@ -41,12 +42,26 @@ const AdminsTable = () => {
                                     key={admin._id ?? index}
                                     className="odd:bg-white even:bg-gray-50 hover:bg-blue-50"
                                 >
-                                    <TableCell>{admin.email}</TableCell>
-                                    <TableCell>{admin.displayName}</TableCell>
                                     <TableCell>
                                         <button
-                                            onClick={() => setEditAdmin(admin)}
-                                            className="text-blue-600 underline cursor-pointer"
+                                            onClick={() => setSelectedAdmin(admin)}
+                                            className="cursor-pointer hover:underline hover:text-blue-600"
+                                        >
+                                            {admin.email}
+                                        </button>
+                                    </TableCell>
+                                    <TableCell>
+                                        <button
+                                            onClick={() => setSelectedAdmin(admin)}
+                                            className="cursor-pointer hover:underline hover:text-blue-600"
+                                        >
+                                            {admin.displayName}
+                                        </button>
+                                    </TableCell>
+                                    <TableCell>
+                                        <button
+                                            onClick={() => setSelectedAdmin(admin)}
+                                            className="cursor-pointer hover:underline hover:text-blue-600"
                                         >
                                             {admin.role}
                                         </button>
@@ -59,7 +74,6 @@ const AdminsTable = () => {
                                             Удалить
                                         </button>
                                     </TableCell>
-
                                 </TableRow>
                             ))
                         ) : (
@@ -73,8 +87,14 @@ const AdminsTable = () => {
                 </Table>
             </div>
 
-            <RoleConfirm/>
             <DeleteConfirm/>
+
+            {selectedAdmin && (
+                <AdminEditModal
+                    admin={selectedAdmin}
+                    onClose={() => setSelectedAdmin(null)}
+                />
+            )}
         </div>
     );
 };

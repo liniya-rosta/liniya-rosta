@@ -56,42 +56,54 @@ superAdminPrivateRouter.post("/", async (req, res, next) => {
     }
 });
 
-superAdminPrivateRouter.patch("/:id/role", async (req: RequestWithUser, res, next) => {
+superAdminPrivateRouter.patch("/:id", async (req: RequestWithUser, res, next) => {
     try {
         const {id} = req.params;
-        const {role} = req.body;
-
-        if (role !== "superadmin" && role !== "admin") {
-            res.status(400).send({error: "Недопустимая роль"});
-            return;
-        }
+        const {role, email, displayName} = req.body;
 
         const user = await User.findById(id);
         if (!user) {
             res.status(404).send({error: "Пользователь не найден"});
-            return;
+            return
         }
 
         const isSelf = req.user?._id === id;
-        const isDowngrade = user.role === "superadmin" && role === "admin";
 
-        if (isSelf && isDowngrade) {
-            const superadminsCount = await User.countDocuments({role: "superadmin"});
-
-            if (superadminsCount <= 1) {
-                res.status(400).send({error: "Нельзя понизить себя – вы единственный superadmin"});
+        if (role) {
+            if (role !== "admin" && role !== "superadmin") {
+                res.status(400).send({error: "Недопустимая роль"});
                 return;
             }
+
+            const isDowngrade = user.role === "superadmin" && role === "admin";
+            if (isSelf && isDowngrade) {
+                const superadminsCount = await User.countDocuments({role: "superadmin"});
+                if (superadminsCount <= 1) {
+                    res.status(400).send({error: "Нельзя понизить себя – вы единственный superadmin"});
+                    return;
+                }
+            }
+
+            user.role = role;
         }
 
-        user.role = role;
+        if (email && email !== user.email) {
+            const existing = await User.findOne({email});
+            if (existing) {
+                res.status(400).send({error: "Email уже занят другим пользователем"});
+                return
+            }
+            user.email = email;
+        }
+
+        if (displayName) user.displayName = displayName;
+
         await user.save();
-        res.send({message: "Роль обновлена", user});
+        res.send({message: "Пользователь обновлён", user});
     } catch (e) {
         next(e);
     }
 });
-
 superAdminPrivateRouter.delete("/:id", async (req: RequestWithUser, res, next) => {
     try {
         const {id} = req.params;
