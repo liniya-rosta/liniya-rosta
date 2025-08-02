@@ -29,7 +29,6 @@ const Admins: React.FC<Props> = ({data, error}) => {
 
     const [isOpen, setIsOpen] = React.useState(false);
 
-
     useEffect(() => {
         if (data) setAdmins(data);
         setAdminsError(error);
