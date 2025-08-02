@@ -4,15 +4,23 @@ import Link from "next/link";
 import {usePathname} from "next/navigation";
 import Burger from "@/src/components/ui/Burger";
 import { useTranslations } from "next-intl";
+import { motion } from "motion/react"
 
 const NavBar = () => {
     const pathName = usePathname();
+
+    const segments = pathName.split("/").filter(Boolean);
+    const cleanPathname =
+        ["ru", "ky"].includes(segments[0])
+            ? "/" + segments.slice(1).join("/")
+            : pathName;
 
     const tHeader = useTranslations("Header");
 
     const navItems = [
         {href: "/", label: tHeader("headerLinks.home")},
         {href: "/ceilings", label: tHeader("headerLinks.stretchCeilings")},
+        {href: "/wallpaper", label: tHeader("headerLinks.stretchWallpaper")},
         {href: "/spc", label: "SPC ламинат"},
         {href: "/services", label: tHeader("headerLinks.services")},
         {href: "/portfolio", label: "Портфолио"},
@@ -21,21 +29,30 @@ const NavBar = () => {
     ];
 
     return (
-        <nav className="w-full p-4 text-white">
-            <div className="hidden md:flex flex-wrap gap-7.5 items-center justify-center">
+        <nav className="py-4">
+            <div className="hidden xl:flex flex-wrap gap-7.5 items-center justify-center">
                 {navItems.map(({href, label}) => {
-                    const isActive = pathName === href;
+                    const isActive = cleanPathname === href;
 
                     return (
-                        <Link
-                            key={href}
-                            href={href}
-                            className={`py-1.5 border-b transition-colors ${
-                                isActive ? "border-b-white font-semibold" : "border-b-transparent hover:border-b-white"
-                            }`}
-                        >
-                            {label}
-                        </Link>
+                        <div key={href} className="relative">
+                            <Link
+                                href={href}
+                                className={`py-1.5 transition-colors ${
+                                    isActive ? "text-primary font-semibold" : "border-b border-b-transparent hover:border-b-primary"
+                                }`}
+                            >
+                                {label}
+                            </Link>
+
+                            {isActive && (
+                                <motion.div
+                                    layoutId="underline"
+                                    className="absolute left-0 right-0 -bottom-0.5 h-[2px] bg-primary rounded-sm"
+                                    transition={{ type: "spring", stiffness: 200, damping: 50 }}
+                                />
+                            )}
+                        </div>
                     );
                 })}
             </div>

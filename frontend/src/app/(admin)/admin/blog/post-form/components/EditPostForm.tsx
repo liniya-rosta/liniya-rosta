@@ -14,6 +14,8 @@ import {UpdatePostFormData, updatePostSchema} from '@/src/lib/zodSchemas/postSch
 import {useSuperAdminPostStore} from "@/store/superadmin/superAdminPostsStore";
 import ConfirmDialog from "@/src/components/ui/ConfirmDialog";
 import {ImageObject} from "@/src/lib/types";
+import {Label} from "@/src/components/ui/label";
+import {Textarea} from "@/src/components/ui/textarea";
 
 interface Props {
     openImagesModal: () => void;
@@ -133,18 +135,19 @@ const EditPostForm: React.FC<Props> = ({openImagesModal, setPreviewImage, setIsP
         <>
             <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="border-b border-b-gray-500 py-3 mb-4">
+                    <Label className="mb-2 block">Заголовок поста</Label>
                     <Input
                         type="text"
-                        placeholder="Заголовок"
+                        placeholder="Введите цепляющий заголовок"
                         {...register('title.ru')}
                         disabled={updateLoading}
                         className="mb-2"
                     />
                     {errors.title && <FormErrorMessage>{errors.title.message}</FormErrorMessage>}
 
-                    <Input
-                        type="text"
-                        placeholder="Описание"
+                    <Label className="mt-4 mb-2 block">Описание</Label>
+                    <Textarea
+                        placeholder="Краткое описание поста"
                         {...register('description.ru')}
                         disabled={updateLoading}
                         className="mb-4"
@@ -155,7 +158,7 @@ const EditPostForm: React.FC<Props> = ({openImagesModal, setPreviewImage, setIsP
                 <div className="w-full max-w-4xl mb-3">
                     <label className="block mb-4">Изображения:</label>
 
-                    <div className="flex gap-5">
+                    <div className="flex flex-wrap gap-2 md:gap-5">
                         <Button
                             type="button"
                             variant="outline"
@@ -204,12 +207,13 @@ const EditPostForm: React.FC<Props> = ({openImagesModal, setPreviewImage, setIsP
                     )}
 
                     <div
-                        className={`grid grid-cols-2 gap-3 transition-all duration-300 ${expanded ? 'max-h-none overflow-visible' : 'max-h-[350px] overflow-y-auto'}`}>
+                        className={`grid grid-cols-1 md:grid-cols-2 gap-3 transition-all duration-300 ${expanded ? 'max-h-none overflow-visible' : 'max-h-[350px] overflow-y-auto'}`}>
                         {fields.map((item, index) => (
-                            <div key={item.id} className="border rounded-lg p-4 space-y-3 bg-white shadow-sm">
+                            <div key={item.id} className="border rounded-lg p-4 space-y-6 bg-white shadow-sm">
+                                <Label className="w-full mb-2">Альтернативное название изображения</Label>
                                 <Input
                                     type="text"
-                                    placeholder="Alt"
+                                    placeholder="Опишите, что изображено на фото (для доступности и поиска)"
                                     {...register(`images.${index}.alt`)}
                                     disabled={updateLoading}
                                     onChange={(e) => handleAltChange(index, e.target.value)}
@@ -218,6 +222,7 @@ const EditPostForm: React.FC<Props> = ({openImagesModal, setPreviewImage, setIsP
                                     <FormErrorMessage>{errors.images[index]?.alt?.message}</FormErrorMessage>
                                 )}
 
+                                <Label className="w-full mb-2">Изображение</Label>
                                 <Input
                                     type="file"
                                     accept="image/*"
@@ -228,7 +233,7 @@ const EditPostForm: React.FC<Props> = ({openImagesModal, setPreviewImage, setIsP
                                     <FormErrorMessage>{errors.images[index]?.file?.message}</FormErrorMessage>
                                 )}
 
-                                <div className="flex items-center justify-between">
+                                <div className="flex flex-wrap items-center justify-between">
                                     <Button
                                         type="button"
                                         variant="outline"
@@ -240,7 +245,8 @@ const EditPostForm: React.FC<Props> = ({openImagesModal, setPreviewImage, setIsP
                                             }
                                         }}
                                     >
-                                        <Eye className="w-4 h-4"/> Посмотреть изображение
+                                        <Eye className="w-4 h-4"/>
+                                        <span className="hidden md:inline">Посмотреть изображение</span>
                                     </Button>
 
                                     <Button
@@ -258,7 +264,7 @@ const EditPostForm: React.FC<Props> = ({openImagesModal, setPreviewImage, setIsP
                     </div>
                 </div>
 
-                <div className="flex gap-5">
+                <div className="flex flex-wrap gap-1 md:gap-5">
                     <Button
                         type="submit"
                         className="mt-6 px-6"

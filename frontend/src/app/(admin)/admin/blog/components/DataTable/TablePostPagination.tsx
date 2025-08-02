@@ -16,7 +16,7 @@ const TablePostPagination: React.FC<Props> = ({table}) => {
 
     return (
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-4 mb-10">
-            <span className="text-sm text-muted-foreground">
+            <span className="text-sm text-center md:text-left text-muted-foreground">
                 Всего элементов: <span className="font-medium">{paginationPost?.total}</span>
             </span>
 

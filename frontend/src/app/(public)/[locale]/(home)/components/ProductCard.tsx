@@ -45,7 +45,7 @@ const ProductCard: React.FC<Props> = ({product}) => {
 
             <CardFooter className="p-4 pt-0">
                 <Link href={`/products/${product.slug}`} className="w-full">
-                    <Button className="w-full">Подробнее</Button>
+                    <Button className="w-full btn-hover-scale">Подробнее</Button>
                 </Link>
             </CardFooter>
         </Card>

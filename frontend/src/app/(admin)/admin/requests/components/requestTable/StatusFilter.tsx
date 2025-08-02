@@ -13,7 +13,7 @@ const StatusFilter = () => {
     const {setStatus, status} = useAdminRequestsStore();
 
     return (
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col sm:flex-row items-center gap-2">
             <span className="text-sm whitespace-nowrap">Фильтр по статусу:</span>
             <Select
                 value={status || "all"}

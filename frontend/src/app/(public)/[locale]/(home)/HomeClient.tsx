@@ -10,7 +10,6 @@ import {Category, Contact, PortfolioItemPreview, Product, ServiceResponse} from 
 import {useCategoryStore} from "@/store/categoriesStore";
 import ErrorMsg from "@/src/components/ui/ErrorMsg";
 import HeroSection from "@/src/app/(public)/[locale]/(home)/components/HeroSection";
-import CategoriesSection from "@/src/app/(public)/[locale]/(home)/components/CategoriesSection";
 import ProductsSection from "@/src/app/(public)/[locale]/(home)/components/ProductsSection";
 import PortfolioSection from "@/src/app/(public)/[locale]/(home)/components/PortfolioSection";
 import InstagramSection from "@/src/app/(public)/[locale]/(home)/components/InstagramSection";
@@ -19,6 +18,7 @@ import {useContactStore} from "@/store/contactsStore";
 import LoadingFullScreen from "@/src/components/ui/Loading/LoadingFullScreen";
 import {useServiceStore} from "@/store/serviceStore";
 import ServiceSection from "@/src/app/(public)/[locale]/(home)/components/ServiceSection";
+import { Container } from '@/src/components/shared/Container';
 
 interface HomePageClientProps {
     categoriesData: Category[];
@@ -138,10 +138,7 @@ const HomePageClient: React.FC<HomePageClientProps> = ({
             <HeroSection title={title} />
 
             <ServiceSection/>
-            <div className="container mx-auto px-4 py-8 space-y-16">
-
-                <CategoriesSection />
-
+            <Container className="space-y-16">
                 <ProductsSection />
 
                 <PortfolioSection />
@@ -149,7 +146,7 @@ const HomePageClient: React.FC<HomePageClientProps> = ({
                 <ConsultationSection />
 
                 <InstagramSection />
-            </div>
+            </Container>
         </>
 
     );

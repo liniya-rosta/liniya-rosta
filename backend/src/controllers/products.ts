@@ -1,10 +1,11 @@
 import Product from "../models/Product";
 import {NextFunction, Request, Response} from "express";
-import mongoose, {PipelineStage} from "mongoose";
+import mongoose, {FilterQuery, PipelineStage} from "mongoose";
+import {IProduct} from "../../types";
 
 export const getProducts = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const {title, category, imagesId, limit = 10, page = 1, description} = req.query;
+        const {title, category, imagesId, limit = 10, page = 1, description, categoryExclude} = req.query;
 
         if (imagesId) {
             const item = await Product.findOne(
@@ -25,18 +26,28 @@ export const getProducts = async (req: Request, res: Response, next: NextFunctio
         const parsedPage = Math.max(1, parseInt(page as string));
         const skip = (parsedPage - 1) * parsedLimit;
 
-        const matchStage: Record<string, any> = {};
+        const conditions: FilterQuery<IProduct>[] = [];
 
-        if (title && typeof req.query.title === "string") {
-            matchStage.title = {$regex: req.query.title, $options: "i"};
-        }
-
-        if (category && typeof category === "string") {
-            matchStage["category"] = new mongoose.Types.ObjectId(category);
+        if (title && typeof title === "string") {
+            conditions.push({ title: { $regex: title, $options: "i" } });
         }
 
         if (description && typeof description === "string") {
-            matchStage.description = {$regex: description, $options: "i"};
+            conditions.push({ description: { $regex: description, $options: "i" } });
+        }
+
+        if (category && typeof category === "string") {
+            conditions.push({ category: new mongoose.Types.ObjectId(category) });
+        }
+
+        if (categoryExclude && typeof categoryExclude === "string") {
+            conditions.push({ category: { $ne: new mongoose.Types.ObjectId(categoryExclude) } });
+        }
+
+        const matchStage: FilterQuery<IProduct> = {};
+
+        if (conditions.length > 0) {
+            matchStage["$and"] = conditions;
         }
 
         const aggregationPipeline = [

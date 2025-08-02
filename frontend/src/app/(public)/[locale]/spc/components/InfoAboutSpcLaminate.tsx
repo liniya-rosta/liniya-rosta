@@ -1,23 +1,40 @@
 import React from 'react';
 import ClientActions from "@/src/app/(public)/[locale]/spc/components/ClientActions";
 import {getTranslations} from "next-intl/server";
+import AnimatedEntrance from "@/src/components/shared/AnimatedEntrance";
 
 const InfoAboutSpcLaminate = async () => {
-
     const tSpc = await getTranslations('SpcPage');
+    const rawTitle = tSpc('title');
+    const [before, highlight, after] = rawTitle.split(/[[\]]{2}highlight[[\]]{2}|[[\]]{2}\/highlight[[\]]{2}/);
 
     return (
-            <div className="relative w-full h-[450px] flex items-center justify-center text-white mt-[-32px] mb-[70px] sm:mb-[48px]">
-                <div className="absolute inset-0 bg-[url('/images/spc-laminate.png')] bg-cover bg-center
-                before:absolute before:inset-0 before:bg-black/65 before:content-[''] z-0" />
-                <div className="relative z-10 px-4 text-center max-w-[90%]">
-                    <h2 className="text-2xl md:text-3xl lg:text-4xl font-semibold mb-4">{tSpc('title')}</h2>
-                    <p className="sm:text-base max-w-[600px] mb-5 text-sm">
-                        {tSpc('description')}
+        <div className="w-full flex justify-end items-center pb-10 mb-20 -mt-8 shadow-md">
+            <div className="w-full p-10 sm:px-10 flex justify-end">
+                <AnimatedEntrance>
+                    <h2 className="text-30-48-1_2 font-bold leading-snug mb-4">
+                        {before}
+                        <span className="text-highlight">{highlight}</span>
+                        {after}
+                    </h2>
+                    <p className="hidden sm:block text-base text-muted-foreground max-w-prose mb-4">
+                        {tSpc("fullDescription")}
                     </p>
-                    <ClientActions />
-                </div>
+                    <p className="sm:hidden text-base text-muted-foreground max-w-prose mb-4">
+                        {tSpc("shortDescription")}
+                    </p>
+                    <ClientActions/>
+                </AnimatedEntrance>
             </div>
+
+            <div
+                className="hidden w-full h-[410px] md:block bg-no-repeat bg-contain bg-[position:center_top]"
+                style={{
+                    backgroundImage: "url('/images/spc/main-bg-spc.webp')",
+                }}
+            >
+            </div>
+        </div>
     );
 };
 

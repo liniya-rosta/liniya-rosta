@@ -2,6 +2,8 @@ import React from 'react';
 import ServiceContentCard from "@/src/app/(public)/[locale]/services/components/ServiceContentCard";
 import {useServiceStore} from "@/store/serviceStore";
 import {useLocale, useTranslations} from "next-intl";
+import { Container } from '@/src/components/shared/Container';
+import SectionAnimation from "@/src/components/shared/SectionAnimation";
 
 interface Props {
     text: string;
@@ -14,10 +16,10 @@ const ServicesContent: React.FC<Props> = ({text}) => {
     const tServices = useTranslations("ServicesPage");
 
     return (
-        <section className="bg-gray-100 py-16 px-6">
-            <div className="max-w-4xl mx-auto">
+        <SectionAnimation className="bg-gray-100 py-16 px-6 mb-10 md:mb-20">
+            <Container>
                 <div className="text-center mb-12">
-                    <h2 className="text-4xl font-bold text-gray-900 mb-4">{tServices("advantagesTitle")}</h2>
+                    <h2 className="text-23-30-1_5 font-bold mb-4">{tServices("advantagesTitle")}</h2>
                     <p className="text-gray-600">
                         {text}
                     </p>
@@ -28,7 +30,7 @@ const ServicesContent: React.FC<Props> = ({text}) => {
                         allServices.map((service) => (
                             <div
                                 key={service._id}
-                                className="w-full sm:w-[calc(50%-1rem)] md:w-[calc(33.333%-1.333rem)]"
+                                className="w-full sm:w-[calc(50%-1rem)] md:w-[calc(33.333%-1.333rem)] md:min-w-[280px]"
                             >
                                 <ServiceContentCard
                                     title={service.title[locale]}
@@ -44,8 +46,8 @@ const ServicesContent: React.FC<Props> = ({text}) => {
                         </div>
                     )}
                 </div>
-            </div>
-        </section>
+            </Container>
+        </SectionAnimation>
     );
 };
 

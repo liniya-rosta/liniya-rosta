@@ -80,7 +80,7 @@ const TableControls: React.FC<Props> = ({table, showConfirm, setGalleryDelete, o
                             setGalleryDelete(false);
                             showConfirm(true);
                         }}
-                    >Удалить выбранные {selectedToDelete?.length} элементы</Button>
+                    >Удалить выбранные {selectedToDelete?.length}</Button>
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="outline">

@@ -25,7 +25,7 @@ const CustomTable: React.FC<Props> = ({table, selectedToDelete, showConfirm}) =>
     const { services } = useSuperAdminServicesStore();
 return (
     <div className="w-full">
-        <div className="flex items-center py-4">
+        <div className="flex flex-wrap items-center justify-between gap-3 py-4">
             <Input
                 placeholder="Поиск по названию..."
                 value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
@@ -35,14 +35,15 @@ return (
                 className="max-w-sm"
             />
 
-            <div className="flex gap-2 ml-auto">
+            <div>
                 <Button
                     variant="outline"
+                    className="mr-3"
                     disabled={!selectedToDelete || selectedToDelete.length < 1}
                     onClick={() => {
                         showConfirm(true);
                     }}
-                >Удалить выбранные {selectedToDelete?.length} элементы</Button>
+                >Удалить выбранные {selectedToDelete?.length}</Button>
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="outline">

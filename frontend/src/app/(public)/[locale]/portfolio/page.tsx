@@ -23,9 +23,8 @@ export const generateMetadata = async (): Promise<Metadata> => ({
 const PortfolioPage = async () => {
     let errorMessage: string | null = null;
     let portfolioData: PortfolioResponse | null = null;
-    const limit = "8";
+    const limit = "9";
 
-    const tPortfolio = await getTranslations("PortfolioPage");
     const tErrors = await getTranslations("Errors");
 
     try {
@@ -42,17 +41,9 @@ const PortfolioPage = async () => {
     }
 
     return (
-        <main className="container mx-auto px-8">
-            <h1 className="text-3xl font-bold text-foreground mb-5">
-                Портфолио
-                <span className="block font-medium text-muted-foreground text-sm tracking-wider uppercase">
-                    {tPortfolio("portfolioSubtitle")}
-                </span>
-            </h1>
-            <PortfolioClient data={portfolioData}
-                             error={errorMessage}
-                             limit={limit}/>
-        </main>
+        <PortfolioClient data={portfolioData}
+                     error={errorMessage}
+                     limit={limit}/>
     );
 };
 

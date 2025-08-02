@@ -17,7 +17,7 @@ import {
 import {useSuperAdminPostStore} from "@/store/superadmin/superAdminPostsStore";
 import {getPostTableColumns} from './components/DataTable/PostTableColumns';
 import PostsTable from "@/src/app/(admin)/admin/blog/components/DataTable/PostsTable";
-import DataSkeleton from "@/src/components/ui/Loading/DataSkeleton";
+import DataSkeleton from "@/src/components/shared/DataSkeleton";
 import ErrorMsg from "@/src/components/ui/ErrorMsg";
 import TablePostControls from "@/src/app/(admin)/admin/blog/components/DataTable/TablePostControls";
 import TablePostPagination from "@/src/app/(admin)/admin/blog/components/DataTable/TablePostPagination";
@@ -138,7 +138,7 @@ const AdminBlogClient = () => {
         <div className="space-y-6">
             <div className="flex flex-col sm:flex-row sm:justify-between items-center gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold text-foreground">Управление постами</h1>
+                    <h1 className="text-23-30-1_5 font-bold text-foreground">Управление постами</h1>
                     <p className="text-muted-foreground mt-1">Создавайте и редактируйте посты</p>
                 </div>
                 <Link href="/admin/blog/post-form">
