@@ -1,6 +1,7 @@
 import express from "express";
 import User from "../../models/User";
 import {RequestWithUser} from "../../middleware/authAdmin";
+import {sendAdminMail} from "../resendAdminEmail";
 
 const superAdminPrivateRouter = express.Router();
 
@@ -42,6 +43,15 @@ superAdminPrivateRouter.post("/", async (req, res, next) => {
 
         user.confirmPassword = confirmPassword;
         await user.save();
+
+        if (user.role === "admin") {
+            await sendAdminMail(user.email, user.displayName, 'админом');
+        }
+
+        if (user.role === "superadmin") {
+            await sendAdminMail(user.email, user.displayName, 'супер-админом');
+        }
+
         res.send({
             message: `Вы успешно создали ${user.role === "admin" ? "администратора" : user.role === "superadmin" ? "суперадминистратора" : ''}`,
             user: {
@@ -68,6 +78,7 @@ superAdminPrivateRouter.patch("/:id", async (req: RequestWithUser, res, next) =>
         }
 
         const isSelf = req.user?._id === id;
+        const previousRole = user.role;
 
         if (role) {
             if (role !== "admin" && role !== "superadmin") {
@@ -99,11 +110,23 @@ superAdminPrivateRouter.patch("/:id", async (req: RequestWithUser, res, next) =>
         if (displayName) user.displayName = displayName;
 
         await user.save();
+
+        const isNewAdminRole =
+            role &&
+            (role === "admin" || role === "superadmin") &&
+            role !== previousRole;
+
+        if (isNewAdminRole) {
+            const roleName = role === "admin" ? "админом" : "супер-админом";
+            await sendAdminMail(user.email, user.displayName, roleName);
+        }
+
         res.send({message: "Пользователь обновлён", user});
     } catch (e) {
         next(e);
     }
 });
+
 superAdminPrivateRouter.delete("/:id", async (req: RequestWithUser, res, next) => {
     try {
         const {id} = req.params;
