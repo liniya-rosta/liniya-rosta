@@ -1,11 +1,13 @@
 import axiosAPI from "@/src/lib/axiosAPI";
 import {ImageObject, Post, UpdateImagePost} from "@/src/lib/types";
-import {CreatePostFormData, UpdatePostFormData} from "@/src/lib/zodSchemas/postSchema";
+import {CreatePostFormData, UpdatePostFormData} from "@/src/lib/zodSchemas/admin/postSchema";
 
 export const createPost = async (postData: CreatePostFormData) => {
     const formData = new FormData();
     formData.append('title', postData.title.ru);
     formData.append('description', postData.description.ru);
+    formData.append('seoTitle', postData.seoTitle);
+    formData.append('seoDescription', postData.seoDescription);
 
     postData.images.forEach((img) => {
         if (img.file) formData.append("images", img.file);
@@ -24,6 +26,8 @@ export const updatePost = async (
 
     if (postData.title) formData.append('title', postData.title.ru);
     if (postData.description) formData.append('description', postData.description.ru);
+    if (postData.seoTitle) formData.append('seoTitle', postData.seoTitle);
+    if (postData.seoDescription) formData.append('seoDescription', postData.seoDescription);
     formData.append("mode", mode);
 
     postData.images?.forEach((img) => {

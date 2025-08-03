@@ -48,7 +48,7 @@ const ProductSale: React.FC<Props> = ({form}) => {
 
             <FormField
                 control={form.control}
-                name="sale.label.ru"
+                name="sale.label"
                 render={({field}) => (
                     <FormItem>
                         <FormLabel>Текст акции</FormLabel>

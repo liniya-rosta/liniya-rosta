@@ -5,7 +5,7 @@ import {editRequest, fetchAllRequests} from "@/actions/superadmin/requests";
 import {toast} from "react-toastify";
 import {useAdminRequestsStore} from "@/store/superadmin/adminRequestsStore";
 import {Button} from "@/src/components/ui/button";
-import {requestAdminSchema} from "@/src/lib/zodSchemas/requestAdminSchema";
+import {requestAdminSchema} from "@/src/lib/zodSchemas/admin/requestAdminSchema";
 import {useForm} from 'react-hook-form';
 import {z} from "zod"
 import {zodResolver} from '@hookform/resolvers/zod';

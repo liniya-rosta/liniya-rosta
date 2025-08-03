@@ -15,7 +15,7 @@ import FormErrorMessage from "@/src/components/ui/FormErrorMessage";
 import LoaderIcon from "@/src/components/ui/Loading/LoaderIcon";
 import ImageModal from "@/src/app/(admin)/admin/portfolio/components/ImageModal";
 import {z} from "zod";
-import {portfolioSchema} from "@/src/lib/zodSchemas/portfolioSchema";
+import {portfolioSchema} from "@/src/lib/zodSchemas/admin/portfolioSchema";
 import {PortfolioMutation} from "@/src/lib/types";
 import {Textarea} from "@/src/components/ui/textarea";
 import { Label } from "@/src/components/ui/label";

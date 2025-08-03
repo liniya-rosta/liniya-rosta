@@ -1,7 +1,7 @@
 import {Dialog, DialogContent, DialogHeader, DialogTitle} from "@/src/components/ui/dialog";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {serviceEditSchema, serviceSchema} from "@/src/lib/zodSchemas/serviceSchema";
+import {serviceEditSchema, serviceSchema} from "@/src/lib/zodSchemas/admin/serviceSchema";
 import {useSuperAdminServicesStore} from "@/store/superadmin/superAdminServices";
 import {ServiceForm} from "@/src/lib/types";
 import {isAxiosError} from "axios";

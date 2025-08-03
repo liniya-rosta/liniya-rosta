@@ -10,7 +10,7 @@ import {Plus, Eye} from 'lucide-react';
 import {useRouter} from 'next/navigation';
 import {isAxiosError} from 'axios';
 import {toast} from 'react-toastify';
-import {CreatePostFormData, createPostSchema} from "@/src/lib/zodSchemas/postSchema";
+import {CreatePostFormData, createPostSchema} from "@/src/lib/zodSchemas/admin/postSchema";
 import {useSuperAdminPostStore} from "@/store/superadmin/superAdminPostsStore";
 import Link from "next/link";
 import {ImageObject} from "@/src/lib/types";
@@ -91,15 +91,33 @@ const CreatePostForm: React.FC<Props> = ({setIsPreviewOpen, setPreviewImage}) =>
                     />
                     {errors.title && <FormErrorMessage>{errors.title.message}</FormErrorMessage>}
 
-                    <Label className="mb-2 block">Описание</Label>
-                    <Textarea
-                        placeholder="Краткое описание поста"
+                    <Input
+                        type="text"
+                        placeholder="SEO заголовок"
+                        disabled={createLoading}
+                        {...register('seoTitle')}
+                        className="mb-2"
+                    />
+
+                    {errors.seoTitle && <FormErrorMessage>{errors.seoTitle.message}</FormErrorMessage>}
+
+                    <Input
+                        type="text"
+                        placeholder="Описание"
                         {...register('description.ru')}
                         disabled={createLoading}
                         className="mb-4"
                     />
                     {errors.description && <FormErrorMessage>{errors.description.message}</FormErrorMessage>}
 
+                    <Input
+                        type="text"
+                        placeholder="SEO описание"
+                        {...register('seoDescription')}
+                        disabled={createLoading}
+                        className="mb-4"
+                    />
+                    {errors.seoDescription && <FormErrorMessage>{errors.seoDescription.message}</FormErrorMessage>}
                 </div>
 
                 <div className="w-full max-w-4xl mb-3">

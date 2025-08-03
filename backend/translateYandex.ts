@@ -5,6 +5,10 @@ export async function translateYandex(text: string, targetLang = "ky") {
     const apiKey = process.env.YANDEX_API_KEY;
     const folderId = process.env.YANDEX_FOLDER_ID;
 
+    if (!text || text.trim() === "") {
+        return "";
+    }
+
     const response = await fetch("https://translate.api.cloud.yandex.net/translate/v2/translate", {
         method: "POST",
         headers: {
@@ -19,13 +23,18 @@ export async function translateYandex(text: string, targetLang = "ky") {
         }),
     });
 
-    const data = await response.json();
 
-    console.log(data);
+    const data = await response.json();
 
     if (data.translations && data.translations.length > 0) {
         return data.translations[0].text;
     } else {
+        console.error("Ошибка при переводе текста:", {
+            text,
+            targetLang,
+            responseStatus: response.status,
+            responseData: data,
+        });
         throw new Error("Не удалось перевести текст");
     }
 }

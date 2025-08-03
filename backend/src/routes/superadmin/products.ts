@@ -39,7 +39,7 @@ productsSuperAdminRouter.post("/", productImage.fields([
             return;
         }
 
-        const alts: string[] = Array.isArray(req.body.alt) ? req.body.alt : [req.body.alt];
+        const alts: string[] = Array.isArray(req.body.alt) ? req.body.alt : (req.body.alt ? [req.body.alt] : []);
         const altsKy = await Promise.all(alts.map(alt => translateYandex(alt, "ky")));
 
 
@@ -53,17 +53,19 @@ productsSuperAdminRouter.post("/", productImage.fields([
 
         let parsedCharacteristics = [];
 
+
+
         if (req.body.characteristics) {
             const original = JSON.parse(req.body.characteristics);
             parsedCharacteristics = await Promise.all(
-                original.map(async (char: {name: string; value: string}) => ({
-                    name: {
-                        ru: char.name,
-                        ky: await translateYandex(char.name, "ky")
+                original.map(async (char: {key: {ru: string}; value: { ru: string }}) => ({
+                    key: {
+                        ru: char.key.ru,
+                        ky: await translateYandex(char.key.ru, "ky")
                     },
                     value: {
-                        ru: char.value,
-                        ky: await translateYandex(char.value, "ky")
+                        ru: char.value.ru,
+                        ky: await translateYandex(char.value.ru, "ky")
                     }
                 }))
             );
@@ -72,15 +74,22 @@ productsSuperAdminRouter.post("/", productImage.fields([
         const titleKy = await translateYandex(title, "ky");
         const desKy = await translateYandex(description, "ky");
         const coverAltKy = await translateYandex(req.body.coverAlt, "ky")
-        const labelKy = await translateYandex(req.body.label, "ky");
-        const iconAltKy = await translateYandex(req.body.icon, "ky");
+        const iconAltKy = await translateYandex(req.body.iconAlt, "ky");
+
+        let descriptionField = null;
+        if (description?.trim()) {
+            descriptionField = {
+                ru: description.trim(),
+                ky: desKy,
+            };
+        }
 
         const product = new Product({
             category,
             title: {ru: title.trim(), ky: titleKy},
             seoTitle: seoTitle?.trim() || null,
             seoDescription: seoDescription?.trim() || null,
-            description: {ru: description?.trim(), ky: desKy},
+            description: descriptionField,
             cover: {
                 url: `product/${coverFile.filename}`,
                 alt: {ru: req.body.coverAlt, ky: coverAltKy},
@@ -89,12 +98,12 @@ productsSuperAdminRouter.post("/", productImage.fields([
             characteristics: parsedCharacteristics,
             sale: {
                 isOnSale: req.body.isOnSale === 'true',
-                label: {ru: req.body.label, ky: labelKy},
+                label: req.body.saleLabel,
             },
-            icon: {
-                url: iconFile ? `product/${iconFile.filename}` : null,
+            icon: iconFile ? {
+                url: `product/${iconFile.filename}`,
                 alt: {ru: req.body.iconAlt, ky: iconAltKy},
-            },
+            } : null,
         });
 
         await product.save();
@@ -180,14 +189,14 @@ productsSuperAdminRouter.patch("/:id", productImage.fields([
             try {
                 const original = JSON.parse(req.body.characteristics);
                 const translatedChars = await Promise.all(
-                    original.map(async (char: {name: string; value: string}) => ({
-                        name: {
-                            ru: char.name,
-                            ky: await translateYandex(char.name, "ky")
+                    original.map(async (char: {key: {ru: string}; value: { ru: string }}) => ({
+                        key: {
+                            ru: char.key.ru,
+                            ky: await translateYandex(char.key.ru, "ky")
                         },
                         value: {
-                            ru: char.value,
-                            ky: await translateYandex(char.value, "ky")
+                            ru: char.value.ru,
+                            ky: await translateYandex(char.value.ru, "ky")
                         }
                     }))
                 );
@@ -204,14 +213,15 @@ productsSuperAdminRouter.patch("/:id", productImage.fields([
                 const alts: string[] = Array.isArray(req.body.alt) ? req.body.alt : [req.body.alt];
                 const altsKy = await Promise.all(alts.map((alt) => translateYandex(alt, "ky")));
 
-                const images = JSON.parse(req.body.images);
-                product.images = images.map((img: any, i: number) => ({
-                    url: img.url,
+                const images = imagesFiles.map((file, i) => ({
+                    url: "product/" + file.filename,
                     alt: {
                         ru: alts[i] || '',
                         ky: altsKy[i] || '',
                     },
                 }));
+
+                product.set('images', images);
             } catch {
                 res.status(400).send({error: "Некорректный формат images"});
                 return;
@@ -219,7 +229,7 @@ productsSuperAdminRouter.patch("/:id", productImage.fields([
         }
 
         if (!product.sale) {
-            product.sale = {isOnSale: false, label: {ru: '', ky: ''}};
+            product.sale = {isOnSale: false, label: ""};
         }
 
         if (req.body.isOnSale !== undefined) {
@@ -227,11 +237,7 @@ productsSuperAdminRouter.patch("/:id", productImage.fields([
         }
 
         if (req.body.saleLabel !== undefined) {
-            const labelKy = await translateYandex(req.body.saleLabel || '', "ky");
-            product.sale.label = {
-                ru: req.body.saleLabel || '',
-                ky: labelKy
-            };
+            product.sale.label = req.body.saleLabel || ''
         }
 
         if (iconFile) {
