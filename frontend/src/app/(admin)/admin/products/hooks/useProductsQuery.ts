@@ -28,13 +28,13 @@ export function useProductsQuery() {
             setError(null);
 
             try {
-                const data = await fetchProducts(
-                    String(pageSize),
-                    String(pageIndex + 1),
-                    filterType === "title" ? filterValue : undefined,
-                    filterType === "description" ? filterValue : undefined,
-                    categoryId || undefined
-                );
+                const data = await fetchProducts({
+                    limit: String(pageSize),
+                    page: String(pageIndex + 1),
+                    title: filterType === "title" ? filterValue : undefined,
+                    description: filterType === "description" ? filterValue : undefined,
+                    categoryId: categoryId || undefined
+                });
 
                 setProducts(data.items);
                 setTotalPages(data.totalPages);

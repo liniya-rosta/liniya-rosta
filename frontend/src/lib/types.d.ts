@@ -161,6 +161,12 @@ export interface AdminForm extends UserForm {
     role?: "admin" | "superadmin";
 }
 
+export interface EditAdminForm {
+    email: string;
+    displayName: string;
+    role: "admin" | "superadmin";
+}
+
 export interface EditProfileForm {
     displayName?: string;
     email?: string;

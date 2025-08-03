@@ -17,7 +17,7 @@ const ProfileDropdown = () => {
         return (
             <Link
                 href="/admin/login"
-                className="bg-gray-700 px-4 py-2 rounded hover:bg-gray-600 transition"
+                className=" px-4 py-2 rounded hover:bg-gray-600 transition"
             >
                 Войти
             </Link>
@@ -28,13 +28,13 @@ const ProfileDropdown = () => {
         <>
             <DropdownMenu>
                 <DropdownMenuTrigger
-                    className="px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-600 duration-500 cursor-pointer"
+                    className="px-4 py-2 border border-primary rounded btn-hover-scale cursor-pointer"
                     aria-label="Открыть меню профиля"
                 >
                     Привет, {user.displayName}
                 </DropdownMenuTrigger>
 
-                <DropdownMenuContent className="w-48 bg-white text-black">
+                <DropdownMenuContent className="w-48">
                     <DropdownMenuItem onClick={() => setIsOpen(true)} className="cursor-pointer">
                         Профиль
                     </DropdownMenuItem>

@@ -1,14 +1,15 @@
 import {useContactStore} from "@/store/contactsStore";
 import {useTranslations} from "next-intl";
+import SectionAnimation from "@/src/components/shared/SectionAnimation";
 
 const MapSection= () => {
     const contact = useContactStore(state => state.contact);
+    const tContacts = useTranslations("ContactsPage");
+
     if (!contact || !contact.linkLocation) return null;
 
-    const tContacts = useTranslations("ContactsPage")
-
     return (
-        <section aria-labelledby="map-heading" lang="ru">
+        <SectionAnimation aria-labelledby="map-heading" lang="ru">
             <h2 id="map-heading" className="text-xl font-semibold mb-4 text-gray-900">
                 {tContacts("locationTitle")}
             </h2>
@@ -22,7 +23,7 @@ const MapSection= () => {
                     title="Карта"
                 />
             </div>
-        </section>
+        </SectionAnimation>
     );
 };
 

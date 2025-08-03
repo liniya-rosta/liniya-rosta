@@ -4,23 +4,30 @@ import React from 'react';
 import NavBar from "@/src/components/shared/NavBar";
 import LanguageSwitcher from "@/src/app/(admin)/admin/components/shared/LanguageSwitcher";
 import Image from "next/image";
-import logo from "../../../public/images/logo.png"
+import logo from "../../../public/logo.png"
+import { Container } from './Container';
+import Link from 'next/link';
+import { useLocale } from 'next-intl';
 
 const Header = () => {
+    const locale = useLocale();
+
     return (
-        <header className="py-4 bg-gray-800 shadow mb-8">
-            <div className="container mx-auto px-4 flex items-center justify-between">
-                <div className="flex flex-grow items-center gap-4">
-                    <Image
-                        src={logo}
-                        alt="Логотип компании 'Линия Роста'"
-                        className="h-15 w-auto"
-                        priority
-                    />
-                        <NavBar/>
+        <header className="py-6 shadow mb-15 md:mb-8 gap-4">
+            <Container>
+                <div className="flex items-center flex-wrap xl:justify-between gap-4">
+                    <Link href={`/${locale}`} className="shrink-0 block">
+                        <Image
+                            src={logo}
+                            alt="Логотип компании 'Линия Роста'"
+                            className="h-14 w-auto"
+                            priority
+                        />
+                    </Link>
+                    <NavBar />
+                    <LanguageSwitcher className="ml-auto xl:ml-0"/>
                 </div>
-                <LanguageSwitcher/>
-            </div>
+            </Container>
         </header>
     );
 };

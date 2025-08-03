@@ -50,7 +50,7 @@ const TablePagination = () => {
 
     return (
         <>
-            <div className="flex items-center justify-end space-x-2 py-2 flex-wrap">
+            <div className="flex items-center justify-center md:justify-end space-x-2 py-2 flex-wrap">
                 <span className="px-2 text-sm">{totalItems} заявок</span>
                 <Button
                     variant="outline"

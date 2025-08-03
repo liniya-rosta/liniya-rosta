@@ -176,7 +176,7 @@ export const getPostTableColumns = (
                             </DropdownMenuItem>
                             <DropdownMenuItem
                                 onClick={() => onDeletePost([post._id])}
-                                className="text-red-600 focus:text-red-600"
+                                className="text-destructive"
                             >
                                 <Trash2 className="mr-2 h-4 w-4" />
                                 Удалить

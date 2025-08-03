@@ -17,6 +17,8 @@ import ImageModal from "@/src/app/(admin)/admin/portfolio/components/ImageModal"
 import {z} from "zod";
 import {portfolioSchema} from "@/src/lib/zodSchemas/admin/portfolioSchema";
 import {PortfolioMutation} from "@/src/lib/types";
+import {Textarea} from "@/src/components/ui/textarea";
+import { Label } from "@/src/components/ui/label";
 
 const PortfolioForm = () => {
     const {
@@ -87,23 +89,11 @@ const PortfolioForm = () => {
            <form onSubmit={handleSubmit(onSubmit)}>
                <div className="border-b border-b-gray-500 py-3 mb-4">
                    <div className="mb-3">
+                       <Label className="w-full mb-2">Альтернативное название обложки</Label>
                        <Input
                            className="mb-2"
                            type="text"
-                           placeholder="Описание"
-                           disabled={createLoading}
-                           {...register("description.ru")}
-                       />
-                       {errors.description && (
-                           <FormErrorMessage>{errors.description.message}</FormErrorMessage>
-                       )}
-                   </div>
-
-                   <div className="mb-3">
-                       <Input
-                           className="mb-2"
-                           type="text"
-                           placeholder="Алтернативное название обложки"
+                           placeholder="Опишите, что изображено на фото (для доступности и поиска)"
                            disabled={createLoading}
                            {...register("coverAlt.ru")}
                        />
@@ -112,7 +102,21 @@ const PortfolioForm = () => {
                        )}
                    </div>
 
+                   <div className="mb-3">
+                       <Label className="w-full mb-2">Описание</Label>
+                       <Textarea
+                           className="mb-2"
+                           placeholder="Полная отделка квартиры площадью 85 м² в жилом комплексе 'Асанбай Сити'"
+                           disabled={createLoading}
+                           {...register("description.ru")}
+                       />
+                       {errors.description && (
+                           <FormErrorMessage>{errors.description.message}</FormErrorMessage>
+                       )}
+                   </div>
+
                     <div>
+                        <Label className="mb-2">Обложка</Label>
                         <div className="flex items-center gap-3 mb-2">
                             <Input
                                 type="file"
@@ -133,7 +137,7 @@ const PortfolioForm = () => {
                                     }
                                 }}
                             >
-                                <Eye className="w-4 h-4"/> Посмотреть изображение
+                                <Eye className="w-4 h-4"/> <span className="hidden md:inline">Посмотреть изображение</span>
                             </Button>
                         </div>
                         {errors.cover && (
@@ -159,12 +163,13 @@ const PortfolioForm = () => {
                         <FormErrorMessage>{errors.gallery.message}</FormErrorMessage>
                     )}
 
-                   <div className="grid grid-cols-2 gap-3 max-h-[500px] overflow-y-auto">
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[500px] overflow-y-auto">
                        {fields.map((item, index) => (
-                           <div key={item.id} className="border rounded-lg p-4 bg-white shadow-sm space-y-3">
+                           <div key={item.id} className="border rounded-lg p-4 bg-white shadow-sm space-y-6">
+                               <Label className="w-full mb-2">Альтернативное название изображения</Label>
                                <Input
                                    type="text"
-                                   placeholder="Альтернативное название изображения"
+                                   placeholder="Опишите, что изображено на фото (для доступности и поиска)"
                                    {...register(`gallery.${index}.alt.ru`)}
                                    disabled={createLoading}
                                    onChange={(e) => handleAltChange(index, e.target.value)}
@@ -176,6 +181,7 @@ const PortfolioForm = () => {
                                    </FormErrorMessage>
                                )}
 
+                               <Label className="w-full mb-2">Изображение</Label>
                                 <Input
                                     type="file"
                                     accept="image/*"
@@ -188,7 +194,7 @@ const PortfolioForm = () => {
                                     </FormErrorMessage>
                                 )}
 
-                                <div className="flex items-center justify-between">
+                                <div className="flex flex-wrap gap-2 items-center justify-between">
                                     <Button
                                         type="button"
                                         variant="outline"
@@ -200,7 +206,8 @@ const PortfolioForm = () => {
                                             }
                                         }}
                                     >
-                                        <Eye className="w-4 h-4"/> Посмотреть изображение
+                                        <Eye className="w-4 h-4"/>
+                                        <span className="hidden md:inline">Посмотреть изображение</span>
                                     </Button>
 
                                     <Button
