@@ -13,9 +13,18 @@ import portfolioItemRouter from "./src/routes/portfolioItems";
 import contactsRouter from "./src/routes/contacts";
 import path from "path";
 import serviceRouter from "./src/routes/services";
+import expressWs from "express-ws";
+import {getOnlineChatRouter} from "./src/routes/online-chat";
+import bodyParser from 'body-parser';
+
 
 const app = express();
 const port = 8000;
+
+const wsInstance = expressWs(app);
+const onlineChatRouter = getOnlineChatRouter(wsInstance);
+
+app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(
     cors({
@@ -40,6 +49,7 @@ app.use('/requests', requestRouter)
 app.use('/portfolio-items', portfolioItemRouter);
 app.use('/contacts', contactsRouter);
 app.use('/services', serviceRouter);
+app.use("/ws", onlineChatRouter);
 
 const run = async () => {
     await mongoose.connect(config.db);

@@ -105,3 +105,23 @@ export interface updatePost {
     seoDescription?: string;
     slug?: string;
 }
+
+export interface ClientMessage  {
+    type: "client_message";
+    chatId?: string;
+    name: string;
+    text: string;
+}
+
+export interface AdminMessage {
+    type: "admin_message";
+    chatId: string;
+    text: string;
+}
+
+export interface  ChatMessage  {
+    sender: "client" | "admin";
+    senderName: string;
+    text: string;
+    timestamp: Date;
+}
