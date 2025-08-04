@@ -344,7 +344,7 @@ const ProductEditModal: React.FC<Props> = ({open, onClose, product, refresh}) =>
                             />
                             <FormField
                                 control={form.control}
-                                name="sale.label.ru"
+                                name="sale.label"
                                 render={({field}) => (
                                     <FormItem>
                                         <FormLabel>Текст акции</FormLabel>

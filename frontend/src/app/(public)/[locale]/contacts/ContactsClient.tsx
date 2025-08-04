@@ -9,6 +9,7 @@ import {useContactStore} from "@/store/contactsStore";
 import ErrorMsg from "@/src/components/ui/ErrorMsg";
 import LoadingFullScreen from "@/src/components/ui/Loading/LoadingFullScreen";
 import {useTranslations} from "next-intl";
+import AnimatedEntrance from "@/src/components/shared/AnimatedEntrance";
 
 interface Props {
     data: Contact | null;
@@ -37,11 +38,11 @@ const ContactsClient: React.FC<Props> = ({data, error}) => {
 
     return (
         <div className="container mx-auto px-4 py-8">
-            <h1 className="text-3xl font-bold mb-6">{tContacts("contactsTitle")}</h1>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+            <h1 className="text-30-48-1_2 text-center md:text-left font-bold mb-6">{tContacts("contactsTitle")}</h1>
+            <AnimatedEntrance direction="bottom" className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
                 <ContactInfoCard />
                 <WorkingHoursCard workingHours={contact?.workingHours ?? {}}/>
-            </div>
+            </AnimatedEntrance>
             <MapSection />
         </div>
     );

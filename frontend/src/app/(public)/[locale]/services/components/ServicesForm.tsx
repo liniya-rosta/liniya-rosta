@@ -16,6 +16,7 @@ import {useRequestStore} from '@/store/requestStore';
 import {createRequest} from '@/actions/requestActions';
 import {getRequestSchema} from '@/src/lib/zodSchemas/requestSchema';
 import {useTranslations} from "next-intl";
+import AnimatedEntrance from "@/src/components/shared/AnimatedEntrance";
 
 const ServicesForm = () => {
     const {createLoading, createError, errorMessage, setLoading, setError} = useRequestStore();
@@ -53,8 +54,7 @@ const ServicesForm = () => {
     };
 
     return (
-        <div className="bg-white rounded-lg p-8 shadow-lg max-w-md w-full my-6">
-
+        <AnimatedEntrance direction="right" className="bg-white rounded-lg p-8 shadow-lg">
             <div className="mb-6 text-center">
                 <h2 className="text-2xl font-semibold">{tForm("formTitle")}</h2>
                 <p className="text-gray-600 mt-2">
@@ -110,14 +110,14 @@ const ServicesForm = () => {
 
                 <Button
                     type="submit"
-                    className="w-full bg-yellow-400 hover:bg-yellow-600 cursor-pointer duration-500"
+                    className="w-full btn-highlight btn-hover-scale"
                     disabled={createLoading}
                 >
                     {createLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin"/>}
                     {tBtn("submitBtn")}
                 </Button>
             </form>
-        </div>
+        </AnimatedEntrance>
     );
 };
 

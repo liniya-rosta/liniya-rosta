@@ -13,6 +13,7 @@ import {
 import { Post } from '@/src/lib/types';
 import { API_BASE_URL } from '@/src/lib/globalConstants';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/src/components/ui/tooltip';
+import React from "react";
 
 export const getPostTableColumns = (
     onEditPost: (post: Post) => void,
@@ -98,6 +99,20 @@ export const getPostTableColumns = (
             },
         },
         {
+            accessorKey: "seoTitle",
+            header: "SEO заголовок",
+            cell: ({row}) => row.original.seoTitle || "—",
+        },
+        {
+            accessorKey: "seoDescription",
+            header: "SEO описание",
+            cell: ({row}) => {
+                const text = row.original.seoDescription || "—";
+                if (text === "—") return text;
+                return text
+            },
+        },
+        {
             accessorKey: 'image',
             header: 'Изображение',
             cell: ({ row }) => {
@@ -161,7 +176,7 @@ export const getPostTableColumns = (
                             </DropdownMenuItem>
                             <DropdownMenuItem
                                 onClick={() => onDeletePost([post._id])}
-                                className="text-red-600 focus:text-red-600"
+                                className="text-destructive"
                             >
                                 <Trash2 className="mr-2 h-4 w-4" />
                                 Удалить

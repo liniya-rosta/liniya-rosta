@@ -18,7 +18,7 @@ import {Tooltip, TooltipContent, TooltipTrigger} from "@/src/components/ui/toolt
 import {Eye} from "lucide-react";
 import ImageModal from "@/src/app/(admin)/admin/portfolio/components/ImageModal";
 import {Label} from "@/src/components/ui/label";
-import {portfolioItemSchema} from "@/src/lib/zodSchemas/portfolioSchema";
+import {portfolioItemSchema} from "@/src/lib/zodSchemas/admin/portfolioSchema";
 
 interface Props {
     onSaved: () => void;

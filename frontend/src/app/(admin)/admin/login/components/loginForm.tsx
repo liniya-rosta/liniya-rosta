@@ -8,7 +8,7 @@ import {UserForm} from "@/src/lib/types";
 import {login} from "@/actions/users";
 import useUserStore from "@/store/usersStore";
 
-import {userLoginSchema} from "@/src/lib/zodSchemas/userSchema";
+import {userLoginSchema} from "@/src/lib/zodSchemas/admin/userSchema";
 import {useRouter} from "next/navigation";
 import FormErrorMessage from "@/src/components/ui/FormErrorMessage";
 import {isAxiosError} from "axios";

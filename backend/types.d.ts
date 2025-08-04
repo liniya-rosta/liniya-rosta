@@ -68,12 +68,6 @@ export interface ContactFields {
     whatsapp: string;
 }
 
-export interface PortfolioUpdate {
-    cover?: string;
-    description?: string;
-    coverAlt?: string;
-}
-
 export interface GalleryUpdate {
     "gallery.$.image"?: string;
     "gallery.$.alt.ru"?: string;
@@ -104,6 +98,29 @@ export interface updatePost {
     seoTitle?: string;
     seoDescription?: string;
     slug?: string;
+}
+
+export interface IProduct {
+    _id: string;
+    category: string;
+    title: string;
+    slug: string;
+    seoTitle: string | null;
+    seoDescription: string | null;
+    description: string | null;
+    cover: ImageItem[];
+    images: ImageItem[];
+    characteristics: {
+        key: string;
+        value: string;
+    }[];
+    sale: {
+        isOnSale: boolean;
+        label: string | null;
+    };
+    icon: ImageItem;
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 export interface ClientMessage  {

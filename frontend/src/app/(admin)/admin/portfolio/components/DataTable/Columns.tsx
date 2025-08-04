@@ -11,7 +11,7 @@ import {
     DropdownMenuTrigger
 } from "@/src/components/ui/dropdown-menu";
 import {Button} from "@/src/components/ui/button";
-import {ArrowUpDown, MoreHorizontal} from "lucide-react";
+import {ArrowUpDown, Edit2, Images, MoreHorizontal, Trash2} from "lucide-react";
 import React from "react";
 import {Checkbox} from "@/src/components/ui/checkbox";
 
@@ -168,14 +168,19 @@ export const getColumns = (
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Меню</DropdownMenuLabel>
+                        <DropdownMenuLabel>Действия</DropdownMenuLabel>
                         <DropdownMenuItem onClick={() => onGallery(payment._id)}>
+                            <Images className="mr-2 h-4 w-4" />
                             Посмотреть галерею
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => onEditCover(payment._id)}>
+                            <Edit2 className="mr-2 h-4 w-4" />
                             Редактировать
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => onRequestDelete(payment._id)}>
+                        <DropdownMenuItem
+                            className="text-destructive"
+                            onClick={() => onRequestDelete(payment._id)}>
+                            <Trash2 className="mr-2 h-4 w-4 text-destructive"/>
                             Удалить
                         </DropdownMenuItem>
                     </DropdownMenuContent>

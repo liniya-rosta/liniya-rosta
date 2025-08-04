@@ -161,6 +161,12 @@ export interface AdminForm extends UserForm {
     role?: "admin" | "superadmin";
 }
 
+export interface EditAdminForm {
+    email: string;
+    displayName: string;
+    role: "admin" | "superadmin";
+}
+
 export interface EditProfileForm {
     displayName?: string;
     email?: string;
@@ -228,7 +234,7 @@ export interface Product {
     }[];
     sale?: {
         isOnSale: boolean;
-        label?: {ru: string, ky?: string};
+        label?: string;
     };
     icon?: {
         alt?: {ru: string, ky?: string;};
@@ -254,7 +260,7 @@ export interface ProductMutation {
     }[];
     sale?: {
         isOnSale: boolean;
-        label?: {ru: string} | null;
+        label?: string | null
     };
     icon?: File | null;
     iconAlt?: {ru: string} | null;

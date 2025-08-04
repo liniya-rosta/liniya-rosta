@@ -17,6 +17,8 @@ export const createPostSchema = z.object({
             alt: altSchema.optional(),
         })
     ).min(1, "Добавьте хотя бы одно изображение"),
+    seoTitle: z.string().min(1, "Обязательное поле").max(60, "Максимум 60 символов"),
+    seoDescription: z.string().min(1, "Обязательное поле").max(160, "Максимум 160 символов")
 });
 
 export const updatePostSchema = z
@@ -29,6 +31,8 @@ export const updatePostSchema = z
                 alt: altSchema.optional(),
             })
         ).optional(),
+        seoTitle: z.string().min(1, "Обязательное поле").max(60, "Максимум 60 символов"),
+        seoDescription: z.string().min(1, "Обязательное поле").max(160, "Максимум 160 символов")
     })
     .refine(
         (data) => data.title || data.description || data.images,

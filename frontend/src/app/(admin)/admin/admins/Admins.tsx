@@ -29,7 +29,6 @@ const Admins: React.FC<Props> = ({data, error}) => {
 
     const [isOpen, setIsOpen] = React.useState(false);
 
-
     useEffect(() => {
         if (data) setAdmins(data);
         setAdminsError(error);
@@ -41,15 +40,15 @@ const Admins: React.FC<Props> = ({data, error}) => {
 
     return (
         <>
-            <div className="flex flex-col sm:flex-row sm:justify-between items-center gap-4">
-                <h1 className="text-3xl font-bold text-foreground text-center sm:text-left">
+            <div className="flex flex-col sm:flex-row sm:justify-between items-center gap-4 mb-4">
+                <h1 className="text-23-30-1_5 font-bold text-center sm:text-left">
                     Управление админами
                 </h1>
 
                 <Button
                     onClick={() => setIsOpen(true)}
                     size="lg"
-                    className="flex items-center w-full sm:w-auto cursor-pointer"
+                    className="flex items-center"
                     disabled={adminsLoading}
                 >
                     <Plus className="h-5 w-5"/>

@@ -1,5 +1,5 @@
 import axiosAPI from "@/src/lib/axiosAPI";
-import {AdminForm, User} from "@/src/lib/types";
+import {AdminForm, EditAdminForm, User} from "@/src/lib/types";
 
 export const getAllAdmins = async () => {
     const response = await axiosAPI.get<User[]>("/superadmin/admins")
@@ -11,8 +11,8 @@ export const createAdmin = async (data: AdminForm) => {
     return res.data;
 };
 
-export const editAdminRole = async (id: string, role: "admin" | "superadmin") => {
-    const res = await axiosAPI.patch<{ message: string; user: User }>(`/superadmin/admins/${id}/role`, {role});
+export const editAdmin = async (id: string, data: EditAdminForm) => {
+    const res = await axiosAPI.patch<{ message: string; user: User }>(`/superadmin/admins/${id}`, data);
     return res.data;
 };
 

@@ -125,8 +125,7 @@ const CheckboxAction: React.FC<Props> = ({table}) => {
     return (
         <div className="flex items-center gap-3">
             <Button
-                variant="outline"
-                className="border border-red-600 text-red-600 hover:bg-red-50 hover:text-red-600"
+               variant="outline"
                 onClick={() => {
                     setActionType("delete");
                     setShowConfirm(true);

@@ -1,6 +1,7 @@
 import express from "express";
 import User from "../../models/User";
 import {RequestWithUser} from "../../middleware/authAdmin";
+import {sendAdminMail} from "../resendAdminEmail";
 
 const superAdminPrivateRouter = express.Router();
 
@@ -42,6 +43,15 @@ superAdminPrivateRouter.post("/", async (req, res, next) => {
 
         user.confirmPassword = confirmPassword;
         await user.save();
+
+        if (user.role === "admin") {
+            await sendAdminMail(user.email, user.displayName, 'админом');
+        }
+
+        if (user.role === "superadmin") {
+            await sendAdminMail(user.email, user.displayName, 'супер-админом');
+        }
+
         res.send({
             message: `Вы успешно создали ${user.role === "admin" ? "администратора" : user.role === "superadmin" ? "суперадминистратора" : ''}`,
             user: {
@@ -56,37 +66,62 @@ superAdminPrivateRouter.post("/", async (req, res, next) => {
     }
 });
 
-superAdminPrivateRouter.patch("/:id/role", async (req: RequestWithUser, res, next) => {
+superAdminPrivateRouter.patch("/:id", async (req: RequestWithUser, res, next) => {
     try {
         const {id} = req.params;
-        const {role} = req.body;
-
-        if (role !== "superadmin" && role !== "admin") {
-            res.status(400).send({error: "Недопустимая роль"});
-            return;
-        }
+        const {role, email, displayName} = req.body;
 
         const user = await User.findById(id);
         if (!user) {
             res.status(404).send({error: "Пользователь не найден"});
-            return;
+            return
         }
 
         const isSelf = req.user?._id === id;
-        const isDowngrade = user.role === "superadmin" && role === "admin";
+        const previousRole = user.role;
 
-        if (isSelf && isDowngrade) {
-            const superadminsCount = await User.countDocuments({role: "superadmin"});
-
-            if (superadminsCount <= 1) {
-                res.status(400).send({error: "Нельзя понизить себя – вы единственный superadmin"});
+        if (role) {
+            if (role !== "admin" && role !== "superadmin") {
+                res.status(400).send({error: "Недопустимая роль"});
                 return;
             }
+
+            const isDowngrade = user.role === "superadmin" && role === "admin";
+            if (isSelf && isDowngrade) {
+                const superadminsCount = await User.countDocuments({role: "superadmin"});
+                if (superadminsCount <= 1) {
+                    res.status(400).send({error: "Нельзя понизить себя – вы единственный superadmin"});
+                    return;
+                }
+            }
+
+            user.role = role;
         }
 
-        user.role = role;
+        if (email && email !== user.email) {
+            const existing = await User.findOne({email});
+            if (existing) {
+                res.status(400).send({error: "Email уже занят другим пользователем"});
+                return
+            }
+            user.email = email;
+        }
+
+        if (displayName) user.displayName = displayName;
+
         await user.save();
-        res.send({message: "Роль обновлена", user});
+
+        const isNewAdminRole =
+            role &&
+            (role === "admin" || role === "superadmin") &&
+            role !== previousRole;
+
+        if (isNewAdminRole) {
+            const roleName = role === "admin" ? "админом" : "супер-админом";
+            await sendAdminMail(user.email, user.displayName, roleName);
+        }
+
+        res.send({message: "Пользователь обновлён", user});
     } catch (e) {
         next(e);
     }
