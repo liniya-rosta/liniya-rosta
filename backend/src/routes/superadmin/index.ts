@@ -9,12 +9,14 @@ import requestAdminRouter from "./requests";
 import portfolioSuperAdminRouter from "./portfolioItems";
 import contactsAdminRouter from "./contacts";
 import servicesSuperAdminRouter from "./services";
+import chatAdminRouter from "./online-chat";
 
 const superAdminRouter = express.Router();
 
 superAdminRouter.use(authAdmin);
 
 superAdminRouter.use("/requests", requestAdminRouter);
+superAdminRouter.use("/online-chat", chatAdminRouter);
 
 superAdminRouter.use(authSuperAdmin);
 

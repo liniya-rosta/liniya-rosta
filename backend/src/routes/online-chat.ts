@@ -4,7 +4,7 @@ import {WebSocket} from "ws";
 import ChatSession from "../models/ChatSession";
 import jwt from "jsonwebtoken";
 import {JWT_SECRET} from "../models/User";
-import {AdminMessage, ChatMessage, ClientMessage} from "../../types";
+import { ChatMessage, IncomingMessage} from "../../types";
 
 const connectedClients: Record<string, WebSocket[]> = {};
 const adminSockets: WebSocket[] = [];
@@ -20,9 +20,23 @@ export const getOnlineChatRouter = (
         let chatId: string | null = null;
         let nickname: string | null = null;
 
+        const token = new URL(req.url!, "http://localhost").searchParams.get("token");
+
+        if (token) {
+            try {
+                const payload = jwt.verify(token, JWT_SECRET) as { _id: string; displayName: string };
+                console.log(payload);
+                isAdmin = true;
+                nickname = payload.displayName;
+                adminSockets.push(ws);
+            } catch (e) {
+                console.log("Invalid admin token");
+            }
+        }
+
         ws.on("message", async (msg) => {
             try {
-                const data = JSON.parse(msg.toString()) as AdminMessage | ClientMessage;
+                const data = JSON.parse(msg.toString()) as IncomingMessage;
 
                 if (data.type === "client_message") {
                     if (!data.chatId) {
@@ -58,7 +72,13 @@ export const getOnlineChatRouter = (
                     });
 
                     for (const admin of adminSockets) {
-                        admin.send(JSON.stringify({type: "new_message", chatId, ...message}));
+                        admin.send(JSON.stringify({type: "new_message", chatId: data.chatId, ...message}));
+                    }
+
+                    if (connectedClients[chatId]) {
+                        for (const client of connectedClients[chatId]) {
+                            client.send(JSON.stringify({ type: "new_message", chatId, ...message }));
+                        }
                     }
                 }
 
@@ -72,8 +92,8 @@ export const getOnlineChatRouter = (
 
                     const chat = await ChatSession.findById(data.chatId);
 
-                    if (chat && !chat.adminId) {
-                        chat.adminId = (jwt.verify(req.headers.authorization!.split(" ")[1], JWT_SECRET) as any)._id;
+                    if (chat && !chat.adminId && token) {
+                        chat.adminId = (jwt.verify(token, JWT_SECRET) as any)._id;
                     }
 
                     await ChatSession.findByIdAndUpdate(data.chatId, {

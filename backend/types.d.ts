@@ -142,3 +142,5 @@ export interface  ChatMessage  {
     text: string;
     timestamp: Date;
 }
+
+export type IncomingMessage = ClientMessage | AdminMessage;
