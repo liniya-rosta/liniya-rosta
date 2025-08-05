@@ -1,7 +1,11 @@
 import {z} from "zod";
 
 export const portfolioSchema = z.object({
-    cover: z.instanceof(File, {message: "Обложка обязательна"}).nullable(),
+    cover: z
+        .any()
+        .refine((file) => file instanceof File && file.size > 0, {
+            message: "Обложка обязательна",
+        }),
     description: z.object({
         ru: z.string()
     }),
@@ -20,14 +24,12 @@ export const portfolioSchema = z.object({
             })
         )
         .min(1, "Добавьте хотя бы одно изображение в галерею"),
-    seoTitle: z
-        .string()
-        .min(1, "SEO-заголовок обязателен")
-        .max(120, "Максимум 120 символов"),
-    seoDescription: z
-        .string()
-        .min(1, "SEO-описание обязательно")
-        .max(300, "Максимум 300 символов"),
+    seoTitle: z.object({
+        ru: z.string()
+    }),
+    seoDescription:  z.object({
+        ru: z.string()
+    }),
 });
 
 export const portfolioItemSchema = z.object({
@@ -38,16 +40,12 @@ export const portfolioItemSchema = z.object({
     description: z.object({
         ru: z.string(),
     }).optional(),
-    seoTitle: z
-        .string()
-        .min(1, "SEO-заголовок обязателен")
-        .max(120, "Максимум 120 символов")
-        .optional(),
-    seoDescription: z
-        .string()
-        .min(1, "SEO-описание обязательно")
-        .max(300, "Максимум 300 символов")
-        .optional(),
+    seoTitle: z.object({
+        ru: z.string()
+    }),
+    seoDescription: z.object({
+        ru: z.string()
+    })
 });
 
 export const gallerySchema = z.object({

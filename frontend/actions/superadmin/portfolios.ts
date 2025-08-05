@@ -12,11 +12,11 @@ export const createPortfolio = async (item: PortfolioMutation) => {
     formData.append("coverAlt", item.coverAlt.ru);
 
     if (item.seoTitle) {
-        formData.append("seoTitle", item.seoTitle);
+        formData.append("seoTitle", item.seoTitle.ru);
     }
 
     if (item.seoDescription) {
-        formData.append("seoDescription", item.seoDescription);
+        formData.append("seoDescription", item.seoDescription.ru);
     }
 
     item.gallery.forEach((galleryItem) => {
@@ -47,11 +47,11 @@ export const editPortfolioItem = async (
     }
 
     if (item.seoTitle) {
-        formData.append("seoTitle", item.seoTitle);
+        formData.append("seoTitle", item.seoTitle.ru);
     }
 
     if (item.seoDescription) {
-        formData.append("seoDescription", item.seoDescription);
+        formData.append("seoDescription", item.seoDescription.ru);
     }
 
     await axiosAPI.patch("/superadmin/portfolio/" + id, formData);

@@ -30,6 +30,8 @@ const PortfolioForm = () => {
             cover: null,
             description: { ru: "" },
             coverAlt: { ru: "" },
+            seoTitle: { ru: "" },
+            seoDescription: { ru: "" },
         },
     });
 
@@ -115,6 +117,33 @@ const PortfolioForm = () => {
                        )}
                    </div>
 
+                   <div className="mb-3">
+                     <Label className="w-full mb-2">SEO заголовок</Label>
+                     <Input
+                       className="mb-2"
+                       type="text"
+                       placeholder="Введите SEO заголовок"
+                       disabled={createLoading}
+                       {...register("seoTitle.ru")}
+                     />
+                     {errors.seoTitle?.ru && (
+                       <FormErrorMessage>{errors.seoTitle.ru.message}</FormErrorMessage>
+                     )}
+                   </div>
+
+                   <div className="mb-3">
+                     <Label className="w-full mb-2">SEO описание</Label>
+                     <Textarea
+                       className="mb-2"
+                       placeholder="Введите SEO описание"
+                       disabled={createLoading}
+                       {...register("seoDescription.ru")}
+                     />
+                     {errors.seoDescription?.ru && (
+                       <FormErrorMessage>{errors.seoDescription.ru.message}</FormErrorMessage>
+                     )}
+                   </div>
+
                     <div>
                         <Label className="mb-2">Обложка</Label>
                         <div className="flex items-center gap-3 mb-2">
@@ -140,7 +169,7 @@ const PortfolioForm = () => {
                                 <Eye className="w-4 h-4"/> <span className="hidden md:inline">Посмотреть изображение</span>
                             </Button>
                         </div>
-                        {errors.cover && (
+                        {typeof errors.cover?.message === 'string' && (
                             <FormErrorMessage>{errors.cover.message}</FormErrorMessage>
                         )}
                     </div>

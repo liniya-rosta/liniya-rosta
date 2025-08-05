@@ -22,10 +22,10 @@ export interface GalleryForm {
 export interface PortfolioMutation {
     description: { ru: string };
     coverAlt: { ru: string };
-    cover: File | null;
+    cover?: File | null;
     gallery: GalleryForm[];
-    seoTitle?: string;
-    seoDescription?: string;
+    seoTitle?: { ru: string };
+    seoDescription?: { ru: string };
 }
 
 export interface PortfolioItemPreview {
@@ -43,8 +43,8 @@ export interface PortfolioItemPreview {
     slug: string;
     createdAt: string;
     updatedAt: string;
-    seoTitle?: string;
-    seoDescription?: string;
+    seoTitle?: { ru: string, ky: string };
+    seoDescription?: { ru: string, ky: string };
 }
 
 export interface GalleryItem {

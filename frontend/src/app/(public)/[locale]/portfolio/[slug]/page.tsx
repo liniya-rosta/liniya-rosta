@@ -4,24 +4,24 @@ import GalleryClient from "@/src/app/(public)/[locale]/portfolio/[slug]/GalleryC
 import {getLocale, getTranslations} from "next-intl/server";
 
 type Props = {
-    params: Promise<{ slug: string }>;
+    params: { slug: string; locale: 'ru' | 'ky' };
 };
 
 export async function generateMetadata({params}: Props): Promise<Metadata> {
     try {
-        const {slug} = await params;
+        const {slug, locale} = params;
         const item = await fetchPortfolioItemBySlug(slug);
 
         return {
-            title: item.seoTitle || item.coverAlt.ru,
-            description: item.seoDescription || `Галерея: ${item.coverAlt.ru}`,
+            title: item.seoTitle?.[locale] || item.coverAlt?.[locale],
+            description: item.seoDescription?.[locale] || `Галерея: ${item.coverAlt?.[locale]}`,
             openGraph: {
-                title: item.seoTitle || item.coverAlt.ru,
-                description: item.seoDescription || `Просмотрите фотографии проекта "${item.coverAlt.ru}"`,
+                title: item.seoTitle?.[locale] || item.coverAlt?.[locale],
+                description: item.seoDescription?.[locale] || `Просмотрите фотографии проекта "${item.coverAlt?.[locale]}"`,
                 images: [
                     {
                         url: item.cover,
-                        alt: item.coverAlt.ru || "Галерея",
+                        alt: item.coverAlt?.[locale] || "Галерея",
                     },
                 ],
                 type: "website",
@@ -44,8 +44,8 @@ const GalleryPage = async ({params}: Props) => {
     try {
         const {slug} = await params;
         detailItem = await fetchPortfolioItemBySlug(slug);
-    } catch (error) {
-            errorMessage = tError("galleryError");
+    } catch {
+        errorMessage = tError("galleryError");
     }
 
     return (
@@ -54,7 +54,7 @@ const GalleryPage = async ({params}: Props) => {
                 Галерея
             </h1>
             <p className="mb-8 text-lg text-muted-foreground">{detailItem?.description[locale]}</p>
-            <GalleryClient detailItem={detailItem} error={errorMessage} />
+            <GalleryClient detailItem={detailItem} error={errorMessage}/>
         </main>
     );
 };
