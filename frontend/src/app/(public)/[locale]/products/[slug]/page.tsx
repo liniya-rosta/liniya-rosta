@@ -6,24 +6,27 @@ import {getTranslations} from "next-intl/server";
 import ProductDetailView from "@/src/app/(public)/[locale]/products/[slug]/ProductDetailView";
 
 type Props = {
-    params: Promise<{ slug: string }>;
+    params: { slug: string; locale: 'ru' | 'ky' };
 };
 
 export async function generateMetadata({params}: Props): Promise<Metadata> {
     try {
-        const {slug} = await params;
+        const { slug, locale } = params;
         const product = await fetchProductBySlug(slug);
 
+        const title = product.seoTitle?.[locale] || product.title?.[locale];
+        const description = product.seoDescription?.[locale] || `Подробнее о продукте "${product.title?.[locale]}"`;
+
         return {
-            title: product.seoTitle.ru || product.title.ru,
-            description: product.seoDescription.ru || `Подробнее о продукте "${product.title}"`,
+            title,
+            description,
             openGraph: {
-                title: product.seoTitle.ru || product.title.ru,
-                description: product.seoDescription.ru || `Описание продукта ${product.title}`,
+                title,
+                description,
                 images: [
                     {
                         url: product.cover?.url,
-                        alt: product.cover?.alt.ru || product.title.ru,
+                        alt: product.cover?.alt?.[locale] || product.title?.[locale],
                     },
                 ],
                 type: "website",
@@ -38,7 +41,7 @@ export async function generateMetadata({params}: Props): Promise<Metadata> {
 }
 
 export default async function ProductDetailPage({params}: Props) {
-    const {slug} = await params;
+    const { slug} = params;
     let product: Product | null = null;
     let fetchProductError: string | null = null;
     const tError = await getTranslations("Errors");
