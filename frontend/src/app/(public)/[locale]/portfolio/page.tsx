@@ -8,17 +8,30 @@ import {Metadata} from "next";
 
 export const revalidate = 1800;
 
-export const generateMetadata = async (): Promise<Metadata> => ({
-    title: "Портфолио",
-    description: "Примеры реализованных проектов компании Линия Роста. Натяжные потолки, SPC ламинат и интерьерные решения — фото наших работ.",
-    openGraph: {
-        title: "Портфолио | Линия Роста",
-        description: "Галерея выполненных работ от Линии Роста. Посмотрите реальные примеры потолков и ламината.",
-        url: "/portfolio",
-        siteName: "Линия Роста",
-        type: "website",
-    },
-});
+export const generateMetadata = async (): Promise<Metadata> => {
+    const t = await getTranslations("PortfolioPage");
+    const tHeader = await getTranslations("Header");
+
+    return {
+        title: tHeader("headerLinks.portfolio"),
+        description: t("descriptionSeo"),
+        openGraph: {
+            title: t("ogTitle"),
+            description: t("ogDescription"),
+            url: "/portfolio",
+            siteName: "Линия Роста",
+            images: [
+                {
+                    url: "/images/services/main-service.JPG",
+                    width: 1200,
+                    height: 630,
+                    alt: t("ogImageAlt"),
+                },
+            ],
+            type: "website",
+        },
+    };
+};
 
 const PortfolioPage = async () => {
     let errorMessage: string | null = null;
@@ -42,8 +55,8 @@ const PortfolioPage = async () => {
 
     return (
         <PortfolioClient data={portfolioData}
-                     error={errorMessage}
-                     limit={limit}/>
+                         error={errorMessage}
+                         limit={limit}/>
     );
 };
 

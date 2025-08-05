@@ -7,17 +7,30 @@ import {getTranslations} from "next-intl/server";
 
 export const revalidate = 3600;
 
-export const generateMetadata = async (): Promise<Metadata> => ({
-    title: "Контакты",
-    description: "Контактная информация компании Линия Роста: адрес, телефоны, мессенджеры и соцсети. Свяжитесь с нами для консультации или заказа.",
-    openGraph: {
-        title: "Контакты | Линия Роста",
-        description: "Адрес и контакты компании Линия Роста. Работаем в Бишкеке и по области. Ответим на любые вопросы по потолкам и ламинату.",
-        url: "/contacts",
-        siteName: "Линия Роста",
-        type: "website",
-    },
-});
+export const generateMetadata = async (): Promise<Metadata> => {
+    const t = await getTranslations("ContactsPage");
+    const tHeader = await getTranslations("Header");
+
+    return {
+        title: tHeader("headerLinks.contacts"),
+        description: t("descriptionSeo"),
+        openGraph: {
+            title: t("ogTitle"),
+            description: t("ogDescription"),
+            url: "/contacts",
+            siteName: "Линия Роста",
+            images: [
+                {
+                    url: "/images/services/main-service.JPG",
+                    width: 1200,
+                    height: 630,
+                    alt: t("ogImageAlt"),
+                },
+            ],
+            type: "website",
+        },
+    };
+};
 
 const ContactsPage = async () => {
         let contact: Contact | null = null;
@@ -35,7 +48,7 @@ const ContactsPage = async () => {
         }
 
         return (
-            <ContactsClient  data={contact} error={contactError} />
+            <ContactsClient data={contact} error={contactError}/>
         );
     }
 ;

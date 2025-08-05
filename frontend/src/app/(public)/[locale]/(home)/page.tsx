@@ -12,12 +12,15 @@ import {Metadata} from "next";
 export const revalidate = 3600;
 
 export async function generateMetadata(): Promise<Metadata> {
+    const t = await getTranslations('HomePage');
+    const tHeader = await getTranslations('Header');
+
     return {
-        title: 'Главная',
-        description: 'Компания «Линия Роста» — натяжные потолки, SPC ламинат, багеты и интерьерные решения в Бишкеке. Качество, гарантия, профессиональный монтаж.',
+        title: tHeader('headerLinks.home'),
+        description: t('descriptionSeo'),
         openGraph: {
-            title: 'Линия Роста',
-            description: 'Натяжные потолки, SPC ламинат, багеты и интерьерные решения в Бишкеке.',
+            title: t('ogTitle'),
+            description: t('ogDescription'),
             url: '/',
             siteName: 'Линия Роста',
             images: [
@@ -25,7 +28,7 @@ export async function generateMetadata(): Promise<Metadata> {
                     url: '/images/services/main-service.JPG',
                     width: 1200,
                     height: 630,
-                    alt: 'Натяжные потолки и ламинат в Бишкеке от Линии Роста',
+                    alt: t('ogImageAlt'),
                 },
             ],
             type: 'website',
