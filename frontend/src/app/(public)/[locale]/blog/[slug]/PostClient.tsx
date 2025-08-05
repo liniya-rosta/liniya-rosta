@@ -1,17 +1,15 @@
 'use client';
 
-import { Alert, AlertDescription, AlertTitle } from "@/src/components/ui/alert";
-import { Button } from "@/src/components/ui/button";
-import {Card, CardContent, CardHeader, CardTitle} from "@/src/components/ui/card";
+import {Alert, AlertDescription, AlertTitle} from "@/src/components/ui/alert";
+import {Button} from "@/src/components/ui/button";
+import {Card, CardContent} from "@/src/components/ui/card";
 import Loading from "@/src/components/ui/Loading/Loading";
-import { Post } from "@/src/lib/types";
-import { usePostsStore } from "@/store/postsStore";
-import {ArrowLeft, Terminal } from "lucide-react";
-import { useRouter } from "next/navigation";
-import {useEffect, useState } from "react";
+import {Post} from "@/src/lib/types";
+import {usePostsStore} from "@/store/postsStore";
+import {ArrowLeft, Terminal} from "lucide-react";
+import {useRouter} from "next/navigation";
+import {useEffect, useState} from "react";
 import {API_BASE_URL} from "@/src/lib/globalConstants";
-import {Separator} from "@radix-ui/react-separator";
-import Image from "next/image";
 import {useLocale, useTranslations} from "next-intl";
 
 interface Props {
@@ -40,6 +38,8 @@ const PostClient: React.FC<Props> = ({data, error}) => {
         setFetchPostsLoading(false);
         setIsHydrating(false);
     }, [data, error, setFetchPostsError, setFetchPostsLoading]);
+
+    console.log(data?.images)
 
     if (isHydrating || fetchPostsLoading) return <Loading/>;
 
@@ -73,54 +73,80 @@ const PostClient: React.FC<Props> = ({data, error}) => {
     }
 
     return (
-        <div className="max-w-4xl mx-auto px-4 py-8">
+        <div className="max-w-6xl mx-auto px-4 py-8">
             <Button
                 variant="ghost"
                 onClick={() => router.back()}
-                className="mb-6 pl-0 text-muted-foreground hover:text-foreground"
+                className="mb-[40px] pl-0 text-muted-foreground hover:text-foreground"
             >
                 <ArrowLeft className="mr-2 h-4 w-4"/>
                 {tBtn("returnToBlog")}
             </Button>
+            <div className="mb-[30px]">
+                <h3 className="text-3xl font-extrabold leading-tight text-foreground mb-4">
+                    {data.title[locale]}
+                </h3>
+            </div>
+            <div className="grid grid-cols-1 gap-4 mb-8">
+                {data.images.length === 1 && (
+                    <div className="aspect-[6/3] overflow-hidden rounded-xl">
+                        <img
+                            src={`${API_BASE_URL}/${data.images[0].image}`}
+                            alt={data.images[0].alt?.[locale]}
+                            className="w-full h-full object-cover"
+                        />
+                    </div>
+                )}
 
-            <Card className="overflow-hidden">
-                <div className="relative aspect-video md:aspect-[2/1] w-full">
-                    <Image
-                        src={`${API_BASE_URL}/${data.images[0].image}`}
-                        fill
-                        sizes="(max-width: 768px) 100vw, 1200px"
-                        priority
-                        onError={(e) => {
-                            (e.target as HTMLImageElement).src =
-                                'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=800&h=400&fit=crop';
-                        }}
-                        alt={data.title[locale]}
-                        className="object-cover"
-                    />
+                {data.images.length === 2 && (
+                    <div className="grid aspect-[6/3] grid-cols-2 gap-4">
+                        {data.images.map((img, i) => (
+                            <div key={i} className="overflow-hidden rounded-xl">
+                                <img
+                                    src={`${API_BASE_URL}/${img.image}`}
+                                    alt={img.alt?.[locale]}
+                                    className="w-full h-full object-cover"
+                                />
+                            </div>
+                        ))}
+                    </div>
+                )}
+
+                {data.images.length === 3 && (
+                    <div className="grid grid-cols-5 gap-4 aspect-[7/3] ">
+                        <div className="col-span-4 row-span-2 overflow-hidden rounded-lg">
+                            <img
+                                src={`${API_BASE_URL}/${data.images[0].image}`}
+                                alt=""
+                                className="w-full h-full object-cover"
+                            />
+                        </div>
+
+                        <div className="overflow-hidden rounded-lg">
+                            <img
+                                src={`${API_BASE_URL}/${data.images[1].image}`}
+                                alt=""
+                                className="w-full h-full object-cover aspect-square"
+                            />
+                        </div>
+
+                        <div className="overflow-hidden rounded-lg">
+                            <img
+                                src={`${API_BASE_URL}/${data.images[2].image}`}
+                                alt=""
+                                className="w-full h-full object-cover aspect-square"
+                            />
+                        </div>
+                    </div>
+                )}
+
+                <div className="prose prose-lg max-w-none text-muted-foreground">
+                    <p className="leading-relaxed text-lg">{data.description[locale]}</p>
                 </div>
-
-                <CardHeader className="space-y-4 pt-6 pb-4">
-                    <CardTitle
-                        className="text-4xl font-extrabold leading-tight text-foreground">{data.title[locale]}</CardTitle>
-                    <div className="prose prose-lg max-w-none text-muted-foreground">
-                        <p className="leading-relaxed text-lg">{data.description[locale]}</p>
-                    </div>
-                </CardHeader>
-
-                <CardContent className="pt-4 pb-6">
-                    <Separator className="my-6"/>
-                    <div className="flex justify-between items-center">
-                        <Button
-                            variant="outline"
-                            onClick={() => router.push('/blog')}
-                            className="text-muted-foreground hover:text-foreground"
-                        >
-                            ← {tBtn("allPosts")}
-                        </Button>
-                    </div>
-                </CardContent>
-            </Card>
+            </div>
         </div>
+
+
     );
 };
 
