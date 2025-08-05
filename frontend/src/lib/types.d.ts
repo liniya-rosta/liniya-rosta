@@ -322,3 +322,20 @@ export interface FetchRequestsResponse {
     totalPages: number;
     totalItems: number;
 }
+
+export interface ChatMessage {
+    sender: "client" | "admin";
+    senderName: string;
+    text: string;
+    timestamp: Date;
+}
+
+export interface ChatSession {
+    _id: string;
+    clientName: string;
+    adminId: string;
+    messages: ChatMessage[];
+    createdAt: Date;
+    updatedAt: Date;
+    status: string;
+}
