@@ -188,8 +188,8 @@ export interface Post {
     slug: string;
     createdAt: string;
     updatedAt: string;
-    seoTitle?: string;
-    seoDescription?: string;
+    seoTitle?: { ru: string, ky: string };
+    seoDescription?: { ru: string, ky: string };
 }
 
 export interface PostResponse extends PaginationMeta {

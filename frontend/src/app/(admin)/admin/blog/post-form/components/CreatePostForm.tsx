@@ -1,12 +1,12 @@
 import React, {useState} from 'react';
-import {useForm, useFieldArray} from 'react-hook-form';
+import {useFieldArray, useForm} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {createPost} from '@/actions/superadmin/posts';
 import {Input} from '@/src/components/ui/input';
 import {Button} from '@/src/components/ui/button';
 import FormErrorMessage from '@/src/components/ui/FormErrorMessage';
 import LoaderIcon from '@/src/components/ui/Loading/LoaderIcon';
-import {Plus, Eye} from 'lucide-react';
+import {Eye, Plus} from 'lucide-react';
 import {useRouter} from 'next/navigation';
 import {isAxiosError} from 'axios';
 import {toast} from 'react-toastify';
@@ -15,8 +15,7 @@ import {useSuperAdminPostStore} from "@/store/superadmin/superAdminPostsStore";
 import Link from "next/link";
 import {ImageObject} from "@/src/lib/types";
 import ConfirmDialog from "@/src/components/ui/ConfirmDialog";
-import {Textarea} from "@/src/components/ui/textarea";
-import { Label } from "@/src/components/ui/label";
+import {Label} from "@/src/components/ui/label";
 
 interface Props {
     setIsPreviewOpen: (value: boolean) => void;
@@ -95,7 +94,7 @@ const CreatePostForm: React.FC<Props> = ({setIsPreviewOpen, setPreviewImage}) =>
                         type="text"
                         placeholder="SEO заголовок"
                         disabled={createLoading}
-                        {...register('seoTitle')}
+                        {...register('seoTitle.ru')}
                         className="mb-2"
                     />
 
@@ -113,7 +112,7 @@ const CreatePostForm: React.FC<Props> = ({setIsPreviewOpen, setPreviewImage}) =>
                     <Input
                         type="text"
                         placeholder="SEO описание"
-                        {...register('seoDescription')}
+                        {...register('seoDescription.ru')}
                         disabled={createLoading}
                         className="mb-4"
                     />

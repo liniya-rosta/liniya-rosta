@@ -9,7 +9,8 @@ type Props = {
 
 export async function generateMetadata({params}: Props): Promise<Metadata> {
     try {
-        const {slug, locale} = params;
+        const {slug} = params;
+        const locale = await getLocale() as 'ru' | 'ky';
         const item = await fetchPortfolioItemBySlug(slug);
 
         return {
@@ -42,7 +43,7 @@ const GalleryPage = async ({params}: Props) => {
     const locale = await getLocale() as 'ru' | 'ky';
 
     try {
-        const {slug} = await params;
+        const {slug} = params;
         detailItem = await fetchPortfolioItemBySlug(slug);
     } catch {
         errorMessage = tError("galleryError");

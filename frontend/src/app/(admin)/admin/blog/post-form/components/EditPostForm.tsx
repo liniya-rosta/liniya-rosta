@@ -148,7 +148,7 @@ const EditPostForm: React.FC<Props> = ({openImagesModal, setPreviewImage, setIsP
                         type="text"
                         placeholder="SEO заголовок"
                         disabled={updateLoading}
-                        {...register('seoTitle')}
+                        {...register('seoTitle.ru')}
                         className="mb-2"
                     />
 
@@ -166,7 +166,7 @@ const EditPostForm: React.FC<Props> = ({openImagesModal, setPreviewImage, setIsP
                     <Input
                         type="text"
                         placeholder="SEO описание"
-                        {...register('seoDescription')}
+                        {...register('seoDescription.ru')}
                         disabled={updateLoading}
                         className="mb-4"
                     />
