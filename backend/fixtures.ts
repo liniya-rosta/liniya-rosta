@@ -138,7 +138,7 @@ const run = async () => {
             characteristics: [
                 { key: { ru: "Пример характеристики", ky: "Үлгү мүнөздөмөсү" }, value: { ru: "Значение", ky: "Маани" } }
             ],
-            sale: { isOnSale: false, label: { ru: null, ky: null } }
+            sale: { isOnSale: false, label: '20%' }
         },
         {
             category: lightingTechnology,
@@ -154,7 +154,7 @@ const run = async () => {
             characteristics: [
                 { key: { ru: "Пример характеристики", ky: "Үлгү мүнөздөмөсү" }, value: { ru: "Значение", ky: "Маани" } }
             ],
-            sale: { isOnSale: false, label: { ru: null, ky: null } }
+            sale: { isOnSale: false, label: '20%' }
         },
         {
             category: film,
@@ -170,7 +170,7 @@ const run = async () => {
             characteristics: [
                 { key: { ru: "Пример характеристики", ky: "Үлгү мүнөздөмөсү" }, value: { ru: "Значение", ky: "Маани" } }
             ],
-            sale: { isOnSale: false, label: { ru: null, ky: null } }
+            sale: { isOnSale: false, label: '20%' }
         },
         {
             category: film,
@@ -186,7 +186,7 @@ const run = async () => {
             characteristics: [
                 { key: { ru: "Пример характеристики", ky: "Үлгү мүнөздөмөсү" }, value: { ru: "Значение", ky: "Маани" } }
             ],
-            sale: { isOnSale: false, label: { ru: null, ky: null } }
+            sale: { isOnSale: false, label: '20%' }
         },
         {
             category: film,
@@ -202,7 +202,7 @@ const run = async () => {
             characteristics: [
                 { key: { ru: "Пример характеристики", ky: "Үлгү мүнөздөмөсү" }, value: { ru: "Значение", ky: "Маани" } }
             ],
-            sale: { isOnSale: false, label: { ru: null, ky: null } }
+            sale: { isOnSale: false, label: '20%' }
         },
         {
             category: spc,
@@ -218,7 +218,7 @@ const run = async () => {
             characteristics: [
                 { key: { ru: "Пример характеристики", ky: "Үлгү мүнөздөмөсү" }, value: { ru: "Значение", ky: "Маани" } }
             ],
-            sale: { isOnSale: false, label: { ru: null, ky: null } }
+            sale: { isOnSale: false, label: '20%' }
         },
         {
             category: spc,
@@ -234,7 +234,7 @@ const run = async () => {
             characteristics: [
                 { key: { ru: "Пример характеристики", ky: "Үлгү мүнөздөмөсү" }, value: { ru: "Значение", ky: "Маани" } }
             ],
-            sale: { isOnSale: false, label: { ru: null, ky: null } }
+            sale: { isOnSale: false, label: '20%' }
         },
         {
             category: spc,
@@ -250,7 +250,7 @@ const run = async () => {
             characteristics: [
                 { key: { ru: "Пример характеристики", ky: "Үлгү мүнөздөмөсү" }, value: { ru: "Значение", ky: "Маани" } }
             ],
-            sale: { isOnSale: false, label: { ru: null, ky: null } }
+            sale: { isOnSale: false, label: '20%' }
         },
         {
             category: spc,
@@ -266,7 +266,7 @@ const run = async () => {
             characteristics: [
                 { key: { ru: "Пример характеристики", ky: "Үлгү мүнөздөмөсү" }, value: { ru: "Значение", ky: "Маани" } }
             ],
-            sale: { isOnSale: false, label: { ru: null, ky: null } }
+            sale: { isOnSale: false, label: '20%' }
         },
         {
             category: spc,
@@ -282,7 +282,7 @@ const run = async () => {
             characteristics: [
                 { key: { ru: "Пример характеристики", ky: "Үлгү мүнөздөмөсү" }, value: { ru: "Значение", ky: "Маани" } }
             ],
-            sale: { isOnSale: false, label: { ru: null, ky: null } }
+            sale: { isOnSale: false, label: '20%' }
         },
         {
             category: lightingTechnology,
@@ -299,7 +299,7 @@ const run = async () => {
                 { key: { ru: "Мощность", ky: "Кубаттуулук" }, value: { ru: "24 Вт", ky: "24 Вт" } },
                 { key: { ru: "Цветовая температура", ky: "Түс температурасы" }, value: { ru: "6000К", ky: "6000К" } }
             ],
-            sale: { isOnSale: false, label: { ru: null, ky: null } }
+            sale: { isOnSale: false, label: '20%' }
         },
         {
             category: lightingTechnology,
@@ -316,7 +316,7 @@ const run = async () => {
                 { key: { ru: "Светодиоды", ky: "Жарык берүүчү диоддор" }, value: { ru: "SMD 2835", ky: "SMD 2835" } },
                 { key: { ru: "Длина", ky: "Узундук" }, value: { ru: "5 м", ky: "5 м" } }
             ],
-            sale: { isOnSale: true, label: { ru: "Топ продаж", ky: "Топ сатуу" } }
+            sale: { isOnSale: true, label: '20%' }
         },
         {
             category: film,
@@ -333,7 +333,7 @@ const run = async () => {
                 { key: { ru: "Поверхность", ky: "Бети" }, value: { ru: "Сатиновая", ky: "Сатин" } },
                 { key: { ru: "Толщина", ky: "Калыңдыгы" }, value: { ru: "0.2 мм", ky: "0.2 мм" } }
             ],
-            sale: { isOnSale: false, label: { ru: null, ky: null } }
+            sale: { isOnSale: false,label: '20%' }
         },
         {
             category: film,
@@ -350,7 +350,7 @@ const run = async () => {
                 { key: { ru: "Цвет", ky: "Түс" }, value: { ru: "Черный", ky: "Кара" } },
                 { key: { ru: "Поверхность", ky: "Бети" }, value: { ru: "Глянец", ky: "Жалтырак" } }
             ],
-            sale: { isOnSale: false, label: { ru: null, ky: null } }
+            sale: { isOnSale: false, label: '20%' }
         },
         {
             category: spc,
@@ -367,7 +367,7 @@ const run = async () => {
                 { key: { ru: "Порода", ky: "Түрү" }, value: { ru: "Ясень", ky: "Ашык" } },
                 { key: { ru: "Цвет", ky: "Түс" }, value: { ru: "Серый", ky: "Күрөң" } }
             ],
-            sale: { isOnSale: true, label: { ru: "Новинка", ky: "Жаңы" } }
+            sale: { isOnSale: true, label: '20%' }
         },
         {
             category: spc,
@@ -384,7 +384,7 @@ const run = async () => {
                 { key: { ru: "Цвет", ky: "Түс" }, value: { ru: "Молочный", ky: "Сүттүк" } },
                 { key: { ru: "Подложка", ky: "Төмөнкү катмар" }, value: { ru: "IXPE", ky: "IXPE" } }
             ],
-            sale: { isOnSale: false, label: { ru: null, ky: null } }
+            sale: { isOnSale: false, label: '20%' }
         },
         {
             category: spatula,
@@ -401,7 +401,7 @@ const run = async () => {
                 { key: { ru: "Длина", ky: "Узундук" }, value: { ru: "30 см", ky: "30 см" } },
                 { key: { ru: "Материал", ky: "Материал" }, value: { ru: "Алюминий", ky: "Алюминий" } }
             ],
-            sale: { isOnSale: false, label: { ru: null, ky: null } }
+            sale: { isOnSale: false, label: '20%' }
         },
         {
             category: ventilationGrilles,
@@ -418,7 +418,7 @@ const run = async () => {
                 { key: { ru: "Материал", ky: "Материал" }, value: { ru: "Металл", ky: "Металл" } },
                 { key: { ru: "Размер", ky: "Өлчөмү" }, value: { ru: "150x150 мм", ky: "150x150 мм" } }
             ],
-            sale: { isOnSale: false, label: { ru: null, ky: null } }
+            sale: { isOnSale: false, label: '20%' }
         },
         {
             category: ventilationGrilles,
@@ -435,7 +435,7 @@ const run = async () => {
                 { key: { ru: "Форма", ky: "Форма" }, value: { ru: "Квадрат", ky: "Тоголок" } },
                 { key: { ru: "Особенность", ky: "Өзгөчөлүк" }, value: { ru: "Обратный клапан", ky: "Кайтарма клапан" } }
             ],
-            sale: { isOnSale: false, label: { ru: null, ky: null } }
+            sale: { isOnSale: false, label: '20%' }
         }
     );
 
