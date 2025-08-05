@@ -41,8 +41,14 @@ postsSuperAdminRouter.post("/", postImage.array("images"), async (req, res, next
         const post = new Post({
             title: {ru: title, ky: kyTitle},
             description: {ru: description, ky: kyDes},
-            seoTitle: seoTitle || null,
-            seoDescription: seoDescription || null,
+            seoTitle: {
+                ru: seoTitle?.trim() || null,
+                ky: await translateYandex(seoTitle?.trim() || "", "ky")
+            },
+            seoDescription: {
+                ru: seoDescription?.trim() || null,
+                ky: await translateYandex(seoDescription?.trim() || "", "ky")
+            },
             images,
         });
 
@@ -117,10 +123,17 @@ postsSuperAdminRouter.patch("/:id", postImage.array("images"), async (req, res, 
         };
 
         if (seoTitle !== undefined) {
-            updateData.seoTitle = seoTitle?.trim() || null;
+            updateData.seoTitle = {
+                ru: seoTitle?.trim() || null,
+                ky: await translateYandex(seoTitle?.trim() || "", "ky")
+            };
         }
+
         if (seoDescription !== undefined) {
-            updateData.seoDescription = seoDescription?.trim() || null;
+            updateData.seoDescription = {
+                ru: seoDescription?.trim() || null,
+                ky: await translateYandex(seoDescription?.trim() || "", "ky")
+            };
         }
 
         const altsKy = await Promise.all(alts.map(alt => translateYandex(alt, "ky")));

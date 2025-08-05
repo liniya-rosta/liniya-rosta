@@ -15,11 +15,11 @@ export interface PostDocument extends Document {
         ky: string;
     };
     slug: string;
-    seoTitle: {
+    seoTitle?: {
         ru: string | null;
         ky: string | null;
     };
-    seoDescription: {
+    seoDescription?: {
         ru: string | null;
         ky: string | null;
     };
