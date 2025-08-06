@@ -9,7 +9,8 @@ const useAdminChatFetcher = () => {
         allChats,
         setChats,
         setFetchChatLoading,
-        setFetchChatError
+        setFetchChatError,
+        addChat
     } = useAdminChatStore();
 
     const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -51,6 +52,8 @@ const useAdminChatFetcher = () => {
     return {
         allChats,
         messages,
+        addChat,
+        setChats,
         setMessages,
         fetchData,
         fetchOneChat,

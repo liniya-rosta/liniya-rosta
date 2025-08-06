@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useClientChat } from "./useOnlineChat";
 import { Button } from "@/src/components/ui/button";
+import {Headset} from "lucide-react";
 
 const OnlineChat = () => {
     const [name, setName] = useState("");
@@ -32,10 +33,12 @@ const OnlineChat = () => {
     };
 
     return (
-        <div className="fixed bottom-4 right-4 z-50">
+        <div className="fixed bottom-24 right-24 z-50">
             {!isOpen ? (
-                <Button onClick={handleOpenChat} className="bg-blue-500 text-white px-4 py-2 rounded">
-                    Онлайн чат
+                <Button
+                    variant="secondary"
+                    onClick={handleOpenChat} className="bg-highlight-light px-8 py-4">
+                    <Headset className="text-3xl text-highlight"/>
                 </Button>
             ) : (
                 <div className="w-80 h-96 border bg-white rounded shadow flex flex-col p-2">

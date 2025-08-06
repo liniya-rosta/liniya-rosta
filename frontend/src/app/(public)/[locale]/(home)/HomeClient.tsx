@@ -19,7 +19,6 @@ import LoadingFullScreen from "@/src/components/ui/Loading/LoadingFullScreen";
 import {useServiceStore} from "@/store/serviceStore";
 import ServiceSection from "@/src/app/(public)/[locale]/(home)/components/ServiceSection";
 import { Container } from '@/src/components/shared/Container';
-import OnlineChat from "@/src/app/(public)/[locale]/(home)/components/OnlineChat/OnlineChat";
 
 interface HomePageClientProps {
     categoriesData: Category[];
@@ -144,7 +143,6 @@ const HomePageClient: React.FC<HomePageClientProps> = ({
                 <PortfolioSection />
                 <ConsultationSection />
                 <InstagramSection />
-                <OnlineChat/>
             </Container>
         </>
 
