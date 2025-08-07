@@ -6,8 +6,8 @@ export const createPost = async (postData: CreatePostFormData) => {
     const formData = new FormData();
     formData.append('title', postData.title.ru);
     formData.append('description', postData.description.ru);
-    formData.append('seoTitle', postData.seoTitle);
-    formData.append('seoDescription', postData.seoDescription);
+    formData.append('seoTitle', postData.seoTitle.ru);
+    formData.append('seoDescription', postData.seoDescription.ru);
 
     postData.images.forEach((img) => {
         if (img.file) formData.append("images", img.file);
@@ -26,8 +26,8 @@ export const updatePost = async (
 
     if (postData.title) formData.append('title', postData.title.ru);
     if (postData.description) formData.append('description', postData.description.ru);
-    if (postData.seoTitle) formData.append('seoTitle', postData.seoTitle);
-    if (postData.seoDescription) formData.append('seoDescription', postData.seoDescription);
+    if (postData.seoTitle) formData.append('seoTitle', postData.seoTitle.ru);
+    if (postData.seoDescription) formData.append('seoDescription', postData.seoDescription.ru);
     formData.append("mode", mode);
 
     postData.images?.forEach((img) => {

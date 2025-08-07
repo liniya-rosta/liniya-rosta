@@ -55,8 +55,8 @@ export const createProductSchema = z.object({
             message: "Файл обязателен",
         }),
     iconAlt: i18nStringOptional.optional().nullable(),
-    seoTitle: z.string().min(1, "Обязательное поле").max(60, "Максимум 60 символов"),
-    seoDescription: z.string().max(160, "Максимум 160 символов"),
+    seoTitle: i18nStringOptional.optional(),
+    seoDescription: i18nStringOptional.optional(),
 });
 
 export const updateProductSchema = z.object({
@@ -71,8 +71,8 @@ export const updateProductSchema = z.object({
     icon: z.union([z.instanceof(File), z.null(), z.undefined()]).optional(),
     characteristics: z.array(characteristicSchema).optional(),
     sale: saleSchema.optional(),
-    seoTitle: z.string().min(1, "Обязательное поле").max(60, "Максимум 60 символов"),
-    seoDescription: z.string().max(160, "Максимум 160 символов"),
+    seoTitle: i18nStringOptional.optional(),
+    seoDescription: i18nStringOptional.optional(),
 });
 
 export type CreateProductFormData = z.infer<typeof createProductSchema>;

@@ -95,8 +95,15 @@ export interface updatePost {
     title?: {ru: string, ky: string};
     description?: {ru: string, ky: string};
     images?: { alt?: {ru: string, ky: string}, image: string }[];
-    seoTitle?: string;
-    seoDescription?: string;
+    seoTitle?: {
+        ru: string | null;
+        ky: string | null;
+    };
+    seoDescription?: {
+        ru: string | null;
+        ky: string | null;
+    };
+
     slug?: string;
 }
 

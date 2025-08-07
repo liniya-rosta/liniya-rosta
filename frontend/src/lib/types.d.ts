@@ -16,16 +16,16 @@ interface PaginationMeta {
 
 export interface GalleryForm {
     image: File | null,
-    alt?: {ru: string},
+    alt?: { ru: string },
 }
 
 export interface PortfolioMutation {
-    description: {ru: string};
-    coverAlt: {ru: string};
-    cover: File | null;
+    description: { ru: string };
+    coverAlt: { ru: string };
+    cover?: File | null;
     gallery: GalleryForm[];
-    seoTitle?: string;
-    seoDescription?: string;
+    seoTitle?: { ru: string };
+    seoDescription?: { ru: string };
 }
 
 export interface PortfolioItemPreview {
@@ -43,8 +43,8 @@ export interface PortfolioItemPreview {
     slug: string;
     createdAt: string;
     updatedAt: string;
-    seoTitle?: string;
-    seoDescription?: string;
+    seoTitle?: { ru: string, ky: string };
+    seoDescription?: { ru: string, ky: string };
 }
 
 export interface GalleryItem {
@@ -188,8 +188,8 @@ export interface Post {
     slug: string;
     createdAt: string;
     updatedAt: string;
-    seoTitle?: string;
-    seoDescription?: string;
+    seoTitle?: { ru: string, ky: string };
+    seoDescription?: { ru: string, ky: string };
 }
 
 export interface PostResponse extends PaginationMeta {
@@ -198,46 +198,52 @@ export interface PostResponse extends PaginationMeta {
 
 export interface UpdateImagePost {
     imageUrl: string;
-    alt?: {ru: string};
+    alt?: { ru: string };
     newImage?: File;
 }
 
 export interface ProductImagesForm {
     url: File | null;
-    alt?: {ru: string};
+    alt?: { ru: string };
 }
 
 interface ImageItem {
     _id: string;
     url: string;
-    alt: {ru: string, ky?: string;};
+    alt: { ru: string, ky?: string; };
 }
 
 export interface Product {
     _id: string;
-    title: {ru: string, ky?: string;};
-    seoTitle: string;
-    seoDescription: string;
+    title: { ru: string, ky?: string; };
+    seoTitle: {
+        ru: string,
+        ky?: string;
+    };
+    seoDescription: {
+        ru: string,
+        ky?: string;
+    };
     category: {
         _id: string;
-        title: {ru: string, ky?: string;};
+        title: { ru: string, ky?: string; };
     };
-    description: {ru: string, ky: string} | null;
+    description: { ru: string, ky: string } | null;
     cover: {
         url: string;
-        alt: {ru: string, ky?: string;};
+        alt: { ru: string, ky?: string; };
     };
     images: ImageItem[];
     characteristics?: {
-        key: {ru: string, ky?: string};
-        value: {ru: string, ky?: string};
+        key: { ru: string, ky?: string };
+        value: { ru: string, ky?: string };
     }[];
     sale?: {
         isOnSale: boolean;
         label?: string;
     };
     icon?: {
-        alt?: {ru: string, ky?: string;};
+        alt?: { ru: string, ky?: string; };
         url: string | null;
     };
     slug: string;
@@ -247,23 +253,23 @@ export interface Product {
 
 export interface ProductMutation {
     category: string;
-    title: {ru: string};
-    seoTitle?: string | null;
-    seoDescription?: string | null;
-    description?: {ru: string} | null;
-    coverAlt?: {ru: string} | null;
+    title: { ru: string };
+    seoTitle?: { ru: string };
+    seoDescription?: { ru: string };
+    description?: { ru: string } | null;
+    coverAlt?: { ru: string } | null;
     cover?: File | null;
     images: ProductImagesForm[];
     characteristics?: {
-        key: {ru: string};
-        value: {ru: string};
+        key: { ru: string };
+        value: { ru: string };
     }[];
     sale?: {
         isOnSale: boolean;
         label?: string | null
     };
     icon?: File | null;
-    iconAlt?: {ru: string} | null;
+    iconAlt?: { ru: string } | null;
 }
 
 type ImagesEditValues = Partial<GalleryForm>;

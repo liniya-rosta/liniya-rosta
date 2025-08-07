@@ -53,8 +53,6 @@ productsSuperAdminRouter.post("/", productImage.fields([
 
         let parsedCharacteristics = [];
 
-
-
         if (req.body.characteristics) {
             const original = JSON.parse(req.body.characteristics);
             parsedCharacteristics = await Promise.all(
@@ -87,8 +85,14 @@ productsSuperAdminRouter.post("/", productImage.fields([
         const product = new Product({
             category,
             title: {ru: title.trim(), ky: titleKy},
-            seoTitle: seoTitle?.trim() || null,
-            seoDescription: seoDescription?.trim() || null,
+            seoTitle: {
+                ru: seoTitle?.trim() || null,
+                ky: await translateYandex(seoTitle?.trim() || "", "ky")
+            },
+            seoDescription: {
+                ru: seoDescription?.trim() || null,
+                ky: await translateYandex(seoDescription?.trim() || "", "ky")
+            },
             description: descriptionField,
             cover: {
                 url: `product/${coverFile.filename}`,
@@ -173,11 +177,17 @@ productsSuperAdminRouter.patch("/:id", productImage.fields([
         }
 
         if (seoTitle !== undefined) {
-            product.seoTitle = seoTitle?.trim() || null;
+            product.seoTitle = {
+                ru: seoTitle?.trim() || null,
+                ky: await translateYandex(seoTitle?.trim() || "", "ky")
+            };
         }
 
         if (seoDescription !== undefined) {
-            product.seoDescription = seoDescription?.trim() || null;
+            product.seoDescription = {
+                ru: seoDescription?.trim() || null,
+                ky: await translateYandex(seoDescription?.trim() || "", "ky")
+            };
         }
 
         if (description) {

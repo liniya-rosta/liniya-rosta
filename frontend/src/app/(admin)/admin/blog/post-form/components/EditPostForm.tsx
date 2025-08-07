@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {useForm, useFieldArray} from 'react-hook-form';
+import {useFieldArray, useForm} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {Input} from '@/src/components/ui/input';
 import {Button} from '@/src/components/ui/button';
@@ -15,7 +15,6 @@ import {useSuperAdminPostStore} from "@/store/superadmin/superAdminPostsStore";
 import ConfirmDialog from "@/src/components/ui/ConfirmDialog";
 import {ImageObject} from "@/src/lib/types";
 import {Label} from "@/src/components/ui/label";
-import {Textarea} from "@/src/components/ui/textarea";
 
 interface Props {
     openImagesModal: () => void;
@@ -61,7 +60,7 @@ const EditPostForm: React.FC<Props> = ({openImagesModal, setPreviewImage, setIsP
             title: {ru: detailPost.title.ru},
             description: {ru: detailPost.description.ru},
         });
-    }, [detailPost]);
+    }, [detailPost, reset]);
 
     if (!detailPost) return;
 
@@ -149,7 +148,7 @@ const EditPostForm: React.FC<Props> = ({openImagesModal, setPreviewImage, setIsP
                         type="text"
                         placeholder="SEO заголовок"
                         disabled={updateLoading}
-                        {...register('seoTitle')}
+                        {...register('seoTitle.ru')}
                         className="mb-2"
                     />
 
@@ -167,7 +166,7 @@ const EditPostForm: React.FC<Props> = ({openImagesModal, setPreviewImage, setIsP
                     <Input
                         type="text"
                         placeholder="SEO описание"
-                        {...register('seoDescription')}
+                        {...register('seoDescription.ru')}
                         disabled={updateLoading}
                         className="mb-4"
                     />

@@ -48,14 +48,12 @@ const ProductSchema = new Schema({
                 unique: true,
             },
             seoTitle: {
-                type: String,
-                default: null,
-                maxLength: 120,
+                ru: { type: String, default: null, maxLength: 120 },
+                ky: { type: String, default: null, maxLength: 120 },
             },
             seoDescription: {
-                type: String,
-                default: null,
-                maxLength: 300,
+                ru: { type: String, default: null, maxLength: 300 },
+                ky: { type: String, default: null, maxLength: 300 },
             },
         description: {
             type: new Schema({

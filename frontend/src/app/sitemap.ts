@@ -19,24 +19,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         {url: `${baseUrl}/blog`, lastModified: now},
     ];
 
-    const {items: products} = await fetchProducts('5000', '1');
-    // const productUrls: MetadataRoute.Sitemap = products.map((p: Product) => ({
-    //     url: `${baseUrl}/products/${p.slug}`,
-    //     lastModified: new Date(p.updatedAt || p.createdAt || now),
-    // }));
+    const {items: products} = await fetchProducts({ limit: "5000", page: "1" });
 
     const {items: portfolioItems} = await fetchPortfolioPreviews();
-    // const portfolioUrls: MetadataRoute.Sitemap = portfolioItems.map((item: PortfolioItemPreview) => ({
-    //     url: `${baseUrl}/portfolio/${item.slug}`,
-    //     lastModified: new Date(item.updatedAt || item.createdAt || now),
-    // }));
 
     const {items: posts} = await fetchPosts('5000', '1');
-    // const blogUrls: MetadataRoute.Sitemap = posts.map((post: Post) => ({
-    //     url: `${baseUrl}/blog/${post.slug}`,
-    //     lastModified: new Date(post.updatedAt || post.createdAt || now),
-    // }));
-
 
     const productUrls = products
         .filter(p => !!p.slug)

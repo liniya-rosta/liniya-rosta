@@ -101,13 +101,13 @@ export const getPostTableColumns = (
         {
             accessorKey: "seoTitle",
             header: "SEO заголовок",
-            cell: ({row}) => row.original.seoTitle || "—",
+            cell: ({row}) => row.original.seoTitle?.ru || "—",
         },
         {
             accessorKey: "seoDescription",
             header: "SEO описание",
             cell: ({row}) => {
-                const text = row.original.seoDescription || "—";
+                const text = row.original.seoDescription?.ru || "—";
                 if (text === "—") return text;
                 return text
             },

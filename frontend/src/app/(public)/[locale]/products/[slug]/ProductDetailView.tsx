@@ -100,8 +100,8 @@ const ProductDetailView: React.FC<Props> = ({productData, fetchProductError}) =>
                         <h2 className="font-semibold text-lg">Характеристики</h2>
                         <ul className="list-disc list-inside space-y-1 text-base">
                             {product.characteristics.map((c, index) => (
-                                <li key={`${c.key}-${index}`}>
-                                    <strong>{c.key[locale]}:</strong> {c.value[locale]}
+                                <li key={`${c.key?.[locale] || "key"}-${index}`}>
+                                    <strong>{c.key?.[locale] || "—"}:</strong> {c.value?.[locale] || "—"}
                                 </li>
                             ))}
                         </ul>

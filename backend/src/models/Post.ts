@@ -15,8 +15,14 @@ export interface PostDocument extends Document {
         ky: string;
     };
     slug: string;
-    seoTitle?: string | null;
-    seoDescription?: string | null;
+    seoTitle?: {
+        ru: string | null;
+        ky: string | null;
+    };
+    seoDescription?: {
+        ru: string | null;
+        ky: string | null;
+    };
     description: {
         ru: string;
         ky: string;
@@ -51,14 +57,12 @@ const PostSchema = new Schema<PostDocument>({
         unique: true,
     },
     seoTitle: {
-        type: String,
-        default: null,
-        maxLength: 120,
+        ru: { type: String, default: null, maxLength: 120 },
+        ky: { type: String, default: null, maxLength: 120 },
     },
     seoDescription: {
-        type: String,
-        default: null,
-        maxLength: 300,
+        ru: { type: String, default: null, maxLength: 300 },
+        ky: { type: String, default: null, maxLength: 300 },
     },
     description: {
         ru: {
