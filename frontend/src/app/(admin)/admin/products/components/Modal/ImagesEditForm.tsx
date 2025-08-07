@@ -8,7 +8,6 @@ import {Button} from "@/src/components/ui/button";
 import {Label} from "@/src/components/ui/label";
 import Image from "next/image";
 import {toast} from "react-toastify";
-import {isAxiosError} from "axios";
 import LoaderIcon from "@/src/components/ui/Loading/LoaderIcon";
 import {Tooltip, TooltipContent, TooltipTrigger} from "@/src/components/ui/tooltip";
 import {API_BASE_URL} from "@/src/lib/globalConstants";
@@ -16,10 +15,11 @@ import {useAdminProductStore} from "@/store/superadmin/superadminProductsStore";
 import {updateProductImage} from "@/actions/superadmin/products";
 import {ImagesEditValues} from "@/src/lib/types";
 import {imagesSchema} from "@/src/lib/zodSchemas/admin/productSchema";
+import {handleKyError} from "@/src/lib/handleKyError";
 
 interface Props {
     onSaved: () => void;
-    image: { _id: string; url: string; alt?: {ru: string}};
+    image: { _id: string; url: string; alt?: { ru: string } };
 }
 
 const ImagesEditForm: React.FC<Props> = ({onSaved, image}) => {
@@ -31,7 +31,7 @@ const ImagesEditForm: React.FC<Props> = ({onSaved, image}) => {
         handleSubmit,
         setValue,
         reset,
-        formState: { errors, isDirty },
+        formState: {errors, isDirty},
     } = useForm<ImagesEditValues>({
         resolver: zodResolver(imagesSchema),
         defaultValues: {
@@ -67,13 +67,8 @@ const ImagesEditForm: React.FC<Props> = ({onSaved, image}) => {
             toast.success("Изображение успешно обновлено");
             onSaved();
         } catch (error) {
-            let errorMessage = "Ошибка при обновлении изображения";
-            if (isAxiosError(error) && error.response) {
-                setUpdateError(error.response.data.error);
-                errorMessage = error.response.data.error;
-            } else if (error instanceof Error) {
-                errorMessage = error.message;
-            }
+            const errorMessage = await handleKyError(error, "Ошибка при обновлении изображения");
+            setUpdateError(errorMessage);
             toast.error(errorMessage);
         } finally {
             setUpdateLoading(false);

@@ -4,6 +4,7 @@ import {fetchProducts} from "@/actions/products";
 import {fetchCategories} from "@/actions/categories";
 import ProductsClient from "@/src/app/(admin)/admin/products/ProductsClient";
 import {AxiosError} from "axios";
+import {handleKyError} from "@/src/lib/handleKyError";
 
 const AdminProductsPage = async () => {
     let products: Product[] = [];
@@ -23,15 +24,14 @@ const AdminProductsPage = async () => {
                 }
             }),
 
-        fetchProducts({})
-            .then(data => products = data.items)
-            .catch(e => {
-                if (e instanceof AxiosError) {
-                    productsError = (e.response?.data?.error ?? "Ошибка при загрузке продуктов.");
-                } else {
-                    productsError = "Неизвестная ошибка на сервере при загрузке продуктов.";
-                }
-            }),
+        (async () => {
+            try {
+                const data = await fetchProducts({});
+                products = data.items;
+            } catch (e) {
+                productsError = await handleKyError(e, "Ошибка при загрузке продуктов");
+            }
+        })()
     ]);
 
     return (

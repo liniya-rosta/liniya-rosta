@@ -8,6 +8,7 @@ import HomePageClient from "@/src/app/(public)/[locale]/(home)/HomeClient";
 import {fetchAllServices} from "@/actions/services";
 import {getTranslations} from "next-intl/server";
 import {Metadata} from "next";
+import {handleKyError} from "@/src/lib/handleKyError";
 
 export const revalidate = 3600;
 
@@ -50,6 +51,8 @@ const HomePage = async () => {
 
     const limitPortfolio = "8";
 
+    const tError = await getTranslations("Errors");
+
     await Promise.all([
         fetchCategories()
             .then(data => categoriesData = data)
@@ -57,11 +60,14 @@ const HomePage = async () => {
                 categoriesError = e instanceof Error ? e.message : String(e);
             }),
 
-        fetchProducts({})
-            .then(data => productsData = data.items)
-            .catch(e => {
-                productsError = e instanceof Error ? e.message : String(e);
-            }),
+        (async () => {
+            try {
+                const data = await fetchProducts({});
+                productsData = data.items;
+            } catch (e) {
+                productsError = await handleKyError(e, tError("productsError"));
+            }
+        })(),
 
         fetchPortfolioPreviews(limitPortfolio)
             .then(data => portfolio = data.items)
@@ -69,11 +75,14 @@ const HomePage = async () => {
                 portfolioError = e instanceof Error ? e.message : String(e);
             }),
 
-        fetchContacts()
-            .then(data => contactData = data)
-            .catch(e => {
-                contactError = e instanceof Error ? e.message : String(e);
-            }),
+        (async () => {
+            try {
+                contactData = await fetchContacts();
+            } catch (e) {
+                contactError = await handleKyError(e, tError('contactsError'));
+            }
+        })(),
+
         fetchAllServices()
             .then(data => serviceData = data)
             .catch(e => {

@@ -1,7 +1,6 @@
-import axiosAPI from '@/src/lib/axiosAPI';
 import {Contact} from '@/src/lib/types';
+import kyAPI from "@/src/lib/kyAPI";
 
-export const fetchContacts = async () => {
-    const res = await axiosAPI.get<Contact>('/contacts');
-    return res.data;
+export const fetchContacts = async (): Promise<Contact> => {
+    return await kyAPI.get('contacts').json<Contact>();
 };
