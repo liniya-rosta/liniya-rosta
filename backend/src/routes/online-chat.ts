@@ -8,6 +8,7 @@ import { ChatMessage, IncomingMessage} from "../../types";
 
 const connectedClients: Record<string, WebSocket[]> = {};
 const adminSockets: WebSocket[] = [];
+const onlineClients = new Set<string>();
 
 export const getOnlineChatRouter = (
     wsInstance: ReturnType<typeof expressWs>
@@ -21,16 +22,16 @@ export const getOnlineChatRouter = (
         let nickname: string | null = null;
 
         const token = new URL(req.url!, "http://localhost").searchParams.get("token");
+        let admin: { _id: string; displayName: string } | null = null;
 
         if (token) {
             try {
-                const payload = jwt.verify(token, JWT_SECRET) as { _id: string; displayName: string };
-                console.log(payload);
+                admin = jwt.verify(token, JWT_SECRET) as { _id: string; displayName: string };
                 isAdmin = true;
-                nickname = payload.displayName;
+                nickname = admin.displayName;
                 adminSockets.push(ws);
             } catch (e) {
-                console.log("Invalid admin token");
+                console.log("Недействительный токен администратора");
             }
         }
 
@@ -48,15 +49,31 @@ export const getOnlineChatRouter = (
                         chatId = session._id.toString();
                         connectedClients[chatId] = connectedClients[chatId] || [];
                         connectedClients[chatId].push(ws);
+                        onlineClients.add(chatId);
 
                         ws.send(JSON.stringify({type: "session_created", chatId}));
+
+                        for (const adminWs of adminSockets) {
+                            adminWs.send(JSON.stringify({
+                                type: "new_chat",
+                                chat: {
+                                    _id: session._id,
+                                    clientName: session.clientName,
+                                    createdAt: session.createdAt,
+                                    updatedAt: session.updatedAt,
+                                    messages: [],
+                                    isClientOnline: true,
+                                }
+                            }));
+                        }
+
                     } else {
                         chatId = data.chatId;
                         connectedClients[chatId] = connectedClients[chatId] || [];
                         if (!connectedClients[chatId].includes(ws)) {
                             connectedClients[chatId].push(ws);
                         }
-
+                        onlineClients.add(chatId);
                     }
 
                     const message: ChatMessage = {
@@ -82,7 +99,7 @@ export const getOnlineChatRouter = (
                     }
                 }
 
-                if (data.type === "admin_message" && isAdmin && data.chatId) {
+                if (data.type === "admin_message" && isAdmin && admin) {
                     const message: ChatMessage = {
                         sender: "admin",
                         senderName: nickname || "Админ",
@@ -90,31 +107,42 @@ export const getOnlineChatRouter = (
                         timestamp: new Date(),
                     };
 
-                    const chat = await ChatSession.findById(data.chatId);
-
-                    if (chat && !chat.adminId && token) {
-                        chat.adminId = (jwt.verify(token, JWT_SECRET) as any)._id;
-                    }
-
                     await ChatSession.findByIdAndUpdate(data.chatId, {
-                        $push: {messages: message},
-                        $set: {updatedAt: new Date(), admin: chat?.adminId},
+                        $push: { messages: message },
+                        $set: {
+                            updatedAt: new Date(),
+                            status: "В работе",
+                            adminId: admin._id,
+                        },
                     });
 
                     if (connectedClients[data.chatId]) {
                         connectedClients[data.chatId].forEach((clientWs) => {
-                            clientWs.send(JSON.stringify({type: "new_message", chatId: data.chatId, ...message}));
+                            clientWs.send(JSON.stringify({ type: "new_message", chatId: data.chatId, ...message }));
                         });
                     }
                 }
+
             } catch (e) {
-                console.error("WS error", e);
+                console.error("Ошибка WS", e);
             }
         });
 
-        ws.on("close", () => {
+        ws.on("close", async () => {
             if (chatId && connectedClients[chatId]) {
                 connectedClients[chatId] = connectedClients[chatId].filter((sock) => sock !== ws);
+                onlineClients.delete(chatId);
+
+                await ChatSession.findByIdAndUpdate(chatId, {
+                    $set: { status: "Без ответа" }
+                });
+
+                for (const adminWs of adminSockets) {
+                    adminWs.send(JSON.stringify({
+                        type: "client_offline",
+                        chatId,
+                    }));
+                }
             }
 
             if (isAdmin) {
