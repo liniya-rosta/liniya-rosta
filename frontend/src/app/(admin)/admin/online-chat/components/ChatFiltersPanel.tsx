@@ -5,7 +5,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/src/components/ui/input";
 import { Button } from "@/src/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/src/components/ui/select";
-import dayjs from "dayjs";
 import {ChatFilters, User} from "@/src/lib/types";
 import {chat_statuses} from "@/src/app/(admin)/admin/online-chat/constants";
 
@@ -33,11 +32,12 @@ const ChatFiltersPanel: React.FC<ChatFiltersPanelProps> = ({ onChange, adminList
     const onSubmit = (data: ChatFilters) => {
         const formatted = {
             ...data,
-            createdFrom: data.createdFrom ? dayjs(data.createdFrom).toISOString() : undefined,
-            createdTo: data.createdTo ? dayjs(data.createdTo).toISOString() : undefined,
-            updatedFrom: data.updatedFrom ? dayjs(data.updatedFrom).toISOString() : undefined,
-            updatedTo: data.updatedTo ? dayjs(data.updatedTo).toISOString() : undefined,
+            createdFrom: data.createdFrom || undefined,
+            createdTo: data.createdTo || undefined,
+            updatedFrom: data.updatedFrom || undefined,
+            updatedTo: data.updatedTo || undefined,
         };
+        console.log(formatted);
         onChange(formatted);
     };
 
