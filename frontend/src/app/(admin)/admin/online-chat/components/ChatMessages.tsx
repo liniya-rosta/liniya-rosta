@@ -1,6 +1,7 @@
 import React from "react";
 import { ChatMessage } from "@/src/lib/types";
 import { Button } from "@/src/components/ui/button";
+import dayjs from "dayjs";
 
 interface ChatMessagesProps {
     messages: ChatMessage[];
@@ -31,7 +32,7 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
                             <div className="text-sm text-gray-600">{msg.senderName}</div>
                             <div>{msg.text}</div>
                             <div className="text-xs text-gray-400 text-right">
-                                {new Date(msg.timestamp).toLocaleTimeString()}
+                                {dayjs(msg.timestamp).format('HH:mm')}
                             </div>
                         </div>
                     ))

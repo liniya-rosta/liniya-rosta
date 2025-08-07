@@ -5,23 +5,36 @@ import useAdminChatFetcher from "@/src/app/(admin)/admin/online-chat/hooks/useAd
 import { useAdminChatWS } from "./hooks/useAdminChatWS";
 import ChatList from "@/src/app/(admin)/admin/online-chat/components/ChatList";
 import ChatMessages from "@/src/app/(admin)/admin/online-chat/components/ChatMessages";
+import {ChatFilters} from "@/src/lib/types";
+import ChatFiltersPanel from "@/src/app/(admin)/admin/online-chat/components/ChatFiltersPanel";
 
 const Page = () => {
     const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
     const [input, setInput] = useState("");
+    const [filters, setFilters] = React.useState<ChatFilters>({});
 
     const {
         allChats,
         messages,
+        admins,
         addChat,
+        setChats,
         fetchData,
         setMessages,
         fetchOneChat,
+        fetchAdmins,
+        updateChatOnlineStatus
     } = useAdminChatFetcher();
 
     useEffect(() => {
-        void fetchData();
-    }, []);
+        void fetchData(filters);
+    }, [filters]);
+
+    useEffect(() => {
+        if (admins.length === 0) {
+            void fetchAdmins();
+        }
+    }, [admins]);
 
     useEffect(() => {
         if (selectedChatId) void fetchOneChat(selectedChatId);
@@ -33,6 +46,7 @@ const Page = () => {
             setMessages((prev) => [...prev, msg]);
         },
         onNewChat: (chat) => addChat(chat),
+        updateChatOnlineStatus,
     });
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -53,18 +67,25 @@ const Page = () => {
     };
 
     return (
-        <div className="flex h-screen">
-            <ChatList
-                chats={allChats}
-                selectedChatId={selectedChatId}
-                onSelect={setSelectedChatId}
-            />
-            <ChatMessages
-                messages={messages}
-                input={input}
-                onInputChange={setInput}
-                onSubmit={handleSubmit}
-            />
+        <div>
+            <ChatFiltersPanel onChange={setFilters} adminList={admins}/>
+            <div className="flex h-screen">
+                <ChatList
+                    chats={allChats}
+                    selectedChatId={selectedChatId}
+                    onSelect={setSelectedChatId}
+                    onChatDeleted={(id) => setChats((prev) => prev.filter(chat => chat._id !== id))}
+                    onStatusUpdated={(id, status) =>
+                        setChats((prev) => prev.map(chat => chat._id === id ? { ...chat, status } : chat))
+                    }
+                />
+                <ChatMessages
+                    messages={messages}
+                    input={input}
+                    onInputChange={setInput}
+                    onSubmit={handleSubmit}
+                />
+            </div>
         </div>
     );
 };

@@ -7,7 +7,7 @@ export const useClientChat = () => {
     const [messages, setMessages] = useState<ChatMessage[]>([]);
     const [connected, setConnected] = useState(false);
 
-    const connect = (clientName: string) => {
+    const connect = (clientName: string, phone: string) => {
         if (ws.current) return;
 
         ws.current = new WebSocket("ws://localhost:8000/ws/online-chat");
@@ -18,7 +18,7 @@ export const useClientChat = () => {
             ws.current?.send(JSON.stringify({
                 type: "client_message",
                 name: clientName,
-                text: "Здравствуйте! Я хочу проконсультироваться.",
+                text: `Здравствуйте! Я хочу проконсультироваться. Мой телефон: ${phone}`,
             }));
         };
 

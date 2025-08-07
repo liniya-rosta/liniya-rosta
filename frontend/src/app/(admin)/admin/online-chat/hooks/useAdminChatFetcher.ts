@@ -2,7 +2,10 @@ import {useAdminChatStore} from "@/store/superadmin/adminChatStore";
 import {fetchAllChats, fetchChatById} from "@/actions/superadmin/onlineChat";
 import {isAxiosError} from "axios";
 import {useState} from "react";
-import {ChatMessage} from "@/src/lib/types";
+import {ChatFilters, ChatMessage} from "@/src/lib/types";
+import {toast} from "react-toastify";
+import {getAllAdmins} from "@/actions/superadmin/admins";
+import {useSuperadminAdminsStore} from "@/store/superadmin/superadminAdminsStore";
 
 const useAdminChatFetcher = () => {
     const {
@@ -13,12 +16,13 @@ const useAdminChatFetcher = () => {
         addChat
     } = useAdminChatStore();
 
+    const {admins, setAdmins } = useSuperadminAdminsStore();
     const [messages, setMessages] = useState<ChatMessage[]>([]);
 
-    const fetchData = async () => {
+    const fetchData = async (filters?: ChatFilters) => {
         try {
-            const data = await fetchAllChats();
-            setChats(data);
+            const data = await fetchAllChats(filters);
+            setChats(data.items);
         } catch (err) {
             let errorMessage = "Ошибка при получении данных";
             if (isAxiosError(err) && err.response) {
@@ -49,14 +53,41 @@ const useAdminChatFetcher = () => {
         }
     }
 
+    const fetchAdmins = async () => {
+        try {
+            const admins = await getAllAdmins();
+            setAdmins(admins);
+        } catch (err) {
+            let errorMessage = "Ошибка при получении данных";
+            if (isAxiosError(err) && err.response) {
+                errorMessage = err.response.data.error;
+            } else if (err instanceof Error) {
+                errorMessage = err.message;
+            }
+            toast.error(errorMessage);
+        }
+    }
+
+    const updateChatOnlineStatus = (chatId: string, isOnline: boolean) => {
+        setChats((prev) =>
+            prev.map((chat) =>
+                chat._id === chatId ? { ...chat, isClientOnline: isOnline } : chat
+            )
+        );
+    };
+
+
     return {
         allChats,
         messages,
+        admins,
         addChat,
         setChats,
         setMessages,
         fetchData,
         fetchOneChat,
+        fetchAdmins,
+        updateChatOnlineStatus,
     }
 }
 

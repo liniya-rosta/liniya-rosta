@@ -338,4 +338,21 @@ export interface ChatSession {
     createdAt: Date;
     updatedAt: Date;
     status: string;
+    isClientOnline: boolean;
+}
+
+export interface ChatResponse extends PaginationMeta {
+    items: ChatSession[],
+}
+
+export interface ChatFilters {
+    status?: string;
+    clientName?: string;
+    createdFrom?: string;
+    createdTo?: string;
+    updatedFrom?: string;
+    updatedTo?: string;
+    adminId?: string;
+    page?: number;
+    limit?: number;
 }

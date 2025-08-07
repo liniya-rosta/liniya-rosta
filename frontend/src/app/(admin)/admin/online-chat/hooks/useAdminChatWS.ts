@@ -6,9 +6,10 @@ interface Props {
     selectedChatId: string | null;
     onMessage: (msg: ChatMessage) => void;
     onNewChat: (chat: ChatSession) => void;
+    updateChatOnlineStatus: (chatId: string, isOnline: boolean) => void;
 }
 
-export const useAdminChatWS = ({ selectedChatId, onMessage, onNewChat }: Props) => {
+export const useAdminChatWS = ({ selectedChatId, onMessage, onNewChat, updateChatOnlineStatus }: Props) => {
     const wsRef = useRef<WebSocket | null>(null);
     const { accessToken } = useUserStore();
 
@@ -34,6 +35,12 @@ export const useAdminChatWS = ({ selectedChatId, onMessage, onNewChat }: Props) 
 
                 if (data.type === "new_chat") {
                     onNewChat(data.chat);
+                }
+
+                if (data.type === "client_offline") {
+                    if (typeof updateChatOnlineStatus === "function") {
+                        updateChatOnlineStatus(data.chatId, false);
+                    }
                 }
             } catch (err) {
                 console.error("WS parse error", err);
