@@ -1,15 +1,21 @@
-import {EditProfileForm, UserForm} from "@/src/lib/types";
+import {EditProfileForm, User, UserForm} from "@/src/lib/types";
 import kyAPI from "@/src/lib/kyAPI";
 
-export const login = async (data: UserForm) => {
+type LoginResponse = {
+    user: User;
+    accessToken: string;
+};
+
+export const login = async (data: UserForm): Promise<LoginResponse> => {
     try {
         const {email, password, confirmPassword} = data;
 
         return await kyAPI.post("users/sessions", {
             json: {email, password, confirmPassword}
-        }).json();
+        }).json<LoginResponse>();
     } catch (e) {
         console.log(e);
+        throw e;
     }
 };
 

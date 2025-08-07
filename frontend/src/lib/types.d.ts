@@ -328,3 +328,4 @@ export interface FetchRequestsResponse {
     totalPages: number;
     totalItems: number;
 }
+

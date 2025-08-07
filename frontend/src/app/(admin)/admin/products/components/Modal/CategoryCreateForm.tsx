@@ -1,34 +1,30 @@
 "use client";
 
-import React, { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/src/components/ui/dialog";
-import { Button } from "@/src/components/ui/button";
-import { Input } from "@/src/components/ui/input";
-import { toast } from "react-toastify";
-import axiosAPI from "@/src/lib/axiosAPI";
+import React, {useState} from "react";
+import {Dialog, DialogContent, DialogHeader, DialogTitle} from "@/src/components/ui/dialog";
+import {Button} from "@/src/components/ui/button";
+import {Input} from "@/src/components/ui/input";
+import {toast} from "react-toastify";
 import {useAdminCategoryStore} from "@/store/superadmin/superadminCategoriesStore";
-import {isAxiosError} from "axios";
 import LoaderIcon from "@/src/components/ui/Loading/LoaderIcon";
+import {createCategory} from "@/actions/superadmin/categories";
+import {handleKyError} from "@/src/lib/handleKyError";
 
-const CreateCategoryForm: React.FC<{ open: boolean; onClose: () => void }> = ({ open, onClose }) => {
-    const [title, setTitle] = useState<{ ru: string }>({ ru: "" });
+const CreateCategoryForm: React.FC<{ open: boolean; onClose: () => void }> = ({open, onClose}) => {
+    const [title, setTitle] = useState<{ ru: string }>({ru: ""});
     const [loading, setLoading] = useState(false);
-    const { setCategories, categories, setCreateCategoryError } = useAdminCategoryStore();
+    const {setCategories, categories, setCreateCategoryError} = useAdminCategoryStore();
 
     const handleSubmit = async () => {
         setLoading(true);
         try {
-            const res = await axiosAPI.post("/superadmin/categories", { title });
+            const res = await createCategory({title});
             toast.success("Категория успешно создана");
-            setCategories([...categories, res.data.category]);
+            setCategories([...categories, res.category]);
             setTitle({ru: ""});
             onClose();
         } catch (e) {
-            const message =
-                isAxiosError(e) && e.response?.data?.error
-                    ? e.response.data.error
-                    : "Ошибка при создании категории";
-
+            const message = await handleKyError(e, "Ошибка при создании категории");
             setCreateCategoryError(message);
             toast.error(message);
         } finally {

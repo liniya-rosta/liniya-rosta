@@ -7,16 +7,16 @@ import {Input} from "@/src/components/ui/input";
 import Image from "next/image";
 import {API_BASE_URL} from "@/src/lib/globalConstants";
 import {Button} from "@/src/components/ui/button";
-import { editGalleryItem } from "@/actions/superadmin/portfolios";
+import {editGalleryItem} from "@/actions/superadmin/portfolios";
 import LoaderIcon from "@/src/components/ui/Loading/LoaderIcon";
-import {isAxiosError} from "axios";
 import {toast} from "react-toastify";
 import {Tooltip, TooltipContent, TooltipTrigger} from "@/src/components/ui/tooltip";
 import {fetchPortfolioItem} from "@/actions/portfolios";
 import {Eye} from "lucide-react";
 import {Label} from "@/src/components/ui/label";
 import ImageModal from "@/src/app/(admin)/admin/portfolio/components/ImageModal";
-import { gallerySchema } from "@/src/lib/zodSchemas/admin/portfolioSchema";
+import {gallerySchema} from "@/src/lib/zodSchemas/admin/portfolioSchema";
+import {handleKyError} from "@/src/lib/handleKyError";
 
 interface Props {
     onSaved: () => void;
@@ -56,7 +56,7 @@ const GalleryEditForm: React.FC<Props> = ({onSaved}) => {
     const onChangeFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
-        setValue("image", file, { shouldDirty: true });
+        setValue("image", file, {shouldDirty: true});
     };
 
     const onSubmit = async (data: GalleryEditValues) => {
@@ -69,21 +69,15 @@ const GalleryEditForm: React.FC<Props> = ({onSaved}) => {
 
             toast.success("Вы успешно обновили элемент галереи");
 
-            if(detailItem) {
+            if (detailItem) {
                 const updated = await fetchPortfolioItem(detailItem._id);
                 setPortfolioItemDetail(updated);
             }
 
             onSaved();
         } catch (error) {
-            let errorMessage = "Неизвестная ошибка при редактировании элемента галереи";
-            if (isAxiosError(error) && error.response) {
-                errorMessage = error.response.data.error;
-            } else if (error instanceof Error) {
-                errorMessage = error.message;
-            }
-
-            toast.error(errorMessage);
+            const msg = await handleKyError(error, "Неизвестная ошибка при редактировании элемента галереи");
+            toast.error(msg);
         } finally {
             setPortfolioEditLoading(false);
         }
@@ -127,7 +121,7 @@ const GalleryEditForm: React.FC<Props> = ({onSaved}) => {
                                 }
                             }}
                         >
-                            <Eye className="w-4 h-4" /> Посмотреть
+                            <Eye className="w-4 h-4"/> Посмотреть
                         </Button>
 
                     </div>
@@ -153,17 +147,17 @@ const GalleryEditForm: React.FC<Props> = ({onSaved}) => {
             </div>
 
 
-                <Tooltip>
-                    <TooltipTrigger asChild>
-                        <div className="inline-block">
-                            <Button type="submit" className="mr-auto" disabled={!isDirty || editLoading}>
-                                {editLoading && <LoaderIcon/>}
-                                Сохранить
-                            </Button>
-                        </div>
-                    </TooltipTrigger>
-                    {!isDirty && <TooltipContent>Вы ничего не изменили</TooltipContent>}
-                </Tooltip>
+            <Tooltip>
+                <TooltipTrigger asChild>
+                    <div className="inline-block">
+                        <Button type="submit" className="mr-auto" disabled={!isDirty || editLoading}>
+                            {editLoading && <LoaderIcon/>}
+                            Сохранить
+                        </Button>
+                    </div>
+                </TooltipTrigger>
+                {!isDirty && <TooltipContent>Вы ничего не изменили</TooltipContent>}
+            </Tooltip>
 
             <ImageModal
                 open={isPreviewOpen}

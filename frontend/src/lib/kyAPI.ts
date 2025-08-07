@@ -26,6 +26,11 @@ const kyAPI = ky.create({
 
                     try {
                         const newToken = await refreshAccessToken();
+                        if (!newToken) {
+                            useUserStore.getState().setAccessToken(null);
+                            useUserStore.getState().setLogout?.();
+                            throw new Error('Refresh token failed');
+                        }
                         useUserStore.getState().setAccessToken(newToken);
 
                         return ky(request, {

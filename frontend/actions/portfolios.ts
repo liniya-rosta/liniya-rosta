@@ -1,33 +1,34 @@
-import {GalleryItem, PortfolioResponse, PortfolioItemDetail} from "@/src/lib/types";
-import axiosAPI from "@/src/lib/axiosAPI";
+import {GalleryItem, PortfolioItemDetail, PortfolioResponse} from "@/src/lib/types";
+import kyAPI from "@/src/lib/kyAPI";
 
 export const fetchPortfolioPreviews = async (
     limit?: string, page?: string, coverAlt?: string, description?: string) => {
-    const params = new URLSearchParams();
+    const searchParams = new URLSearchParams();
 
-    if (page) params.append("page", page);
-    if (limit) params.append("limit", limit);
-    if (coverAlt) params.append("coverAlt", coverAlt);
-    if (description) params.append("description", description);
+    if (page) searchParams.append("page", page);
+    if (limit) searchParams.append("limit", limit);
+    if (coverAlt) searchParams.append("coverAlt", coverAlt);
+    if (description) searchParams.append("description", description);
 
-    const response = await axiosAPI<PortfolioResponse>(
-        `/portfolio-items${params.toString() ? `?${params.toString()}` : ""}`
-    );
-
-    return response.data;
+    return await kyAPI
+        .get("portfolio-items", {searchParams})
+        .json<PortfolioResponse>();
 }
 
 export const fetchPortfolioItem = async (item_id: string) => {
-    const response = await axiosAPI<PortfolioItemDetail>("/portfolio-items/" + item_id);
-    return response.data;
+    return await kyAPI
+        .get(`portfolio-items/${item_id}`)
+        .json<PortfolioItemDetail>();
 }
 
 export const fetchGalleryItem = async (gallery_id: string) => {
-    const response = await axiosAPI<GalleryItem>("/portfolio-items?galleryId=" + gallery_id);
-    return response.data;
+    return await kyAPI
+        .get("portfolio-items", {searchParams: {galleryId: gallery_id}})
+        .json<GalleryItem>();
 }
 
 export const fetchPortfolioItemBySlug = async (slug: string) => {
-    const response = await axiosAPI<PortfolioItemDetail>("/portfolio-items/slug/" + slug);
-    return response.data;
+    return await kyAPI
+        .get(`portfolio-items/slug/${slug}`)
+        .json<PortfolioItemDetail>();
 }

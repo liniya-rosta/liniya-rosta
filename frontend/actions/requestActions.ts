@@ -1,11 +1,7 @@
-import axiosAPI from "@/src/lib/axiosAPI";
 import {IRequestMutation} from "@/src/lib/types";
+import kyAPI from "@/src/lib/kyAPI";
 
 export const createRequest = async (data: IRequestMutation) => {
-    try {
-        await axiosAPI.post('/requests', data);
-        return null
-    } catch (e: any) {
-        return e.response?.data?.message;
-    }
+    await kyAPI.post('requests', {json: data});
+    return null
 }

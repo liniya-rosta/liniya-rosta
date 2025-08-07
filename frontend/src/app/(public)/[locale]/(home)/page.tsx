@@ -54,11 +54,13 @@ const HomePage = async () => {
     const tError = await getTranslations("Errors");
 
     await Promise.all([
-        fetchCategories()
-            .then(data => categoriesData = data)
-            .catch(e => {
-                categoriesError = e instanceof Error ? e.message : String(e);
-            }),
+        (async () => {
+            try {
+                categoriesData = await fetchCategories();
+            } catch (e) {
+                categoriesError = await handleKyError(e, tError("categoriesError"));
+            }
+        })(),
 
         (async () => {
             try {
@@ -69,11 +71,14 @@ const HomePage = async () => {
             }
         })(),
 
-        fetchPortfolioPreviews(limitPortfolio)
-            .then(data => portfolio = data.items)
-            .catch(e => {
-                portfolioError = e instanceof Error ? e.message : String(e);
-            }),
+        (async () => {
+            try {
+                const data = await fetchPortfolioPreviews(limitPortfolio);
+                portfolio = data.items;
+            } catch (e) {
+                portfolioError = await handleKyError(e, tError("portfolioError"));
+            }
+        })(),
 
         (async () => {
             try {
@@ -83,11 +88,13 @@ const HomePage = async () => {
             }
         })(),
 
-        fetchAllServices()
-            .then(data => serviceData = data)
-            .catch(e => {
-                serviceError = e instanceof Error ? e.message : String(e);
-            }),
+        (async () => {
+            try {
+                serviceData = await fetchAllServices();
+            } catch (e) {
+                serviceError = await handleKyError(e, tError("servicesError"));
+            }
+        })(),
     ]);
 
     const initialProps = {
