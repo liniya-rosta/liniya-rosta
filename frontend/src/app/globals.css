@@ -4,6 +4,11 @@
 @import 'swiper/css';
 @import 'swiper/css/navigation';
 @import 'swiper/css/pagination';
+@import 'froala-editor/css/froala_editor.pkgd.min.css';
+@import 'froala-editor/css/froala_style.min.css';
+@import 'froala-editor/css/plugins/image.min.css';
+@import 'froala-editor/css/plugins/colors.min.css';
+@import 'froala-editor/css/themes/gray.min.css';
 
 @custom-variant dark (&:is(.dark *));
 
