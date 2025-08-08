@@ -125,321 +125,321 @@ const run = async () => {
         }
     );
 
-    // await Product.create(
-    //     {
-    //         category: lightingTechnology,
-    //         title: { ru: "Светодиодная лента leds power", ky: "Светодиоддук лента leds power" },
-    //         description: {
-    //             ru: "световой поток: 1000 Лм/м, мощность: 10 Вт/м, длина: 5 м, ширина: 8 мм",
-    //             ky: "жарык агымы: 1000 Лм/м, кубаттуулугу: 10 Вт/м, узундугу: 5 м, туурасы: 8 мм"
-    //         },
-    //         cover: {
-    //             url: "test/lightingTechnology1.jpg",
-    //             alt: { ru: "светодиодная лента", ky: "светодиоддук лента" }
-    //         },
-    //         characteristics: [
-    //             { key: { ru: "Пример характеристики", ky: "Үлгү мүнөздөмөсү" }, value: { ru: "Значение", ky: "Маани" } }
-    //         ],
-    //         sale: { isOnSale: false, label: { ru: null, ky: null } }
-    //     },
-    //     {
-    //         category: lightingTechnology,
-    //         title: { ru: "Светодиодная лента vacco group", ky: "Светодиоддук лента vacco group" },
-    //         description: {
-    //             ru: "световой поток: 1000 Лм/м, мощность: 10 Вт/м, длина: 5 м, ширина: 8 мм",
-    //             ky: "жарык агымы: 1000 Лм/м, кубаттуулугу: 10 Вт/м, узундугу: 5 м, туурасы: 8 мм"
-    //         },
-    //         cover: {
-    //             url: "test/lightingTechnology1.jpg",
-    //             alt: { ru: "", ky: "" }
-    //         },
-    //         characteristics: [
-    //             { key: { ru: "Пример характеристики", ky: "Үлгү мүнөздөмөсү" }, value: { ru: "Значение", ky: "Маани" } }
-    //         ],
-    //         sale: { isOnSale: false, label: { ru: null, ky: null } }
-    //     },
-    //     {
-    //         category: film,
-    //         title: { ru: "Пленка ПВХ LEGEND", ky: "ПВХ пленка LEGEND" },
-    //         description: {
-    //             ru: "ЛАК:; толщина - 0,18±0,01 мм; ГР/М; плотность - 210 г/м2; ширина полотна - 320 см",
-    //             ky: "ЛАК:; калыңдыгы - 0,18±0,01 мм; ГР/М; тыгыздыгы - 210 г/м2; туурасы - 320 см"
-    //         },
-    //         cover: {
-    //             url: "test/legend-paint.jpg",
-    //             alt: { ru: "свет", ky: "жарык" }
-    //         },
-    //         characteristics: [
-    //             { key: { ru: "Пример характеристики", ky: "Үлгү мүнөздөмөсү" }, value: { ru: "Значение", ky: "Маани" } }
-    //         ],
-    //         sale: { isOnSale: false, label: { ru: null, ky: null } }
-    //     },
-    //     {
-    //         category: film,
-    //         title: { ru: "Пленка ПВХ IDEAL", ky: "ПВХ пленка IDEAL" },
-    //         description: {
-    //             ru: "ЛАК:; толщина - 0,18±0,01 мм; ГР/М; плотность - 210 г/м2; ширина полотна - 320 см",
-    //             ky: "ЛАК:; калыңдыгы - 0,18±0,01 мм; ГР/М; тыгыздыгы - 210 г/м2; туурасы - 320 см"
-    //         },
-    //         cover: {
-    //             url: "test/plenkaPBX.png",
-    //             alt: { ru: "", ky: "" }
-    //         },
-    //         characteristics: [
-    //             { key: { ru: "Пример характеристики", ky: "Үлгү мүнөздөмөсү" }, value: { ru: "Значение", ky: "Маани" } }
-    //         ],
-    //         sale: { isOnSale: false, label: { ru: null, ky: null } }
-    //     },
-    //     {
-    //         category: film,
-    //         title: { ru: "Пленка ПВХ as;lkdf;sajf", ky: "ПВХ пленка as;lkdf;sajf" },
-    //         description: {
-    //             ru: "ЛАК:; толщина - 0,18±0,01 мм; ГР/М; плотность - 210 г/м2; ширина полотна - 320 см",
-    //             ky: "ЛАК:; калыңдыгы - 0,18±0,01 мм; ГР/М; тыгыздыгы - 210 г/м2; туурасы - 320 см"
-    //         },
-    //         cover: {
-    //             url: "test/plenkaPBX.png",
-    //             alt: { ru: "", ky: "" }
-    //         },
-    //         characteristics: [
-    //             { key: { ru: "Пример характеристики", ky: "Үлгү мүнөздөмөсү" }, value: { ru: "Значение", ky: "Маани" } }
-    //         ],
-    //         sale: { isOnSale: false, label: { ru: null, ky: null } }
-    //     },
-    //     {
-    //         category: spc,
-    //         title: { ru: "Тис Альпик", ky: "Тис Альпик" },
-    //         description: {
-    //             ru: "Размер: 180x1220x4,0/0,3+1ммIXPE",
-    //             ky: "Өлчөмү: 180x1220x4,0/0,3+1ммIXPE"
-    //         },
-    //         cover: {
-    //             url: "test/laminate1.JPG",
-    //             alt: { ru: "", ky: "" }
-    //         },
-    //         characteristics: [
-    //             { key: { ru: "Пример характеристики", ky: "Үлгү мүнөздөмөсү" }, value: { ru: "Значение", ky: "Маани" } }
-    //         ],
-    //         sale: { isOnSale: false, label: { ru: null, ky: null } }
-    //     },
-    //     {
-    //         category: spc,
-    //         title: { ru: "Тис Латте", ky: "Тис Латте" },
-    //         description: {
-    //             ru: "Размер: 180x1220x4,0/0,3+1ммIXPE",
-    //             ky: "Өлчөмү: 180x1220x4,0/0,3+1ммIXPE"
-    //         },
-    //         cover: {
-    //             url: "test/laminate2.JPG",
-    //             alt: { ru: "", ky: "" }
-    //         },
-    //         characteristics: [
-    //             { key: { ru: "Пример характеристики", ky: "Үлгү мүнөздөмөсү" }, value: { ru: "Значение", ky: "Маани" } }
-    //         ],
-    //         sale: { isOnSale: false, label: { ru: null, ky: null } }
-    //     },
-    //     {
-    //         category: spc,
-    //         title: { ru: "Бук Шале", ky: "Бук Шале" },
-    //         description: {
-    //             ru: "Размер: 180x1220x4,0/0,3+1ммIXPE",
-    //             ky: "Өлчөмү: 180x1220x4,0/0,3+1ммIXPE"
-    //         },
-    //         cover: {
-    //             url: "test/laminate3.JPG",
-    //             alt: { ru: "", ky: "" }
-    //         },
-    //         characteristics: [
-    //             { key: { ru: "Пример характеристики", ky: "Үлгү мүнөздөмөсү" }, value: { ru: "Значение", ky: "Маани" } }
-    //         ],
-    //         sale: { isOnSale: false, label: { ru: null, ky: null } }
-    //     },
-    //     {
-    //         category: spc,
-    //         title: { ru: "Орех Шато", ky: "Орех Шато" },
-    //         description: {
-    //             ru: "Размер: 180x1220x4,0/0,3+1ммIXPE",
-    //             ky: "Өлчөмү: 180x1220x4,0/0,3+1ммIXPE"
-    //         },
-    //         cover: {
-    //             url: "test/laminate4.JPG",
-    //             alt: { ru: "", ky: "" }
-    //         },
-    //         characteristics: [
-    //             { key: { ru: "Пример характеристики", ky: "Үлгү мүнөздөмөсү" }, value: { ru: "Значение", ky: "Маани" } }
-    //         ],
-    //         sale: { isOnSale: false, label: { ru: null, ky: null } }
-    //     },
-    //     {
-    //         category: spc,
-    //         title: { ru: "Дуб Классик", ky: "Дуб Классик" },
-    //         description: {
-    //             ru: "Размер: 180x1220x4,0/0,3+1ммIXPE",
-    //             ky: "Өлчөмү: 180x1220x4,0/0,3+1ммIXPE"
-    //         },
-    //         cover: {
-    //             url: "test/laminate5.JPG",
-    //             alt: { ru: "", ky: "" }
-    //         },
-    //         characteristics: [
-    //             { key: { ru: "Пример характеристики", ky: "Үлгү мүнөздөмөсү" }, value: { ru: "Значение", ky: "Маани" } }
-    //         ],
-    //         sale: { isOnSale: false, label: { ru: null, ky: null } }
-    //     },
-    //     {
-    //         category: lightingTechnology,
-    //         title: { ru: "Светильник POINT 600", ky: "Чырак POINT 600" },
-    //         description: {
-    //             ru: "Мощность: 24 Вт, свет: холодный белый 6000К, диаметр: 300 мм",
-    //             ky: "Кубаттуулугу: 24 Вт, жарык: муздак ак 6000К, диаметри: 300 мм"
-    //         },
-    //         cover: {
-    //             url: "test/lightingTechnology1.jpg",
-    //             alt: { ru: "Светильник POINT 600", ky: "Чырак POINT 600" }
-    //         },
-    //         characteristics: [
-    //             { key: { ru: "Мощность", ky: "Кубаттуулук" }, value: { ru: "24 Вт", ky: "24 Вт" } },
-    //             { key: { ru: "Цветовая температура", ky: "Түс температурасы" }, value: { ru: "6000К", ky: "6000К" } }
-    //         ],
-    //         sale: { isOnSale: false, label: { ru: null, ky: null } }
-    //     },
-    //     {
-    //         category: lightingTechnology,
-    //         title: { ru: "Лента SMD 2835", ky: "Лента SMD 2835" },
-    //         description: {
-    //             ru: "120 LED/м, 12 В, IP65, ширина: 8 мм, катушка 5 м",
-    //             ky: "120 LED/м, 12 В, IP65, туурасы: 8 мм, катушка 5 м"
-    //         },
-    //         cover: {
-    //             url: "test/lightingTechnology1.jpg",
-    //             alt: { ru: "Лента SMD 2835", ky: "Лента SMD 2835" }
-    //         },
-    //         characteristics: [
-    //             { key: { ru: "Светодиоды", ky: "Жарык берүүчү диоддор" }, value: { ru: "SMD 2835", ky: "SMD 2835" } },
-    //             { key: { ru: "Длина", ky: "Узундук" }, value: { ru: "5 м", ky: "5 м" } }
-    //         ],
-    //         sale: { isOnSale: true, label: { ru: "Топ продаж", ky: "Топ сатуу" } }
-    //     },
-    //     {
-    //         category: film,
-    //         title: { ru: "Пленка ПВХ SATIN", ky: "ПВХ пленка SATIN" },
-    //         description: {
-    //             ru: "Сатиновая текстура, ширина 3.2 м, толщина 0.2 мм",
-    //             ky: "Сатин текстурасы, туурасы 3.2 м, калыңдыгы 0.2 мм"
-    //         },
-    //         cover: {
-    //             url: "test/plenkaPBX.png",
-    //             alt: { ru: "Пленка SATIN", ky: "Пленка SATIN" }
-    //         },
-    //         characteristics: [
-    //             { key: { ru: "Поверхность", ky: "Бети" }, value: { ru: "Сатиновая", ky: "Сатин" } },
-    //             { key: { ru: "Толщина", ky: "Калыңдыгы" }, value: { ru: "0.2 мм", ky: "0.2 мм" } }
-    //         ],
-    //         sale: { isOnSale: false, label: { ru: null, ky: null } }
-    //     },
-    //     {
-    //         category: film,
-    //         title: { ru: "Пленка ПВХ BLACK MIRROR", ky: "ПВХ пленка BLACK MIRROR" },
-    //         description: {
-    //             ru: "Глянцевая черная, плотность 220 г/м2, ширина 3.2 м",
-    //             ky: "Жалтырак кара, тыгыздыгы 220 г/м2, туурасы 3.2 м"
-    //         },
-    //         cover: {
-    //             url: "test/legend-paint.jpg",
-    //             alt: { ru: "Пленка BLACK MIRROR", ky: "Пленка BLACK MIRROR" }
-    //         },
-    //         characteristics: [
-    //             { key: { ru: "Цвет", ky: "Түс" }, value: { ru: "Черный", ky: "Кара" } },
-    //             { key: { ru: "Поверхность", ky: "Бети" }, value: { ru: "Глянец", ky: "Жалтырак" } }
-    //         ],
-    //         sale: { isOnSale: false, label: { ru: null, ky: null } }
-    //     },
-    //     {
-    //         category: spc,
-    //         title: { ru: "SPC Ясень Серый", ky: "SPC Күрөң Ашык" },
-    //         description: {
-    //             ru: "SPC ламинат с тиснением, замковое соединение, размер 180x1220",
-    //             ky: "SPC ламинат, тиштүү, кулпулуу туташуусу, өлчөмү 180x1220"
-    //         },
-    //         cover: {
-    //             url: "test/laminate1.JPG",
-    //             alt: { ru: "SPC Ясень Серый", ky: "SPC Күрөң Ашык" }
-    //         },
-    //         characteristics: [
-    //             { key: { ru: "Порода", ky: "Түрү" }, value: { ru: "Ясень", ky: "Ашык" } },
-    //             { key: { ru: "Цвет", ky: "Түс" }, value: { ru: "Серый", ky: "Күрөң" } }
-    //         ],
-    //         sale: { isOnSale: true, label: { ru: "Новинка", ky: "Жаңы" } }
-    //     },
-    //     {
-    //         category: spc,
-    //         title: { ru: "SPC Дуб Молочный", ky: "SPC Сүттүк Дуб" },
-    //         description: {
-    //             ru: "180x1220x4.0/0.3 мм, IXPE, влагостойкий",
-    //             ky: "180x1220x4.0/0.3 мм, IXPE, нымга туруктуу"
-    //         },
-    //         cover: {
-    //             url: "test/laminate2.JPG",
-    //             alt: { ru: "SPC Дуб Молочный", ky: "SPC Сүттүк Дуб" }
-    //         },
-    //         characteristics: [
-    //             { key: { ru: "Цвет", ky: "Түс" }, value: { ru: "Молочный", ky: "Сүттүк" } },
-    //             { key: { ru: "Подложка", ky: "Төмөнкү катмар" }, value: { ru: "IXPE", ky: "IXPE" } }
-    //         ],
-    //         sale: { isOnSale: false, label: { ru: null, ky: null } }
-    //     },
-    //     {
-    //         category: spatula,
-    //         title: { ru: "Шпатель усиленный 30 см", ky: "30 см күчөтүлгөн шпатель" },
-    //         description: {
-    //             ru: "Алюминиевый шпатель с резиновой вставкой, ручка soft-touch",
-    //             ky: "Резина вставкасы бар алюминий шпатель, жумшак тутка"
-    //         },
-    //         cover: {
-    //             url: "test/laminate4.JPG",
-    //             alt: { ru: "Шпатель усиленный", ky: "Күчөтүлгөн шпатель" }
-    //         },
-    //         characteristics: [
-    //             { key: { ru: "Длина", ky: "Узундук" }, value: { ru: "30 см", ky: "30 см" } },
-    //             { key: { ru: "Материал", ky: "Материал" }, value: { ru: "Алюминий", ky: "Алюминий" } }
-    //         ],
-    //         sale: { isOnSale: false, label: { ru: null, ky: null } }
-    //     },
-    //     {
-    //         category: ventilationGrilles,
-    //         title: { ru: "Решетка вентиляционная металлическая", ky: "Металл вентиляция тору" },
-    //         description: {
-    //             ru: "Металлическая вентиляция, 150х150 мм, окрашенная",
-    //             ky: "Металл вентиляция, 150х150 мм, боёлгон"
-    //         },
-    //         cover: {
-    //             url: "test/laminate1.JPG",
-    //             alt: { ru: "Вентиляция металлическая", ky: "Металл вентиляция" }
-    //         },
-    //         characteristics: [
-    //             { key: { ru: "Материал", ky: "Материал" }, value: { ru: "Металл", ky: "Металл" } },
-    //             { key: { ru: "Размер", ky: "Өлчөмү" }, value: { ru: "150x150 мм", ky: "150x150 мм" } }
-    //         ],
-    //         sale: { isOnSale: false, label: { ru: null, ky: null } }
-    //     },
-    //     {
-    //         category: ventilationGrilles,
-    //         title: { ru: "Решетка с обратным клапаном", ky: "Кайтарма клапан тору" },
-    //         description: {
-    //             ru: "Квадратная, белая, обратный клапан против запахов",
-    //             ky: "Тоголок, ак, жытка каршы клапан"
-    //         },
-    //         cover: {
-    //             url: "test/laminate2.JPG",
-    //             alt: { ru: "Решетка с клапаном", ky: "Клапан тору" }
-    //         },
-    //         characteristics: [
-    //             { key: { ru: "Форма", ky: "Форма" }, value: { ru: "Квадрат", ky: "Тоголок" } },
-    //             { key: { ru: "Особенность", ky: "Өзгөчөлүк" }, value: { ru: "Обратный клапан", ky: "Кайтарма клапан" } }
-    //         ],
-    //         sale: { isOnSale: false, label: { ru: null, ky: null } }
-    //     }
-    // );
+    await Product.create(
+        {
+            category: lightingTechnology,
+            title: { ru: "Светодиодная лента leds power", ky: "Светодиоддук лента leds power" },
+            description: {
+                ru: "световой поток: 1000 Лм/м, мощность: 10 Вт/м, длина: 5 м, ширина: 8 мм",
+                ky: "жарык агымы: 1000 Лм/м, кубаттуулугу: 10 Вт/м, узундугу: 5 м, туурасы: 8 мм"
+            },
+            cover: {
+                url: "test/lightingTechnology1.jpg",
+                alt: { ru: "светодиодная лента", ky: "светодиоддук лента" }
+            },
+            characteristics: [
+                { key: { ru: "Пример характеристики", ky: "Үлгү мүнөздөмөсү" }, value: { ru: "Значение", ky: "Маани" } }
+            ],
+            sale: { isOnSale: false, label: { ru: null, ky: null } }
+        },
+        {
+            category: lightingTechnology,
+            title: { ru: "Светодиодная лента vacco group", ky: "Светодиоддук лента vacco group" },
+            description: {
+                ru: "световой поток: 1000 Лм/м, мощность: 10 Вт/м, длина: 5 м, ширина: 8 мм",
+                ky: "жарык агымы: 1000 Лм/м, кубаттуулугу: 10 Вт/м, узундугу: 5 м, туурасы: 8 мм"
+            },
+            cover: {
+                url: "test/lightingTechnology1.jpg",
+                alt: { ru: "", ky: "" }
+            },
+            characteristics: [
+                { key: { ru: "Пример характеристики", ky: "Үлгү мүнөздөмөсү" }, value: { ru: "Значение", ky: "Маани" } }
+            ],
+            sale: { isOnSale: false, label: { ru: null, ky: null } }
+        },
+        {
+            category: film,
+            title: { ru: "Пленка ПВХ LEGEND", ky: "ПВХ пленка LEGEND" },
+            description: {
+                ru: "ЛАК:; толщина - 0,18±0,01 мм; ГР/М; плотность - 210 г/м2; ширина полотна - 320 см",
+                ky: "ЛАК:; калыңдыгы - 0,18±0,01 мм; ГР/М; тыгыздыгы - 210 г/м2; туурасы - 320 см"
+            },
+            cover: {
+                url: "test/legend-paint.jpg",
+                alt: { ru: "свет", ky: "жарык" }
+            },
+            characteristics: [
+                { key: { ru: "Пример характеристики", ky: "Үлгү мүнөздөмөсү" }, value: { ru: "Значение", ky: "Маани" } }
+            ],
+            sale: { isOnSale: false, label: { ru: null, ky: null } }
+        },
+        {
+            category: film,
+            title: { ru: "Пленка ПВХ IDEAL", ky: "ПВХ пленка IDEAL" },
+            description: {
+                ru: "ЛАК:; толщина - 0,18±0,01 мм; ГР/М; плотность - 210 г/м2; ширина полотна - 320 см",
+                ky: "ЛАК:; калыңдыгы - 0,18±0,01 мм; ГР/М; тыгыздыгы - 210 г/м2; туурасы - 320 см"
+            },
+            cover: {
+                url: "test/plenkaPBX.png",
+                alt: { ru: "", ky: "" }
+            },
+            characteristics: [
+                { key: { ru: "Пример характеристики", ky: "Үлгү мүнөздөмөсү" }, value: { ru: "Значение", ky: "Маани" } }
+            ],
+            sale: { isOnSale: false, label: { ru: null, ky: null } }
+        },
+        {
+            category: film,
+            title: { ru: "Пленка ПВХ as;lkdf;sajf", ky: "ПВХ пленка as;lkdf;sajf" },
+            description: {
+                ru: "ЛАК:; толщина - 0,18±0,01 мм; ГР/М; плотность - 210 г/м2; ширина полотна - 320 см",
+                ky: "ЛАК:; калыңдыгы - 0,18±0,01 мм; ГР/М; тыгыздыгы - 210 г/м2; туурасы - 320 см"
+            },
+            cover: {
+                url: "test/plenkaPBX.png",
+                alt: { ru: "", ky: "" }
+            },
+            characteristics: [
+                { key: { ru: "Пример характеристики", ky: "Үлгү мүнөздөмөсү" }, value: { ru: "Значение", ky: "Маани" } }
+            ],
+            sale: { isOnSale: false, label: { ru: null, ky: null } }
+        },
+        {
+            category: spc,
+            title: { ru: "Тис Альпик", ky: "Тис Альпик" },
+            description: {
+                ru: "Размер: 180x1220x4,0/0,3+1ммIXPE",
+                ky: "Өлчөмү: 180x1220x4,0/0,3+1ммIXPE"
+            },
+            cover: {
+                url: "test/laminate1.JPG",
+                alt: { ru: "", ky: "" }
+            },
+            characteristics: [
+                { key: { ru: "Пример характеристики", ky: "Үлгү мүнөздөмөсү" }, value: { ru: "Значение", ky: "Маани" } }
+            ],
+            sale: { isOnSale: false, label: { ru: null, ky: null } }
+        },
+        {
+            category: spc,
+            title: { ru: "Тис Латте", ky: "Тис Латте" },
+            description: {
+                ru: "Размер: 180x1220x4,0/0,3+1ммIXPE",
+                ky: "Өлчөмү: 180x1220x4,0/0,3+1ммIXPE"
+            },
+            cover: {
+                url: "test/laminate2.JPG",
+                alt: { ru: "", ky: "" }
+            },
+            characteristics: [
+                { key: { ru: "Пример характеристики", ky: "Үлгү мүнөздөмөсү" }, value: { ru: "Значение", ky: "Маани" } }
+            ],
+            sale: { isOnSale: false, label: { ru: null, ky: null } }
+        },
+        {
+            category: spc,
+            title: { ru: "Бук Шале", ky: "Бук Шале" },
+            description: {
+                ru: "Размер: 180x1220x4,0/0,3+1ммIXPE",
+                ky: "Өлчөмү: 180x1220x4,0/0,3+1ммIXPE"
+            },
+            cover: {
+                url: "test/laminate3.JPG",
+                alt: { ru: "", ky: "" }
+            },
+            characteristics: [
+                { key: { ru: "Пример характеристики", ky: "Үлгү мүнөздөмөсү" }, value: { ru: "Значение", ky: "Маани" } }
+            ],
+            sale: { isOnSale: false, label: { ru: null, ky: null } }
+        },
+        {
+            category: spc,
+            title: { ru: "Орех Шато", ky: "Орех Шато" },
+            description: {
+                ru: "Размер: 180x1220x4,0/0,3+1ммIXPE",
+                ky: "Өлчөмү: 180x1220x4,0/0,3+1ммIXPE"
+            },
+            cover: {
+                url: "test/laminate4.JPG",
+                alt: { ru: "", ky: "" }
+            },
+            characteristics: [
+                { key: { ru: "Пример характеристики", ky: "Үлгү мүнөздөмөсү" }, value: { ru: "Значение", ky: "Маани" } }
+            ],
+            sale: { isOnSale: false, label: { ru: null, ky: null } }
+        },
+        {
+            category: spc,
+            title: { ru: "Дуб Классик", ky: "Дуб Классик" },
+            description: {
+                ru: "Размер: 180x1220x4,0/0,3+1ммIXPE",
+                ky: "Өлчөмү: 180x1220x4,0/0,3+1ммIXPE"
+            },
+            cover: {
+                url: "test/laminate5.JPG",
+                alt: { ru: "", ky: "" }
+            },
+            characteristics: [
+                { key: { ru: "Пример характеристики", ky: "Үлгү мүнөздөмөсү" }, value: { ru: "Значение", ky: "Маани" } }
+            ],
+            sale: { isOnSale: false, label: { ru: null, ky: null } }
+        },
+        {
+            category: lightingTechnology,
+            title: { ru: "Светильник POINT 600", ky: "Чырак POINT 600" },
+            description: {
+                ru: "Мощность: 24 Вт, свет: холодный белый 6000К, диаметр: 300 мм",
+                ky: "Кубаттуулугу: 24 Вт, жарык: муздак ак 6000К, диаметри: 300 мм"
+            },
+            cover: {
+                url: "test/lightingTechnology1.jpg",
+                alt: { ru: "Светильник POINT 600", ky: "Чырак POINT 600" }
+            },
+            characteristics: [
+                { key: { ru: "Мощность", ky: "Кубаттуулук" }, value: { ru: "24 Вт", ky: "24 Вт" } },
+                { key: { ru: "Цветовая температура", ky: "Түс температурасы" }, value: { ru: "6000К", ky: "6000К" } }
+            ],
+            sale: { isOnSale: false, label: { ru: null, ky: null } }
+        },
+        {
+            category: lightingTechnology,
+            title: { ru: "Лента SMD 2835", ky: "Лента SMD 2835" },
+            description: {
+                ru: "120 LED/м, 12 В, IP65, ширина: 8 мм, катушка 5 м",
+                ky: "120 LED/м, 12 В, IP65, туурасы: 8 мм, катушка 5 м"
+            },
+            cover: {
+                url: "test/lightingTechnology1.jpg",
+                alt: { ru: "Лента SMD 2835", ky: "Лента SMD 2835" }
+            },
+            characteristics: [
+                { key: { ru: "Светодиоды", ky: "Жарык берүүчү диоддор" }, value: { ru: "SMD 2835", ky: "SMD 2835" } },
+                { key: { ru: "Длина", ky: "Узундук" }, value: { ru: "5 м", ky: "5 м" } }
+            ],
+            sale: { isOnSale: true, label: { ru: "Топ продаж", ky: "Топ сатуу" } }
+        },
+        {
+            category: film,
+            title: { ru: "Пленка ПВХ SATIN", ky: "ПВХ пленка SATIN" },
+            description: {
+                ru: "Сатиновая текстура, ширина 3.2 м, толщина 0.2 мм",
+                ky: "Сатин текстурасы, туурасы 3.2 м, калыңдыгы 0.2 мм"
+            },
+            cover: {
+                url: "test/plenkaPBX.png",
+                alt: { ru: "Пленка SATIN", ky: "Пленка SATIN" }
+            },
+            characteristics: [
+                { key: { ru: "Поверхность", ky: "Бети" }, value: { ru: "Сатиновая", ky: "Сатин" } },
+                { key: { ru: "Толщина", ky: "Калыңдыгы" }, value: { ru: "0.2 мм", ky: "0.2 мм" } }
+            ],
+            sale: { isOnSale: false, label: { ru: null, ky: null } }
+        },
+        {
+            category: film,
+            title: { ru: "Пленка ПВХ BLACK MIRROR", ky: "ПВХ пленка BLACK MIRROR" },
+            description: {
+                ru: "Глянцевая черная, плотность 220 г/м2, ширина 3.2 м",
+                ky: "Жалтырак кара, тыгыздыгы 220 г/м2, туурасы 3.2 м"
+            },
+            cover: {
+                url: "test/legend-paint.jpg",
+                alt: { ru: "Пленка BLACK MIRROR", ky: "Пленка BLACK MIRROR" }
+            },
+            characteristics: [
+                { key: { ru: "Цвет", ky: "Түс" }, value: { ru: "Черный", ky: "Кара" } },
+                { key: { ru: "Поверхность", ky: "Бети" }, value: { ru: "Глянец", ky: "Жалтырак" } }
+            ],
+            sale: { isOnSale: false, label: { ru: null, ky: null } }
+        },
+        {
+            category: spc,
+            title: { ru: "SPC Ясень Серый", ky: "SPC Күрөң Ашык" },
+            description: {
+                ru: "SPC ламинат с тиснением, замковое соединение, размер 180x1220",
+                ky: "SPC ламинат, тиштүү, кулпулуу туташуусу, өлчөмү 180x1220"
+            },
+            cover: {
+                url: "test/laminate1.JPG",
+                alt: { ru: "SPC Ясень Серый", ky: "SPC Күрөң Ашык" }
+            },
+            characteristics: [
+                { key: { ru: "Порода", ky: "Түрү" }, value: { ru: "Ясень", ky: "Ашык" } },
+                { key: { ru: "Цвет", ky: "Түс" }, value: { ru: "Серый", ky: "Күрөң" } }
+            ],
+            sale: { isOnSale: true, label: { ru: "Новинка", ky: "Жаңы" } }
+        },
+        {
+            category: spc,
+            title: { ru: "SPC Дуб Молочный", ky: "SPC Сүттүк Дуб" },
+            description: {
+                ru: "180x1220x4.0/0.3 мм, IXPE, влагостойкий",
+                ky: "180x1220x4.0/0.3 мм, IXPE, нымга туруктуу"
+            },
+            cover: {
+                url: "test/laminate2.JPG",
+                alt: { ru: "SPC Дуб Молочный", ky: "SPC Сүттүк Дуб" }
+            },
+            characteristics: [
+                { key: { ru: "Цвет", ky: "Түс" }, value: { ru: "Молочный", ky: "Сүттүк" } },
+                { key: { ru: "Подложка", ky: "Төмөнкү катмар" }, value: { ru: "IXPE", ky: "IXPE" } }
+            ],
+            sale: { isOnSale: false, label: { ru: null, ky: null } }
+        },
+        {
+            category: spatula,
+            title: { ru: "Шпатель усиленный 30 см", ky: "30 см күчөтүлгөн шпатель" },
+            description: {
+                ru: "Алюминиевый шпатель с резиновой вставкой, ручка soft-touch",
+                ky: "Резина вставкасы бар алюминий шпатель, жумшак тутка"
+            },
+            cover: {
+                url: "test/laminate4.JPG",
+                alt: { ru: "Шпатель усиленный", ky: "Күчөтүлгөн шпатель" }
+            },
+            characteristics: [
+                { key: { ru: "Длина", ky: "Узундук" }, value: { ru: "30 см", ky: "30 см" } },
+                { key: { ru: "Материал", ky: "Материал" }, value: { ru: "Алюминий", ky: "Алюминий" } }
+            ],
+            sale: { isOnSale: false, label: { ru: null, ky: null } }
+        },
+        {
+            category: ventilationGrilles,
+            title: { ru: "Решетка вентиляционная металлическая", ky: "Металл вентиляция тору" },
+            description: {
+                ru: "Металлическая вентиляция, 150х150 мм, окрашенная",
+                ky: "Металл вентиляция, 150х150 мм, боёлгон"
+            },
+            cover: {
+                url: "test/laminate1.JPG",
+                alt: { ru: "Вентиляция металлическая", ky: "Металл вентиляция" }
+            },
+            characteristics: [
+                { key: { ru: "Материал", ky: "Материал" }, value: { ru: "Металл", ky: "Металл" } },
+                { key: { ru: "Размер", ky: "Өлчөмү" }, value: { ru: "150x150 мм", ky: "150x150 мм" } }
+            ],
+            sale: { isOnSale: false, label: { ru: null, ky: null } }
+        },
+        {
+            category: ventilationGrilles,
+            title: { ru: "Решетка с обратным клапаном", ky: "Кайтарма клапан тору" },
+            description: {
+                ru: "Квадратная, белая, обратный клапан против запахов",
+                ky: "Тоголок, ак, жытка каршы клапан"
+            },
+            cover: {
+                url: "test/laminate2.JPG",
+                alt: { ru: "Решетка с клапаном", ky: "Клапан тору" }
+            },
+            characteristics: [
+                { key: { ru: "Форма", ky: "Форма" }, value: { ru: "Квадрат", ky: "Тоголок" } },
+                { key: { ru: "Особенность", ky: "Өзгөчөлүк" }, value: { ru: "Обратный клапан", ky: "Кайтарма клапан" } }
+            ],
+            sale: { isOnSale: false, label: { ru: null, ky: null } }
+        }
+    );
 
 
 

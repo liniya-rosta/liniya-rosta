@@ -16,6 +16,7 @@ import serviceRouter from "./src/routes/services";
 import expressWs from "express-ws";
 import {getOnlineChatRouter} from "./src/routes/online-chat";
 import bodyParser from 'body-parser';
+import whatsappRouter from "./src/routes/whatsapp";
 
 
 const app = express();
@@ -50,6 +51,7 @@ app.use('/portfolio-items', portfolioItemRouter);
 app.use('/contacts', contactsRouter);
 app.use('/services', serviceRouter);
 app.use("/ws", onlineChatRouter);
+app.use("/whats-app", whatsappRouter);
 
 const run = async () => {
     await mongoose.connect(config.db);

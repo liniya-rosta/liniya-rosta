@@ -8,7 +8,7 @@ import { ChatMessage, IncomingMessage} from "../../types";
 
 const connectedClients: Record<string, WebSocket[]> = {};
 const adminSockets: WebSocket[] = [];
-const onlineClients = new Set<string>();
+export const onlineClients = new Set<string>();
 
 export const getOnlineChatRouter = (
     wsInstance: ReturnType<typeof expressWs>
@@ -30,6 +30,11 @@ export const getOnlineChatRouter = (
                 isAdmin = true;
                 nickname = admin.displayName;
                 adminSockets.push(ws);
+
+                ws.send(JSON.stringify({
+                    type: "online_list",
+                    chatIds: Array.from(onlineClients),
+                }));
             } catch (e) {
                 console.log("Недействительный токен администратора");
             }
@@ -133,9 +138,12 @@ export const getOnlineChatRouter = (
                 connectedClients[chatId] = connectedClients[chatId].filter((sock) => sock !== ws);
                 onlineClients.delete(chatId);
 
-                await ChatSession.findByIdAndUpdate(chatId, {
-                    $set: { status: "Без ответа" }
-                });
+                const chat = await ChatSession.findById(chatId).select("status");
+                if (chat && chat.status !== "В работе") {
+                    await ChatSession.findByIdAndUpdate(chatId, {
+                        $set: { status: "Без ответа" }
+                    });
+                }
 
                 for (const adminWs of adminSockets) {
                     adminWs.send(JSON.stringify({

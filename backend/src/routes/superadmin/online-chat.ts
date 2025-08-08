@@ -1,6 +1,7 @@
 import express from "express";
 import ChatSession from "../../models/ChatSession";
 import mongoose from "mongoose";
+import {onlineClients} from "../online-chat";
 
 const chatAdminRouter = express.Router();
 
@@ -50,8 +51,13 @@ chatAdminRouter.get("/", async (req, res, next) => {
             ChatSession.countDocuments(filter),
         ]);
 
+        const itemsWithOnline = chats.map(chat => ({
+            ...chat.toObject(),
+            isClientOnline: onlineClients.has(chat._id.toString()),
+        }));
+
         res.send({
-            items: chats,
+            items: itemsWithOnline,
             total: totalCount,
             page,
             pageSize: limit,
