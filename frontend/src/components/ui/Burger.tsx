@@ -6,6 +6,7 @@ import {DialogTitle} from "@radix-ui/react-dialog";
 import {VisuallyHidden} from "@radix-ui/react-visually-hidden";
 import Link from "next/link";
 import {usePathname} from "next/navigation";
+import { cn } from '@/src/lib/utils';
 
 interface NavItem {
     href: string;
@@ -19,13 +20,19 @@ interface BurgerProps {
 
 const Burger: React.FC<BurgerProps> = ({navItems, isAdmin}) => {
     const pathname = usePathname();
+    const segments = pathname.split("/").filter(Boolean);
+    const cleanPathname =
+        ["ru", "ky"].includes(segments[0])
+            ? "/" + segments.slice(1).join("/")
+            : pathname;
 
     return (
-        <div className={`flex justify-end ${isAdmin ? '' : 'md:hidden'}`}>
+        <div className={`flex justify-end ${isAdmin ? '' : 'xl:hidden'}`}>
             <Sheet>
                 <SheetTrigger asChild>
                     <Button
-                        className="text-white p-3 rounded-md bg-white/10 hover:bg-white/20 transition cursor-pointer"
+                        variant="outline"
+                        className="p-3 rounded-md bg-transpatent border border-primary"
                     >
                         <Menu className="w-7 h-7"/>
                     </Button>
@@ -33,7 +40,7 @@ const Burger: React.FC<BurgerProps> = ({navItems, isAdmin}) => {
 
                 <SheetContent
                     side="left"
-                    className="bg-gray-800 text-white px-6 py-8 w-full flex flex-col justify-between"
+                    className="px-6 py-8 w-full flex flex-col justify-between sidebar-container"
                     aria-describedby="menu-description"
                 >
                     <DialogTitle asChild>
@@ -45,18 +52,19 @@ const Burger: React.FC<BurgerProps> = ({navItems, isAdmin}) => {
 
                     <ul className="space-y-2 mt-5">
                         {navItems.map(({href, label}) => {
-                            const isActive = pathname === href;
+                            const isActive = cleanPathname === href;
 
                             return (
                                 <li key={href}>
                                     <SheetTrigger asChild>
                                         <Link
                                             href={href}
-                                            className={`block text-base px-3 py-2 rounded-md border transition-all duration-200 ${
+                                            className={cn(
+                                                "block text-base px-4 py-2 rounded-lg border transition-all duration-200 border-transparent",
                                                 isActive
-                                                    ? "bg-white text-black font-semibold border-white shadow"
-                                                    : "border-white/20 text-white hover:bg-white/10 hover:border-white"
-                                            }`}
+                                                    ? "sidebar-link-active"
+                                                    : "sidebar-link-inactive"
+                                            )}
                                         >
                                             {label}
                                         </Link>

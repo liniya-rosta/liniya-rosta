@@ -212,13 +212,13 @@ export const getProductTableColumns = (
 
                 if (!row.original.sale?.isOnSale) return "—";
 
-                if (saleLabel?.ru) {
+                if (saleLabel) {
                     return (
                         <Tooltip>
                             <TooltipTrigger asChild>
                                 <span
                                     className="inline-flex items-center justify-center w-8 h-8 cursor-pointer"
-                                    onClick={() => onSaleLabelClick(saleLabel.ru)}
+                                    onClick={() => onSaleLabelClick(saleLabel)}
                                 >
                                     Да
                                 </span>
@@ -236,13 +236,13 @@ export const getProductTableColumns = (
         {
             accessorKey: "seoTitle",
             header: "SEO заголовок",
-            cell: ({row}) => row.original.seoTitle || "—",
+            cell: ({row}) => row.original.seoTitle.ru || "—",
         },
         {
             accessorKey: "seoDescription",
             header: "SEO описание",
             cell: ({row}) => {
-                const text = row.original.seoDescription || "—";
+                const text = row.original.seoDescription.ru || "—";
                 if (text === "—") return text;
 
                 const preview = text.length > 30 ? text.slice(0, 30) + "..." : text;

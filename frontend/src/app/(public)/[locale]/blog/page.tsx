@@ -1,20 +1,23 @@
 import React from "react";
-import { PostResponse} from "@/src/lib/types";
+import {PostResponse} from "@/src/lib/types";
 import BlogClient from "@/src/app/(public)/[locale]/blog/BlogClient";
-import { fetchPosts } from "@/actions/posts";
+import {fetchPosts} from "@/actions/posts";
 
-import type { Metadata } from "next";
+import type {Metadata} from "next";
 import {getTranslations} from "next-intl/server";
 
 export const revalidate = 1800;
 
 export const generateMetadata = async (): Promise<Metadata> => {
+    const t = await getTranslations("BlogPage");
+    const tHeader = await getTranslations("Header");
+
     return {
-        title: "Блог",
-        description: "Последние новости, статьи и советы от компании Линия Роста. Всё о потолках, ламинате и интерьерных решениях.",
+        title: tHeader("headerLinks.blog"),
+        description: t("descriptionSeo"),
         openGraph: {
-            title: "Блог | Линия Роста",
-            description: "Читайте полезные статьи и свежие новости от нашей компании.",
+            title: t("ogTitle"),
+            description: t("ogDescription"),
             url: "/blog",
             siteName: "Линия Роста",
             images: [
@@ -22,11 +25,11 @@ export const generateMetadata = async (): Promise<Metadata> => {
                     url: "/images/og/blog.jpg",
                     width: 1200,
                     height: 630,
-                    alt: "Блог Линия Роста",
+                    alt: t("ogImageAlt"),
                 },
             ],
             type: "website",
-        }
+        },
     };
 };
 

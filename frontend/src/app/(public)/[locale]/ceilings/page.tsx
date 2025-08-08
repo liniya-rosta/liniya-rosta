@@ -2,32 +2,50 @@ import {fetchProducts} from "@/actions/products";
 import {fetchCategories} from "@/actions/categories";
 import CeilingsClient from "@/src/app/(public)/[locale]/ceilings/CeilingsClient";
 import {Metadata} from "next";
+import {getTranslations} from "next-intl/server";
 
 export const revalidate = 1800;
 
-export const generateMetadata = async (): Promise<Metadata> => ({
-    title: "Натяжные потолки",
-    description: "Натяжные потолки в Бишкеке от компании Линия Роста. Качество, гарантия, профессиональный монтаж.",
-    openGraph: {
-        title: "Натяжные потолки | Линия Роста",
-        description: "Стильные и качественные натяжные потолки от Линии Роста.",
-        url: '/ceilings',
-        siteName: "Линия Роста",
-        type: "website",
-    },
-});
+export const generateMetadata = async (): Promise<Metadata> => {
+    const t = await getTranslations("CeilingsPage");
+    const tHeader = await getTranslations("Header");
+
+    return {
+        title: tHeader("headerLinks.stretchCeilings"),
+        description: t("descriptionSeo"),
+        openGraph: {
+            title: t("ogTitle"),
+            description: t("ogDescription"),
+            url: '/ceilings',
+            siteName: "Линия Роста",
+            images: [
+                {
+                    url: '/images/services/main-service.JPG',
+                    width: 1200,
+                    height: 630,
+                    alt: t("ogImageAlt"),
+                },
+            ],
+            type: "website",
+        },
+    };
+};
 
 const CeilingsPage = async () => {
     try {
-        const [products, categories] = await Promise.all([
-            fetchProducts(),
+        const categorySlug = 'spc';
+        const categories = await fetchCategories(categorySlug);
+        const spcCategory = categories[0];
+
+        const [products, allCategories] = await Promise.all([
+            fetchProducts({categoryExclude: spcCategory._id}),
             fetchCategories()
         ]);
 
         return (
             <CeilingsClient
                 initialProducts={products.items}
-                initialCategories={categories}
+                initialCategories={allCategories}
             />
         );
     } catch (error) {

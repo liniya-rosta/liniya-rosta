@@ -11,7 +11,7 @@ import {
     DropdownMenuTrigger
 } from "@/src/components/ui/dropdown-menu";
 import {Button} from "@/src/components/ui/button";
-import {ArrowUpDown, MoreHorizontal} from "lucide-react";
+import {ArrowUpDown, Edit2, Images, MoreHorizontal, Trash2} from "lucide-react";
 import React from "react";
 import {Checkbox} from "@/src/components/ui/checkbox";
 
@@ -81,10 +81,10 @@ export const getColumns = (
         },
     },
     {
-        accessorKey: "seoTitle",
+        accessorKey: "seoTitle.ru",
         header: () => <div className="text-left">SEO заголовок</div>,
         cell: ({row}) => {
-            const value = row.getValue("seoTitle") as string | undefined;
+            const value = row.original.seoTitle?.ru  as string | undefined;
             return (
                 <div className="capitalize">
                     {value?.trim() ? value : <span className="text-muted-foreground italic">Нет SEO заголовка</span>}
@@ -93,10 +93,10 @@ export const getColumns = (
         },
     },
     {
-        accessorKey: "seoDescription",
+        accessorKey: "seoDescription.ru",
         header: () => <div className="text-left">SEO описание</div>,
         cell: ({row}) => {
-            const value = row.getValue("seoDescription") as string | undefined;
+            const value = row.original.seoDescription?.ru  as string | undefined;
             return (
                 <div className="capitalize">
                     {value?.trim() ? value : <span className="text-muted-foreground italic">Нет SEO описания</span>}
@@ -168,14 +168,19 @@ export const getColumns = (
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Меню</DropdownMenuLabel>
+                        <DropdownMenuLabel>Действия</DropdownMenuLabel>
                         <DropdownMenuItem onClick={() => onGallery(payment._id)}>
+                            <Images className="mr-2 h-4 w-4" />
                             Посмотреть галерею
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => onEditCover(payment._id)}>
+                            <Edit2 className="mr-2 h-4 w-4" />
                             Редактировать
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => onRequestDelete(payment._id)}>
+                        <DropdownMenuItem
+                            className="text-destructive"
+                            onClick={() => onRequestDelete(payment._id)}>
+                            <Trash2 className="mr-2 h-4 w-4 text-destructive"/>
                             Удалить
                         </DropdownMenuItem>
                     </DropdownMenuContent>

@@ -8,13 +8,13 @@ const ImageItemSchema = new Schema({
     url: {type: String, required: true},
     alt: {
         ru: {type: String, default: null, maxLength: 150},
-        ky: {type: String, required: true},
+        ky: {type: String},
     }
 });
 
 const CharacteristicItemSchema = new Schema({
-    key: {ru: {type: String, required: true}, ky: {type: String, required: true}},
-    value: {ru: {type: String, required: true, maxLength: 150}, ky: {type: String, required: true}},
+    key: {ru: {type: String}, ky: {type: String}},
+    value: {ru: {type: String, maxLength: 150}, ky: {type: String}},
 });
 
 const ProductSchema = new Schema({
@@ -48,27 +48,20 @@ const ProductSchema = new Schema({
                 unique: true,
             },
             seoTitle: {
-                type: String,
-                default: null,
-                maxLength: 120,
+                ru: { type: String, default: null, maxLength: 120 },
+                ky: { type: String, default: null, maxLength: 120 },
             },
             seoDescription: {
-                type: String,
-                default: null,
-                maxLength: 300,
+                ru: { type: String, default: null, maxLength: 300 },
+                ky: { type: String, default: null, maxLength: 300 },
             },
-            description: {
-                ru:
-                    {
-                        type: String,
-                        required: [true, 'Поле описания обязательно для заполнения']
-                    },
-                ky:
-                    {
-                        type: String,
-                        required: true,
-                    }
-            },
+        description: {
+            type: new Schema({
+                ru: { type: String },
+                ky: { type: String },
+            }),
+            default: null,
+        },
             cover: {
                 url: {type: String, required: [true, 'Обложка продукта обязательна для заполнения']},
                 alt: {
@@ -78,18 +71,13 @@ const ProductSchema = new Schema({
             },
             images: {
                 type: [ImageItemSchema],
-                required: true,
             },
             characteristics: {
                 type: [CharacteristicItemSchema],
-                required: true,
             },
             sale: {
                 isOnSale: {type: Boolean, required: true, default: false},
-                label: {
-                    ru: {type: String, default: null, maxLength: 150},
-                    ky: {type: String, default: null}
-                }
+                label: {type: String, default: null, maxLength: 150}
             },
             icon: {
                 url: {type: String},

@@ -86,8 +86,7 @@ const ProductsTableToolbar: React.FC<Props> = ({
     };
 
     return (
-        <div className="flex flex-wrap gap-3 items-start justify-between w-full mb-4">
-
+        <div className="flex flex-wrap gap-3 items-start justify-center md:justify-between w-full mb-4 space-y-6 sm:space-y-0">
             <div className="flex flex-col sm:flex-row gap-2 flex-1 min-w-[250px]">
                 <Select
                     value={activeFilterType}
@@ -133,7 +132,9 @@ const ProductsTableToolbar: React.FC<Props> = ({
                 >
                     + Категория
                 </Button>
+            </div>
 
+            <div className="flex gap-2 items-start flex-wrap">
                 <Button
                     disabled={actionLoading || table.getFilteredSelectedRowModel().rows.length === 0}
                     onClick={handleBulkDelete}
@@ -142,9 +143,6 @@ const ProductsTableToolbar: React.FC<Props> = ({
                 >
                     Удалить {table.getFilteredSelectedRowModel().rows.length || ""}
                 </Button>
-            </div>
-
-            <div className="flex gap-2 items-start flex-wrap">
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="outline" className="min-w-[150px]">

@@ -1,21 +1,22 @@
 import React, {useState} from 'react';
-import {useForm, useFieldArray} from 'react-hook-form';
+import {useFieldArray, useForm} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {createPost} from '@/actions/superadmin/posts';
 import {Input} from '@/src/components/ui/input';
 import {Button} from '@/src/components/ui/button';
 import FormErrorMessage from '@/src/components/ui/FormErrorMessage';
 import LoaderIcon from '@/src/components/ui/Loading/LoaderIcon';
-import {Plus, Eye} from 'lucide-react';
+import {Eye, Plus} from 'lucide-react';
 import {useRouter} from 'next/navigation';
 import {isAxiosError} from 'axios';
 import {toast} from 'react-toastify';
-import {CreatePostFormData, createPostSchema} from "@/src/lib/zodSchemas/postSchema";
+import {CreatePostFormData, createPostSchema} from "@/src/lib/zodSchemas/admin/postSchema";
 import {useSuperAdminPostStore} from "@/store/superadmin/superAdminPostsStore";
 import Link from "next/link";
 import {ImageObject} from "@/src/lib/types";
 import ConfirmDialog from "@/src/components/ui/ConfirmDialog";
 import FroalaEditorWrapper from "@/src/components/shared/FroalaEditor";
+import {Label} from "@/src/components/ui/label";
 
 interface Props {
     setIsPreviewOpen: (value: boolean) => void;
@@ -80,15 +81,26 @@ const CreatePostForm: React.FC<Props> = ({setIsPreviewOpen, setPreviewImage}) =>
         <>
             <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="border-b border-b-gray-500 py-3 mb-4">
+                    <Label className="mb-2 block">Заголовок поста</Label>
                     <Input
                         type="text"
-                        placeholder="Заголовок"
+                        placeholder="Введите цепляющий заголовок"
                         {...register('title.ru')}
                         disabled={createLoading}
                         className="mb-2"
                     />
                     {errors.title && <FormErrorMessage>{errors.title.message}</FormErrorMessage>}
 
+
+                     <Input
+                        type="text"
+                        placeholder="SEO заголовок"
+                        disabled={createLoading}
+                        {...register('seoTitle.ru')}
+                        className="mb-2"
+                    />
+                    {errors.seoTitle && <FormErrorMessage>{errors.seoTitle.message}</FormErrorMessage>}
+        
                     <div className="mb-4">
                         <label className="block mb-2 text-sm font-medium">Описание</label>
                         <FroalaEditorWrapper
@@ -99,11 +111,19 @@ const CreatePostForm: React.FC<Props> = ({setIsPreviewOpen, setPreviewImage}) =>
                             <FormErrorMessage>{errors.description.ru.message}</FormErrorMessage>}
                     </div>
 
+                    <Input
+                        type="text"
+                        placeholder="SEO описание"
+                        {...register('seoDescription.ru')}
+                        disabled={createLoading}
+                        className="mb-4"
+                    />
+                    {errors.seoDescription && <FormErrorMessage>{errors.seoDescription.message}</FormErrorMessage>}
                 </div>
 
                 <div className="w-full max-w-4xl mb-3">
                     <label className="block mb-4">Изображения:</label>
-                    <div className="flex gap-5">
+                    <div className="flex flex-wrap gap-2 mb-3">
                         <Button
                             type="button"
                             variant="outline"
@@ -130,12 +150,13 @@ const CreatePostForm: React.FC<Props> = ({setIsPreviewOpen, setPreviewImage}) =>
                     )}
 
                     <div
-                        className={`grid grid-cols-2 gap-3 transition-all duration-300 ${expanded ? 'max-h-none overflow-visible' : 'max-h-[350px] overflow-y-auto'}`}>
+                        className={`grid grid-cols-1 md:grid-cols-2 gap-3 transition-all duration-300 ${expanded ? 'max-h-none overflow-visible' : 'max-h-[350px] overflow-y-auto'}`}>
                         {fields.map((item, index) => (
-                            <div key={item.id} className="border rounded-lg p-4 space-y-3 bg-white shadow-sm">
+                            <div key={item.id} className="border rounded-lg p-4 space-y-6 bg-white shadow-sm">
+                                <Label className="w-full mb-2">Альтернативное название изображения</Label>
                                 <Input
                                     type="text"
-                                    placeholder="Alt"
+                                    placeholder="Опишите, что изображено на фото (для доступности и поиска)"
                                     {...register(`images.${index}.alt.ru`)}
                                     disabled={createLoading}
                                     onChange={(e) => handleAltChange(index, e.target.value)}
@@ -144,6 +165,7 @@ const CreatePostForm: React.FC<Props> = ({setIsPreviewOpen, setPreviewImage}) =>
                                     <FormErrorMessage>{errors.images[index]?.alt?.message}</FormErrorMessage>
                                 )}
 
+                                <Label className="w-full mb-2">Изображение</Label>
                                 <Input
                                     type="file"
                                     accept="image/*"
@@ -154,7 +176,7 @@ const CreatePostForm: React.FC<Props> = ({setIsPreviewOpen, setPreviewImage}) =>
                                     <FormErrorMessage>{errors.images[index]?.file?.message}</FormErrorMessage>
                                 )}
 
-                                <div className="flex justify-between">
+                                <div className="flex flex-wrap gap-3 justify-between">
                                     <Button
                                         type="button"
                                         variant="outline"
@@ -167,7 +189,8 @@ const CreatePostForm: React.FC<Props> = ({setIsPreviewOpen, setPreviewImage}) =>
                                         }}
                                         disabled={createLoading}
                                     >
-                                        <Eye className="w-4 h-4"/> Просмотр
+                                        <Eye className="w-4 h-4"/>
+                                        <span className="hidden md:inline">Посмотреть изображение</span>
                                     </Button>
 
                                     <Button
@@ -185,7 +208,7 @@ const CreatePostForm: React.FC<Props> = ({setIsPreviewOpen, setPreviewImage}) =>
                     </div>
                 </div>
 
-                <div className="flex gap-5">
+                <div className="flex flex-wrap gap-1 md:gap-5">
                     <Button
                         type="submit"
                         className="mt-6 px-6"

@@ -10,8 +10,6 @@
 @import 'froala-editor/css/plugins/colors.min.css';
 @import 'froala-editor/css/themes/gray.min.css';
 
-@custom-variant dark (&:is(.dark *));
-
 @theme inline {
     --color-background: var(--background);
     --color-foreground: var(--foreground);
@@ -25,11 +23,6 @@
     --color-sidebar-primary: var(--sidebar-primary);
     --color-sidebar-foreground: var(--sidebar-foreground);
     --color-sidebar: var(--sidebar);
-    --color-chart-5: var(--chart-5);
-    --color-chart-4: var(--chart-4);
-    --color-chart-3: var(--chart-3);
-    --color-chart-2: var(--chart-2);
-    --color-chart-1: var(--chart-1);
     --color-ring: var(--ring);
     --color-input: var(--input);
     --color-border: var(--border);
@@ -53,37 +46,48 @@
 }
 
 :root {
-    --radius: 0.625rem;
+    --header-footer-background: oklch(0.8459 0.0213 248.08);
+    --header-footer-foreground: oklch(0.4171 0.0319 214.24);
+
     --background: oklch(1 0 0);
-    --foreground: oklch(0.145 0 0);
+    --foreground: oklch(0 0 0);
+
     --card: oklch(1 0 0);
-    --card-foreground: oklch(0.145 0 0);
+    --card-foreground: oklch(0.4947 0.0396 212.31);
+
     --popover: oklch(1 0 0);
-    --popover-foreground: oklch(0.145 0 0);
-    --primary: oklch(0.205 0 0);
-    --primary-foreground: oklch(0.985 0 0);
-    --secondary: oklch(0.97 0 0);
-    --secondary-foreground: oklch(0.205 0 0);
+    --popover-foreground: oklch(0.4947 0.0396 212.31);
+
+    --primary: oklch(0.4947 0.0396 212.31);
+    --primary-foreground: oklch(1 0 0);
+
+    --secondary: oklch(0.7719 0.0279 246.44);
+    --secondary-foreground: oklch(0 0 0);
+
+    --highlight: oklch(0.6698 0.1607 57.77);
+    --highlight-light: oklch(0.8456 0.1204 69.65);
+
     --muted: oklch(0.97 0 0);
     --muted-foreground: oklch(0.556 0 0);
-    --accent: oklch(0.97 0 0);
-    --accent-foreground: oklch(0.205 0 0);
-    --destructive: oklch(0.577 0.245 27.325);
+
+    --accent: oklch(0.7791 0.0156 251.19);
+    --accent-foreground: oklch(0.9851 0 0);
+
+    --destructive: oklch(0.5496 0.1261 22.09);
+    --destructive-foreground: oklch(1 0 0);
+
     --border: oklch(0.922 0 0);
     --input: oklch(0.922 0 0);
     --ring: oklch(0.708 0 0);
-    --chart-1: oklch(0.646 0.222 41.116);
-    --chart-2: oklch(0.6 0.118 184.704);
-    --chart-3: oklch(0.398 0.07 227.392);
-    --chart-4: oklch(0.828 0.189 84.429);
-    --chart-5: oklch(0.769 0.188 70.08);
-    --sidebar: oklch(0.985 0 0);
-    --sidebar-foreground: oklch(0.145 0 0);
-    --sidebar-primary: oklch(0.205 0 0);
+    --radius: 0.625rem;
+
+    --sidebar: var(--header-footer-background);
+    --sidebar-foreground: var(--foreground);
+    --sidebar-primary: var(--primary);
     --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.97 0 0);
-    --sidebar-accent-foreground: oklch(0.205 0 0);
-    --sidebar-border: oklch(0.922 0 0);
+    --sidebar-accent: var(--secondary);
+    --sidebar-accent-foreground: var(--secondary-foreground);
+    --sidebar-border: var(--primary);
     --sidebar-ring: oklch(0.708 0 0);
 }
 
@@ -125,40 +129,157 @@
     * {
         @apply border-border outline-ring/50;
     }
+
     body {
         @apply bg-background text-foreground;
     }
+
+    header {
+        @apply text-[color:var(--header-footer-foreground)] bg-[color:var(--header-footer-background)];
+    }
+
+    footer {
+        @apply text-[color:var(--header-footer-foreground)] bg-[color:var(--header-footer-background)];
+    }
 }
 
-/*.container {*/
-/*    max-width: 1200px;*/
-/*    margin: 0 auto;*/
-/*    padding: 0 25px*/
-/*}*/
+/* Минималистичные утилиты, часто используемые классы */
+@layer utilities {
+    .main-heading {
+        @apply bg-gradient-to-r from-[#b9c8d6] to-[#e68210]
+        text-transparent bg-clip-text font-bold w-fit mx-auto drop-shadow-md;
+        letter-spacing: -0.015em;
+    }
 
-.swiper-pagination-bullets {
-    display: flex;
-    justify-content: center;
-    gap: 0.5rem;
-    margin-top: 30px;
-    position: static !important;
+    .btn-hover-scale {
+        @apply transition duration-500 hover:scale-105;
+    }
+
+    .btn-highlight {
+        background-color: var(--highlight);
+        @apply text-primary-foreground;
+    }
+
+    .btn-highlight:hover {
+        background-color: color-mix(in oklab, var(--highlight), black 10%);
+    }
+
+    .text-30-48-1_2 {
+        font-size: clamp(30px, calc(25px + (48 - 30) * ((100vw - 320px) / (1920 - 320))), 48px);
+        line-height: 1.2;
+    }
+
+    .text-18-28-1_2 {
+        font-size: clamp(20px, calc(20px + (30 - 20) * ((100vw - 320px) / (1920 - 320))), 30px);
+        line-height: 1.2;
+    }
+
+    .text-23-30-1_5 {
+        font-size: clamp(23px, calc(23px + (30 - 23) * ((100vw - 320px) / (1920 - 320))), 30px);
+        line-height: 1.5;
+    }
+
+    .text-highlight-light {
+        color: var(--highlight-light);
+    }
+
+    .text-highlight {
+        color: var(--highlight);
+    }
+
+    .bg-highlight {
+        background-color: var(--highlight);
+    }
+
+    .bg-highlight-light {
+        background-color: var(--highlight-light);
+    }
+
+    .border-highlight {
+        border: 1px solid var(--highlight);
+    }
+
+    .underline-animate {
+        @apply relative inline-block;
+    }
+
+    .underline-animate::after {
+        content: '';
+        @apply absolute left-0 -bottom-0.5 h-[1px] w-0 bg-current transition-all duration-300;
+    }
+
+    .underline-animate:hover::after {
+        @apply w-full;
+    }
+
 }
 
-.swiper-button-next,
-.swiper-button-prev {
-    color: hsl(var(--primary)) !important;
-}
+/* Компоненты сайта: кнопки, карточки, секции, заголовки и т.д. */
+@layer components {
+    .sidebar-container {
+        background-color: var(--sidebar) !important;
+        color: var(--sidebar-foreground);
+    }
 
-.swiper-pagination-bullet {
-    background-color: #555555 !important; /* Универсальный темный серый для неактивных */
-    opacity: 0.7 !important;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    transition: background-color 0.3s ease, opacity 0.3s ease;
-}
+    .sidebar-link-active {
+        background-color: var(--sidebar-primary);
+        color: var(--sidebar-primary-foreground);
+    }
 
-.swiper-pagination-bullet-active {
-    background-color: #000000 !important; /* Черный для активной точки */
-    opacity: 1 !important;
+    .sidebar-link-inactive:hover {
+        background-color: var(--sidebar-accent);
+        color: var(--sidebar-accent-foreground);
+    }
+
+    .main-section-title {
+        @apply font-bold mb-4;
+    }
+
+    .service-section-title {
+        @apply mb-10 text-center
+    }
+
+    .swiper-pagination-bullets {
+        @apply flex justify-center gap-2 mt-[30px];
+        position: static !important;
+    }
+
+    .swiper-pagination-bullet {
+        @apply opacity-70 w-[10px] h-[10px] rounded-full;
+        background-color: #555555 !important;
+        transition: background-color 0.3s ease, opacity 0.3s ease;
+    }
+
+    .swiper-pagination-bullet-active {
+        @apply opacity-100 bg-primary;
+    }
+
+    .swiper-button-next,
+    .swiper-button-prev {
+        @apply
+        absolute top-0 translate-y-[-50%]
+        rounded-full
+        w-12 h-12
+        flex items-center justify-center
+        transition-all;
+        background-color: rgba(209, 213, 219, 0.5);
+    }
+
+    .swiper-button-next::after,
+    .swiper-button-prev::after {
+        font-size: 18px !important;
+        color: theme(colors.primary.DEFAULT);
+        font-weight: bold;
+    }
+
+    .light-shadow-card {
+        @apply transition-shadow duration-300 rounded-lg;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+        0 4px 6px -4px rgba(0, 0, 0, 0.1);
+    }
+
+    .light-shadow-card:hover {
+        box-shadow: 0 10px 15px -3px var(--highlight-light),
+        0 4px 6px -4px var(--highlight-light);
+    }
 }

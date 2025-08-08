@@ -6,20 +6,23 @@ import PostClient from "@/src/app/(public)/[locale]/blog/[slug]/PostClient";
 import {getTranslations} from "next-intl/server";
 
 type Props = {
-    params: Promise<{ slug: string }>;
+    params: { slug: string; locale: 'ru' | 'ky' };
 };
 
 export async function generateMetadata({params}: Props): Promise<Metadata> {
     try {
-        const {slug} = await params;
+        const {slug, locale} = params;
         const post = await fetchPostBySlug(slug);
 
+        const title = post.seoTitle?.[locale] || post.title?.[locale];
+        const description = post.seoDescription?.[locale] || `Подробнее о продукте "${post.title?.[locale]}"`;
+
         return {
-            title: post.seoTitle || post.title.ru,
-            description: post.seoDescription || `Статья: ${post.title}`,
+            title,
+            description,
             openGraph: {
-                title: post.seoTitle || post.title.ru,
-                description: post.seoDescription || `Подробности о посте "${post.title}"`,
+                title: title,
+                description,
                 images: post.images?.length
                     ? post.images.map(image => ({
                         url: image.image,
@@ -38,7 +41,7 @@ export async function generateMetadata({params}: Props): Promise<Metadata> {
 }
 
 export default async function PostPage({params}: Props) {
-    const {slug} = await params;
+    const {slug} = params;
     const tError = await getTranslations("Errors")
 
     let post: Post | null = null;

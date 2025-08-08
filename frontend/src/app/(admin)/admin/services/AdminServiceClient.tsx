@@ -3,7 +3,7 @@
 import {ServiceResponse} from "@/src/lib/types";
 import React, {useEffect, useState} from "react";
 import {useSuperAdminServicesStore} from "@/store/superadmin/superAdminServices";
-import DataSkeleton from "@/src/components/ui/Loading/DataSkeleton";
+import DataSkeleton from "@/src/components/shared/DataSkeleton";
 import ErrorMsg from "@/src/components/ui/ErrorMsg";
 import {
     ColumnFiltersState,
@@ -154,14 +154,14 @@ const AdminServiceClient: React.FC<Props> = ({data, error}) => {
         <div>
             <div className="flex flex-col sm:flex-row sm:justify-between items-center gap-4 mb-4">
                 <div>
-                    <h1 className="text-3xl font-bold text-foreground text-center sm:text-left">
+                    <h1 className="text-23-30-1_5 font-bold text-center sm:text-left">
                         Управление услугами
                     </h1>
                     <p className="text-muted-foreground mt-1 text-center sm:text-left">
                         Создавайте и редактируйте услуги
                     </p>
                 </div>
-                <Button className="flex items-center gap-2 w-full sm:w-auto" onClick={() => setIsModalOpen(true)}>
+                <Button className="flex items-center gap-2" onClick={() => setIsModalOpen(true)}>
                     <Plus size={16}/>
                     Создать услугу
                 </Button>

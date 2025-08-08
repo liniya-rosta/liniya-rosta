@@ -47,8 +47,12 @@ const ProductEditModal: React.FC<Props> = ({open, onClose, product, refresh}) =>
             description: {
                 ru: product.description?.ru ?? ""
             },
-            seoTitle: product.seoTitle || "",
-            seoDescription: product.seoDescription || "",
+            seoTitle: {
+                ru: product.seoTitle?.ru ?? ""
+            },
+            seoDescription: {
+                ru: product.seoDescription?.ru ?? ""
+            },
             coverAlt: {
                 ru: product.cover?.alt?.ru ?? ""
             },
@@ -185,7 +189,7 @@ const ProductEditModal: React.FC<Props> = ({open, onClose, product, refresh}) =>
 
                         <FormField
                             control={form.control}
-                            name="seoTitle"
+                            name="seoTitle.ru"
                             render={({field}) => (
                                 <FormItem>
                                     <FormLabel>SEO Заголовок</FormLabel>
@@ -203,7 +207,7 @@ const ProductEditModal: React.FC<Props> = ({open, onClose, product, refresh}) =>
 
                         <FormField
                             control={form.control}
-                            name="seoDescription"
+                            name="seoDescription.ru"
                             render={({field}) => (
                                 <FormItem>
                                     <FormLabel>SEO Описание</FormLabel>
@@ -344,7 +348,7 @@ const ProductEditModal: React.FC<Props> = ({open, onClose, product, refresh}) =>
                             />
                             <FormField
                                 control={form.control}
-                                name="sale.label.ru"
+                                name="sale.label"
                                 render={({field}) => (
                                     <FormItem>
                                         <FormLabel>Текст акции</FormLabel>

@@ -17,6 +17,8 @@ export const createPostSchema = z.object({
             alt: altSchema.optional(),
         })
     ).min(1, "Добавьте хотя бы одно изображение"),
+    seoTitle: langString,
+    seoDescription: langString
 });
 
 export const updatePostSchema = z
@@ -29,6 +31,8 @@ export const updatePostSchema = z
                 alt: altSchema.optional(),
             })
         ).optional(),
+        seoTitle: langString,
+        seoDescription: langString,
     })
     .refine(
         (data) => data.title || data.description || data.images,

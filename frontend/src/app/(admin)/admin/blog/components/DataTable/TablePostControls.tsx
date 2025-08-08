@@ -39,8 +39,8 @@ const TablePostControls: React.FC<Props> = ({ table, onFilterChange, handleBulkD
     const {deleteLoading} = useSuperAdminPostStore();
 
     return (
-            <div className="flex justify-between gap-4 py-4 flex-wrap items-center">
-                <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+            <div className="flex flex-wrap justify-between gap-4 py-4 items-center">
+                <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto mb-4 md:mb-0">
                     <Select value={filterColumn} onValueChange={(value: string) => {
                         table.getColumn(filterColumn)?.setFilterValue("");
                         setFilterColumn(value);
@@ -69,13 +69,13 @@ const TablePostControls: React.FC<Props> = ({ table, onFilterChange, handleBulkD
                     />
                 </div>
 
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2">
                     <Button
                         disabled={deleteLoading || table.getFilteredSelectedRowModel().rows.length === 0}
                         onClick={handleBulkDelete}
                         variant='outline'
                     >
-                        Удалить выбранные {table.getFilteredSelectedRowModel().rows.length} элементы
+                        Удалить выбранные {table.getFilteredSelectedRowModel().rows.length}
                     </Button>
 
                     <DropdownMenu>

@@ -20,8 +20,8 @@ const ContactInfoCard = () => {
     return (
         <Card className="w-full h-full">
             <CardHeader className="flex items-center space-x-4">
-                <div className="p-2 bg-blue-100 rounded-lg">
-                    <Mail className="h-6 w-6 text-blue-700"/>
+                <div className="p-2 bg-muted rounded-lg">
+                    <Mail className="h-6 w-6 text-highlight"/>
                 </div>
                 <h2 className="text-xl font-semibold">{tContacts("contactsInfo")}</h2>
             </CardHeader>
@@ -105,6 +105,25 @@ const ContactInfoCard = () => {
                                     icon={faWhatsapp}
                                     className="text-green-500 group-hover:text-green-700 drop-shadow-md transition-colors duration-500"
                                     style={{fontSize: '24px'}}
+                                />
+                            </div>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a
+                            href={contact.mapLocation}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label="2ГИС"
+                            className="group transform transition-all duration-500 hover:scale-110 hover:shadow-lg"
+                        >
+                            <div
+                                className="w-10 h-10 flex items-center justify-center rounded-md bg-muted hover:bg-muted/70 shadow-sm transition-all duration-500">
+                                <img
+                                    src="https://map.2gis.ru/favicon.ico"
+                                    alt="2ГИС"
+                                    className="h-7 w-7 object-contain group-hover:opacity-80 transition-opacity duration-300"
                                 />
                             </div>
                         </a>

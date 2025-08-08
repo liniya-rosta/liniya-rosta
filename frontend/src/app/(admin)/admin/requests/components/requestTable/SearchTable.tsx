@@ -11,7 +11,8 @@ const SearchTable = () => {
     }, [value]);
 
     return (
-        <div className="flex items-center min-w-[220px]">
+        <div className="flex flex-col sm:flex-row items-center min-w-[220px] gap-2">
+            <span className="md:hidden text-sm whitespace-nowrap">Поиск: </span>
             <Input
                 placeholder="Поиск по имени"
                 value={value}

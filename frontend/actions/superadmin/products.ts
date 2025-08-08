@@ -11,11 +11,11 @@ export const createProduct = async (productData: ProductMutation): Promise<Produ
     }
 
     if (productData.seoTitle) {
-        formData.append('seoTitle', productData.seoTitle);
+        formData.append('seoTitle', productData.seoTitle.ru);
     }
 
     if (productData.seoDescription) {
-        formData.append('seoDescription', productData.seoDescription);
+        formData.append('seoDescription', productData.seoDescription.ru);
     }
 
     if (productData.cover) {
@@ -26,12 +26,14 @@ export const createProduct = async (productData: ProductMutation): Promise<Produ
         formData.append('coverAlt', productData.coverAlt.ru);
     }
 
-    productData.images.forEach((img) => {
-        if (img.url instanceof File) {
-            formData.append("images", img.url);
-            formData.append("alt", img.alt?.ru || "Элемент галереи");
-        }
-    });
+    if (productData.images) {
+        productData.images.forEach((img) => {
+            if (img.url instanceof File) {
+                formData.append("images", img.url);
+                formData.append("alt", img.alt?.ru || "Элемент галереи");
+            }
+        });
+    }
 
     if (productData.characteristics) {
         formData.append('characteristics', JSON.stringify(productData.characteristics));
@@ -40,7 +42,7 @@ export const createProduct = async (productData: ProductMutation): Promise<Produ
     if (productData.sale) {
         formData.append('isOnSale', String(productData.sale.isOnSale));
         if (productData.sale.label) {
-            formData.append('saleLabel', productData.sale.label.ru);
+            formData.append('saleLabel', productData.sale.label);
         }
     }
 
@@ -76,11 +78,11 @@ export const updateProduct = async (id: string, productData: ProductUpdateMutati
     }
 
     if (productData.seoTitle) {
-        formData.append('seoTitle', productData.seoTitle);
+        formData.append('seoTitle', productData.seoTitle.ru);
     }
 
     if (productData.seoDescription) {
-        formData.append('seoDescription', productData.seoDescription);
+        formData.append('seoDescription', productData.seoDescription.ru);
     }
 
     if (productData.cover) {
@@ -98,7 +100,7 @@ export const updateProduct = async (id: string, productData: ProductUpdateMutati
     if (productData.sale) {
         formData.append('isOnSale', String(productData.sale.isOnSale));
         if (productData.sale.label) {
-            formData.append('saleLabel', productData.sale.label.ru);
+            formData.append('saleLabel', productData.sale.label);
         }
     }
 

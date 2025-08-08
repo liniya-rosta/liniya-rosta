@@ -8,24 +8,36 @@ import {Metadata} from "next";
 
 export const revalidate = 1800;
 
-export const generateMetadata = async (): Promise<Metadata> => ({
-    title: "Портфолио",
-    description: "Примеры реализованных проектов компании Линия Роста. Натяжные потолки, SPC ламинат и интерьерные решения — фото наших работ.",
-    openGraph: {
-        title: "Портфолио | Линия Роста",
-        description: "Галерея выполненных работ от Линии Роста. Посмотрите реальные примеры потолков и ламината.",
-        url: "/portfolio",
-        siteName: "Линия Роста",
-        type: "website",
-    },
-});
+export const generateMetadata = async (): Promise<Metadata> => {
+    const t = await getTranslations("PortfolioPage");
+    const tHeader = await getTranslations("Header");
+
+    return {
+        title: tHeader("headerLinks.portfolio"),
+        description: t("descriptionSeo"),
+        openGraph: {
+            title: t("ogTitle"),
+            description: t("ogDescription"),
+            url: "/portfolio",
+            siteName: "Линия Роста",
+            images: [
+                {
+                    url: "/images/services/main-service.JPG",
+                    width: 1200,
+                    height: 630,
+                    alt: t("ogImageAlt"),
+                },
+            ],
+            type: "website",
+        },
+    };
+};
 
 const PortfolioPage = async () => {
     let errorMessage: string | null = null;
     let portfolioData: PortfolioResponse | null = null;
-    const limit = "8";
+    const limit = "9";
 
-    const tPortfolio = await getTranslations("PortfolioPage");
     const tErrors = await getTranslations("Errors");
 
     try {
@@ -42,17 +54,9 @@ const PortfolioPage = async () => {
     }
 
     return (
-        <main className="container mx-auto px-8">
-            <h1 className="text-3xl font-bold text-foreground mb-5">
-                Портфолио
-                <span className="block font-medium text-muted-foreground text-sm tracking-wider uppercase">
-                    {tPortfolio("portfolioSubtitle")}
-                </span>
-            </h1>
-            <PortfolioClient data={portfolioData}
-                             error={errorMessage}
-                             limit={limit}/>
-        </main>
+        <PortfolioClient data={portfolioData}
+                         error={errorMessage}
+                         limit={limit}/>
     );
 };
 

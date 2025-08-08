@@ -13,7 +13,7 @@ postsSuperAdminRouter.post("/", postImage.array("images"), async (req, res, next
         const {title, description, seoTitle, seoDescription} = req.body;
         const files = req.files as Express.Multer.File[];
 
-        if (!title || !description || !title.ru.trim() || !description.ru.trim()) {
+        if (!title || !description || !title.trim() || !description.trim()) {
             res.status(400).send({error: "Поля заголовка и описания обязательны для заполнения"});
             return;
         }
@@ -36,13 +36,19 @@ postsSuperAdminRouter.post("/", postImage.array("images"), async (req, res, next
         }));
 
         const kyTitle = await translateYandex(title, 'ky');
-        const kyDes = await translateYandex(title, 'ky');
+        const kyDes = await translateYandex(description, 'ky');
 
         const post = new Post({
-            title: {ru: title.trim(), ky: kyTitle},
-            description: {ru: description.trim(), ky: kyDes.trim()},
-            seoTitle: seoTitle?.trim() || null,
-            seoDescription: seoDescription?.trim() || null,
+            title: {ru: title, ky: kyTitle},
+            description: {ru: description, ky: kyDes},
+            seoTitle: {
+                ru: seoTitle?.trim() || null,
+                ky: await translateYandex(seoTitle?.trim() || "", "ky")
+            },
+            seoDescription: {
+                ru: seoDescription?.trim() || null,
+                ky: await translateYandex(seoDescription?.trim() || "", "ky")
+            },
             images,
         });
 
@@ -90,15 +96,14 @@ postsSuperAdminRouter.patch("/:id", postImage.array("images"), async (req, res, 
         }
 
         const updateData: updatePost = {};
-        if (title?.trim()) {
+        if (title.trim()) {
             const kyTitle = await translateYandex(title, 'ky');
-            const trimmedTitle = title.trim();
             updateData.title = {
-                ru: trimmedTitle,
+                ru: title,
                 ky: kyTitle
             };
 
-            const baseSlug = slugify(trimmedTitle, {lower: true, strict: true});
+            const baseSlug = slugify(title, {lower: true, strict: true});
             let uniqueSlug = baseSlug;
             let counter = 1;
 
@@ -113,15 +118,22 @@ postsSuperAdminRouter.patch("/:id", postImage.array("images"), async (req, res, 
         const kyDes = await translateYandex(title, 'ky');
 
         if (description?.trim()) updateData.description = {
-            ru: description.trim,
+            ru: description,
             ky: kyDes
         };
 
         if (seoTitle !== undefined) {
-            updateData.seoTitle = seoTitle?.trim() || null;
+            updateData.seoTitle = {
+                ru: seoTitle?.trim() || null,
+                ky: await translateYandex(seoTitle?.trim() || "", "ky")
+            };
         }
+
         if (seoDescription !== undefined) {
-            updateData.seoDescription = seoDescription?.trim() || null;
+            updateData.seoDescription = {
+                ru: seoDescription?.trim() || null,
+                ky: await translateYandex(seoDescription?.trim() || "", "ky")
+            };
         }
 
         const altsKy = await Promise.all(alts.map(alt => translateYandex(alt, "ky")));

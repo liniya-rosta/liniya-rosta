@@ -61,12 +61,12 @@ export const DataTable = ({
 
     return (
         <div className="mb-[40px]">
-            <h1 className="text-3xl font-bold mb-4">Заявки</h1>
+            <h1 className="text-23-30-1_5 font-bold text-center md:text-left mb-4">Заявки</h1>
             <div>
-                <div className="flex justify-between items-center gap-5 flex-wrap">
+                <div className="flex justify-center md:justify-between items-center gap-5 flex-wrap">
                     <SearchTable/>
                     <StatusFilter/>
-                    <div>
+                    <div className="my-3 md:my-0">
                         <DateFilter/>
                     </div>
 
@@ -79,7 +79,7 @@ export const DataTable = ({
                         </Button>
                         <CheckboxAction table={table}/>
                     </div>
-                    <div className="ml-auto mb-2 sm:mb-0">
+                    <div className="md:ml-auto mb-2 sm:mb-0">
                         <TablePagination/>
                     </div>
                 </div>
@@ -141,7 +141,7 @@ export const DataTable = ({
                 </Table>
             </div>
 
-            <div className="flex justify-end">
+            <div className="flex justify-center md:justify-end">
                 <TablePagination/>
             </div>
 
