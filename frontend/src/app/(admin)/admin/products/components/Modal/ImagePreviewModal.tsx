@@ -6,16 +6,17 @@ import {VisuallyHidden} from "@radix-ui/react-visually-hidden";
 import {useLocale} from "next-intl";
 
 interface ImagePreviewModalProps {
-    image: { url: string; alt: {ru: string, ky?: string} | null} | null;
+    image: { url: string; alt: { ru: string, ky?: string } | null } | null;
     onClose: () => void;
 }
 
 const ImagePreviewModal: React.FC<ImagePreviewModalProps> = ({image, onClose}) => {
+    const locale = useLocale() as "ru" | "ky";
+
     if (!image) return null;
 
     const isBlob = image.url.startsWith("blob:");
     const imageUrl = isBlob ? image.url : `${API_BASE_URL}/${image.url}`;
-    const locale = useLocale() as "ru" | "ky";
 
     return (
         <Dialog open={!!image} onOpenChange={onClose}>
