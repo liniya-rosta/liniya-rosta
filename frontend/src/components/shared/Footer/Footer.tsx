@@ -4,7 +4,8 @@ import {fetchContacts} from "@/actions/contacts";
 import FooterBtn from "@/src/components/shared/Footer/FooterBtn";
 import FooterContent from "@/src/components/shared/Footer/FooterContent";
 import {getTranslations} from "next-intl/server";
-import { Container } from '../Container';
+import {Container} from '../Container';
+import {handleKyError} from "@/src/lib/handleKyError";
 
 const Footer = async () => {
     let contactData: Contact | null = null;
@@ -14,11 +15,7 @@ const Footer = async () => {
     try {
         contactData = await fetchContacts();
     } catch (e) {
-        if (e instanceof Error) {
-            contactError = e.message;
-        } else {
-            contactError = tError('contactsError');
-        }
+        contactError = await handleKyError(e, tError('contactsError'));
     }
 
     return (

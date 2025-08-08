@@ -1068,6 +1068,192 @@ const run = async () => {
             email: 'aidana@gmail.com',
             isArchived: false
         },
+        {
+            name: "Нурбек",
+            phone: "+996555123456",
+            email: 'nurbek@gmail.com',
+            isArchived: false
+        },
+        {
+            name: "Нурбек 1",
+            phone: "+996555123456",
+            email: 'nurbek@gmail.com',
+            isArchived: false
+        },
+        {
+            name: "Нурбек 2",
+            phone: "+996555123456",
+            email: 'nurbek@gmail.com',
+            isArchived: false
+        },
+        {
+            name: "Нурбек 3",
+            phone: "+996555123456",
+            email: 'nurbek@gmail.com',
+            isArchived: false
+        },
+        {
+            name: "Нурбек 5",
+            phone: "+996555123456",
+            email: 'nurbek@gmail.com',
+            isArchived: false
+        },
+        {
+            name: "Нурбек 6",
+            phone: "+996555123456",
+            email: 'nurbek@gmail.com',
+            isArchived: false
+        },
+        {
+            name: "Нурбек 7",
+            phone: "+996555123456",
+            email: 'nurbek@gmail.com',
+            isArchived: false
+        },
+        {
+            name: "Нурбек 8",
+            phone: "+996555123456",
+            email: 'nurbek@gmail.com',
+            isArchived: false
+        },
+        {
+            name: "Нурбек 10",
+            phone: "+996555123456",
+            email: 'nurbek@gmail.com',
+            isArchived: false
+        },
+        {
+            name: "Нурбек 11",
+            phone: "+996555123456",
+            email: 'nurbek@gmail.com',
+            isArchived: false
+        },
+        {
+            name: "Нурбек 12",
+            phone: "+996555123456",
+            email: 'nurbek@gmail.com',
+            isArchived: false
+        },
+        {
+            name: "Нурбек13",
+            phone: "+996555123456",
+            email: 'nurbek@gmail.com',
+            isArchived: false
+        },
+        {
+            name: "Нурбек14",
+            phone: "+996555123456",
+            email: 'nurbek@gmail.com',
+            isArchived: false
+        },
+        {
+            name: "Нурбек15",
+            phone: "+996555123456",
+            email: 'nurbek@gmail.com',
+            isArchived: false
+        },
+        {
+            name: "Нурбек16",
+            phone: "+996555123456",
+            email: 'nurbek@gmail.com',
+            isArchived: false
+        },
+        {
+            name: "Нурбек17",
+            phone: "+996555123456",
+            email: 'nurbek@gmail.com',
+            isArchived: false
+        },
+        {
+            name: "Нурбек18",
+            phone: "+996555123456",
+            email: 'nurbek@gmail.com',
+            isArchived: false
+        },
+        {
+            name: "Нурбек19",
+            phone: "+996555123456",
+            email: 'nurbek@gmail.com',
+            isArchived: false
+        },
+        {
+            name: "Нурбек20",
+            phone: "+996555123456",
+            email: 'nurbek@gmail.com',
+            isArchived: false
+        },
+        {
+            name: "Нурбек21",
+            phone: "+996555123456",
+            email: 'nurbek@gmail.com',
+            isArchived: false
+        },
+        {
+            name: "Нурбек22",
+            phone: "+996555123456",
+            email: 'nurbek@gmail.com',
+            isArchived: false
+        },
+        {
+            name: "Нурбек23",
+            phone: "+996555123456",
+            email: 'nurbek@gmail.com',
+            isArchived: false
+        },
+        {
+            name: "Нурбек24",
+            phone: "+996555123456",
+            email: 'nurbek@gmail.com',
+            isArchived: false
+        },
+        {
+            name: "Нурбек25",
+            phone: "+996555123456",
+            email: 'nurbek@gmail.com',
+            isArchived: false
+        },
+        {
+            name: "Нурбек26",
+            phone: "+996555123456",
+            email: 'nurbek@gmail.com',
+            isArchived: false
+        },
+        {
+            name: "Нурбек27",
+            phone: "+996555123456",
+            email: 'nurbek@gmail.com',
+            isArchived: false
+        },
+        {
+            name: "Нурбек28",
+            phone: "+996555123456",
+            email: 'nurbek@gmail.com',
+            isArchived: false
+        },
+        {
+            name: "Нурбек29",
+            phone: "+996555123456",
+            email: 'nurbek@gmail.com',
+            isArchived: false
+        },
+        {
+            name: "Нурбек30",
+            phone: "+996555123456",
+            email: 'nurbek@gmail.com',
+            isArchived: false
+        },
+        {
+            name: "Нурбек31",
+            phone: "+996555123456",
+            email: 'nurbek@gmail.com',
+            isArchived: false
+        },
+        {
+            name: "Нурбек32",
+            phone: "+996555123456",
+            email: 'nurbek@gmail.com',
+            isArchived: false
+        },
     );
 
     await Service.create(

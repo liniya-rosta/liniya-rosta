@@ -9,11 +9,11 @@ import {Label} from "@/src/components/ui/label";
 import {Button} from "@/src/components/ui/button";
 import {User} from "@/src/lib/types";
 import {editAdmin} from "@/actions/superadmin/admins";
-import {isAxiosError} from "axios";
 import {useSuperadminAdminsStore} from "@/store/superadmin/superadminAdminsStore";
 import {editAdminSchema, EditAdminSchema} from "@/src/lib/zodSchemas/admin/editAdminSchema";
 import ErrorMsg from "@/src/components/ui/ErrorMsg";
 import {toast} from "react-toastify";
+import {handleKyError} from "@/src/lib/handleKyError";
 
 interface AdminEditModalProps {
     admin: User;
@@ -55,12 +55,9 @@ const AdminEditModal: React.FC<AdminEditModalProps> = ({admin, onClose}) => {
             toast.success('Вы успешно изменили данные');
             onClose();
         } catch (e) {
-            if (isAxiosError(e)) {
-                setEditAdminError(e.response?.data?.error || "Ошибка при обновлении");
-            } else {
-                setEditAdminError("Неизвестная ошибка");
-            }
-            toast.error(editAdminError);
+            const msg = await handleKyError(e, 'Ошибка при редактировании админа');
+            setEditAdminError(msg);
+            toast.error(msg);
         } finally {
             setEditAdminLoading(false);
         }

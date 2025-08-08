@@ -20,10 +20,10 @@ import {Button} from "@/src/components/ui/button";
 import {Plus} from "lucide-react";
 import ConfirmDialog from "@/src/components/ui/ConfirmDialog";
 import {toast} from "react-toastify";
-import {isAxiosError} from "axios";
 import {fetchAllServices} from "@/actions/services";
 import ServiceFormModal from "@/src/app/(admin)/admin/services/components/ServiceFormModal";
 import {deleteService} from "@/actions/superadmin/services";
+import {handleKyError} from "@/src/lib/handleKyError";
 
 interface Props {
     data: ServiceResponse | null;
@@ -45,7 +45,7 @@ const AdminServiceClient: React.FC<Props> = ({data, error}) => {
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
     const [rowSelection, setRowSelection] = useState({});
 
-    const [showConfirm, setShowConfirm] =  useState(false);
+    const [showConfirm, setShowConfirm] = useState(false);
     const [selectedToDelete, setSelectedToDelete] = useState<string[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalId, setModalId] = useState<string | null>(null);
@@ -74,14 +74,8 @@ const AdminServiceClient: React.FC<Props> = ({data, error}) => {
             const updated = await fetchAllServices();
             setServices(updated);
         } catch (error) {
-            let errorMessage = "Ошибка при удалении";
-            if (isAxiosError(error) && error.response) {
-                errorMessage = error.response.data.error;
-            } else if (error instanceof Error) {
-                errorMessage = error.message;
-            }
-
-            toast.error(errorMessage);
+            const msg = await handleKyError(error, "Ошибка при удалении услуги");
+            toast.error(msg);
         } finally {
             setDeleteServiceLoading(false);
         }
@@ -122,9 +116,9 @@ const AdminServiceClient: React.FC<Props> = ({data, error}) => {
             setShowConfirm(false);
             setDeleteServiceLoading(true);
 
-                await Promise.all(
-                    selectedToDelete.map((id) => deleteService(id))
-                );
+            await Promise.all(
+                selectedToDelete.map((id) => deleteService(id))
+            );
 
             const updated = await fetchAllServices();
             setServices(updated);
@@ -132,14 +126,8 @@ const AdminServiceClient: React.FC<Props> = ({data, error}) => {
             toast.success(`Удалено ${selectedToDelete.length} элемента`);
 
         } catch (error) {
-            let errorMessage = "Ошибка при удалении";
-            if (isAxiosError(error) && error.response) {
-                errorMessage = error.response.data.error;
-            } else if (error instanceof Error) {
-                errorMessage = error.message;
-            }
-
-            toast.error(errorMessage);
+            const msg = await handleKyError(error, "Ошибка при удалении услуг");
+            toast.error(msg);
         } finally {
             setDeleteServiceLoading(false);
             setSelectedToDelete([]);
@@ -183,7 +171,7 @@ const AdminServiceClient: React.FC<Props> = ({data, error}) => {
                         ? "Удалить выбранные элементы?"
                         : "Удалить элемент?"
                 }
-                onConfirm={ async () => {
+                onConfirm={async () => {
                     if (selectedToDelete.length > 1) {
                         await multipleDeletion();
                     } else if (selectedToDelete.length === 1) {

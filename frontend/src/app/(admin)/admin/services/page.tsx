@@ -1,7 +1,7 @@
 import AdminServiceClient from "@/src/app/(admin)/admin/services/AdminServiceClient";
 import {ServiceResponse} from "@/src/lib/types";
 import {fetchAllServices} from "@/actions/services";
-import {isAxiosError} from "axios";
+import {handleKyError} from "@/src/lib/handleKyError";
 
 const AdminServicePage = async () => {
     let services: ServiceResponse | null = null;
@@ -10,15 +10,9 @@ const AdminServicePage = async () => {
     try {
         services = await fetchAllServices();
     } catch (error) {
-        if (isAxiosError(error) && error.response) {
-            errorMessage = error.response.data.error;
-        } else if (error instanceof Error) {
-            errorMessage = error.message;
-        } else {
-            errorMessage = "Неизвестная ошибка при загрузке услуг";
-        }
+        errorMessage = await handleKyError(error, "Неизвестная ошибка при загрузке услуг");
     }
-    return(
+    return (
         <>
             <AdminServiceClient data={services} error={errorMessage}/>
         </>

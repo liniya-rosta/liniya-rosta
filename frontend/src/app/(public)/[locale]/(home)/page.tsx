@@ -8,6 +8,7 @@ import HomePageClient from "@/src/app/(public)/[locale]/(home)/HomeClient";
 import {fetchAllServices} from "@/actions/services";
 import {getTranslations} from "next-intl/server";
 import {Metadata} from "next";
+import {handleKyError} from "@/src/lib/handleKyError";
 
 export const revalidate = 3600;
 
@@ -50,35 +51,50 @@ const HomePage = async () => {
 
     const limitPortfolio = "8";
 
+    const tError = await getTranslations("Errors");
+
     await Promise.all([
-        fetchCategories()
-            .then(data => categoriesData = data)
-            .catch(e => {
-                categoriesError = e instanceof Error ? e.message : String(e);
-            }),
+        (async () => {
+            try {
+                categoriesData = await fetchCategories();
+            } catch (e) {
+                categoriesError = await handleKyError(e, tError("categoriesError"));
+            }
+        })(),
 
-        fetchProducts({})
-            .then(data => productsData = data.items)
-            .catch(e => {
-                productsError = e instanceof Error ? e.message : String(e);
-            }),
+        (async () => {
+            try {
+                const data = await fetchProducts({});
+                productsData = data.items;
+            } catch (e) {
+                productsError = await handleKyError(e, tError("productsError"));
+            }
+        })(),
 
-        fetchPortfolioPreviews(limitPortfolio)
-            .then(data => portfolio = data.items)
-            .catch(e => {
-                portfolioError = e instanceof Error ? e.message : String(e);
-            }),
+        (async () => {
+            try {
+                const data = await fetchPortfolioPreviews(limitPortfolio);
+                portfolio = data.items;
+            } catch (e) {
+                portfolioError = await handleKyError(e, tError("portfolioError"));
+            }
+        })(),
 
-        fetchContacts()
-            .then(data => contactData = data)
-            .catch(e => {
-                contactError = e instanceof Error ? e.message : String(e);
-            }),
-        fetchAllServices()
-            .then(data => serviceData = data)
-            .catch(e => {
-                serviceError = e instanceof Error ? e.message : String(e);
-            }),
+        (async () => {
+            try {
+                contactData = await fetchContacts();
+            } catch (e) {
+                contactError = await handleKyError(e, tError('contactsError'));
+            }
+        })(),
+
+        (async () => {
+            try {
+                serviceData = await fetchAllServices();
+            } catch (e) {
+                serviceError = await handleKyError(e, tError("servicesError"));
+            }
+        })(),
     ]);
 
     const initialProps = {

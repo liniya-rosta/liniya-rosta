@@ -4,7 +4,6 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import {serviceEditSchema, serviceSchema} from "@/src/lib/zodSchemas/admin/serviceSchema";
 import {useSuperAdminServicesStore} from "@/store/superadmin/superAdminServices";
 import {ServiceForm} from "@/src/lib/types";
-import {isAxiosError} from "axios";
 import {toast} from "react-toastify";
 import {createService, fetchServiceById, updateService} from "@/actions/superadmin/services";
 import {Input} from "@/src/components/ui/input";
@@ -16,6 +15,7 @@ import {Textarea} from "@/src/components/ui/textarea";
 import {fetchAllServices} from "@/actions/services";
 import {z} from "zod"
 import {Tooltip, TooltipContent, TooltipTrigger} from "@/src/components/ui/tooltip";
+import {handleKyError} from "@/src/lib/handleKyError";
 
 interface Props {
     open: boolean;
@@ -59,13 +59,8 @@ const ServiceFormModal: React.FC<Props> = ({open, openChange, id}) => {
                     const data = await fetchServiceById(id);
                     reset(data);
                 } catch (error) {
-                    let errorMessage = "Неизвестная ошибка при выводе услуг";
-                    if (isAxiosError(error) && error.response) {
-                        errorMessage = error.response.data.error;
-                    } else if (error instanceof Error) {
-                        errorMessage = error.message;
-                    }
-                    toast.error(errorMessage);
+                    const msg = await handleKyError(error, "Неизвестная ошибка при выводе услуг");
+                    toast.error(msg);
                 }
             }
         };
@@ -101,14 +96,12 @@ const ServiceFormModal: React.FC<Props> = ({open, openChange, id}) => {
             openChange(false);
             reset();
         } catch (error) {
-            let errorMessage = "Неизвестная ошибка при создании услуг";
-            if (isAxiosError(error) && error.response) {
-                errorMessage = error.response.data.error;
-            } else if (error instanceof Error) {
-                errorMessage = error.message;
-            }
-
-            toast.error(errorMessage);
+            const msg = await handleKyError(
+                error,
+                isEditMode
+                    ? "Неизвестная ошибка при редактировании услуги"
+                    : "Неизвестная ошибка при создании услуги"
+            );            toast.error(msg);
         } finally {
             setCreateServiceLoading(false);
             setUpdateServiceLoading(false);
@@ -153,7 +146,7 @@ const ServiceFormModal: React.FC<Props> = ({open, openChange, id}) => {
                                 className="ml-auto px-8"
                                 disabled={!isDirty || createServiceLoading || updateServiceLoading}
                             >
-                                {createServiceLoading || updateServiceLoading ? <LoaderIcon /> : null}
+                                {createServiceLoading || updateServiceLoading ? <LoaderIcon/> : null}
                                 {isEditMode ? "Сохранить" : "Создать"}
                             </Button>
                         </TooltipTrigger>
