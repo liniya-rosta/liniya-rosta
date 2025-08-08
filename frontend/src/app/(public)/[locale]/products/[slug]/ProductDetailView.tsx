@@ -9,7 +9,6 @@ import {Swiper, SwiperSlide} from "swiper/react";
 import {Navigation} from "swiper/modules";
 import LoadingFullScreen from "@/src/components/ui/Loading/LoadingFullScreen";
 import {useProductStore} from "@/store/productsStore";
-import ImagePreviewModal from "@/src/app/(admin)/admin/products/components/Modal/ImagePreviewModal";
 import {useLocale, useTranslations} from "next-intl";
 
 interface Props {
@@ -27,7 +26,10 @@ const ProductDetailView: React.FC<Props> = ({productData, fetchProductError}) =>
         fetchProductsLoading
     } = useProductStore();
 
-    const [previewImage, setPreviewImage] = React.useState<{ url: string; alt: {ru: string, ky?: string} | null } | null>(null);
+    const [previewImage, setPreviewImage] = React.useState<{
+        url: string;
+        alt: { ru: string, ky?: string } | null
+    } | null>(null);
 
     const tError = useTranslations("Errors");
     const tCeilings = useTranslations("CeilingsPage");
@@ -68,7 +70,10 @@ const ProductDetailView: React.FC<Props> = ({productData, fetchProductError}) =>
                             {product.images.map((img) => (
                                 <SwiperSlide key={img._id}
                                              className="!w-[300px]"
-                                             onClick={() => setPreviewImage({url: img.url, alt: img.alt || { ru: "Изображение", ky: "Сүрөт" } })}
+                                             onClick={() => setPreviewImage({
+                                                 url: img.url,
+                                                 alt: img.alt || {ru: "Изображение", ky: "Сүрөт"}
+                                             })}
 
                                 >
                                     <div
@@ -112,14 +117,21 @@ const ProductDetailView: React.FC<Props> = ({productData, fetchProductError}) =>
                     </div>
                 )}
             </div>
+            {/*{previewImage && (*/}
+            {/*    <ImagePreviewModal*/}
+            {/*        image={previewImage}*/}
+            {/*        onClose={() => setPreviewImage(null)}*/}
+            {/*    />*/}
+            {/*)}*/}
             {previewImage && (
-                <ImagePreviewModal
-                    image={previewImage}
-                    onClose={() => setPreviewImage(null)}
-                />
+                <p>asdfasdf</p>
             )}
+
+
         </div>
     );
 };
+
+//надо доработать подробный просмотр!!!!
 
 export default ProductDetailView;

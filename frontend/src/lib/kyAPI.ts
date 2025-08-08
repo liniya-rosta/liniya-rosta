@@ -36,7 +36,7 @@ const kyAPI = ky.create({
                     if (!newToken) {
                         useUserStore.getState().setAccessToken(null);
                         useUserStore.getState().setLogout?.();
-                        throw new Error('Refresh token failed');
+                        throw new Error('Не удалось обновить токен');
                     }
                     useUserStore.getState().setAccessToken(newToken);
 
