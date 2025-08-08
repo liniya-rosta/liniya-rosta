@@ -13,7 +13,7 @@ const kyAPI = ky.create({
     hooks: {
         beforeRequest: [
             request => {
-                const { accessToken } = useUserStore.getState();
+                const {accessToken} = useUserStore.getState();
                 if (accessToken) {
                     request.headers.set('Authorization', `Bearer ${accessToken}`);
                 }
@@ -24,27 +24,28 @@ const kyAPI = ky.create({
                 if (response.status === 401 && !options._retry) {
                     options._retry = true;
 
+                    let newToken: string | undefined;
                     try {
-                        const newToken = await refreshAccessToken();
-                        if (!newToken) {
-                            useUserStore.getState().setAccessToken(null);
-                            useUserStore.getState().setLogout?.();
-                            throw new Error('Refresh token failed');
-                        }
-                        useUserStore.getState().setAccessToken(newToken);
-
-                        return ky(request, {
-                            ...options,
-                            headers: {
-                                ...options.headers,
-                                Authorization: `Bearer ${newToken}`,
-                            }
-                        });
+                        newToken = await refreshAccessToken();
                     } catch (e) {
                         useUserStore.getState().setAccessToken(null);
                         useUserStore.getState().setLogout?.();
                         throw e;
                     }
+
+                    if (!newToken) {
+                        useUserStore.getState().setAccessToken(null);
+                        useUserStore.getState().setLogout?.();
+                        throw new Error('Refresh token failed');
+                    }
+                    useUserStore.getState().setAccessToken(newToken);
+
+                    const retryHeaders = new Headers(
+                        (options.headers as HeadersInit | undefined) ?? request.headers
+                    );
+                    retryHeaders.set('Authorization', `Bearer ${newToken}`);
+
+                    return ky(request, {...options, headers: retryHeaders});
                 }
 
                 return response;

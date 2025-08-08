@@ -14,18 +14,14 @@ export const fetchAllRequests = async (params: ReqParams): Promise<FetchRequests
     const sp = new URLSearchParams();
 
     if (params.page != null) sp.set("page", String(params.page));
-    if (params.status)      sp.set("status", params.status);
-    if (params.search)      sp.set("search", params.search);
-    if (params.dateFrom)    sp.set("dateFrom", params.dateFrom);
-    if (params.dateTo)      sp.set("dateTo", params.dateTo);
+    if (params.status)       sp.set("status", params.status);
+    if (params.search)       sp.set("search", params.search);
+    if (params.dateFrom)     sp.set("dateFrom", params.dateFrom);
+    if (params.dateTo)       sp.set("dateTo", params.dateTo);
+    sp.set("archived", String(params.archived));
 
-    // важное отличие от axios: не отправляем "false" строкой, шлём "0/1"
-    sp.set("archived", params.archived ? "1" : "0");
-
-    console.log("GET /superadmin/requests?", sp.toString());
-
-    return await kyAPI
-        .get("superadmin/requests", { searchParams: sp })
+    return kyAPI
+        .get('superadmin/requests', { searchParams: sp })
         .json<FetchRequestsResponse>();
 };
 
