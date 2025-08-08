@@ -15,6 +15,7 @@ import {useSuperAdminPostStore} from "@/store/superadmin/superAdminPostsStore";
 import ConfirmDialog from "@/src/components/ui/ConfirmDialog";
 import {ImageObject} from "@/src/lib/types";
 import {Label} from "@/src/components/ui/label";
+import FroalaEditorWrapper from "@/src/components/shared/FroalaEditor";
 
 interface Props {
     openImagesModal: () => void;
@@ -154,14 +155,15 @@ const EditPostForm: React.FC<Props> = ({openImagesModal, setPreviewImage, setIsP
 
                     {errors.seoTitle && <FormErrorMessage>{errors.seoTitle.message}</FormErrorMessage>}
 
-                    <Input
-                        type="text"
-                        placeholder="Описание"
-                        {...register('description.ru')}
-                        disabled={updateLoading}
-                        className="mb-4"
-                    />
-                    {errors.description && <FormErrorMessage>{errors.description.message}</FormErrorMessage>}
+                    <div className="mb-4">
+                        <label className="block mb-2 text-sm font-medium">Описание</label>
+                        <FroalaEditorWrapper
+                            model={control._formValues.description?.ru}
+                            onChangeAction={(value: string) => setValue('description.ru', value, {shouldValidate: true})}
+                        />
+                        {errors.description?.ru &&
+                            <FormErrorMessage>{errors.description.ru.message}</FormErrorMessage>}
+                    </div>
 
                     <Input
                         type="text"

@@ -34,6 +34,7 @@
     "clsx": "^2.1.1",
     "dayjs": "^1.11.13",
     "froala-editor": "^4.6.0",
+    "html-react-parser": "^5.2.6",
     "leaflet": "^1.9.4",
     "lucide-react": "^0.513.0",
     "motion": "^12.23.11",

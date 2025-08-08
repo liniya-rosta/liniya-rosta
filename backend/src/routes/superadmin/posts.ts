@@ -5,6 +5,7 @@ import {postImage} from "../../middleware/multer";
 import {updatePost} from "../../../types";
 import slugify from "slugify";
 import {translateYandex} from "../../../translateYandex";
+import {extractTags, restoreTags} from "../../../tagExtractor";
 
 const postsSuperAdminRouter = express.Router();
 
@@ -36,7 +37,10 @@ postsSuperAdminRouter.post("/", postImage.array("images"), async (req, res, next
         }));
 
         const kyTitle = await translateYandex(title, 'ky');
-        const kyDes = await translateYandex(description, 'ky');
+
+        const { cleanText, tags } = extractTags(description);
+        const translated = await translateYandex(cleanText, 'ky');
+        const kyDes = restoreTags(translated, tags);
 
         const post = new Post({
             title: {ru: title, ky: kyTitle},
@@ -115,7 +119,9 @@ postsSuperAdminRouter.patch("/:id", postImage.array("images"), async (req, res, 
             updateData.slug = uniqueSlug;
         }
 
-        const kyDes = await translateYandex(title, 'ky');
+        const { cleanText, tags } = extractTags(description);
+        const translated = await translateYandex(cleanText, 'ky');
+        const kyDes = restoreTags(translated, tags);
 
         if (description?.trim()) updateData.description = {
             ru: description,

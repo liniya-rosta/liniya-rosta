@@ -11,6 +11,7 @@ import {useRouter} from "next/navigation";
 import {useEffect, useState} from "react";
 import {API_BASE_URL} from "@/src/lib/globalConstants";
 import {useLocale, useTranslations} from "next-intl";
+import parse from "html-react-parser";
 
 interface Props {
     data: Post | null;
@@ -38,8 +39,6 @@ const PostClient: React.FC<Props> = ({data, error}) => {
         setFetchPostsLoading(false);
         setIsHydrating(false);
     }, [data, error, setFetchPostsError, setFetchPostsLoading]);
-
-    console.log(data?.images)
 
     if (isHydrating || fetchPostsLoading) return <Loading/>;
 
@@ -87,9 +86,9 @@ const PostClient: React.FC<Props> = ({data, error}) => {
                     {data.title[locale]}
                 </h3>
             </div>
-            <div className="grid grid-cols-1 gap-4 mb-8">
+            <div className="grid grid-cols-1 gap-4">
                 {data.images.length === 1 && (
-                    <div className="aspect-[6/3] overflow-hidden rounded-xl">
+                    <div className="aspect-[6/3] overflow-hidden rounded-xl mb-[20px]">
                         <img
                             src={`${API_BASE_URL}/${data.images[0].image}`}
                             alt={data.images[0].alt?.[locale]}
@@ -99,7 +98,7 @@ const PostClient: React.FC<Props> = ({data, error}) => {
                 )}
 
                 {data.images.length === 2 && (
-                    <div className="grid aspect-[6/3] grid-cols-2 gap-4">
+                    <div className="grid aspect-[6/3] grid-cols-2 gap-4 mb-[20px]">
                         {data.images.map((img, i) => (
                             <div key={i} className="overflow-hidden rounded-xl">
                                 <img
@@ -113,7 +112,7 @@ const PostClient: React.FC<Props> = ({data, error}) => {
                 )}
 
                 {data.images.length === 3 && (
-                    <div className="grid grid-cols-5 gap-4 aspect-[7/3] ">
+                    <div className="grid grid-cols-5 gap-4 aspect-[7/3] mb-[20px]">
                         <div className="col-span-4 row-span-2 overflow-hidden rounded-lg">
                             <img
                                 src={`${API_BASE_URL}/${data.images[0].image}`}
@@ -141,7 +140,7 @@ const PostClient: React.FC<Props> = ({data, error}) => {
                 )}
 
                 <div className="prose prose-lg max-w-none text-muted-foreground">
-                    <p className="leading-relaxed text-lg">{data.description[locale]}</p>
+                    {parse(data.description[locale])}
                 </div>
             </div>
         </div>

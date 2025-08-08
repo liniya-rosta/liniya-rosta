@@ -7,6 +7,7 @@ import Link from "next/link";
 import React, {useState} from "react";
 import {BtnArrow} from "@/src/components/ui/btn-arrow";
 import {useLocale, useTranslations} from "next-intl";
+import parse from 'html-react-parser';
 
 interface Props {
     slug: string;
@@ -61,7 +62,7 @@ const PostCard: React.FC<Props> = ({slug, images, title, description}) => {
             <CardHeader className="px-0">
                 <CardTitle className="text-lg font-semibold leading-snug line-clamp-2">{title}</CardTitle>
                 <CardDescription className="text-sm mt-1 line-clamp-3 text-muted-foreground">
-                    {description}
+                    {parse(description)}
                 </CardDescription>
             </CardHeader>
 

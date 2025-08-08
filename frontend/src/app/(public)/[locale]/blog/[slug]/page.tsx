@@ -6,12 +6,15 @@ import PostClient from "@/src/app/(public)/[locale]/blog/[slug]/PostClient";
 import {getTranslations} from "next-intl/server";
 
 type Props = {
-    params: { slug: string; locale: 'ru' | 'ky' };
+    params: Promise<{
+        slug: string;
+        locale: 'ru' | 'ky';
+    }>;
 };
 
 export async function generateMetadata({params}: Props): Promise<Metadata> {
     try {
-        const {slug, locale} = params;
+        const {slug, locale} = await params;
         const post = await fetchPostBySlug(slug);
 
         const title = post.seoTitle?.[locale] || post.title?.[locale];
@@ -41,7 +44,7 @@ export async function generateMetadata({params}: Props): Promise<Metadata> {
 }
 
 export default async function PostPage({params}: Props) {
-    const {slug} = params;
+    const {slug} = await params;
     const tError = await getTranslations("Errors")
 
     let post: Post | null = null;
