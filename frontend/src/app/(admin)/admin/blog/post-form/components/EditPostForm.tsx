@@ -35,6 +35,7 @@ const EditPostForm: React.FC<Props> = ({openImagesModal, setPreviewImage, setIsP
         handleSubmit,
         setValue,
         control,
+        watch,
         reset,
         formState: {errors, isDirty}
     } = useForm<UpdatePostFormData>({
@@ -55,6 +56,8 @@ const EditPostForm: React.FC<Props> = ({openImagesModal, setPreviewImage, setIsP
         setPreviewImage({image: localUrl, alt});
         setIsPreviewOpen(true);
     };
+
+    const descriptionValue = watch("description.ru");
 
     useEffect(() => {
         if (detailPost) reset({
@@ -158,9 +161,11 @@ const EditPostForm: React.FC<Props> = ({openImagesModal, setPreviewImage, setIsP
                     <div className="mb-4">
                         <label className="block mb-2 text-sm font-medium">Описание</label>
                         <FroalaEditorWrapper
-                            model={control._formValues.description?.ru}
-                            onChangeAction={(value: string) => setValue('description.ru', value, {shouldValidate: true})}
+                            key={detailPost?._id ?? 'editor'}
+                            model={descriptionValue ?? detailPost?.description?.ru ?? ''}
+                            onChangeAction={(value: string) => setValue('description.ru', value, { shouldValidate: true })}
                         />
+
                         {errors.description?.ru &&
                             <FormErrorMessage>{errors.description.ru.message}</FormErrorMessage>}
                     </div>

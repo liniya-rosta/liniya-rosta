@@ -24,6 +24,10 @@ export const usePostDeletion = (
         setDeleteLoading(true);
         try {
             if (isImageDelete && detailPost) {
+                if (detailPost?.images.length === 1) {
+                    toast.error("Нельзя удалить последнее изображение");
+                    return;
+                }
                 await deletePostImage(detailPost._id, selectedToDelete[0]);
                 if (fetchOnePost) await fetchOnePost(detailPost._id);
             } else {

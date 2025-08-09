@@ -38,7 +38,7 @@ postsSuperAdminRouter.post("/", postImage.array("images"), async (req, res, next
 
         const kyTitle = await translateYandex(title, 'ky');
 
-        const { cleanText, tags } = extractTags(description);
+        const {cleanText, tags} = extractTags(description);
         const translated = await translateYandex(cleanText, 'ky');
         const kyDes = restoreTags(translated, tags);
 
@@ -119,7 +119,7 @@ postsSuperAdminRouter.patch("/:id", postImage.array("images"), async (req, res, 
             updateData.slug = uniqueSlug;
         }
 
-        const { cleanText, tags } = extractTags(description);
+        const {cleanText, tags} = extractTags(description);
         const translated = await translateYandex(cleanText, 'ky');
         const kyDes = restoreTags(translated, tags);
 
@@ -263,6 +263,19 @@ postsSuperAdminRouter.patch("/:id/remove-images", async (req, res, next) => {
     }
 
     try {
+
+        const post = await Post.findById(id);
+
+        if (!post) {
+            res.status(404).json({error: "Пост не найден"});
+            return
+        }
+
+        if (post.images.length === 1) {
+            res.status(400).json({error: "Нельзя удалить последнее изображение"});
+            return
+        }
+
         const updatedPost = await Post.findByIdAndUpdate(
             id,
             {$pull: {images: {image: image}}},
