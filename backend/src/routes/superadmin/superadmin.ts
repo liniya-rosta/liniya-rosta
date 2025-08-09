@@ -2,6 +2,7 @@ import express from "express";
 import User from "../../models/User";
 import {RequestWithUser} from "../../middleware/authAdmin";
 import {sendAdminMail} from "../resendAdminEmail";
+import {authSuperAdmin} from "../../middleware/authSuperAdmin";
 
 const superAdminPrivateRouter = express.Router();
 
@@ -14,7 +15,7 @@ superAdminPrivateRouter.get("/", async (_req, res, next) => {
     }
 });
 
-superAdminPrivateRouter.post("/", async (req, res, next) => {
+superAdminPrivateRouter.post("/", authSuperAdmin, async (req, res, next) => {
     try {
         const {email, password, confirmPassword, displayName, role} = req.body;
 
@@ -66,7 +67,7 @@ superAdminPrivateRouter.post("/", async (req, res, next) => {
     }
 });
 
-superAdminPrivateRouter.patch("/:id", async (req: RequestWithUser, res, next) => {
+superAdminPrivateRouter.patch("/:id", authSuperAdmin, async (req: RequestWithUser, res, next) => {
     try {
         const {id} = req.params;
         const {role, email, displayName} = req.body;
@@ -127,7 +128,7 @@ superAdminPrivateRouter.patch("/:id", async (req: RequestWithUser, res, next) =>
     }
 });
 
-superAdminPrivateRouter.delete("/:id", async (req: RequestWithUser, res, next) => {
+superAdminPrivateRouter.delete("/:id", authSuperAdmin, async (req: RequestWithUser, res, next) => {
     try {
         const {id} = req.params;
 

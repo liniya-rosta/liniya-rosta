@@ -17,13 +17,13 @@ superAdminRouter.use(authAdmin);
 
 superAdminRouter.use("/requests", requestAdminRouter);
 superAdminRouter.use("/online-chat", chatAdminRouter);
+superAdminRouter.use("/admins", superAdminPrivateRouter);
 
 superAdminRouter.use(authSuperAdmin);
 
 superAdminRouter.use("/categories", categoriesAdminRouter);
 superAdminRouter.use("/products", productsAdminRouter);
 superAdminRouter.use("/posts", postsAdminRouter);
-superAdminRouter.use("/admins", superAdminPrivateRouter);
 superAdminRouter.use("/portfolio", portfolioSuperAdminRouter);
 superAdminRouter.use("/contacts", contactsAdminRouter);
 superAdminRouter.use("/services", servicesSuperAdminRouter);
