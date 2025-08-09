@@ -202,7 +202,13 @@ postsSuperAdminRouter.patch("/:id/update-image", postImage.single("newImage"), a
             imageItem.image = `post/${req.file.filename}`;
         }
 
-        if (alt !== undefined) imageItem.alt = alt;
+        if (alt !== undefined) {
+            const kyAlt = await translateYandex(alt, 'ky')
+            imageItem.alt = {
+                ru: alt,
+                ky: kyAlt
+            };
+        }
 
         await post.save();
 

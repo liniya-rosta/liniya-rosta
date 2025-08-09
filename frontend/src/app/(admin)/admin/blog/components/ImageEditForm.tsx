@@ -112,7 +112,7 @@ const ImageEditForm: React.FC<React.PropsWithChildren<Props>> = (
                                     id="alt"
                                     type="text"
                                     disabled={updateLoading}
-                                    {...register("alt")}
+                                    {...register("alt.ru")}
                                     className="mb-2"
                                 />
                                 {errors.alt && (
