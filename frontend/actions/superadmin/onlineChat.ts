@@ -1,24 +1,36 @@
-import axiosAPI from "@/src/lib/axiosAPI";
-import {ChatFilters, ChatResponse} from "@/src/lib/types";
+import {ChatFilters, ChatResponse, ChatSession} from "@/src/lib/types";
+import kyAPI from "@/src/lib/kyAPI";
 
 export const fetchAllChats = async (filters: ChatFilters = {}) => {
-    const response = await axiosAPI.get<ChatResponse>("/superadmin/online-chat", {
-        params: filters,
+    const searchParams: Record<string, string> = {};
+
+    Object.entries(filters).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && value !== "") {
+            searchParams[key] = value instanceof Date
+                ? value.toISOString()
+                : String(value);
+        }
     });
 
-    return response.data;
+    return await kyAPI
+        .get("superadmin/online-chat", { searchParams })
+        .json<ChatResponse>();
 };
 
 export const fetchChatById = async (chatId: string) => {
-    const response = await axiosAPI(`/superadmin/online-chat/${chatId}`);
-    return response.data;
+    return await kyAPI
+        .get(`superadmin/online-chat/${chatId}`)
+        .json<ChatSession>();
 };
 
 export const updateChatStatus = async (chatId: string, status: string) => {
-    const response = await axiosAPI.patch(`/superadmin/online-chat/${chatId}`, { status });
-    return response.data;
+    return await kyAPI
+        .patch(`superadmin/online-chat/${chatId}`, {
+            json: { status },
+        })
+        .json<ChatResponse>();
 };
 
 export const deleteChat = async (chatId: string) => {
-    await axiosAPI.delete(`/superadmin/online-chat/${chatId}`);
+    await kyAPI.delete(`superadmin/online-chat/${chatId}`);
 };

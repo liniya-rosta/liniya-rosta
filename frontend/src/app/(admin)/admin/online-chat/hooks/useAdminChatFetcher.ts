@@ -1,6 +1,5 @@
 import {useAdminChatStore} from "@/store/superadmin/adminChatStore";
 import {fetchAllChats, fetchChatById} from "@/actions/superadmin/onlineChat";
-import {isAxiosError} from "axios";
 import {useState} from "react";
 import {ChatFilters, ChatMessage} from "@/src/lib/types";
 import {toast} from "react-toastify";
@@ -76,9 +75,7 @@ const useAdminChatFetcher = () => {
             setAdmins(admins);
         } catch (err) {
             let errorMessage = "Ошибка при получении данных";
-            if (isAxiosError(err) && err.response) {
-                errorMessage = err.response.data.error;
-            } else if (err instanceof Error) {
+            if (err instanceof Error) {
                 errorMessage = err.message;
             }
             toast.error(errorMessage);
