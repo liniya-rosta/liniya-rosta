@@ -5,6 +5,7 @@ import {ChatFilters, ChatMessage} from "@/src/lib/types";
 import {toast} from "react-toastify";
 import {getAllAdmins} from "@/actions/superadmin/admins";
 import {useSuperadminAdminsStore} from "@/store/superadmin/superadminAdminsStore";
+import useUserStore from "@/store/usersStore";
 
 const useAdminChatFetcher = () => {
     const {
@@ -16,19 +17,17 @@ const useAdminChatFetcher = () => {
         addChat
     } = useAdminChatStore();
 
+    const {user} = useUserStore();
+
     const {admins, setAdmins} = useSuperadminAdminsStore();
     const [messages, setMessages] = useState<ChatMessage[]>([]);
     const [totalPages, setTotalPages] = useState<number>(1);
 
-    const fetchData = async (filters?: ChatFilters, page?: number, limit?: number) => {
+    const fetchData = async (filters?: ChatFilters, page?: number) => {
         setFetchChatError(null);
 
-        if (page && page > totalPages) {
-            return;
-        }
-
         try {
-            const data = await fetchAllChats({...filters, page, limit});
+            const data = await fetchAllChats({...filters, page});
             setTotalPages(data.totalPages);
 
             if (page === 1) {
@@ -82,15 +81,8 @@ const useAdminChatFetcher = () => {
         }
     }
 
-    const updateChatOnlineStatus = (chatId: string, isOnline: boolean) => {
-        setChats((prev) =>
-            prev.map((chat) =>
-                chat._id === chatId ? {...chat, isClientOnline: isOnline} : chat
-            )
-        );
-    };
-
     return {
+        user,
         allChats,
         totalPages,
         messages,
@@ -102,7 +94,6 @@ const useAdminChatFetcher = () => {
         fetchData,
         fetchOneChat,
         fetchAdmins,
-        updateChatOnlineStatus,
     }
 }
 

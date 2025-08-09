@@ -2,12 +2,16 @@ import React from "react";
 import { ChatMessage } from "@/src/lib/types";
 import { Button } from "@/src/components/ui/button";
 import dayjs from "dayjs";
+import {cn} from "@/src/lib/utils";
+import { ArrowLeft } from "lucide-react";
 
 interface ChatMessagesProps {
     messages: ChatMessage[];
     input: string;
     onInputChange: (val: string) => void;
     onSubmit: (e: React.FormEvent) => void;
+    onBack: () => void;
+    className?: string;
 }
 
 const ChatMessages: React.FC<ChatMessagesProps> = ({
@@ -15,9 +19,22 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
                                                               input,
                                                               onInputChange,
                                                               onSubmit,
+                                                              className,
+                                                              onBack
                                                           }) => {
     return (
-        <div className="w-2/3 flex h-full flex-col">
+        <div className={cn(className)}>
+            <div className="flex items-center p-4 border-b md:hidden">
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={onBack}
+                    className="mr-2"
+                >
+                    <ArrowLeft className="h-5 w-5" />
+                </Button>
+                <h2 className="font-medium">Чат</h2>
+            </div>
             <div className="flex-1 overflow-y-auto p-4 space-y-2">
                 {messages.length > 0 ? (
                     messages.map((msg, index) => (
@@ -50,7 +67,7 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
                         value={input}
                         onChange={(e) => onInputChange(e.target.value)}
                     />
-                    <Button type="submit" className="px-4 py-2">
+                    <Button type="submit" className="px-4 py-2" disabled={messages.length === 0}>
                         Отправить
                     </Button>
                 </form>

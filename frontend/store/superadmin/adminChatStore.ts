@@ -7,12 +7,14 @@ interface AdminChatState {
     fetchChatLoading: boolean;
     deleteChatLoading: boolean;
     fetchChatError: string | null;
+    selectedToDelete: string[],
 
     setChats: (data: ChatSession[] | ((prev: ChatSession[]) => ChatSession[])) => void;
     setOneChat: (data: ChatSession) => void;
     setFetchChatLoading: (loading: boolean) => void;
     setDeleteChatLoading: (loading: boolean) => void;
     setFetchChatError: (error: string | null) => void;
+    setSelectedToDelete: (selectedToDelete: string[]) => void;
 
     addChat: (chat: ChatSession) => void;
     updateChat: (chatId: string, updater: Partial<ChatSession>) => void;
@@ -25,6 +27,7 @@ export const useAdminChatStore = create<AdminChatState>((set) => ({
     fetchChatLoading: false,
     deleteChatLoading: false,
     fetchChatError: null,
+    selectedToDelete: [],
     setChats: (data) =>
         set((state) => ({
             allChats: typeof data === "function" ? data(state.allChats) : data,
@@ -34,6 +37,7 @@ export const useAdminChatStore = create<AdminChatState>((set) => ({
     setFetchChatLoading: (loading) => set({ fetchChatLoading: loading }),
     setDeleteChatLoading: (loading) => set({ deleteChatLoading: loading }),
     setFetchChatError: (error) => set({ fetchChatError: error }),
+    setSelectedToDelete: (ids) => set({selectedToDelete: ids}),
 
     addChat: (chat) =>
         set((state) => {

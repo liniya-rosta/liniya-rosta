@@ -8,6 +8,8 @@ import ChatMessages from "@/src/app/(admin)/admin/online-chat/components/ChatMes
 import {ChatFilters} from "@/src/lib/types";
 import ChatFiltersPanel from "@/src/app/(admin)/admin/online-chat/components/ChatFiltersPanel";
 import ErrorMsg from "@/src/components/ui/ErrorMsg";
+import useAdminChatActions from "@/src/app/(admin)/admin/online-chat/hooks/useAdminChatActions";
+import ConfirmDialog from "@/src/components/ui/ConfirmDialog";
 
 const Page = () => {
     const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
@@ -15,7 +17,10 @@ const Page = () => {
     const [filters, setFilters] = React.useState<ChatFilters>({});
     const [page, setPage] = useState(1);
 
+
+
     const {
+        user,
         allChats,
         messages,
         admins,
@@ -27,8 +32,17 @@ const Page = () => {
         setMessages,
         fetchOneChat,
         fetchAdmins,
-        updateChatOnlineStatus
     } = useAdminChatFetcher();
+
+    const {
+        deleteChatLoading,
+        selectedToDelete,
+        showConfirm,
+        setShowConfirm,
+        handleDelete,
+        handleStatusChange,
+        updateChatOnlineStatus,
+    } = useAdminChatActions(setChats);
 
     useEffect(() => {
         void fetchData(filters, page);
@@ -63,7 +77,7 @@ const Page = () => {
             ...prev,
             {
                 sender: "admin",
-                senderName: "Вы",
+                senderName: user?.displayName || "Вы",
                 text: input.trim(),
                 timestamp: new Date(),
             },
@@ -80,25 +94,40 @@ const Page = () => {
             </h1>
 
             <ChatFiltersPanel onChange={setFilters} adminList={admins}/>
-            <div className="flex h-screen">
+            <div className="flex h-[calc(100vh-100px)] md:h-screen">
                 <ChatList
                     chats={allChats}
                     selectedChatId={selectedChatId}
                     onSelect={setSelectedChatId}
-                    onChatDeleted={(id) => setChats((prev) => prev.filter(chat => chat._id !== id))}
-                    onStatusUpdated={(id, status) =>
-                        setChats((prev) => prev.map(chat => chat._id === id ? { ...chat, status } : chat))
-                    }
-                    onLoadMore={ () => setPage(prev => prev + 1)}
+                    onRequestDelete={() => setShowConfirm(true)}
+                    onStatusUpdated={handleStatusChange}
+                    onLoadMore={() => setPage((prev) => prev + 1)}
                     canLoadMore={page >= totalPages}
+                    className={`${selectedChatId ? "hidden" : "flex"} flex-col w-full md:block md:w-1/3 border-r overflow-y-auto`}
                 />
                 <ChatMessages
                     messages={messages}
                     input={input}
                     onInputChange={setInput}
                     onSubmit={handleSubmit}
+                    onBack={() => setSelectedChatId(null)}
+                    className={`${selectedChatId ? "flex" : "hidden"} flex-col w-full md:flex md:w-2/3 h-full`}
                 />
             </div>
+
+
+            <ConfirmDialog
+                open={showConfirm}
+                onOpenChange={setShowConfirm}
+                title={
+                    selectedToDelete.length > 1
+                        ? "Удалить выбранные чаты?"
+                        : "Удалить чат?"
+                }
+                onConfirm={handleDelete}
+                loading={deleteChatLoading}
+                text="Вы уверены? Это действие невозможно отменить"
+            />
         </div>
     );
 };

@@ -50,55 +50,71 @@ const ChatFiltersPanel: React.FC<ChatFiltersPanelProps> = ({ onChange, adminList
     };
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 p-4 rounded-xl shadow mb-6">
-            <div className="flex flex-wrap gap-4">
-                <Input
-                    className="max-w-2/6"
-                    placeholder="Имя клиента" {...register("clientName")}
-                />
+        <form onSubmit={handleSubmit(onSubmit)} className="p-4 rounded-xl shadow mb-6">
+            <div className="flex gap-4 mb-8 flex-wrap justify-between items-center">
+                <div className="flex flex-wrap md:flex-nowrap items-center gap-4">
+                    <label className="flex flex-col w-full max-w-xs text-sm">
+                        <span className="mb-1">Имя клиента</span>
+                        <Input placeholder="Введите имя" {...register("clientName")} />
+                    </label>
 
-                <Select onValueChange={(val) => setValue("status", val)} value={watch("status") || ""}>
-                    <SelectTrigger>
-                        <SelectValue placeholder="Статус" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        {chat_statuses.map((status, index) => (
-                            <SelectItem key={index} value={status}>{status}</SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>
+                    <label className="flex flex-col w-40 text-sm">
+                        <span className="mb-1">Статус</span>
+                        <Select
+                            onValueChange={(val) => setValue("status", val)}
+                            value={watch("status") || ""}
+                        >
+                            <SelectTrigger>
+                                <SelectValue placeholder="Нет статуса" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {chat_statuses.map((status, index) => (
+                                    <SelectItem key={index} value={status}>
+                                        {status}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </label>
 
-                <Select onValueChange={(val) => setValue("adminId", val)} value={watch("adminId") || ""}>
-                    <SelectTrigger>
-                        <SelectValue placeholder="Админ" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        {adminList.map((admin) => (
-                            <SelectItem key={admin._id} value={admin._id}>
-                                {admin.displayName}
-                            </SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>
-            </div>
+                    <label className="flex flex-col w-40 text-sm">
+                        <span className="mb-1">Админ</span>
+                        <Select
+                            onValueChange={(val) => setValue("adminId", val)}
+                            value={watch("adminId") || ""}
+                        >
+                            <SelectTrigger>
+                                <SelectValue placeholder="Выбрать админа" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {adminList.map((admin) => (
+                                    <SelectItem key={admin._id} value={admin._id}>
+                                        {admin.displayName}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </label>
+                </div>
 
-            <div className="flex flex-wrap items-center gap-4">
-                <label>
-                    <span className="text-sm">Создан от</span>
-                    <Input type="date" {...register("createdFrom")} />
-                </label>
-                <label>
-                    <span className="text-sm">Создан до</span>
-                    <Input type="date" {...register("createdTo")} />
-                </label>
-                <label>
-                    <span className="text-sm">Обновлён от</span>
-                    <Input type="date" {...register("updatedFrom")} />
-                </label>
-                <label>
-                    <span className="text-sm">Обновлён до</span>
-                    <Input type="date" {...register("updatedTo")} />
-                </label>
+                <div className="flex flex-wrap items-center gap-4">
+                    <label>
+                        <span className="text-sm">Создан от</span>
+                        <Input type="date" {...register("createdFrom")} />
+                    </label>
+                    <label>
+                        <span className="text-sm">Создан до</span>
+                        <Input type="date" {...register("createdTo")} />
+                    </label>
+                    <label>
+                        <span className="text-sm">Обновлён от</span>
+                        <Input type="date" {...register("updatedFrom")} />
+                    </label>
+                    <label>
+                        <span className="text-sm">Обновлён до</span>
+                        <Input type="date" {...register("updatedTo")} />
+                    </label>
+                </div>
             </div>
 
             <div className="flex gap-3 mt-2">

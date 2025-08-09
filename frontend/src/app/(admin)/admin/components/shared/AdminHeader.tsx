@@ -6,23 +6,28 @@ const AdminHeader = () => {
     const {user} = useUserStore();
     const isSuperadmin = user?.role === "superadmin";
 
-    const navItems = [
-        {href: "/admin", label: "Заявки"},
-        {href: "/admin/products", label: "Товары"},
-        {href: "/admin/blog", label: "Блог"},
-        {href: "/admin/admins", label: "Админы"},
-        {href: "/admin/contacts", label: "Контакты"},
-        {href: "/admin/portfolio", label: "Портфолио"},
-        {href: "/admin/services", label: "Услуги"},
-        {href: "/admin/online-chat", label: "Чаты"},
+    const superadminNavItems = [
+        { href: "/admin", label: "Заявки" },
+        { href: "/admin/products", label: "Товары" },
+        { href: "/admin/blog", label: "Блог" },
+        { href: "/admin/admins", label: "Админы" },
+        { href: "/admin/contacts", label: "Контакты" },
+        { href: "/admin/portfolio", label: "Портфолио" },
+        { href: "/admin/services", label: "Услуги" },
+        { href: "/admin/online-chat", label: "Чаты" },
     ];
+
+    const adminNavItems = [
+        { href: "/admin", label: "Заявки" },
+        { href: "/admin/online-chat", label: "Чаты" },
+    ];
+
+    const navItems = isSuperadmin ? superadminNavItems : adminNavItems;
 
     return (
         <header className="w-full shadow mb-8">
-            <div className={`container px-4 py-4 mx-auto flex items-center ${
-                isSuperadmin ? "justify-between" : "justify-end"
-            }`}>
-                {isSuperadmin && <Burger navItems={navItems} isAdmin/>}
+            <div className="container px-4 py-4 mx-auto flex items-center justify-between">
+                <Burger navItems={navItems} isAdmin/>
                 <ProfileDropdown/>
             </div>
         </header>
