@@ -60,6 +60,8 @@ const EditPostForm: React.FC<Props> = ({openImagesModal, setPreviewImage, setIsP
         if (detailPost) reset({
             title: {ru: detailPost.title.ru},
             description: {ru: detailPost.description.ru},
+            seoTitle: {ru: detailPost.seoTitle.ru},
+            seoDescription: {ru: detailPost.seoDescription.ru},
         });
     }, [detailPost, reset]);
 
@@ -145,6 +147,7 @@ const EditPostForm: React.FC<Props> = ({openImagesModal, setPreviewImage, setIsP
                     />
                     {errors.title && <FormErrorMessage>{errors.title.message}</FormErrorMessage>}
 
+                    <Label className="mb-2 block">SEO заголовок</Label>
                     <Input
                         type="text"
                         placeholder="SEO заголовок"
@@ -165,6 +168,7 @@ const EditPostForm: React.FC<Props> = ({openImagesModal, setPreviewImage, setIsP
                             <FormErrorMessage>{errors.description.ru.message}</FormErrorMessage>}
                     </div>
 
+                    <Label className="mb-2 block">SEO описание</Label>
                     <Input
                         type="text"
                         placeholder="SEO описание"
@@ -182,8 +186,12 @@ const EditPostForm: React.FC<Props> = ({openImagesModal, setPreviewImage, setIsP
                         <Button
                             type="button"
                             variant="outline"
-                            onClick={() => append({alt: {ru: ""}, file: null})}
-                            disabled={updateLoading}
+                            onClick={() => {
+                                if (fields.length < 3) {
+                                    append({ alt: { ru: "" }, file: null });
+                                }
+                            }}
+                            disabled={updateLoading || fields.length >= 3}
                             className="mb-4"
                         >
                             <Plus className="w-4 h-4 mr-2"/>
@@ -234,7 +242,7 @@ const EditPostForm: React.FC<Props> = ({openImagesModal, setPreviewImage, setIsP
                                 <Input
                                     type="text"
                                     placeholder="Опишите, что изображено на фото (для доступности и поиска)"
-                                    {...register(`images.${index}.alt`)}
+                                    {...register(`images.${index}.alt.ru`)}
                                     disabled={updateLoading}
                                     onChange={(e) => handleAltChange(index, e.target.value)}
                                 />

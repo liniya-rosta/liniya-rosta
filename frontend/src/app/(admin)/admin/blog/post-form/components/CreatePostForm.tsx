@@ -91,7 +91,7 @@ const CreatePostForm: React.FC<Props> = ({setIsPreviewOpen, setPreviewImage}) =>
                     />
                     {errors.title && <FormErrorMessage>{errors.title.message}</FormErrorMessage>}
 
-
+                    <Label className="mb-2 block">SEO заголовок</Label>
                      <Input
                         type="text"
                         placeholder="SEO заголовок"
@@ -100,7 +100,7 @@ const CreatePostForm: React.FC<Props> = ({setIsPreviewOpen, setPreviewImage}) =>
                         className="mb-2"
                     />
                     {errors.seoTitle && <FormErrorMessage>{errors.seoTitle.message}</FormErrorMessage>}
-        
+
                     <div className="mb-4">
                         <label className="block mb-2 text-sm font-medium">Описание</label>
                         <FroalaEditorWrapper
@@ -110,7 +110,7 @@ const CreatePostForm: React.FC<Props> = ({setIsPreviewOpen, setPreviewImage}) =>
                         {errors.description?.ru &&
                             <FormErrorMessage>{errors.description.ru.message}</FormErrorMessage>}
                     </div>
-
+                    <Label className="mb-2 block">SEO описание</Label>
                     <Input
                         type="text"
                         placeholder="SEO описание"
@@ -127,8 +127,12 @@ const CreatePostForm: React.FC<Props> = ({setIsPreviewOpen, setPreviewImage}) =>
                         <Button
                             type="button"
                             variant="outline"
-                            onClick={() => append({alt: {ru: ""}, file: null})}
-                            disabled={createLoading}
+                            onClick={() => {
+                                if (fields.length < 3) {
+                                    append({ alt: { ru: "" }, file: null });
+                                }
+                            }}
+                            disabled={createLoading || fields.length >= 3}
                             className="mb-4"
                         >
                             <Plus className="w-4 h-4 mr-2"/>
