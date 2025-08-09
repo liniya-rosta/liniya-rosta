@@ -2,9 +2,9 @@ import React from "react";
 import {PostResponse} from "@/src/lib/types";
 import BlogClient from "@/src/app/(public)/[locale]/blog/BlogClient";
 import {fetchPosts} from "@/actions/posts";
-
 import type {Metadata} from "next";
 import {getTranslations} from "next-intl/server";
+import {handleKyError} from "@/src/lib/handleKyError";
 
 export const revalidate = 1800;
 
@@ -39,15 +39,12 @@ const BlogPage = async () => {
     const limit = "9";
 
     const tBlog = await getTranslations("BlogPage");
+    const tError = await getTranslations("Errors");
 
     try {
         posts = await fetchPosts(limit);
     } catch (e) {
-        if (e instanceof Error) {
-            postsError = e.message;
-        } else {
-            postsError = 'Неизвестная ошибка на сервере при загрузке постов.';
-        }
+        postsError = await handleKyError(e, tError('newsError'));
     }
 
     return (

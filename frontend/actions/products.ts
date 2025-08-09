@@ -1,5 +1,5 @@
-import axiosAPI from '@/src/lib/axiosAPI';
 import {Product} from '@/src/lib/types';
+import kyAPI from "@/src/lib/kyAPI";
 
 export const fetchProducts = async ({
                                         limit = "10",
@@ -17,6 +17,7 @@ export const fetchProducts = async ({
     categoryExclude?: string;
 }) => {
     const query = new URLSearchParams();
+
     query.append("limit", limit);
     query.append("page", page);
     if (title) query.append("title", title);
@@ -24,23 +25,19 @@ export const fetchProducts = async ({
     if (categoryId) query.append("category", categoryId);
     if (categoryExclude) query.append("categoryExclude", categoryExclude);
 
-    const res = await axiosAPI.get<{
+    return await kyAPI.get(`products?${query.toString()}`).json<{
         items: Product[];
         page: number;
         pageSize: number;
         total: number;
         totalPages: number;
-    }>(`/products?${query.toString()}`);
-
-    return res.data;
+    }>();
 };
 
 export const fetchProductById = async (id: string): Promise<Product> => {
-    const res = await axiosAPI.get<Product>(`/products/${id}`);
-    return res.data;
+    return await kyAPI.get(`products/${id}`).json<Product>();
 };
 
 export const fetchProductBySlug = async (slug: string): Promise<Product> => {
-    const res = await axiosAPI.get<Product>(`/products/slug/${slug}`);
-    return res.data;
+    return await kyAPI.get(`products/slug/${slug}`).json<Product>();
 };

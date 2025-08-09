@@ -1,5 +1,5 @@
-import axiosAPI from "@/src/lib/axiosAPI";
 import {GalleryEditValues, PortfolioEditValues, PortfolioMutation} from "@/src/lib/types";
+import kyAPI from "@/src/lib/kyAPI";
 
 export const createPortfolio = async (item: PortfolioMutation) => {
     const formData = new FormData();
@@ -26,7 +26,7 @@ export const createPortfolio = async (item: PortfolioMutation) => {
         }
     });
 
-    await axiosAPI.post("/superadmin/portfolio", formData);
+    await kyAPI.post("superadmin/portfolio", {body: formData});
 }
 
 export const editPortfolioItem = async (
@@ -54,13 +54,10 @@ export const editPortfolioItem = async (
         formData.append("seoDescription", item.seoDescription.ru);
     }
 
-    await axiosAPI.patch("/superadmin/portfolio/" + id, formData);
+    await kyAPI.patch(`superadmin/portfolio/${id}`, {body: formData});
 }
 
-export const editGalleryItem = async ({item, gallery_id}: {
-    item: GalleryEditValues,
-    gallery_id: string,
-}) => {
+export const editGalleryItem = async ({item, gallery_id}: { item: GalleryEditValues, gallery_id: string, }) => {
     const formData = new FormData();
 
     if (item.image) {
@@ -71,13 +68,13 @@ export const editGalleryItem = async ({item, gallery_id}: {
         formData.append("alt", item.alt.ru);
     }
 
-    await axiosAPI.patch("superadmin/portfolio/gallery/" + gallery_id, formData);
+    await kyAPI.patch(`superadmin/portfolio/gallery/${gallery_id}`, {body: formData});
 }
 
 export const deletePortfolio = async (item_id: string) => {
-    await axiosAPI.delete("superadmin/portfolio/" + item_id);
+    await kyAPI.delete(`superadmin/portfolio/${item_id}`).json<{ message: string }>();;
 }
 
 export const deleteGalleryItem = async (gallery_id: string) => {
-    await axiosAPI.delete("superadmin/portfolio/gallery/" + gallery_id);
+    await kyAPI.delete(`superadmin/portfolio/gallery/${gallery_id}`).json<{ message: string }>();
 }

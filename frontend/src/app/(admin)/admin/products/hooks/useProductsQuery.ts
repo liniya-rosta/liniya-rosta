@@ -1,8 +1,8 @@
 import {useEffect, useState} from "react";
 import {fetchProducts} from "@/actions/products";
 import {Product} from "@/src/lib/types";
-import {isAxiosError} from "axios";
 import {toast} from "react-toastify";
+import {handleKyError} from "@/src/lib/handleKyError";
 
 export type FilterType = "title" | "description";
 
@@ -40,11 +40,7 @@ export function useProductsQuery() {
                 setTotalPages(data.totalPages);
                 setTotalItems(data.total);
             } catch (e) {
-                const message =
-                    isAxiosError(e) && e.response?.data?.error
-                        ? e.response.data.error
-                        : "Ошибка при загрузке продуктов";
-
+                const message = await handleKyError(e, "Ошибка при загрузке продуктов");
                 setError(message);
                 toast.error(message);
             } finally {

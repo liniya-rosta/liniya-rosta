@@ -8,6 +8,7 @@ import SpcLaminatePage from "@/src/app/(public)/[locale]/spc/SpcLaminatePage";
 import {getTranslations} from "next-intl/server";
 import {Metadata} from "next";
 import {Container} from '@/src/components/shared/Container';
+import {handleKyError} from "@/src/lib/handleKyError";
 
 export const revalidate = 3600;
 
@@ -49,11 +50,7 @@ const SpcPage = async () => {
         const laminateResponse = await fetchProducts({categoryId: spcCategory._id});
         laminateData = laminateResponse.items;
     } catch (e) {
-        if (e instanceof Error) {
-            error = e.message;
-        } else {
-            error = tError("SpcError");
-        }
+        error = await handleKyError(e, tError('SpcError'));
     }
 
     return (

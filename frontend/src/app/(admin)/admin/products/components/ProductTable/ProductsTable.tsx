@@ -11,7 +11,6 @@ import {
 import {getProductTableColumns} from "./ProductTableColumns";
 import {Product} from "@/src/lib/types";
 import ConfirmDialog from "@/src/components/ui/ConfirmDialog";
-import ImagePreviewModal from "@/src/app/(admin)/admin/products/components/Modal/ImagePreviewModal";
 import SaleLabelModal from "@/src/app/(admin)/admin/products/components/Modal/SaleLabelModal";
 import {useCategoryStore} from "@/store/categoriesStore";
 import ProductsTableToolbar from "@/src/app/(admin)/admin/products/components/ProductTable/ProductsTableToolbar";
@@ -21,6 +20,7 @@ import ProductTableContent from "@/src/app/(admin)/admin/products/components/Pro
 import {useProductsQuery} from "@/src/app/(admin)/admin/products/hooks/useProductsQuery";
 import ProductsTablePagination from "@/src/app/(admin)/admin/products/components/ProductTable/ProductsTablePagination";
 import ProductEditModal from "@/src/app/(admin)/admin/products/components/Modal/ProductEditModal";
+import ImageModal from "@/src/app/(admin)/admin/portfolio/components/ImageModal";
 
 interface ProductsTableProps {
     actionLoading: boolean;
@@ -168,9 +168,11 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
                 text="Это действие нельзя отменить. Вы уверены, что хотите удалить?"
             />
 
-            <ImagePreviewModal
-                image={previewImage}
-                onClose={() => setPreviewImage(null)}
+            <ImageModal
+                open={!!previewImage}
+                openChange={() => setPreviewImage(null)}
+                image={previewImage?.url || ""}
+                alt={previewImage?.alt?.ru || "Изображение"}
             />
 
             <SaleLabelModal

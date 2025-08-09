@@ -11,10 +11,10 @@ import useUserStore from "@/store/usersStore";
 import {userLoginSchema} from "@/src/lib/zodSchemas/admin/userSchema";
 import {useRouter} from "next/navigation";
 import FormErrorMessage from "@/src/components/ui/FormErrorMessage";
-import {isAxiosError} from "axios";
 import {toast} from "react-toastify";
 import LoaderIcon from "@/src/components/ui/Loading/LoaderIcon";
 import React from "react";
+import {handleKyError} from "@/src/lib/handleKyError";
 
 const LoginForm = () => {
     const {register, handleSubmit, formState: {errors}} = useForm(
@@ -43,13 +43,7 @@ const LoginForm = () => {
             setLoading(true);
             router.push("/admin");
         } catch (error) {
-            let errorMessage = "Неизвестная ошибка при входе в систему";
-            if (isAxiosError(error) && error.response) {
-                errorMessage = error.response.data.error;
-            } else if (error instanceof Error) {
-                errorMessage = error.message;
-            }
-
+            const errorMessage = await handleKyError(error, "Неизвестная ошибка при входе в систему");
             toast.error(errorMessage);
         } finally {
             setLoading(false);

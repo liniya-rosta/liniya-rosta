@@ -2,14 +2,16 @@ import {Metadata} from "next";
 import {fetchPortfolioItemBySlug} from "@/actions/portfolios";
 import GalleryClient from "@/src/app/(public)/[locale]/portfolio/[slug]/GalleryClient";
 import {getLocale, getTranslations} from "next-intl/server";
+import {handleKyError} from "@/src/lib/handleKyError";
+import {toast} from "react-toastify";
 
 type Props = {
-    params: { slug: string; locale: 'ru' | 'ky' };
+    params:  Promise<{ slug: string; locale: 'ru' | 'ky' }>;
 };
 
 export async function generateMetadata({params}: Props): Promise<Metadata> {
     try {
-        const {slug} = params;
+        const {slug} = await params;
         const locale = await getLocale() as 'ru' | 'ky';
         const item = await fetchPortfolioItemBySlug(slug);
 
@@ -43,10 +45,12 @@ const GalleryPage = async ({params}: Props) => {
     const locale = await getLocale() as 'ru' | 'ky';
 
     try {
-        const {slug} = params;
+        const {slug} = await params;
         detailItem = await fetchPortfolioItemBySlug(slug);
-    } catch {
-        errorMessage = tError("galleryError");
+    } catch (e) {
+        const msg = await handleKyError(e, tError("galleryError"));
+        errorMessage = msg;
+        toast.error(msg);
     }
 
     return (

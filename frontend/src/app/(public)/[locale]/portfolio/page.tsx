@@ -2,9 +2,9 @@ import React from 'react';
 import PortfolioClient from "@/src/app/(public)/[locale]/portfolio/PortfolioClient";
 import {fetchPortfolioPreviews} from "@/actions/portfolios";
 import {PortfolioResponse} from "@/src/lib/types";
-import {isAxiosError} from "axios";
 import {getTranslations} from "next-intl/server";
 import {Metadata} from "next";
+import {handleKyError} from "@/src/lib/handleKyError";
 
 export const revalidate = 1800;
 
@@ -42,15 +42,8 @@ const PortfolioPage = async () => {
 
     try {
         portfolioData = await fetchPortfolioPreviews(limit);
-
     } catch (error) {
-        if (isAxiosError(error) && error.response) {
-            errorMessage = error.response.data.error;
-        } else if (error instanceof Error) {
-            errorMessage = error.message;
-        } else {
-            errorMessage = tErrors("portfolioError");
-        }
+        errorMessage = await handleKyError(error, tErrors("portfolioError"));
     }
 
     return (
