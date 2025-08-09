@@ -125,11 +125,9 @@ const CreatePostForm: React.FC<Props> = ({setIsPreviewOpen, setPreviewImage}) =>
                             type="button"
                             variant="outline"
                             onClick={() => {
-                                if (fields.length < 3) {
                                     append({ alt: { ru: "" }, file: null });
-                                }
                             }}
-                            disabled={createLoading || fields.length >= 3}
+                            disabled={createLoading}
                             className="mb-4"
                         >
                             <Plus className="w-4 h-4 mr-2"/>

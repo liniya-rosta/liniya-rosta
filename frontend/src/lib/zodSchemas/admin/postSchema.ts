@@ -17,7 +17,7 @@ export const createPostSchema = z.object({
             alt: altSchema.optional(),
         })
     ).min(1, "Добавьте хотя бы одно изображение"
-    ).max(3, "Можно добавить не больше 3 изображений"),
+    ),
     seoTitle: langString,
     seoDescription: langString
 });
