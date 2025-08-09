@@ -19,7 +19,7 @@ const ProductSeo: React.FC<Props> = ({form}) => {
             <div className="flex flex-col">
                 <FormField
                     control={form.control}
-                    name="seoTitle"
+                    name="seoTitle.ru"
                     render={({field}) => (
                         <FormItem>
                             <FormLabel>SEO Заголовок</FormLabel>
@@ -42,7 +42,7 @@ const ProductSeo: React.FC<Props> = ({form}) => {
             <div className="flex flex-col">
                 <FormField
                     control={form.control}
-                    name="seoDescription"
+                    name="seoDescription.ru"
                     render={({field}) => (
                         <FormItem>
                             <FormLabel>SEO Описание</FormLabel>

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {useForm, useFieldArray} from 'react-hook-form';
+import {useFieldArray, useForm} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {Input} from '@/src/components/ui/input';
 import {Button} from '@/src/components/ui/button';
@@ -7,7 +7,6 @@ import FormErrorMessage from '@/src/components/ui/FormErrorMessage';
 import LoaderIcon from '@/src/components/ui/Loading/LoaderIcon';
 import {Eye, Plus} from 'lucide-react';
 import {useRouter} from 'next/navigation';
-import {isAxiosError} from 'axios';
 import {toast} from 'react-toastify';
 import {updatePost} from '@/actions/superadmin/posts';
 import {UpdatePostFormData, updatePostSchema} from '@/src/lib/zodSchemas/admin/postSchema';
@@ -15,7 +14,7 @@ import {useSuperAdminPostStore} from "@/store/superadmin/superAdminPostsStore";
 import ConfirmDialog from "@/src/components/ui/ConfirmDialog";
 import {ImageObject} from "@/src/lib/types";
 import {Label} from "@/src/components/ui/label";
-import {Textarea} from "@/src/components/ui/textarea";
+import {handleKyError} from "@/src/lib/handleKyError";
 
 interface Props {
     openImagesModal: () => void;
@@ -61,7 +60,7 @@ const EditPostForm: React.FC<Props> = ({openImagesModal, setPreviewImage, setIsP
             title: {ru: detailPost.title.ru},
             description: {ru: detailPost.description.ru},
         });
-    }, [detailPost]);
+    }, [detailPost, reset]);
 
     if (!detailPost) return;
 
@@ -110,10 +109,7 @@ const EditPostForm: React.FC<Props> = ({openImagesModal, setPreviewImage, setIsP
             toast.success('Пост успешно обновлен');
             router.push('/admin/blog');
         } catch (error) {
-            let message = 'Ошибка при обновлении поста';
-            if (isAxiosError(error) && error.response) {
-                message = error.response.data.error;
-            }
+            const message = await handleKyError(error, "Ошибка при редактировании поста");
             toast.error(message);
         } finally {
             setUpdateLoading(false);
@@ -149,7 +145,7 @@ const EditPostForm: React.FC<Props> = ({openImagesModal, setPreviewImage, setIsP
                         type="text"
                         placeholder="SEO заголовок"
                         disabled={updateLoading}
-                        {...register('seoTitle')}
+                        {...register('seoTitle.ru')}
                         className="mb-2"
                     />
 
@@ -167,7 +163,7 @@ const EditPostForm: React.FC<Props> = ({openImagesModal, setPreviewImage, setIsP
                     <Input
                         type="text"
                         placeholder="SEO описание"
-                        {...register('seoDescription')}
+                        {...register('seoDescription.ru')}
                         disabled={updateLoading}
                         className="mb-4"
                     />

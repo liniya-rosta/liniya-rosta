@@ -2,11 +2,11 @@ import {useSuperAdminPostStore} from "@/store/superadmin/superAdminPostsStore";
 import {useState} from "react";
 import {PaginationState} from "@tanstack/react-table";
 import {fetchPostById, fetchPosts} from "@/actions/posts";
-import {isAxiosError} from "axios";
 import {usePersistedPageSize} from "@/hooks/usePersistedPageSize";
 import {toast} from "react-toastify";
-import { ImageObject } from "@/src/lib/types";
+import {ImageObject} from "@/src/lib/types";
 import {reorderPostImages} from "@/actions/superadmin/posts";
+import {handleKyError} from "@/src/lib/handleKyError";
 
 export const usePostsFetcher = () => {
     const {
@@ -41,15 +41,9 @@ export const usePostsFetcher = () => {
                 totalPages: data.totalPages,
                 pageSize: data.pageSize,
             });
-        } catch (err) {
-            let errorMessage = "Ошибка при получении данных";
-            if (isAxiosError(err) && err.response) {
-                errorMessage = err.response.data.error;
-            } else if (err instanceof Error) {
-                errorMessage = err.message;
-            }
-
-            setFetchError(errorMessage);
+        } catch (error) {
+            const msg = await handleKyError(error, "Ошибка при получении постов");
+            setFetchError(msg);
         } finally {
             setFetchLoading(false)
         }
@@ -60,14 +54,8 @@ export const usePostsFetcher = () => {
             const data = await fetchPostById(postId);
             setDetailPost(data);
         } catch (error) {
-            let errorMessage = "Неизвестная ошибка при получении данных";
-            if (isAxiosError(error) && error.response) {
-                errorMessage = error.response.data.error;
-            } else if (error instanceof Error) {
-                errorMessage = error.message;
-            }
-
-            setFetchError(errorMessage);
+            const msg = await handleKyError(error, "Ошибка при получении поста");
+            setFetchError(msg);
         } finally {
             setFetchLoading(false);
         }
@@ -78,20 +66,15 @@ export const usePostsFetcher = () => {
         setPagination((prev) => ({...prev, pageIndex: 0}));
     };
 
-    const handleReorderImages= async (postId: string, newOrder: ImageObject[]) => {
+    const handleReorderImages = async (postId: string, newOrder: ImageObject[]) => {
         try {
             setUpdateLoading(true);
             await reorderPostImages(postId, newOrder);
             toast.success("Порядок изображений изменен");
             await fetchData();
         } catch (error) {
-            let errorMessage = "Неизвестная ошибка при получении данных";
-            if (isAxiosError(error) && error.response) {
-                errorMessage = error.response.data.error;
-            } else if (error instanceof Error) {
-                errorMessage = error.message;
-            }
-            toast.error(errorMessage);
+            const msg = handleKyError(error, "Ошибка при получении изображений");
+            toast.error(msg);
         } finally {
             setUpdateLoading(false);
         }

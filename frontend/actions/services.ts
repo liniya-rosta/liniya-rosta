@@ -1,7 +1,6 @@
-import axiosAPI from "@/src/lib/axiosAPI";
 import {ServiceResponse} from "@/src/lib/types";
+import kyAPI from "@/src/lib/kyAPI";
 
 export const fetchAllServices = async () => {
-    const response = await axiosAPI<ServiceResponse>("/services");
-    return response.data;
+    return await kyAPI("services").json<ServiceResponse>();
 }

@@ -58,8 +58,14 @@ portfolioSuperAdminRouter.post(
                     ru: req.body.coverAlt,
                     ky: coverAltKy
                 },
-                seoTitle: req.body.seoTitle || null,
-                seoDescription: req.body.seoDescription || null,
+                seoTitle: {
+                    ru: req.body.seoTitle?.trim() || null,
+                    ky: await translateYandex(req.body.seoTitle?.trim() || "", "ky")
+                },
+                seoDescription: {
+                    ru: req.body.seoDescription?.trim() || null,
+                    ky: await translateYandex(req.body.seoDescription?.trim() || "", "ky")
+                },
             });
 
             await newItem.save();
@@ -112,8 +118,20 @@ portfolioSuperAdminRouter.patch(
                     ky: coverAltKy
                 };
             }
-            if (req.body.seoTitle !== undefined) updateData.seoTitle = req.body.seoTitle;
-            if (req.body.seoDescription !== undefined) updateData.seoDescription = req.body.seoDescription;
+
+            if (req.body.seoTitle !== undefined) {
+                updateData.seoTitle = {
+                    ru: req.body.seoTitle?.trim() || null,
+                    ky: await translateYandex(req.body.seoTitle?.trim() || "", "ky")
+                };
+            }
+
+            if (req.body.seoDescription !== undefined) {
+                updateData.seoDescription = {
+                    ru: req.body.seoDescription?.trim() || null,
+                    ky: await translateYandex(req.body.seoDescription?.trim() || "", "ky")
+                };
+            }
             if (req.body.slug !== undefined) updateData.slug = req.body.slug;
 
             if (req.body.slug === undefined && (req.body.coverAlt || req.body.description)) {

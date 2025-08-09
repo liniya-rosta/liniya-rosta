@@ -8,6 +8,7 @@ import {DataTable} from "@/src/app/(admin)/admin/requests/components/requestTabl
 import {columns} from "@/src/app/(admin)/admin/requests/components/requestTable/Columns";
 import DataSkeleton from "@/src/components/shared/DataSkeleton";
 import ErrorMsg from "@/src/components/ui/ErrorMsg";
+import {handleKyError} from "@/src/lib/handleKyError";
 
 const RequestsPage = () => {
     const {
@@ -34,8 +35,8 @@ const RequestsPage = () => {
                 setLastPage(response.totalPages);
                 setTotalItems(response.totalItems);
             } catch (e) {
-                const errorMessage = e instanceof Error ? e.message : 'Произошла ошибка при получении заявок';
-                setFetchAllError(errorMessage);
+                const msg = await handleKyError(e, "Произошла ошибка при получении заявок");
+                setFetchAllError(msg);
             } finally {
                 setFetchAllLoading(false);
             }
@@ -48,7 +49,7 @@ const RequestsPage = () => {
     if (fetchAllError) return <ErrorMsg error={fetchAllError}/>
 
     return (
-            <DataTable columns={columns} data={requests} error={fetchAllError} loading={fetchAllLoading}/>
+        <DataTable columns={columns} data={requests} error={fetchAllError} loading={fetchAllLoading}/>
     );
 };
 

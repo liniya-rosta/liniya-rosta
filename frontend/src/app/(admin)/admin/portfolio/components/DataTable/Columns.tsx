@@ -81,10 +81,10 @@ export const getColumns = (
         },
     },
     {
-        accessorKey: "seoTitle",
+        accessorKey: "seoTitle.ru",
         header: () => <div className="text-left">SEO заголовок</div>,
         cell: ({row}) => {
-            const value = row.getValue("seoTitle") as string | undefined;
+            const value = row.original.seoTitle?.ru  as string | undefined;
             return (
                 <div className="capitalize">
                     {value?.trim() ? value : <span className="text-muted-foreground italic">Нет SEO заголовка</span>}
@@ -93,10 +93,10 @@ export const getColumns = (
         },
     },
     {
-        accessorKey: "seoDescription",
+        accessorKey: "seoDescription.ru",
         header: () => <div className="text-left">SEO описание</div>,
         cell: ({row}) => {
-            const value = row.getValue("seoDescription") as string | undefined;
+            const value = row.original.seoDescription?.ru  as string | undefined;
             return (
                 <div className="capitalize">
                     {value?.trim() ? value : <span className="text-muted-foreground italic">Нет SEO описания</span>}

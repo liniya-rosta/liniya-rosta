@@ -1,25 +1,28 @@
 import {Metadata} from "next";
-import {isAxiosError} from "axios";
 import {fetchPostBySlug} from "@/actions/posts";
 import {Post} from "@/src/lib/types";
 import PostClient from "@/src/app/(public)/[locale]/blog/[slug]/PostClient";
 import {getTranslations} from "next-intl/server";
+import {handleKyError} from "@/src/lib/handleKyError";
 
 type Props = {
-    params: Promise<{ slug: string }>;
+    params:  Promise<{ slug: string; locale: 'ru' | 'ky' }>;
 };
 
 export async function generateMetadata({params}: Props): Promise<Metadata> {
     try {
-        const {slug} = await params;
+        const {slug, locale} = await params;
         const post = await fetchPostBySlug(slug);
 
+        const title = post.seoTitle?.[locale] || post.title?.[locale];
+        const description = post.seoDescription?.[locale] || `Подробнее о продукте "${post.title?.[locale]}"`;
+
         return {
-            title: post.seoTitle || post.title.ru,
-            description: post.seoDescription || `Статья: ${post.title}`,
+            title,
+            description,
             openGraph: {
-                title: post.seoTitle || post.title.ru,
-                description: post.seoDescription || `Подробности о посте "${post.title}"`,
+                title: title,
+                description,
                 images: post.images?.length
                     ? post.images.map(image => ({
                         url: image.image,
@@ -47,10 +50,7 @@ export default async function PostPage({params}: Props) {
     try {
         post = await fetchPostBySlug(slug);
     } catch (e) {
-        postError =
-            isAxiosError(e) && e.response?.data?.error
-                ? e.response.data.error
-                : tError("onePostError");
+        postError = await handleKyError(e, tError("onePostError"));
     }
 
     return (

@@ -2,26 +2,29 @@ import {Metadata} from "next";
 import {fetchPortfolioItemBySlug} from "@/actions/portfolios";
 import GalleryClient from "@/src/app/(public)/[locale]/portfolio/[slug]/GalleryClient";
 import {getLocale, getTranslations} from "next-intl/server";
+import {handleKyError} from "@/src/lib/handleKyError";
+import {toast} from "react-toastify";
 
 type Props = {
-    params: Promise<{ slug: string }>;
+    params:  Promise<{ slug: string; locale: 'ru' | 'ky' }>;
 };
 
 export async function generateMetadata({params}: Props): Promise<Metadata> {
     try {
         const {slug} = await params;
+        const locale = await getLocale() as 'ru' | 'ky';
         const item = await fetchPortfolioItemBySlug(slug);
 
         return {
-            title: item.seoTitle || item.coverAlt.ru,
-            description: item.seoDescription || `Галерея: ${item.coverAlt.ru}`,
+            title: item.seoTitle?.[locale] || item.coverAlt?.[locale],
+            description: item.seoDescription?.[locale] || `Галерея: ${item.coverAlt?.[locale]}`,
             openGraph: {
-                title: item.seoTitle || item.coverAlt.ru,
-                description: item.seoDescription || `Просмотрите фотографии проекта "${item.coverAlt.ru}"`,
+                title: item.seoTitle?.[locale] || item.coverAlt?.[locale],
+                description: item.seoDescription?.[locale] || `Просмотрите фотографии проекта "${item.coverAlt?.[locale]}"`,
                 images: [
                     {
                         url: item.cover,
-                        alt: item.coverAlt.ru || "Галерея",
+                        alt: item.coverAlt?.[locale] || "Галерея",
                     },
                 ],
                 type: "website",
@@ -44,8 +47,10 @@ const GalleryPage = async ({params}: Props) => {
     try {
         const {slug} = await params;
         detailItem = await fetchPortfolioItemBySlug(slug);
-    } catch (error) {
-            errorMessage = tError("galleryError");
+    } catch (e) {
+        const msg = await handleKyError(e, tError("galleryError"));
+        errorMessage = msg;
+        toast.error(msg);
     }
 
     return (
@@ -54,7 +59,7 @@ const GalleryPage = async ({params}: Props) => {
                 Галерея
             </h1>
             <p className="mb-8 text-lg text-muted-foreground">{detailItem?.description[locale]}</p>
-            <GalleryClient detailItem={detailItem} error={errorMessage} />
+            <GalleryClient detailItem={detailItem} error={errorMessage}/>
         </main>
     );
 };

@@ -12,13 +12,13 @@ import {useSuperAdminPortfolioStore} from "@/store/superadmin/superAdminPortfoli
 import {editPortfolioItem} from "@/actions/superadmin/portfolios";
 import FormErrorMessage from "@/src/components/ui/FormErrorMessage";
 import LoaderIcon from "@/src/components/ui/Loading/LoaderIcon";
-import {isAxiosError} from "axios";
 import {toast} from "react-toastify";
 import {Tooltip, TooltipContent, TooltipTrigger} from "@/src/components/ui/tooltip";
 import {Eye} from "lucide-react";
 import ImageModal from "@/src/app/(admin)/admin/portfolio/components/ImageModal";
 import {Label} from "@/src/components/ui/label";
 import {portfolioItemSchema} from "@/src/lib/zodSchemas/admin/portfolioSchema";
+import {handleKyError} from "@/src/lib/handleKyError";
 
 interface Props {
     onSaved: () => void;
@@ -74,14 +74,8 @@ const PortfolioEditForm: React.FC<Props> = ({onSaved, updatePaginationAndData}) 
             onSaved()
             toast.success("Вы успешно обновили портфолио");
         } catch (error) {
-            let errorMessage = "Неизвестная ошибка при редактировании портфолио";
-            if (isAxiosError(error) && error.response) {
-                errorMessage = error.response.data.error;
-            } else if (error instanceof Error) {
-                errorMessage = error.message;
-            }
-
-            toast.error(errorMessage);
+            const msg = await handleKyError(error, "Неизвестная ошибка при редактировании портфолио");
+            toast.error(msg);
         } finally {
             setPortfolioEditLoading(false);
         }

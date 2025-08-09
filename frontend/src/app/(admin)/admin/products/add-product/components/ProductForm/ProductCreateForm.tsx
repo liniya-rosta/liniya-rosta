@@ -8,12 +8,12 @@ import {CreateProductFormData, createProductSchema,} from "@/src/lib/zodSchemas/
 import {useAdminProductStore} from "@/store/superadmin/superadminProductsStore";
 import {createProduct} from "@/actions/superadmin/products";
 import {toast} from "react-toastify";
-import {AxiosError} from "axios";
 import {cn} from "@/src/lib/utils";
 import {useRouter} from "next/navigation";
 import ErrorMsg from "@/src/components/ui/ErrorMsg";
 import {Category} from "@/src/lib/types";
-import ProductBasicInfo from "@/src/app/(admin)/admin/products/add-product/components/ProductForm/fields/ProductBasicInfo";
+import ProductBasicInfo
+    from "@/src/app/(admin)/admin/products/add-product/components/ProductForm/fields/ProductBasicInfo";
 import {useCategoryStore} from "@/store/categoriesStore";
 import ProductDescription
     from "@/src/app/(admin)/admin/products/add-product/components/ProductForm/fields/ProductDescription";
@@ -25,6 +25,7 @@ import ProductImagesCharacteristics
 import ProductBtns
     from "@/src/app/(admin)/admin/products/add-product/components/ProductForm/fields/ProductActions/ProductBtns";
 import ProductSEO from "@/src/app/(admin)/admin/products/add-product/components/ProductForm/fields/ProductSEO";
+import {handleKyError} from "@/src/lib/handleKyError";
 
 interface Props {
     initialCategories: Category[];
@@ -53,8 +54,8 @@ const ProductCreateForm: React.FC<Props> = ({initialCategories, initialCategorie
             title: {ru: ""},
             category: "",
             description: {ru: ""},
-            seoTitle: "",
-            seoDescription: "",
+            seoTitle: {ru: ""},
+            seoDescription: {ru: ""},
             cover: null,
             coverAlt: {ru: ""},
             images: [],
@@ -79,13 +80,9 @@ const ProductCreateForm: React.FC<Props> = ({initialCategories, initialCategorie
             toast.success("Продукт успешно создан");
             router.push("/admin/products");
         } catch (e) {
-            if (e instanceof AxiosError) {
-                setCreateError(e.response?.data.error);
-                toast.error(e.response?.data.error);
-            } else {
-                toast.error('Неизвестная ошибка');
-            }
-            console.error(e);
+            const msg = await handleKyError(e, 'Неизвестная ошибка при создании продукта');
+            toast.error(msg);
+            console.error(msg);
         } finally {
             setCreateLoading(false);
         }

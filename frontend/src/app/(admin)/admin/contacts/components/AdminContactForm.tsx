@@ -1,11 +1,10 @@
 'use client';
 
-import {Contact, GlobalMessage} from '@/src/lib/types';
+import {Contact} from '@/src/lib/types';
 import {Controller, useForm} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useSuperadminContactsStore} from '@/store/superadmin/superadminContactsStore';
 import {updateContact} from '@/actions/superadmin/contacts';
-import {AxiosError} from 'axios';
 import {adminContactSchema} from "@/src/lib/zodSchemas/admin/adminContactSchema";
 import {toast} from "react-toastify";
 import {Input} from "@/src/components/ui/input";
@@ -16,6 +15,7 @@ import {Card, CardContent} from "@/src/components/ui/card";
 import {Loader2} from "lucide-react";
 import React from "react";
 import {z} from "zod";
+import {handleKyError} from "@/src/lib/handleKyError";
 
 interface Props {
     contact: Contact;
@@ -25,7 +25,7 @@ const AdminContactForm: React.FC<Props> = ({contact}) => {
     const {setContact, setFetchError, setUpdateLoading, fetchLoading, updateLoading} = useSuperadminContactsStore();
 
     const defaultValues: z.infer<typeof adminContactSchema> = {
-        location: { ru: contact.location?.ru },
+        location: {ru: contact.location?.ru},
         phone1: contact.phone1,
         phone2: contact.phone2,
         email: contact.email,
@@ -34,13 +34,13 @@ const AdminContactForm: React.FC<Props> = ({contact}) => {
         linkLocation: contact.linkLocation,
         mapLocation: contact.mapLocation,
         workingHours: {
-            monday: { ru: contact.workingHours?.monday?.ru },
-            tuesday: { ru: contact.workingHours?.tuesday?.ru },
-            wednesday: { ru: contact.workingHours?.wednesday?.ru },
-            thursday: { ru: contact.workingHours?.thursday?.ru },
-            friday: { ru: contact.workingHours?.friday?.ru },
-            saturday: { ru: contact.workingHours?.saturday?.ru },
-            sunday: { ru: contact.workingHours?.sunday?.ru },
+            monday: {ru: contact.workingHours?.monday?.ru},
+            tuesday: {ru: contact.workingHours?.tuesday?.ru},
+            wednesday: {ru: contact.workingHours?.wednesday?.ru},
+            thursday: {ru: contact.workingHours?.thursday?.ru},
+            friday: {ru: contact.workingHours?.friday?.ru},
+            saturday: {ru: contact.workingHours?.saturday?.ru},
+            sunday: {ru: contact.workingHours?.sunday?.ru},
         },
     };
 
@@ -57,15 +57,15 @@ const AdminContactForm: React.FC<Props> = ({contact}) => {
     });
 
     const onSubmit = async (data: z.infer<typeof adminContactSchema>) => {
+        setUpdateLoading(true);
         try {
-            setUpdateLoading(true);
             const {contact: updatedContact} = await updateContact(contact._id, data);
             setContact(updatedContact);
             toast.success('Контактные данные успешно обновлены');
         } catch (e) {
-            const err = e as AxiosError<GlobalMessage>;
-            toast.error(err.response?.data?.error || 'Ошибка при обновлении');
-            setFetchError(err.response?.data?.error || 'Ошибка при обновлении');
+            const message = await handleKyError(e, "Ошибка при обновлении");
+            toast.error(message);
+            setFetchError(message);
         } finally {
             setUpdateLoading(false);
         }

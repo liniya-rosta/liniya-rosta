@@ -17,8 +17,8 @@ import {Trash2} from "lucide-react";
 import Image from "next/image";
 import {UpdateProductFormData, updateProductSchema} from "@/src/lib/zodSchemas/admin/productSchema";
 import {API_BASE_URL} from "@/src/lib/globalConstants";
-import {isAxiosError} from "axios";
 import {useAdminCategoryStore} from "@/store/superadmin/superadminCategoriesStore";
+import {handleKyError} from "@/src/lib/handleKyError";
 
 interface Props {
     open: boolean;
@@ -47,8 +47,12 @@ const ProductEditModal: React.FC<Props> = ({open, onClose, product, refresh}) =>
             description: {
                 ru: product.description?.ru ?? ""
             },
-            seoTitle: product.seoTitle || "",
-            seoDescription: product.seoDescription || "",
+            seoTitle: {
+                ru: product.seoTitle?.ru ?? ""
+            },
+            seoDescription: {
+                ru: product.seoDescription?.ru ?? ""
+            },
             coverAlt: {
                 ru: product.cover?.alt?.ru ?? ""
             },
@@ -100,13 +104,9 @@ const ProductEditModal: React.FC<Props> = ({open, onClose, product, refresh}) =>
             toast.success("Продукт успешно обновлён");
             onClose();
         } catch (e) {
-            if (isAxiosError(e)) {
-                setUpdateError(e.response?.data.error);
-                toast.error(e.response?.data.error);
-            } else {
-                toast.error("Ошибка при обновлении продукта");
-            }
-            console.error(e);
+            const msg = await handleKyError(e, "Ошибка при обновлении продукта");
+            toast.error(msg);
+            console.error(msg);
         }
     };
 
@@ -185,7 +185,7 @@ const ProductEditModal: React.FC<Props> = ({open, onClose, product, refresh}) =>
 
                         <FormField
                             control={form.control}
-                            name="seoTitle"
+                            name="seoTitle.ru"
                             render={({field}) => (
                                 <FormItem>
                                     <FormLabel>SEO Заголовок</FormLabel>
@@ -203,7 +203,7 @@ const ProductEditModal: React.FC<Props> = ({open, onClose, product, refresh}) =>
 
                         <FormField
                             control={form.control}
-                            name="seoDescription"
+                            name="seoDescription.ru"
                             render={({field}) => (
                                 <FormItem>
                                     <FormLabel>SEO Описание</FormLabel>
@@ -360,7 +360,7 @@ const ProductEditModal: React.FC<Props> = ({open, onClose, product, refresh}) =>
                         <div className="space-y-4">
                             <Button
                                 type="button"
-                                onClick={() => appendCharacteristic({key: {ru:""}, value: {ru: ""}})}
+                                onClick={() => appendCharacteristic({key: {ru: ""}, value: {ru: ""}})}
                                 disabled={updateLoading}
                             >
                                 Добавить характеристику

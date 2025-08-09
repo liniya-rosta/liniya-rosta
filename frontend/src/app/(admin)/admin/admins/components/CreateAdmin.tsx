@@ -14,11 +14,11 @@ import {Loader2} from "lucide-react";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {createAdmin} from "@/actions/superadmin/admins";
-import {AxiosError} from "axios";
 import {toast} from "react-toastify";
 import createAdminSchema from "@/src/lib/zodSchemas/admin/createAdminSchema";
 import {useSuperadminAdminsStore} from "@/store/superadmin/superadminAdminsStore";
 import ErrorMsg from "@/src/components/ui/ErrorMsg";
+import {handleKyError} from "@/src/lib/handleKyError";
 
 interface CreateAdminFormData {
     displayName: string;
@@ -63,15 +63,10 @@ const CreateAdmin: React.FC<Props> = ({closeModal}) => {
             reset();
             closeModal();
         } catch (e) {
-            let message = "Ошибка при создании администратора";
-
-            if (e instanceof AxiosError) {
-                message = e.response?.data?.error || message;
-
-            }
-
+            const message = await handleKyError(e, "Ошибка при создании администратора");
             toast.error(message);
             setCreateAdminError(message);
+
             if (message.toLowerCase().includes('пароль')) {
                 setError('password', {message});
             } else if (message.toLowerCase().includes('email')) {

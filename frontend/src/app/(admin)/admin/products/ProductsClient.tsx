@@ -4,7 +4,6 @@ import React, {useEffect} from "react";
 import {Plus} from "lucide-react";
 import {Button} from "@/src/components/ui/button";
 import {CardContent} from "@/src/components/ui/card";
-import {AxiosError} from "axios";
 import {deleteProduct} from "@/actions/superadmin/products";
 import ProductsTable from "@/src/app/(admin)/admin/products/components/ProductTable/ProductsTable";
 import {Category, Product} from "@/src/lib/types";
@@ -14,6 +13,7 @@ import DataSkeleton from "@/src/components/shared/DataSkeleton";
 import ErrorMsg from "@/src/components/ui/ErrorMsg";
 import Link from "next/link";
 import {useAdminCategoryStore} from "@/store/superadmin/superadminCategoriesStore";
+import {handleKyError} from "@/src/lib/handleKyError";
 
 interface ProductsClientProps {
     initialProducts: Product[];
@@ -88,10 +88,7 @@ const ProductsClient: React.FC<ProductsClientProps> = ({
             setProducts(products.filter((product) => product._id !== id));
             toast.success("Товар успешно удален!");
         } catch (err) {
-            const errorMessage =
-                err instanceof AxiosError
-                    ? err.response?.data?.error
-                    : "Неизвестная ошибка при удалении товара";
+            const errorMessage = await handleKyError(err, "Неизвестная ошибка при удалении товара")
             setDeleteError(errorMessage);
             toast.error(errorMessage);
         } finally {
@@ -109,10 +106,7 @@ const ProductsClient: React.FC<ProductsClientProps> = ({
             setProducts(products.filter((product) => !ids.includes(product._id)));
             toast.success("Выбранные товары успешно удалены!");
         } catch (err) {
-            const errorMessage =
-                err instanceof AxiosError
-                    ? err.response?.data?.error
-                    : "Неизвестная ошибка при удалении выбранных товаров";
+            const errorMessage = await handleKyError(err, "Неизвестная ошибка при удалении выбранных товаров")
             setDeleteError(errorMessage);
             toast.error(errorMessage);
         } finally {

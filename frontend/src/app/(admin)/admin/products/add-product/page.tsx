@@ -1,7 +1,7 @@
 import ProductCreateForm from "@/src/app/(admin)/admin/products/add-product/components/ProductForm/ProductCreateForm";
 import {Category} from "@/src/lib/types";
 import {fetchCategories} from "@/actions/categories";
-import {AxiosError} from "axios";
+import {handleKyError} from "@/src/lib/handleKyError";
 
 const AddProduct = async () => {
     let categories: Category[] = [];
@@ -10,12 +10,9 @@ const AddProduct = async () => {
     try {
         categories = await fetchCategories();
     } catch (e) {
-        if (e instanceof AxiosError) {
-            categoriesError = e.response?.data.error;
-        } else {
-            categoriesError = "Неизвестная ошибка"
-        }
-        console.error(e);
+        const msg = await handleKyError(e, 'Неизвестная ошибка при загрузке категорий');
+        categoriesError = msg;
+        console.error(msg);
     }
 
     return (

@@ -3,7 +3,7 @@ import {Category, Product} from "@/src/lib/types";
 import {fetchProducts} from "@/actions/products";
 import {fetchCategories} from "@/actions/categories";
 import ProductsClient from "@/src/app/(admin)/admin/products/ProductsClient";
-import {AxiosError} from "axios";
+import {handleKyError} from "@/src/lib/handleKyError";
 
 const AdminProductsPage = async () => {
     let products: Product[] = [];
@@ -13,25 +13,21 @@ const AdminProductsPage = async () => {
     let categoriesError: string | null = null;
 
     await Promise.all([
-        fetchCategories()
-            .then(data => categories = data)
-            .catch(e => {
-                if (e instanceof AxiosError) {
-                    categoriesError = (e.response?.data?.error ?? "Ошибка при загрузке категории.");
-                } else {
-                    categoriesError = "Неизвестная ошибка на сервере при загрузке категории.";
-                }
-            }),
-
-        fetchProducts({})
-            .then(data => products = data.items)
-            .catch(e => {
-                if (e instanceof AxiosError) {
-                    productsError = (e.response?.data?.error ?? "Ошибка при загрузке продуктов.");
-                } else {
-                    productsError = "Неизвестная ошибка на сервере при загрузке продуктов.";
-                }
-            }),
+        (async () => {
+            try {
+                categories = await fetchCategories();
+            } catch (e) {
+                categoriesError = await handleKyError(e, "Ошибка при загрузке категории.");
+            }
+        })(),
+        (async () => {
+            try {
+                const data = await fetchProducts({});
+                products = data.items;
+            } catch (e) {
+                productsError = await handleKyError(e, "Ошибка при загрузке продуктов");
+            }
+        })()
     ]);
 
     return (

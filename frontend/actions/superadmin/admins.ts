@@ -1,22 +1,24 @@
-import axiosAPI from "@/src/lib/axiosAPI";
 import {AdminForm, EditAdminForm, User} from "@/src/lib/types";
+import kyAPI from "@/src/lib/kyAPI";
 
 export const getAllAdmins = async () => {
-    const response = await axiosAPI.get<User[]>("/superadmin/admins")
-    return response.data;
+    return await kyAPI.get("superadmin/admins").json<User[]>();
 }
 
 export const createAdmin = async (data: AdminForm) => {
-    const res = await axiosAPI.post("/superadmin/admins", data);
-    return res.data;
+    return await kyAPI
+        .post("superadmin/admins", {json: data})
+        .json<{ message: string; user: User }>();
 };
 
 export const editAdmin = async (id: string, data: EditAdminForm) => {
-    const res = await axiosAPI.patch<{ message: string; user: User }>(`/superadmin/admins/${id}`, data);
-    return res.data;
+    return await kyAPI
+        .patch(`superadmin/admins/${id}`, {json: data})
+        .json<{ message: string; user: User }>();
 };
 
 export const removeAdmin = async (id: string) => {
-    const res = await axiosAPI.delete<{ message: string }>(`/superadmin/admins/${id}`);
-    return res.data;
+    return await kyAPI
+        .delete(`superadmin/admins/${id}`)
+        .json<{ message: string }>();
 };

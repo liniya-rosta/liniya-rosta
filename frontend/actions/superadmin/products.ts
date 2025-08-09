@@ -1,5 +1,5 @@
 import {Product, ProductMutation, ProductUpdateMutation} from "@/src/lib/types";
-import axiosAPI from "@/src/lib/axiosAPI";
+import kyAPI from "@/src/lib/kyAPI";
 
 export const createProduct = async (productData: ProductMutation): Promise<Product> => {
     const formData = new FormData();
@@ -11,11 +11,11 @@ export const createProduct = async (productData: ProductMutation): Promise<Produ
     }
 
     if (productData.seoTitle) {
-        formData.append('seoTitle', productData.seoTitle);
+        formData.append('seoTitle', productData.seoTitle.ru);
     }
 
     if (productData.seoDescription) {
-        formData.append('seoDescription', productData.seoDescription);
+        formData.append('seoDescription', productData.seoDescription.ru);
     }
 
     if (productData.cover) {
@@ -46,7 +46,7 @@ export const createProduct = async (productData: ProductMutation): Promise<Produ
         }
     }
 
-    if (productData.icon) {
+    if (productData.icon instanceof File) {
         formData.append('icon', productData.icon);
     }
 
@@ -54,12 +54,11 @@ export const createProduct = async (productData: ProductMutation): Promise<Produ
         formData.append('iconAlt', productData.iconAlt.ru);
     }
 
-    const res = await axiosAPI.post<{ message: string, product: Product }>('/superadmin/products', formData, {
-        headers: {
-            'Content-Type': 'multipart/form-data',
-        },
-    });
-    return res.data.product;
+    const data = await kyAPI.post('superadmin/products', {body: formData}).json<{
+        message: string,
+        product: Product
+    }>();
+    return data.product;
 };
 
 export const updateProduct = async (id: string, productData: ProductUpdateMutation): Promise<Product> => {
@@ -78,11 +77,11 @@ export const updateProduct = async (id: string, productData: ProductUpdateMutati
     }
 
     if (productData.seoTitle) {
-        formData.append('seoTitle', productData.seoTitle);
+        formData.append('seoTitle', productData.seoTitle.ru);
     }
 
     if (productData.seoDescription) {
-        formData.append('seoDescription', productData.seoDescription);
+        formData.append('seoDescription', productData.seoDescription.ru);
     }
 
     if (productData.cover) {
@@ -112,42 +111,28 @@ export const updateProduct = async (id: string, productData: ProductUpdateMutati
         formData.append('iconAlt', productData.iconAlt.ru);
     }
 
-    const res = await axiosAPI.patch<{ message: string, product: Product }>(
-        `/superadmin/products/${id}`, formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
-        }
-    );
-
-    return res.data.product;
+    const data = await kyAPI.patch(
+        `superadmin/products/${id}`, {body: formData}).json<{ message: string, product: Product }>();
+    return data.product;
 };
 
-export const updateProductImage = async (
-        imageId: string,
-        file?: File,
-        alt?: string
-    ): Promise<Product> => {
+export const updateProductImage = async (imageId: string, file?: File, alt?: string): Promise<Product> => {
         const formData = new FormData();
         if (file) formData.append("images", file);
         if (alt) formData.append("alt", alt);
 
-        const res = await axiosAPI.patch<{ product: Product }>(
-            `/superadmin/products/images/${imageId}`,
-            formData,
-            {headers: {"Content-Type": "multipart/form-data"}}
-        );
-
-        return res.data.product;
+        const data = await kyAPI.patch(`superadmin/products/images/${imageId}`, {body: formData}).json<{
+            product: Product
+        }>();
+        return data.product;
     }
 ;
-
 export const deleteProductImage = async (imageId: string): Promise<string> => {
-    const res = await axiosAPI.delete<{ message: string }>(`/superadmin/products/images/${imageId}`);
-    return res.data.message;
+    const data = await kyAPI.delete(`superadmin/products/images/${imageId}`).json<{ message: string }>();
+    return data.message;
 };
 
 export const deleteProduct = async (id: string): Promise<string> => {
-    const res = await axiosAPI.delete<{ message: string }>(`/superadmin/products/${id}`);
-    return res.data.message;
+    const data = await kyAPI.delete(`superadmin/products/${id}`).json<{ message: string }>();
+    return data.message;
 };
