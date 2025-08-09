@@ -1,10 +1,10 @@
 import {useState} from "react";
-import {isAxiosError} from "axios";
 import {usePortfolioStore} from "@/store/portfolioItemStore";
 import {fetchPortfolioPreviews} from "@/actions/portfolios";
 import {PortfolioResponse} from "@/src/lib/types";
 import {getPaginationButtons} from "@/src/lib/utils";
 import {useTranslations} from "next-intl";
+import {handleKyError} from "@/src/lib/handleKyError";
 
 export const usePortfolioFetcher = (limit: string) => {
     const {
@@ -43,13 +43,7 @@ export const usePortfolioFetcher = (limit: string) => {
 
             setFetchErrorPortfolio(null);
         } catch (error) {
-            let errorMessage = tError("portfolioError");
-
-            if (isAxiosError(error) && error.response) {
-                errorMessage = error.response.data.error;
-            } else if (error instanceof Error) {
-                errorMessage = error.message;
-            }
+            const errorMessage = await handleKyError(error, tError("portfolioError"));
             setFetchErrorPortfolio(errorMessage);
         } finally {
             setPortfolioLoading(false);

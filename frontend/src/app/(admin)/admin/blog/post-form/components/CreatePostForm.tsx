@@ -8,7 +8,6 @@ import FormErrorMessage from '@/src/components/ui/FormErrorMessage';
 import LoaderIcon from '@/src/components/ui/Loading/LoaderIcon';
 import {Eye, Plus} from 'lucide-react';
 import {useRouter} from 'next/navigation';
-import {isAxiosError} from 'axios';
 import {toast} from 'react-toastify';
 import {CreatePostFormData, createPostSchema} from "@/src/lib/zodSchemas/admin/postSchema";
 import {useSuperAdminPostStore} from "@/store/superadmin/superAdminPostsStore";
@@ -17,6 +16,7 @@ import {ImageObject} from "@/src/lib/types";
 import ConfirmDialog from "@/src/components/ui/ConfirmDialog";
 import FroalaEditorWrapper from "@/src/components/shared/FroalaEditor";
 import {Label} from "@/src/components/ui/label";
+import {handleKyError} from "@/src/lib/handleKyError";
 
 interface Props {
     setIsPreviewOpen: (value: boolean) => void;
@@ -41,7 +41,7 @@ const CreatePostForm: React.FC<Props> = ({setIsPreviewOpen, setPreviewImage}) =>
     const [expanded, setExpanded] = useState(false);
     const [showConfirm, setShowConfirm] = useState(false);
 
-    const showImagePreview = (file: File, alt = {ru: "" }) => {
+    const showImagePreview = (file: File, alt = {ru: ""}) => {
         const localUrl = URL.createObjectURL(file);
         setPreviewImage({image: localUrl, alt});
         setIsPreviewOpen(true);
@@ -64,10 +64,7 @@ const CreatePostForm: React.FC<Props> = ({setIsPreviewOpen, setPreviewImage}) =>
             toast.success("Пост успешно создан");
             router.push('/admin/blog');
         } catch (error) {
-            let message = 'Ошибка при создании поста';
-            if (isAxiosError(error) && error.response) {
-                message = error.response.data.error;
-            }
+            const message = await handleKyError(error, "Ошибка при создании поста");
             toast.error(message);
         } finally {
             setCreateLoading(false);

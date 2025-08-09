@@ -4,6 +4,7 @@ import ContactsClient from "@/src/app/(public)/[locale]/contacts/ContactsClient"
 import {fetchContacts} from "@/actions/contacts";
 import {Metadata} from "next";
 import {getTranslations} from "next-intl/server";
+import {handleKyError} from "@/src/lib/handleKyError";
 
 export const revalidate = 3600;
 
@@ -35,16 +36,12 @@ export const generateMetadata = async (): Promise<Metadata> => {
 const ContactsPage = async () => {
         let contact: Contact | null = null;
         let contactError: string | null = null;
-        const tErrors = await getTranslations("Errors");
+        const tError = await getTranslations("Errors");
 
         try {
             contact = await fetchContacts();
         } catch (e) {
-            if (e instanceof Error) {
-                contactError = e.message;
-            } else {
-                contactError = tErrors("contactsError");
-            }
+            contactError = await handleKyError(e, tError('contactsError'));
         }
 
         return (

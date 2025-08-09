@@ -20,7 +20,7 @@ import {profileSchema} from '@/src/lib/zodSchemas/admin/profileSchema';
 import {editProfile} from '@/actions/users';
 import {EditProfileForm} from "@/src/lib/types";
 import useUserStore from '@/store/usersStore';
-import {AxiosError} from "axios";
+import {handleKyError} from "@/src/lib/handleKyError";
 
 interface Props {
     closeModal: () => void;
@@ -67,20 +67,15 @@ const ProfileForm: React.FC<Props> = ({closeModal}) => {
             reset();
             closeModal();
         } catch (e) {
-            let message = 'Ошибка при обновлении профиля.';
-
-            if (e instanceof AxiosError) {
-                message = e.response?.data?.error || message;
-            }
-
+            const message = await handleKyError(e, 'Ошибка при обновлении профиля.');
             toast.error(message);
 
             if (message.toLowerCase().includes('пароль')) {
-                setError('password', { message });
+                setError('password', {message});
             } else if (message.toLowerCase().includes('email')) {
-                setError('email', { message });
+                setError('email', {message});
             } else if (message.toLowerCase().includes('имя')) {
-                setError('displayName', { message });
+                setError('displayName', {message});
             }
 
             console.error(e);

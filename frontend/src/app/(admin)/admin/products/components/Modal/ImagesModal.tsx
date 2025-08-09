@@ -11,8 +11,8 @@ import {API_BASE_URL} from "@/src/lib/globalConstants";
 import {deleteProductImage,} from "@/actions/superadmin/products";
 import {useAdminProductStore} from "@/store/superadmin/superadminProductsStore";
 import {fetchProductById} from "@/actions/products";
-import {isAxiosError} from "axios";
 import ImagesEditForm from "@/src/app/(admin)/admin/products/components/Modal/ImagesEditForm";
+import {handleKyError} from "@/src/lib/handleKyError";
 
 interface Props {
     open: boolean;
@@ -74,12 +74,9 @@ const ImagesModal: React.FC<Props> = ({open, onClose}) => {
                 )
             );
         } catch (e) {
-            if (isAxiosError(e)) {
-                setUpdateError(e.response?.data.error);
-                toast.error(e.response?.data.error);
-            } else {
-                toast.error("Ошибка при обновлении изображений");
-            }
+            const msg = await handleKyError(e, "Ошибка при обновлении изображений");
+            setUpdateError(msg);
+            toast.error(msg);
             console.error(e);
         }
     }, [productId, products, setProductDetail, setProducts, setUpdateError]);

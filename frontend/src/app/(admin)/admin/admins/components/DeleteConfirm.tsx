@@ -11,9 +11,9 @@ import {
 } from "@/src/components/ui/dialog";
 import {Button} from "@/src/components/ui/button";
 import {Loader2} from "lucide-react";
-import {AxiosError} from "axios";
 import {useSuperadminAdminsStore} from "@/store/superadmin/superadminAdminsStore";
 import {removeAdmin} from "@/actions/superadmin/admins";
+import {handleKyError} from "@/src/lib/handleKyError";
 
 const DeleteConfirm = () => {
     const {
@@ -34,11 +34,8 @@ const DeleteConfirm = () => {
             await removeAdmin(deleteAdmin._id);
             setAdmins(admins.filter((a) => a._id !== deleteAdmin._id));
         } catch (err) {
-            if (err instanceof AxiosError && err.response?.data?.error) {
-                setDeleteAdminError(err.response.data.error);
-            } else {
-                setDeleteAdminError("Ошибка при удалении админа");
-            }
+            const msg = await handleKyError(err, 'Ошибка при удалении админа');
+            setDeleteAdminError(msg);
         } finally {
             setDeleteAdminLoading(false);
             setDeleteAdmin(null);

@@ -2,12 +2,12 @@ import React from 'react';
 import ServicesForm from "@/src/app/(public)/[locale]/services/components/ServicesForm";
 import ServicesTitle from "@/src/app/(public)/[locale]/services/components/ServicesTitle";
 import ServiceClient from "@/src/app/(public)/[locale]/services/ServiceClient";
-import {isAxiosError} from "axios";
 import {fetchAllServices} from "@/actions/services";
 import {ServiceResponse} from '@/src/lib/types';
 import {getTranslations} from "next-intl/server";
 import {Metadata} from "next";
 import {Container} from '@/src/components/shared/Container';
+import {handleKyError} from "@/src/lib/handleKyError";
 
 export const revalidate = 1800;
 
@@ -44,13 +44,8 @@ const ServicePage = async () => {
     try {
         serviceData = await fetchAllServices();
     } catch (error) {
-        if (isAxiosError(error) && error.response) {
-            errorMessage = error.response.data.error;
-        } else if (error instanceof Error) {
-            errorMessage = error.message;
-        } else {
-            errorMessage = tError("PortfolioError");
-        }
+        errorMessage = await handleKyError(error, tError("servicesError"));
+
     }
 
     const tServices = await getTranslations("ServicesPage");

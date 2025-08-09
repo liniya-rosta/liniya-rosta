@@ -1,9 +1,9 @@
 import React, {Dispatch, useState} from "react";
 import {useSuperAdminPostStore} from "@/store/superadmin/superAdminPostsStore";
-import {isAxiosError} from "axios";
 import {deletePost, deletePostImage} from "@/actions/superadmin/posts";
 import {toast} from "react-toastify";
 import {RowSelectionState} from "@tanstack/react-table";
+import {handleKyError} from "@/src/lib/handleKyError";
 
 export const usePostDeletion = (
     fetchOnePost?: (id: string) => Promise<void>,
@@ -25,21 +25,16 @@ export const usePostDeletion = (
         try {
             if (isImageDelete && detailPost) {
                 await deletePostImage(detailPost._id, selectedToDelete[0]);
-                if(fetchOnePost) await fetchOnePost(detailPost._id);
+                if (fetchOnePost) await fetchOnePost(detailPost._id);
             } else {
                 const postId = selectedToDelete[0];
                 await deletePost(postId);
             }
 
-            if(fetchData) await fetchData();
+            if (fetchData) await fetchData();
             toast.success(isImageDelete ? "Вы успешно удалили изображение" : "Вы успешно удалили пост");
         } catch (error) {
-            let errorMessage = "Неизвестная ошибка при удалении";
-            if (isAxiosError(error) && error.response) {
-                errorMessage = error.response.data.error;
-            } else if (error instanceof Error) {
-                errorMessage = error.message;
-            }
+            const errorMessage = await handleKyError(error, 'Неизвестная ошибка при удалении поста');
             toast.error(errorMessage);
         } finally {
             setDeleteLoading(false);
@@ -58,20 +53,15 @@ export const usePostDeletion = (
                 await Promise.all(selectedToDelete.map(id => deletePost(id)));
             }
 
-            if(fetchData) await fetchData();
+            if (fetchData) await fetchData();
             toast.success(isImageDelete ? "Вы успешно удалили изображения" : "Вы успешно удалили посты");
         } catch (error) {
-            let errorMessage = "Неизвестная ошибка при удалении";
-            if (isAxiosError(error) && error.response) {
-                errorMessage = error.response.data.error;
-            } else if (error instanceof Error) {
-                errorMessage = error.message;
-            }
+            const errorMessage = await handleKyError(error, 'Неизвестная ошибка при удалении выбранных поста');
             toast.error(errorMessage);
         } finally {
             setDeleteLoading(false);
             setSelectedToDelete([]);
-            if(setRowSelection) setRowSelection({});
+            if (setRowSelection) setRowSelection({});
         }
     };
 

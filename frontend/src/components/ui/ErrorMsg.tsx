@@ -9,7 +9,7 @@ const ErrorMsg: React.FC<Props> = ({error}) => {
 
     return (
         <div className="text-center text-red-500">
-            "Ошибка загрузки" {error}
+            {"\"Ошибка загрузки\""} {error}
         </div>
     );
 };

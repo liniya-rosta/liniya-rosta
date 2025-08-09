@@ -2,10 +2,7 @@ import {Dialog, DialogContent, DialogHeader, DialogTitle} from "@/src/components
 import React, {useEffect} from "react";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {
-    UpdatePostImageFormData,
-    updatePostImageSchema
-} from "@/src/lib/zodSchemas/admin/postSchema";
+import {UpdatePostImageFormData, updatePostImageSchema} from "@/src/lib/zodSchemas/admin/postSchema";
 import {useSuperAdminPostStore} from "@/store/superadmin/superAdminPostsStore";
 import {Label} from "@/src/components/ui/label";
 import {Input} from "@/src/components/ui/input";
@@ -18,8 +15,8 @@ import {API_BASE_URL} from "@/src/lib/globalConstants";
 import {ImageObject} from "@/src/lib/types";
 import {fetchPostById} from "@/actions/posts";
 import {toast} from "react-toastify";
-import {isAxiosError} from "axios";
 import {updatePostImage} from "@/actions/superadmin/posts";
+import {handleKyError} from "@/src/lib/handleKyError";
 
 interface Props {
     open: boolean;
@@ -80,13 +77,7 @@ const ImageEditForm: React.FC<React.PropsWithChildren<Props>> = (
             toast.success("Вы успешно обновили элемент галереи");
             onSaved();
         } catch (error) {
-            let errorMessage = "Неизвестная ошибка при редактировании изображения поста";
-            if (isAxiosError(error) && error.response) {
-                errorMessage = error.response.data.error;
-            } else if (error instanceof Error) {
-                errorMessage = error.message;
-            }
-
+            const errorMessage = await handleKyError(error, 'Неизвестная ошибка при редактировании изображения поста');
             toast.error(errorMessage);
         } finally {
             setUpdateLoading(false);
@@ -139,7 +130,7 @@ const ImageEditForm: React.FC<React.PropsWithChildren<Props>> = (
                                             if (file instanceof File) {
                                                 const localUrl = URL.createObjectURL(file);
                                                 showImagePreview(file, control._formValues.alt);
-                                                setPreviewImage({ image: localUrl, alt: control._formValues.alt });
+                                                setPreviewImage({image: localUrl, alt: control._formValues.alt});
                                                 setIsPreviewOpen(true);
                                                 console.log("open image modal")
                                             }
