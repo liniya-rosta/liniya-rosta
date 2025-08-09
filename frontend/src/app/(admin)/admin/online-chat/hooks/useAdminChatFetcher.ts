@@ -10,24 +10,43 @@ import {useSuperadminAdminsStore} from "@/store/superadmin/superadminAdminsStore
 const useAdminChatFetcher = () => {
     const {
         allChats,
+        fetchChatError,
         setChats,
         setFetchChatLoading,
         setFetchChatError,
         addChat
     } = useAdminChatStore();
 
-    const {admins, setAdmins } = useSuperadminAdminsStore();
+    const {admins, setAdmins} = useSuperadminAdminsStore();
     const [messages, setMessages] = useState<ChatMessage[]>([]);
+    const [totalPages, setTotalPages] = useState<number>(1);
 
-    const fetchData = async (filters?: ChatFilters) => {
+    const fetchData = async (filters?: ChatFilters, page?: number, limit?: number) => {
+        setFetchChatError(null);
+
+        if (page && page > totalPages) {
+            return;
+        }
+
         try {
-            const data = await fetchAllChats(filters);
-            setChats(data.items);
+            const data = await fetchAllChats({...filters, page, limit});
+            setTotalPages(data.totalPages);
+
+            if (page === 1) {
+                setChats(data.items);
+            } else {
+                setChats((prev) =>
+                    Array.from(
+                        new Map(
+                            [...prev, ...data.items].map(chat => [chat._id, chat])
+                        ).values()
+                    )
+                );
+            }
+
         } catch (err) {
             let errorMessage = "Ошибка при получении данных";
-            if (isAxiosError(err) && err.response) {
-                errorMessage = err.response.data.error;
-            } else if (err instanceof Error) {
+            if (err instanceof Error) {
                 errorMessage = err.message;
             }
 
@@ -43,9 +62,7 @@ const useAdminChatFetcher = () => {
             setMessages(data.messages);
         } catch (err) {
             let errorMessage = "Ошибка при получении данных";
-            if (isAxiosError(err) && err.response) {
-                errorMessage = err.response.data.error;
-            } else if (err instanceof Error) {
+            if (err instanceof Error) {
                 errorMessage = err.message;
             }
 
@@ -71,16 +88,17 @@ const useAdminChatFetcher = () => {
     const updateChatOnlineStatus = (chatId: string, isOnline: boolean) => {
         setChats((prev) =>
             prev.map((chat) =>
-                chat._id === chatId ? { ...chat, isClientOnline: isOnline } : chat
+                chat._id === chatId ? {...chat, isClientOnline: isOnline} : chat
             )
         );
     };
 
-
     return {
         allChats,
+        totalPages,
         messages,
         admins,
+        fetchChatError,
         addChat,
         setChats,
         setMessages,

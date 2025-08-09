@@ -12,7 +12,7 @@ interface AdminChatState {
     setOneChat: (data: ChatSession) => void;
     setFetchChatLoading: (loading: boolean) => void;
     setDeleteChatLoading: (loading: boolean) => void;
-    setFetchChatError: (error: string) => void;
+    setFetchChatError: (error: string | null) => void;
 
     addChat: (chat: ChatSession) => void;
     updateChat: (chatId: string, updater: Partial<ChatSession>) => void;

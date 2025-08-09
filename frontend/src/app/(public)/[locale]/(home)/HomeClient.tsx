@@ -1,6 +1,6 @@
 'use client';
 
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useProductStore} from '@/store/productsStore';
 import {usePortfolioStore} from "@/store/portfolioItemStore";
 import 'swiper/css';
@@ -19,6 +19,7 @@ import LoadingFullScreen from "@/src/components/ui/Loading/LoadingFullScreen";
 import {useServiceStore} from "@/store/serviceStore";
 import ServiceSection from "@/src/app/(public)/[locale]/(home)/components/ServiceSection";
 import { Container } from '@/src/components/shared/Container';
+import {Button} from "@/src/components/ui/button";
 
 interface HomePageClientProps {
     categoriesData: Category[];
@@ -129,20 +130,56 @@ const HomePageClient: React.FC<HomePageClientProps> = ({
 
     const overallLoading = fetchCategoriesLoading || fetchProductsLoading || portfolioLoading || fetchContactLoading || fetchLoadingService;
     const overallError = fetchCategoriesError || fetchProductsError || portfolioError || fetchContactError || serviceError;
+    const [phone, setPhone] = useState("");
+    const [message, setMessage] = useState("");
+
+    const sendMessage = async () => {
+        const res = await fetch("http://localhost:8000/whats-app/send-whatsapp", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ to: phone, message })
+        });
+        const data = await res.json();
+        console.log(data);
+    };
 
     if (overallLoading) return <LoadingFullScreen/>;
     if (overallError) return <ErrorMsg error={overallError}/>
 
     return (
         <>
+
             <HeroSection title={title} />
             <ServiceSection/>
-
             <Container className="space-y-16">
                 <ProductsSection />
                 <PortfolioSection />
                 <ConsultationSection />
                 <InstagramSection />
+
+                <div className="max-w-sm mx-auto p-4 bg-white rounded-xl shadow-md space-y-3">
+                    <input
+                        type="tel"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        className="w-full px-3 py-2 border "
+                    />
+
+                    <textarea
+                        value={message}
+                        onChange={(e) => setMessage(e.target.value)}
+                        rows={4}
+                        className="w-full px-3 py-2 border"
+                    />
+
+                    <Button
+                        onClick={sendMessage}
+                        className="w-full py-2 px-4"
+                    >
+                        Отправить в WhatsApp
+                    </Button>
+                </div>
+
             </Container>
         </>
 

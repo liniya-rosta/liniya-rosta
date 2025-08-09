@@ -7,16 +7,20 @@ import ChatList from "@/src/app/(admin)/admin/online-chat/components/ChatList";
 import ChatMessages from "@/src/app/(admin)/admin/online-chat/components/ChatMessages";
 import {ChatFilters} from "@/src/lib/types";
 import ChatFiltersPanel from "@/src/app/(admin)/admin/online-chat/components/ChatFiltersPanel";
+import ErrorMsg from "@/src/components/ui/ErrorMsg";
 
 const Page = () => {
     const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
     const [input, setInput] = useState("");
     const [filters, setFilters] = React.useState<ChatFilters>({});
+    const [page, setPage] = useState(1);
 
     const {
         allChats,
         messages,
         admins,
+        fetchChatError,
+        totalPages,
         addChat,
         setChats,
         fetchData,
@@ -27,8 +31,8 @@ const Page = () => {
     } = useAdminChatFetcher();
 
     useEffect(() => {
-        void fetchData(filters);
-    }, [filters]);
+        void fetchData(filters, page);
+    }, [filters, page]);
 
     useEffect(() => {
         if (admins.length === 0) {
@@ -39,6 +43,7 @@ const Page = () => {
     useEffect(() => {
         if (selectedChatId) void fetchOneChat(selectedChatId);
     }, [selectedChatId]);
+
 
     const { sendMessage } = useAdminChatWS({
         selectedChatId,
@@ -66,8 +71,14 @@ const Page = () => {
         setInput("");
     };
 
+    if (fetchChatError) return <ErrorMsg error={fetchChatError}/>;
+
     return (
         <div>
+            <h1 className="text-23-30-1_5 mb-5 font-bold text-center md:text-left">
+                Список чатов
+            </h1>
+
             <ChatFiltersPanel onChange={setFilters} adminList={admins}/>
             <div className="flex h-screen">
                 <ChatList
@@ -78,6 +89,8 @@ const Page = () => {
                     onStatusUpdated={(id, status) =>
                         setChats((prev) => prev.map(chat => chat._id === id ? { ...chat, status } : chat))
                     }
+                    onLoadMore={ () => setPage(prev => prev + 1)}
+                    canLoadMore={page >= totalPages}
                 />
                 <ChatMessages
                     messages={messages}

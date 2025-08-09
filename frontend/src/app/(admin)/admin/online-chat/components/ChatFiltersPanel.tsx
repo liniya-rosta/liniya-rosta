@@ -7,6 +7,8 @@ import { Button } from "@/src/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/src/components/ui/select";
 import {ChatFilters, User} from "@/src/lib/types";
 import {chat_statuses} from "@/src/app/(admin)/admin/online-chat/constants";
+import {useAdminChatStore} from "@/store/superadmin/adminChatStore";
+import LoaderIcon from "@/src/components/ui/Loading/LoaderIcon";
 
 const filterSchema = z.object({
     status: z.string().optional(),
@@ -29,6 +31,8 @@ const ChatFiltersPanel: React.FC<ChatFiltersPanelProps> = ({ onChange, adminList
         defaultValues: {},
     });
 
+    const {fetchChatLoading} =useAdminChatStore();
+
     const onSubmit = (data: ChatFilters) => {
         const formatted = {
             ...data,
@@ -37,19 +41,21 @@ const ChatFiltersPanel: React.FC<ChatFiltersPanelProps> = ({ onChange, adminList
             updatedFrom: data.updatedFrom || undefined,
             updatedTo: data.updatedTo || undefined,
         };
-        console.log(formatted);
         onChange(formatted);
     };
 
-    const handleReset = () => {
+    const filterCleaning = () => {
         reset();
         onChange({});
     };
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 p-4 bg-white rounded-xl shadow mb-6">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                <Input placeholder="Имя клиента" {...register("clientName")} />
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 p-4 rounded-xl shadow mb-6">
+            <div className="flex flex-wrap gap-4">
+                <Input
+                    className="max-w-2/6"
+                    placeholder="Имя клиента" {...register("clientName")}
+                />
 
                 <Select onValueChange={(val) => setValue("status", val)} value={watch("status") || ""}>
                     <SelectTrigger>
@@ -77,27 +83,35 @@ const ChatFiltersPanel: React.FC<ChatFiltersPanelProps> = ({ onChange, adminList
             </div>
 
             <div className="flex flex-wrap items-center gap-4">
-                <label className="flex items-center gap-1">
-                    <span className="min-w-[80px] text-sm">Создан от</span>
+                <label>
+                    <span className="text-sm">Создан от</span>
                     <Input type="date" {...register("createdFrom")} />
                 </label>
-                <label className="flex items-center gap-1">
-                    <span className="min-w-[80px] text-sm">Создан до</span>
+                <label>
+                    <span className="text-sm">Создан до</span>
                     <Input type="date" {...register("createdTo")} />
                 </label>
-                <label className="flex items-center gap-1">
-                    <span className="min-w-[80px] text-sm">Обновлён от</span>
+                <label>
+                    <span className="text-sm">Обновлён от</span>
                     <Input type="date" {...register("updatedFrom")} />
                 </label>
-                <label className="flex items-center gap-1">
-                    <span className="min-w-[80px] text-sm">Обновлён до</span>
+                <label>
+                    <span className="text-sm">Обновлён до</span>
                     <Input type="date" {...register("updatedTo")} />
                 </label>
             </div>
 
             <div className="flex gap-3 mt-2">
-                <Button type="submit">Применить</Button>
-                <Button type="button" variant="outline" onClick={handleReset}>
+                <Button type="submit" disabled={fetchChatLoading}>
+                    {fetchChatLoading && <LoaderIcon/>} Применить
+                </Button>
+                <Button
+                    type="button"
+                    variant="outline"
+                    onClick={filterCleaning}
+                    disabled={fetchChatLoading}
+                >
+                    {fetchChatLoading && <LoaderIcon/>}
                     Сбросить
                 </Button>
             </div>

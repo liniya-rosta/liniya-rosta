@@ -14,13 +14,14 @@ interface ChatListProps {
     onSelect: (chatId: string) => void;
     onChatDeleted: (id: string) => void;
     onStatusUpdated: (id: string, status: string) => void;
+    onLoadMore: () => void;
+    canLoadMore: boolean;
 }
 
 const ChatList: React.FC<ChatListProps> = (
-    {chats, selectedChatId, onSelect, onChatDeleted, onStatusUpdated}) => {
+    {chats, selectedChatId, onSelect, onChatDeleted, onStatusUpdated, onLoadMore, canLoadMore=false}) => {
 
     const handleDelete = async (chatId: string) => {
-        if (!confirm("Удалить этот чат?")) return;
         try {
             await deleteChat(chatId);
             toast.success("Чат удален");
@@ -39,6 +40,8 @@ const ChatList: React.FC<ChatListProps> = (
             toast.error("Ошибка при изменении статуса");
         }
     };
+
+
     return (
         <div className="w-1/3 border-r flex flex-col">
             <div className="flex-1 overflow-y-auto">
@@ -100,6 +103,17 @@ const ChatList: React.FC<ChatListProps> = (
                     <p className="text-center text-gray-400">Список чатов пуст</p>
                 )}
             </div>
+            {chats.length > 0 && (
+                <div className="p-4 text-center">
+                    <Button
+                        variant="outline"
+                        onClick={onLoadMore}
+                        disabled={canLoadMore}
+                    >
+                        Загрузить ещё 20
+                    </Button>
+                </div>
+            )}
         </div>
     );
 };
