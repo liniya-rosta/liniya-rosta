@@ -31,6 +31,7 @@ const Page = () => {
 
     const {
         fetchOnePost,
+        pagination,
     } = usePostsFetcher();
 
     const {
@@ -38,7 +39,7 @@ const Page = () => {
         handleDelete,
         multipleDeletion,
         setImageDelete,
-    } = usePostDeletion({fetchOnePost});
+    } = usePostDeletion({fetchOnePost, pagination});
 
     const {
         detailPost,
