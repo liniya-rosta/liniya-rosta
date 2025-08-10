@@ -36,6 +36,8 @@ const EditPostForm: React.FC<Props> = ({openImagesModal, setPreviewImage, setIsP
     } = useForm<UpdatePostFormData>({resolver: zodResolver(updatePostSchema)});
     const {fields, append, remove} = useFieldArray({control, name: 'images'});
 
+    const {paginationPost} = useSuperAdminPostStore();
+
     const [expanded, setExpanded] = useState(false);
     const [replaceAllImages, setReplaceAllImages] = useState(false);
     const [confirmType, setConfirmType] = useState<"replace" | "backToPage" | null>(null);
@@ -51,6 +53,12 @@ const EditPostForm: React.FC<Props> = ({openImagesModal, setPreviewImage, setIsP
             seoDescription: {ru: detailPost.seoDescription.ru},
         });
     }, [detailPost, reset]);
+
+    useEffect(() => {
+        if (confirmType !== null) {
+            setShowConfirm(true);
+        }
+    }, [confirmType]);
 
     if (!detailPost) return null;
 
@@ -74,12 +82,13 @@ const EditPostForm: React.FC<Props> = ({openImagesModal, setPreviewImage, setIsP
     };
 
     const confirmActions = () => {
+        console.log("requestConfirmation", confirmType);
         if (confirmType === "replace") {
             setReplaceAllImages(true);
             remove();
             append({alt: {ru: ""}, file: null});
         } else if (confirmType === "backToPage") {
-            router.push('/admin/blog');
+            router.push(paginationPost ? `/admin/blog?page=${paginationPost.page}` : "/admin/blog");
         }
     };
 
@@ -92,7 +101,9 @@ const EditPostForm: React.FC<Props> = ({openImagesModal, setPreviewImage, setIsP
             } else {
                 await updatePost(detailPost._id, data, "append");
             }
+
             toast.success('Пост успешно обновлен');
+            reset();
             router.push('/admin/blog');
         } catch (error) {
             const message = await handleKyError(error, "Ошибка при редактировании поста");
@@ -159,7 +170,6 @@ const EditPostForm: React.FC<Props> = ({openImagesModal, setPreviewImage, setIsP
                 open={showConfirm}
                 onOpenChange={(open) => {
                     setShowConfirm(open);
-                    if (!open) setConfirmType(null);
                 }}
                 title={confirmType === "backToPage" ? "Покинуть страницу?" : "Заменить изображения?"}
                 text={confirmType === "replace"

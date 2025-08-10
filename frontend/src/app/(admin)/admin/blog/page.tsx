@@ -83,10 +83,6 @@ const AdminBlogPage = () => {
     } = usePostDeletion({pagination, setPagination, fetchData, fetchOnePost, setRowSelection});
 
     useEffect(() => {
-        void fetchData();
-    }, [pagination, filters]);
-
-    useEffect(() => {
         const pageFromUrl = Number(searchParams.get("page"));
         if (!isNaN(pageFromUrl) && pageFromUrl > 0 && pageFromUrl - 1 !== pagination.pageIndex) {
             setPagination(prev => ({
@@ -95,6 +91,10 @@ const AdminBlogPage = () => {
             }));
         }
     }, [searchParams, setPagination]);
+
+    useEffect(() => {
+        void fetchData();
+    }, [pagination, filters]);
 
     useEffect(() => {
         const selectedRows = table.getSelectedRowModel().rows;

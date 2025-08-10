@@ -1,5 +1,5 @@
 import React from 'react';
-import {UseFormRegister, Control, FieldErrors} from 'react-hook-form';
+import {UseFormRegister, Control, FieldErrors, UseFieldArrayAppend} from 'react-hook-form';
 import {Button} from '@/src/components/ui/button';
 import {Plus, Eye} from 'lucide-react';
 import {Label} from '@/src/components/ui/label';
@@ -9,8 +9,8 @@ import {UpdatePostFormData} from '@/src/lib/zodSchemas/admin/postSchema';
 import {ImageObject} from '@/src/lib/types';
 
 interface Props {
-    fields: any[];
-    append: (value: any) => void;
+    fields: { id: string }[];
+    append: UseFieldArrayAppend<UpdatePostFormData, 'images'>;
     remove: (index: number) => void;
     register: UseFormRegister<UpdatePostFormData>;
     control: Control<UpdatePostFormData>;
@@ -65,7 +65,7 @@ const ImagesSection: React.FC<Props> = ({
                             append({alt: {ru: ""}, file: null});
                         }
                     }}
-                    disabled={updateLoading || fields.length >= 3}
+                    disabled={updateLoading}
                     className="mb-4"
                 >
                     <Plus className="w-4 h-4 mr-2"/>
@@ -114,7 +114,8 @@ const ImagesSection: React.FC<Props> = ({
                 }`}
             >
                 {fields.map((item, index) => (
-                    <div key={item._id} className="border rounded-lg p-4 space-y-6 bg-white shadow-sm">
+                    <div
+                        key={item.id} className="border rounded-lg p-4 space-y-6 bg-white shadow-sm">
                         <Label className="w-full mb-2">Альтернативное название изображения</Label>
                         <Input
                             type="text"
@@ -122,8 +123,8 @@ const ImagesSection: React.FC<Props> = ({
                             {...register(`images.${index}.alt.ru`)}
                             disabled={updateLoading}
                         />
-                        {errors.images?.[index]?.alt && (
-                            <FormErrorMessage>{errors.images[index]?.alt?.message}</FormErrorMessage>
+                        {errors.images?.[index]?.alt?.ru && (
+                            <FormErrorMessage>{errors.images[index]?.alt?.ru.message}</FormErrorMessage>
                         )}
 
                         <Label className="w-full mb-2">Изображение</Label>
@@ -131,7 +132,6 @@ const ImagesSection: React.FC<Props> = ({
                             type="file"
                             accept="image/*"
                             disabled={updateLoading}
-                            {...register(`images.${index}.file`)}
                             onChange={(e) => handleImageChange(index, e)}
                         />
                         {errors.images?.[index]?.file && (

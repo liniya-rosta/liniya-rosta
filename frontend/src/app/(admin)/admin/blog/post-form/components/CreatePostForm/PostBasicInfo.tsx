@@ -13,11 +13,10 @@ interface Props {
     control: Control<CreatePostFormData>;
     setValue: UseFormSetValue<CreatePostFormData>;
     createLoading: boolean;
+    descriptionValue: string;
 }
 
-const PostBasicInfo: React.FC<Props> = ({register, errors, control, setValue, createLoading}) => {
-    const descriptionValue = control._formValues.description?.ru || "";
-
+const PostBasicInfo: React.FC<Props> = ({register, errors, descriptionValue, setValue, createLoading}) => {
     return (
         <div className="border-b border-b-gray-500 py-3 mb-4">
             <Label className="mb-2 block">Заголовок поста</Label>
@@ -51,8 +50,8 @@ const PostBasicInfo: React.FC<Props> = ({register, errors, control, setValue, cr
                     model={descriptionValue}
                     onChangeAction={(value: string) => setValue('description.ru', value, {shouldValidate: true})}
                 />
-                {errors.description &&
-                    <FormErrorMessage className="mb-4">{errors.description.message}</FormErrorMessage>}
+                {errors.description?.ru &&
+                    <FormErrorMessage className="mb-4">{errors.description.ru.message}</FormErrorMessage>}
             </div>
 
             <Label className="mb-2 block">SEO описание</Label>

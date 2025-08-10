@@ -26,12 +26,14 @@ const CreatePostForm: React.FC<Props> = ({setIsPreviewOpen, setPreviewImage}) =>
         handleSubmit,
         setValue,
         control,
+        watch,
         formState: {errors, isDirty}
     } = useForm<CreatePostFormData>({
         resolver: zodResolver(createPostSchema),
     });
 
     const {paginationPost} = useSuperAdminPostStore();
+    const descriptionValue = watch("description.ru");
 
     const {fields, append, remove} = useFieldArray({control, name: 'images'});
     const router = useRouter();
@@ -79,6 +81,7 @@ const CreatePostForm: React.FC<Props> = ({setIsPreviewOpen, setPreviewImage}) =>
                     control={control}
                     setValue={setValue}
                     createLoading={createLoading}
+                    descriptionValue={descriptionValue}
                 />
 
                 <ImagesSection
