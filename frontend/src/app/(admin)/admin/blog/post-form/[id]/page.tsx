@@ -1,7 +1,7 @@
 'use client'
 
 import React, {useEffect, useState} from 'react';
-import EditPostForm from "@/src/app/(admin)/admin/blog/post-form/components/EditPostForm";
+import EditPostForm from "@/src/app/(admin)/admin/blog/post-form/components/EditPostForm/EditPostForm";
 import {useParams} from 'next/navigation';
 import {usePostsFetcher} from "@/src/app/(admin)/admin/blog/hooks/usePostsFetcher";
 import {useSuperAdminPostStore} from "@/store/superadmin/superAdminPostsStore";
@@ -36,9 +36,9 @@ const Page = () => {
     const {
         isImageDelete,
         handleDelete,
-        handleDeleteSelectedPosts,
+        multipleDeletion,
         setImageDelete,
-    } = usePostDeletion(fetchOnePost);
+    } = usePostDeletion({fetchOnePost});
 
     const {
         detailPost,
@@ -100,7 +100,7 @@ const Page = () => {
                 title={isImageDelete ? "Удалить изображение?" : "Удалить пост(ы)?"}
                 onConfirm={async () => {
                     if (selectedToDelete.length > 1) {
-                        await handleDeleteSelectedPosts();
+                        await multipleDeletion();
                     } else if (selectedToDelete.length === 1) {
                         await handleDelete();
                     }

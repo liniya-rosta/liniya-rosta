@@ -325,6 +325,7 @@ const EditPostForm: React.FC<Props> = ({openImagesModal, setPreviewImage, setIsP
                 onConfirm={() => {
                     confirmActions();
                     setShowConfirm(false);
+                    setConfirmType(null);
                 }}
                 loading={updateLoading}
             />

@@ -168,18 +168,18 @@ export const getPostTableColumns = (
                             <DropdownMenuItem
                                 onClick={() => onOpenImagesModal(post)}
                             >
-                                <Images className="mr-2 h-4 w-4" />
+                                <Images className="mr-2 h-4 w-4 hover:text-white" />
                                 Все изображения
                             </DropdownMenuItem>
                             <DropdownMenuItem onClick={() => onEditPost(post)}>
-                                <Edit2 className="mr-2 h-4 w-4" />
+                                <Edit2 className="mr-2 h-4 w-4 hover:text-white" />
                                 Редактировать
                             </DropdownMenuItem>
                             <DropdownMenuItem
                                 onClick={() => onDeletePost([post._id])}
                                 className="text-destructive"
                             >
-                                <Trash2 className="mr-2 h-4 w-4" />
+                                <Trash2 className="mr-2 h-4 w-4 hover:text-white" />
                                 Удалить
                             </DropdownMenuItem>
                         </DropdownMenuContent>

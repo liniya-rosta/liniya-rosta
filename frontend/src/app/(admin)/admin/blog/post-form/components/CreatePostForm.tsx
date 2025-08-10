@@ -34,6 +34,8 @@ const CreatePostForm: React.FC<Props> = ({setIsPreviewOpen, setPreviewImage}) =>
         resolver: zodResolver(createPostSchema),
     });
 
+    const {paginationPost} = useSuperAdminPostStore();
+
     const {fields, append, remove} = useFieldArray({control, name: 'images'});
     const router = useRouter();
 
@@ -216,7 +218,7 @@ const CreatePostForm: React.FC<Props> = ({setIsPreviewOpen, setPreviewImage}) =>
                         {createLoading && <LoaderIcon/>}
                         Создать пост
                     </Button>
-                    <Link href="/admin/blog">
+                    <Link href={paginationPost? `/admin/blog?page=${paginationPost?.page}` : "/admin/blog"}>
                         <Button
                             type="button"
                             className="mt-6 px-6"

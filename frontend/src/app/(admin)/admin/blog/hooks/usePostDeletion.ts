@@ -1,15 +1,25 @@
-import React, {Dispatch, useState} from "react";
-import {useSuperAdminPostStore} from "@/store/superadmin/superAdminPostsStore";
-import {deletePost, deletePostImage} from "@/actions/superadmin/posts";
-import {toast} from "react-toastify";
-import {RowSelectionState} from "@tanstack/react-table";
+import {deletePost, deletePostImage } from "@/actions/superadmin/posts";
+import { useSuperAdminPostStore } from "@/store/superadmin/superAdminPostsStore";
+import { PaginationState, RowSelectionState } from "@tanstack/react-table";
+import React, { Dispatch, useState } from "react";
+import { toast } from "react-toastify";
 import {handleKyError} from "@/src/lib/handleKyError";
 
-export const usePostDeletion = (
-    fetchOnePost?: (id: string) => Promise<void>,
-    fetchData?: () => Promise<void>,
-    setRowSelection?: Dispatch<React.SetStateAction<RowSelectionState>>,
-) => {
+interface UsePostDeletionProps  {
+    pagination: PaginationState;
+    setPagination?: React.Dispatch<React.SetStateAction<PaginationState>>;
+    fetchData?: () => Promise<void>;
+    fetchOnePost?: (id: string) => Promise<void>;
+    setRowSelection?: Dispatch<RowSelectionState>;
+}
+
+export const usePostDeletion = ({
+                                    pagination,
+                                    setPagination,
+                                    fetchData,
+                                    fetchOnePost,
+                                    setRowSelection,
+                                }: UsePostDeletionProps) => {
     const {
         posts,
         detailPost,
@@ -20,11 +30,19 @@ export const usePostDeletion = (
 
     const [isImageDelete, setImageDelete] = useState(false);
 
+    const goToPreviousPageIfEmpty = (): boolean => {
+        if (posts.length === 1 && pagination.pageIndex > 0 && setPagination) {
+            setPagination(prev => ({ ...prev, pageIndex: prev.pageIndex - 1 }));
+            return true;
+        }
+        return false;
+    };
+
     const handleDelete = async () => {
         setDeleteLoading(true);
         try {
             if (isImageDelete && detailPost) {
-                if (detailPost?.images.length === 1) {
+                if (detailPost.images.length === 1) {
                     toast.error("Нельзя удалить последнее изображение");
                     return;
                 }
@@ -35,7 +53,9 @@ export const usePostDeletion = (
                 await deletePost(postId);
             }
 
-            if (fetchData) await fetchData();
+            const changedPage = goToPreviousPageIfEmpty();
+            if (!changedPage && fetchData) await fetchData();
+
             toast.success(isImageDelete ? "Вы успешно удалили изображение" : "Вы успешно удалили пост");
         } catch (error) {
             const errorMessage = await handleKyError(error, 'Неизвестная ошибка при удалении поста');
@@ -47,17 +67,23 @@ export const usePostDeletion = (
         }
     };
 
-    const handleDeleteSelectedPosts = async () => {
+    const multipleDeletion = async () => {
         setDeleteLoading(true);
         try {
             if (detailPost && isImageDelete) {
-                await Promise.all(selectedToDelete.map(async imageUrl => deletePostImage(detailPost._id, imageUrl)));
+                await Promise.all(selectedToDelete.map(img => deletePostImage(detailPost._id, img)));
                 if (fetchOnePost) await fetchOnePost(detailPost._id);
             } else {
                 await Promise.all(selectedToDelete.map(id => deletePost(id)));
             }
 
-            if (fetchData) await fetchData();
+            const isLastPage = posts.length === selectedToDelete.length && pagination.pageIndex > 0 && setPagination;
+            if (isLastPage) {
+                setPagination?.(prev => ({ ...prev, pageIndex: prev.pageIndex - 1 }));
+            } else {
+                if (fetchData) await fetchData();
+            }
+
             toast.success(isImageDelete ? "Вы успешно удалили изображения" : "Вы успешно удалили посты");
         } catch (error) {
             const errorMessage = await handleKyError(error, 'Неизвестная ошибка при удалении выбранных поста');
@@ -65,7 +91,7 @@ export const usePostDeletion = (
         } finally {
             setDeleteLoading(false);
             setSelectedToDelete([]);
-            if (setRowSelection) setRowSelection({});
+            setRowSelection?.({});
         }
     };
 
@@ -73,7 +99,7 @@ export const usePostDeletion = (
         posts,
         isImageDelete,
         handleDelete,
-        handleDeleteSelectedPosts,
+        multipleDeletion,
         setImageDelete,
     };
 };
