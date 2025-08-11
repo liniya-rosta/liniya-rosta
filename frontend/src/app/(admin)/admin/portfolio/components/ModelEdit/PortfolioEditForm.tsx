@@ -6,7 +6,6 @@ import {PortfolioEditValues} from "@/src/lib/types";
 import {Input} from "@/src/components/ui/input";
 import {Button} from "@/src/components/ui/button";
 import React, {useEffect, useState} from "react";
-import {API_BASE_URL} from "@/src/lib/globalConstants";
 import Image from "next/image";
 import {useSuperAdminPortfolioStore} from "@/store/superadmin/superAdminPortfolio";
 import {editPortfolioItem} from "@/actions/superadmin/portfolios";
@@ -19,6 +18,7 @@ import ImageModal from "@/src/app/(admin)/admin/portfolio/components/ImageModal"
 import {Label} from "@/src/components/ui/label";
 import {portfolioItemSchema} from "@/src/lib/zodSchemas/admin/portfolioSchema";
 import {handleKyError} from "@/src/lib/handleKyError";
+import {IMG_BASE} from "@/src/lib/globalConstants";
 
 interface Props {
     onSaved: () => void;
@@ -179,7 +179,7 @@ const PortfolioEditForm: React.FC<Props> = ({onSaved, updatePaginationAndData}) 
                             <p className="mb-1">Предыдущее изображение</p>
                             <div className="relative w-[200px] h-[200px]">
                                 <Image
-                                    src={API_BASE_URL + "/" + detailItem.cover}
+                                    src={IMG_BASE + "/" + detailItem.cover}
                                     alt={detailItem.coverAlt.ru}
                                     fill
                                     sizes="(max-width: 768px) 100vw, 200px"

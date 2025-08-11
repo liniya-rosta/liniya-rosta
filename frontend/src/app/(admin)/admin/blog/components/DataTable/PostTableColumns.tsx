@@ -1,18 +1,19 @@
-import { ColumnDef } from '@tanstack/react-table';
-import { ArrowUpDown, MoreHorizontal, Edit2, Trash2, Images } from 'lucide-react';
+import {ColumnDef} from '@tanstack/react-table';
+import {ArrowUpDown, Edit2, Images, MoreHorizontal, Trash2} from 'lucide-react';
 import Image from 'next/image';
 
-import { Button } from '@/src/components/ui/button';
-import { Checkbox } from '@/src/components/ui/checkbox';
+import {Button} from '@/src/components/ui/button';
+import {Checkbox} from '@/src/components/ui/checkbox';
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuLabel,
-    DropdownMenuTrigger } from '@/src/components/ui/dropdown-menu';
-import { Post } from '@/src/lib/types';
-import { API_BASE_URL } from '@/src/lib/globalConstants';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/src/components/ui/tooltip';
+    DropdownMenuTrigger
+} from '@/src/components/ui/dropdown-menu';
+import {Post} from '@/src/lib/types';
+import {IMG_BASE} from '@/src/lib/globalConstants';
+import {Tooltip, TooltipContent, TooltipTrigger} from '@/src/components/ui/tooltip';
 import React from "react";
 
 export const getPostTableColumns = (
@@ -23,7 +24,7 @@ export const getPostTableColumns = (
     return [
         {
             id: 'select',
-            header: ({ table }) => (
+            header: ({table}) => (
                 <Checkbox
                     checked={
                         table.getIsAllPageRowsSelected() ||
@@ -33,7 +34,7 @@ export const getPostTableColumns = (
                     aria-label="Выбрать все"
                 />
             ),
-            cell: ({ row }) => (
+            cell: ({row}) => (
                 <Checkbox
                     checked={row.getIsSelected()}
                     onCheckedChange={(value) => row.toggleSelected(!!value)}
@@ -49,7 +50,7 @@ export const getPostTableColumns = (
         {
             id: "index",
             header: "№",
-            cell: ({ row, table }) => {
+            cell: ({row, table}) => {
                 const flatRows = table.getRowModel().flatRows;
                 const originalIndex = flatRows.findIndex(r => r.id === row.id);
                 return <span className="w-auto">{originalIndex + 1}</span>;
@@ -59,18 +60,18 @@ export const getPostTableColumns = (
         },
         {
             accessorKey: 'title',
-            header: ({ column }) => {
+            header: ({column}) => {
                 return (
                     <Button
                         variant="ghost"
                         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                     >
                         Заголовок
-                        <ArrowUpDown className="ml-2 h-4 w-4" />
+                        <ArrowUpDown className="ml-2 h-4 w-4"/>
                     </Button>
                 );
             },
-            cell: ({ row }) =>
+            cell: ({row}) =>
                 <div className="font-medium max-w-[200px] truncate">
                     {row.original.title.ru}
                 </div>,
@@ -79,7 +80,7 @@ export const getPostTableColumns = (
         {
             accessorKey: 'description',
             header: 'Описание',
-            cell: ({ row }) => (
+            cell: ({row}) => (
                 <div className="line-clamp-2 max-w-sm text-sm text-muted-foreground">
                     {row.original.description.ru}
                 </div>
@@ -115,7 +116,7 @@ export const getPostTableColumns = (
         {
             accessorKey: 'image',
             header: 'Изображение',
-            cell: ({ row }) => {
+            cell: ({row}) => {
                 const imageUrl = row.original.images?.[0]?.image;
                 return imageUrl ? (
                     <Tooltip>
@@ -125,7 +126,7 @@ export const getPostTableColumns = (
                                 onClick={() => onOpenImagesModal(row.original)}
                             >
                                 <Image
-                                    src={`${API_BASE_URL}/${imageUrl}`}
+                                    src={`${IMG_BASE}/${imageUrl}`}
                                     alt={row.original.title.ru}
                                     fill
                                     sizes="64px"
@@ -142,7 +143,8 @@ export const getPostTableColumns = (
                         </TooltipContent>
                     </Tooltip>
                 ) : (
-                    <div className="w-16 h-16 bg-muted rounded-md flex items-center justify-center text-xs text-muted-foreground text-center flex-shrink-0">
+                    <div
+                        className="w-16 h-16 bg-muted rounded-md flex items-center justify-center text-xs text-muted-foreground text-center flex-shrink-0">
                         Нет фото
                     </div>
                 );
@@ -151,7 +153,7 @@ export const getPostTableColumns = (
         {
             id: 'действия',
             enableHiding: false,
-            cell: ({ row }) => {
+            cell: ({row}) => {
                 const post = row.original;
 
                 return (
@@ -159,7 +161,7 @@ export const getPostTableColumns = (
                         <DropdownMenuTrigger asChild>
                             <Button variant="ghost" className="h-8 w-8 p-0">
                                 <span className="sr-only">Открыть меню</span>
-                                <MoreHorizontal className="h-4 w-4" />
+                                <MoreHorizontal className="h-4 w-4"/>
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
@@ -167,18 +169,18 @@ export const getPostTableColumns = (
                             <DropdownMenuItem
                                 onClick={() => onOpenImagesModal(post)}
                             >
-                                <Images className="mr-2 h-4 w-4" />
+                                <Images className="mr-2 h-4 w-4"/>
                                 Все изображения
                             </DropdownMenuItem>
                             <DropdownMenuItem onClick={() => onEditPost(post)}>
-                                <Edit2 className="mr-2 h-4 w-4" />
+                                <Edit2 className="mr-2 h-4 w-4"/>
                                 Редактировать
                             </DropdownMenuItem>
                             <DropdownMenuItem
                                 onClick={() => onDeletePost([post._id])}
                                 className="text-destructive"
                             >
-                                <Trash2 className="mr-2 h-4 w-4" />
+                                <Trash2 className="mr-2 h-4 w-4"/>
                                 Удалить
                             </DropdownMenuItem>
                         </DropdownMenuContent>

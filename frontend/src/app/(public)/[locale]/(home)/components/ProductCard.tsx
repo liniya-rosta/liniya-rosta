@@ -4,7 +4,7 @@ import {AspectRatio} from '@/src/components/ui/aspect-ratio';
 import {Card, CardContent, CardFooter} from '@/src/components/ui/card';
 import {Button} from '@/src/components/ui/button';
 import {Badge} from '@/src/components/ui/badge';
-import {API_BASE_URL} from '@/src/lib/globalConstants';
+import {IMG_BASE} from '@/src/lib/globalConstants';
 import {Product} from "@/src/lib/types";
 import Link from "next/link";
 import {useLocale} from "next-intl";
@@ -20,7 +20,7 @@ const ProductCard: React.FC<Props> = ({product}) => {
             <div className="flex-shrink-0">
                 <AspectRatio ratio={4 / 3}>
                     <Image
-                        src={`${API_BASE_URL}/${product.cover.url}`}
+                        src={`${IMG_BASE}/${product.cover.url}`}
                         alt={product.title[locale] ?? "Изображение продукта"}
                         fill
                         className="object-cover"

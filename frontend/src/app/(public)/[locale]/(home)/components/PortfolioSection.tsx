@@ -1,13 +1,13 @@
 import Link from "next/link";
 import {CartPortfolio} from "@/src/app/(public)/[locale]/portfolio/components/CartPortfolio";
-import {API_BASE_URL} from "@/src/lib/globalConstants";
+import {IMG_BASE} from "@/src/lib/globalConstants";
 import React from "react";
 import {usePortfolioStore} from "@/store/portfolioItemStore";
-import { useTranslations } from "next-intl";
+import {useTranslations} from "next-intl";
 import {BtnArrow} from "@/src/components/ui/btn-arrow";
 import SectionAnimation from "@/src/components/shared/SectionAnimation";
 import {Swiper, SwiperSlide} from "swiper/react";
-import {Navigation, Pagination, Autoplay} from "swiper/modules";
+import {Autoplay, Navigation, Pagination} from "swiper/modules";
 
 const PortfolioSection = () => {
     const {
@@ -67,7 +67,7 @@ const PortfolioSection = () => {
                                     key={item._id}
                                     className="flex items-center justify-center w-full h-full"
                                 >
-                                    <CartPortfolio buttonLink={item._id} imageSrc={`${API_BASE_URL}/${item.cover}`}/>
+                                    <CartPortfolio buttonLink={item._id} imageSrc={`${IMG_BASE}/${item.cover}`}/>
                                 </SwiperSlide>
                             ))
                         ) : (

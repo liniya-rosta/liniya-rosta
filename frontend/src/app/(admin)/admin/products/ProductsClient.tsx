@@ -14,6 +14,7 @@ import ErrorMsg from "@/src/components/ui/ErrorMsg";
 import Link from "next/link";
 import {useAdminCategoryStore} from "@/store/superadmin/superadminCategoriesStore";
 import {handleKyError} from "@/src/lib/handleKyError";
+import {API_BASE_URL} from "@/src/lib/globalConstants";
 
 interface ProductsClientProps {
     initialProducts: Product[];
@@ -71,6 +72,11 @@ const ProductsClient: React.FC<ProductsClientProps> = ({
         setFetchLoading,
         setFetchCategoriesError,
     ]);
+
+    useEffect(() => {
+        console.log("CLIENT: process.env.NEXT_PUBLIC_API_BASE_URL =", process.env.NEXT_PUBLIC_API_BASE_URL);
+        console.log("CLIENT: API_BASE_URL =", API_BASE_URL);
+    }, []);
 
     const resetErrors = () => {
         setFetchError(null);

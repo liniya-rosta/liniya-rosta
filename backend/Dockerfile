@@ -11,17 +11,14 @@ WORKDIR /app
 COPY package*.json ./
 COPY tsconfig.json ./
 
-# код
 COPY src ./src
 COPY public ./public
-# <--- ДОБАВИЛИ корневые ts:
 COPY index.ts ./index.ts
 COPY config.ts ./config.ts
 COPY translateYandex.ts ./translateYandex.ts
 COPY types.d.ts ./types.d.ts
 COPY fixtures.ts ./fixtures.ts
 
-# модули из deps в конце
 COPY --from=deps /app/node_modules ./node_modules
 
 RUN npm run build

@@ -4,7 +4,7 @@ import React from "react";
 import {Checkbox} from "@/src/components/ui/checkbox";
 import {Tooltip, TooltipContent, TooltipTrigger} from "@/src/components/ui/tooltip";
 import {Category, Product} from "@/src/lib/types";
-import {API_BASE_URL} from "@/src/lib/globalConstants";
+import {IMG_BASE} from "@/src/lib/globalConstants";
 import {Button} from "@/src/components/ui/button";
 import {
     DropdownMenu,
@@ -69,7 +69,7 @@ export const getProductTableColumns = (
                                 })}
                             >
                                 <Image
-                                    src={`${API_BASE_URL}/${imageUrl}`}
+                                    src={`${IMG_BASE}/${imageUrl}`}
                                     alt={row.original.cover?.alt?.ru || "Обложка"}
                                     fill
                                     sizes="64px"
@@ -187,7 +187,7 @@ export const getProductTableColumns = (
                                 })}
                             >
                                 <Image
-                                    src={`${API_BASE_URL}/${iconUrl}`}
+                                    src={`${IMG_BASE}/${iconUrl}`}
                                     alt={row.original.icon?.alt?.ru || "Иконка"}
                                     fill
                                     sizes="32px"

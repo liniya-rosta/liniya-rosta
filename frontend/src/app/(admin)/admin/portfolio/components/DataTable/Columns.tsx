@@ -1,6 +1,6 @@
 import {ColumnDef} from "@tanstack/react-table";
 import {PortfolioItemPreview} from "@/src/lib/types";
-import {API_BASE_URL} from "@/src/lib/globalConstants";
+import {IMG_BASE} from "@/src/lib/globalConstants";
 import {Tooltip, TooltipContent, TooltipTrigger} from "@/src/components/ui/tooltip";
 import Image from "next/image";
 import {
@@ -71,8 +71,8 @@ export const getColumns = (
     {
         accessorKey: "description.ru",
         header: "Описание",
-        cell: ({ row }) => {
-            const value = row.original.description?.ru  as string | undefined;
+        cell: ({row}) => {
+            const value = row.original.description?.ru as string | undefined;
             return (
                 <div className="capitalize">
                     {value?.trim() ? value : <span className="text-muted-foreground italic">Нет описания</span>}
@@ -84,7 +84,7 @@ export const getColumns = (
         accessorKey: "seoTitle.ru",
         header: () => <div className="text-left">SEO заголовок</div>,
         cell: ({row}) => {
-            const value = row.original.seoTitle?.ru  as string | undefined;
+            const value = row.original.seoTitle?.ru as string | undefined;
             return (
                 <div className="capitalize">
                     {value?.trim() ? value : <span className="text-muted-foreground italic">Нет SEO заголовка</span>}
@@ -96,7 +96,7 @@ export const getColumns = (
         accessorKey: "seoDescription.ru",
         header: () => <div className="text-left">SEO описание</div>,
         cell: ({row}) => {
-            const value = row.original.seoDescription?.ru  as string | undefined;
+            const value = row.original.seoDescription?.ru as string | undefined;
             return (
                 <div className="capitalize">
                     {value?.trim() ? value : <span className="text-muted-foreground italic">Нет SEO описания</span>}
@@ -122,7 +122,7 @@ export const getColumns = (
         cell: ({row}) => {
             const cover: string = row.getValue("cover");
             const alt: string = row.original.coverAlt.ru;
-            const imageUrl = `${API_BASE_URL}/${cover}`;
+            const imageUrl = `${IMG_BASE}/${cover}`;
 
             return (
                 <Tooltip>
@@ -170,11 +170,11 @@ export const getColumns = (
                     <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Действия</DropdownMenuLabel>
                         <DropdownMenuItem onClick={() => onGallery(payment._id)}>
-                            <Images className="mr-2 h-4 w-4" />
+                            <Images className="mr-2 h-4 w-4"/>
                             Посмотреть галерею
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => onEditCover(payment._id)}>
-                            <Edit2 className="mr-2 h-4 w-4" />
+                            <Edit2 className="mr-2 h-4 w-4"/>
                             Редактировать
                         </DropdownMenuItem>
                         <DropdownMenuItem

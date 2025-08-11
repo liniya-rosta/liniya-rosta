@@ -1,15 +1,15 @@
 'use client';
 
-import { Alert, AlertDescription, AlertTitle } from "@/src/components/ui/alert";
-import { Button } from "@/src/components/ui/button";
+import {Alert, AlertDescription, AlertTitle} from "@/src/components/ui/alert";
+import {Button} from "@/src/components/ui/button";
 import {Card, CardContent, CardHeader, CardTitle} from "@/src/components/ui/card";
 import Loading from "@/src/components/ui/Loading/Loading";
-import { Post } from "@/src/lib/types";
-import { usePostsStore } from "@/store/postsStore";
-import {ArrowLeft, Terminal } from "lucide-react";
-import { useRouter } from "next/navigation";
-import {useEffect, useState } from "react";
-import {API_BASE_URL} from "@/src/lib/globalConstants";
+import {Post} from "@/src/lib/types";
+import {usePostsStore} from "@/store/postsStore";
+import {ArrowLeft, Terminal} from "lucide-react";
+import {useRouter} from "next/navigation";
+import {useEffect, useState} from "react";
+import {IMG_BASE} from "@/src/lib/globalConstants";
 import {Separator} from "@radix-ui/react-separator";
 import Image from "next/image";
 import {useLocale, useTranslations} from "next-intl";
@@ -86,7 +86,7 @@ const PostClient: React.FC<Props> = ({data, error}) => {
             <Card className="overflow-hidden">
                 <div className="relative aspect-video md:aspect-[2/1] w-full">
                     <Image
-                        src={`${API_BASE_URL}/${data.images[0].image}`}
+                        src={`${IMG_BASE}/${data.images[0].image}`}
                         fill
                         sizes="(max-width: 768px) 100vw, 1200px"
                         priority

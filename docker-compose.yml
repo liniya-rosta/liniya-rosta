@@ -27,12 +27,13 @@ services:
       args:
         NEXT_PUBLIC_BASE_URL: ${NEXT_PUBLIC_BASE_URL}
         NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL}
-    env_file: [.env]
+        NEXT_PUBLIC_IMG_SERVER: ${NEXT_PUBLIC_IMG_SERVER}
+    env_file: [ .env ]
     environment:
       - API_BASE_URL_INTERNAL=http://backend:8000
     depends_on:
       - backend
-    networks: [app]
+    networks: [ app ]
 
   nginx:
     image: nginx:latest

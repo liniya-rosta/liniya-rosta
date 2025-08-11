@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { usePortfolioStore } from "@/store/portfolioItemStore";
-import { API_BASE_URL } from "@/src/lib/globalConstants";
+import React, {useEffect, useState} from 'react';
+import {usePortfolioStore} from "@/store/portfolioItemStore";
+import {IMG_BASE} from "@/src/lib/globalConstants";
 import Image from "next/image";
-import { GalleryItem, PortfolioItemDetail } from "@/src/lib/types";
-import { ModalImage } from "@/src/components/shared/ModalImage";
+import {GalleryItem, PortfolioItemDetail} from "@/src/lib/types";
+import {ModalImage} from "@/src/components/shared/ModalImage";
 import GalleryCard from '../components/GalleryCard';
 import LoadingFullScreen from "@/src/components/ui/Loading/LoadingFullScreen";
 import {useLocale, useTranslations} from 'next-intl';
@@ -15,7 +15,7 @@ type Props = {
     error: string | null;
 };
 
-const GalleryClient: React.FC<Props> = ({ detailItem, error = null }) => {
+const GalleryClient: React.FC<Props> = ({detailItem, error = null}) => {
     const {
         fetchLoadingPortfolio,
         setPortfolioItemDetail,
@@ -71,14 +71,14 @@ const GalleryClient: React.FC<Props> = ({ detailItem, error = null }) => {
     ]);
 
     if (!detailItem) return <p className="text-center">{tPortfolio("portfolioSubtitle")}</p>;
-    if (fetchLoadingPortfolio) return <LoadingFullScreen />;
+    if (fetchLoadingPortfolio) return <LoadingFullScreen/>;
     if (error) return <p>{error}</p>
 
     return (
         <div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                 <GalleryCard
-                    imageUrl={`${API_BASE_URL}/${detailItem.cover}`}
+                    imageUrl={`${IMG_BASE}/${detailItem.cover}`}
                     alt={detailItem.coverAlt[locale]}
                     handleOpen={handleOpen}
                     index={-1}
@@ -93,7 +93,7 @@ const GalleryClient: React.FC<Props> = ({ detailItem, error = null }) => {
                             key={item._id}
                             index={index}
                             id={item._id}
-                            imageUrl={`${API_BASE_URL}/${item.image}`}
+                            imageUrl={`${IMG_BASE}/${item.image}`}
                             handleOpen={handleOpen}
                             alt={item.alt[locale]}
                             className="aspect-[3/4] w-full overflow-hidden group cursor-pointer rounded-2xl hover:shadow-xl transition"
@@ -121,7 +121,7 @@ const GalleryClient: React.FC<Props> = ({ detailItem, error = null }) => {
                         rel="noopener noreferrer"
                     >
                         <Image
-                            src={`${API_BASE_URL}/${selectedItem.image}`}
+                            src={`${IMG_BASE}/${selectedItem.image}`}
                             alt={selectedItem.alt[locale]}
                             width={800}
                             height={600}

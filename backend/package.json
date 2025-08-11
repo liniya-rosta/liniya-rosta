@@ -4,10 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon src/index.ts",
+    "dev": "nodemon index.ts",
     "build": "tsc -p tsconfig.json",
     "start": "node dist/index.js",
-    "seed": "ts-node src/fixtures.ts"
+    "seed": "node dist/fixtures.js"
   },
   "keywords": [],
   "author": "",
