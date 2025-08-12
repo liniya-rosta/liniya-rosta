@@ -362,3 +362,12 @@ export interface ChatFilters {
     page?: number;
     limit?: number;
 }
+
+export interface WhatsAppMessage {
+    id: string;
+    body: string;
+    from: string;
+    to: string;
+    date: Date;
+    type: "sent" | "received";
+}

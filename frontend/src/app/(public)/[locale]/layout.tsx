@@ -3,7 +3,7 @@ import { getMessages } from 'next-intl/server';
 import Header from "@/src/components/shared/Header";
 import Footer from "@/src/components/shared/Footer/Footer";
 import type {Metadata} from "next";
-import OnlineChat from "@/src/components/shared/OnlineChat/OnlineChat";
+import ChatContainer from "@/src/components/shared/OnlineChat/ChatContainer";
 import React from "react";
 
 export const metadata: Metadata = {
@@ -46,7 +46,7 @@ export default async function LocaleLayout({
             <div className="min-h-screen flex flex-col">
                 <Header />
                 <main className="flex-grow">{children}</main>
-                <OnlineChat/>
+                <ChatContainer/>
                 <Footer />
             </div>
         </NextIntlClientProvider>

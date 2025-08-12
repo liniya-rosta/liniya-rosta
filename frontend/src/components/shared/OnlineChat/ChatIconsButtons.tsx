@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {Headset, MessageCircle } from 'lucide-react';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faWhatsapp} from "@fortawesome/free-brands-svg-icons";
+import {ChatType} from "@/src/components/shared/OnlineChat/ChatContainer";
 
 interface Props {
     isMenuOpen: boolean;

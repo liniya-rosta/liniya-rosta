@@ -149,6 +149,15 @@
       "name": "Имя"
     }
   },
+  "FormChat": {
+    "messagePlaceholder": "Введите сообщение...",
+    "namePlaceholder": "Введите имя",
+    "phonePlaceholder": "Введите номер телефона",
+    "chatReset": "Сброс",
+    "contactAdminMessage": "Свяжитесь с одним из наших админов!",
+    "openChat": "Открыть чат"
+  },
+
   "Buttons": {
     "requestBtn1": "Оставить заявку",
     "requestBtn2": "Получить консультацию",
@@ -195,5 +204,10 @@
   },
   "Actions": {
     "copied": "Скопировано"
+  },
+
+  "Confirms": {
+    "chatResetTitle": "Вы уверены?",
+    "chatResetDescription": "При сбросе чата удалятся сообщения только с вашей стороны и вам придется вводить свои данные заново"
   }
 }

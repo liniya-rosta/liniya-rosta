@@ -10,8 +10,9 @@ import ChatIconsButtons from "@/src/components/shared/OnlineChat/ChatIconsButton
 import useWhatsAppChat from "@/src/components/shared/OnlineChat/hooks/useWhatsAppChat";
 import ConfirmDialog from "@/src/components/ui/ConfirmDialog";
 import {RotateCcw, X} from "lucide-react";
+import {useTranslations} from "next-intl";
 
-type ChatType = "online" | "whatsapp";
+export type ChatType = "online" | "whatsapp";
 
 interface ChatUserData {
     name: string;
@@ -20,8 +21,10 @@ interface ChatUserData {
 }
 
 const ChatContainer = () => {
-    const [chatType, setChatType] = useState<ChatType>("online");
+    const tConfirm = useTranslations("Confirms");
+    const tFormChat = useTranslations("FormChat");
 
+    const [chatType, setChatType] = useState<ChatType>("online");
     const [chatData, setChatData] = useState<Record<ChatType, ChatUserData>>({
         online: { name: "", phone: "", entered: false },
         whatsapp: { name: "", phone: "", entered: false }
@@ -102,7 +105,7 @@ const ChatContainer = () => {
                         <div className="flex justify-between items-center mb-2 border-b pb-3">
 
                             <Button variant="outline" onClick={()=> setIsShowConfirm(true)}>
-                                <RotateCcw />Сброс
+                                <RotateCcw />{tFormChat("chatReset")}
                             </Button>
                             {chatType === "whatsapp" && <span>WhatsApp</span>}
                             <Button variant="outline" onClick={() => setIsChatOpen(false)}> <X /></Button>
@@ -111,7 +114,7 @@ const ChatContainer = () => {
                         <div className="flex flex-col h-96">
                             <div className="flex-1 overflow-y-auto space-y-1 pr-1">
                                 {(chatType === "online" ? chatMessages : whatsAppMessages).length === 0
-                                    ? <p className="text-center text-gray-400 mt-4">Свяжитесь с одним из наших админов!</p>
+                                    ? <p className="text-center text-gray-400 mt-4">{tFormChat("contactAdminMessage")}</p>
                                     : (chatType === "online" ? chatMessages : whatsAppMessages).map((msg, i) => (
                                         <ChatMessages key={`${chatType}-${msg.timestamp || i}`} message={msg} />
                                     ))
@@ -123,20 +126,20 @@ const ChatContainer = () => {
                                     <Input
                                         value={currentData.name}
                                         onChange={(e) => updateCurrentData("name", e.target.value)}
-                                        placeholder="Введите имя"
+                                        placeholder={tFormChat("namePlaceholder")}
                                         className="border p-1 rounded w-full"
                                     />
                                     <Input
                                         value={currentData.phone}
                                         onChange={(e) => updateCurrentData("phone", e.target.value)}
-                                        placeholder="Введите телефон"
+                                        placeholder={tFormChat("phonePlaceholder")}
                                         className="border p-1 rounded w-full"
                                     />
                                     <Button
                                         onClick={handleEnterName}
                                         disabled={!currentData.phone.trim() || !currentData.name.trim()}
                                     >
-                                        Открыть чат
+                                        {tFormChat("openChat")}
                                     </Button>
                                 </div>
                             ) : (
@@ -144,7 +147,7 @@ const ChatContainer = () => {
                                     <Input
                                         value={message}
                                         onChange={(e) => setMessage(e.target.value)}
-                                        placeholder="Введите сообщение..."
+                                        placeholder={tFormChat("messagePlaceholder")}
                                         className="border p-1 rounded w-full"
                                     />
                                     <Button onClick={handleSend}>➤</Button>
@@ -165,9 +168,9 @@ const ChatContainer = () => {
             <ConfirmDialog
                 open={isShowConfirm}
                 onOpenChange={setIsShowConfirm}
-                title="Вы уверены?"
+                title={tConfirm("chatResetTitle")}
                 onConfirm={handleReset}
-                text="При сбросе чата удалятся сообщения только с вашей стороны и вам придется вводить свои данные занова"
+                text={tConfirm("chatResetDescription")}
             />
         </div>
     );
