@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 export const useClientChat = () => {
     const ws = useRef<WebSocket | null>(null);
     const [chatId, setChatId] = useState<string | null>(null);
-    const [messages, setMessages] = useState<ChatMessage[]>([]);
+    const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
     const [connected, setConnected] = useState(false);
 
     const connect = (clientName: string, phone: string) => {
@@ -12,7 +12,7 @@ export const useClientChat = () => {
 
         ws.current = new WebSocket("ws://localhost:8000/ws/online-chat");
         ws.current.onopen = () => {
-            console.log("WS connection opened");
+            console.log("WS клиент в сети");
             setConnected(true);
 
             ws.current?.send(JSON.stringify({
@@ -30,12 +30,12 @@ export const useClientChat = () => {
             }
 
             if (data.type === "new_message") {
-                setMessages((prev) => [...prev, data]);
+                setChatMessages((prev) => [...prev, data]);
             }
         };
 
         ws.current.onclose = () => {
-            console.log("WS connection closed");
+            console.log("WS клиент вышел из сети");
             ws.current = null;
             setConnected(false);
         };
@@ -52,5 +52,5 @@ export const useClientChat = () => {
         }));
     };
 
-    return { connect, sendMessage, messages, chatId, connected };
+    return { connect, sendMessage, chatMessages, chatId, connected, setChatMessages };
 };
