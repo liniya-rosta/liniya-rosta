@@ -104,7 +104,7 @@ const ImagesSection: React.FC<Props> = ({
                                 onClick={() => {
                                     const file = control._formValues.images[index]?.file;
                                     if (file instanceof File) {
-                                        showImagePreview(file, control._formValues.images[index]?.alt);
+                                        showImagePreview(file, control._formValues.images[index]?.alt.ru);
                                     }
                                 }}
                                 disabled={createLoading}

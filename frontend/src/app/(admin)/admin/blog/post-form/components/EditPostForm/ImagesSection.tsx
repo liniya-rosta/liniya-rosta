@@ -61,9 +61,7 @@ const ImagesSection: React.FC<Props> = ({
                     type="button"
                     variant="outline"
                     onClick={() => {
-                        if (fields.length < 3) {
                             append({alt: {ru: ""}, file: null});
-                        }
                     }}
                     disabled={updateLoading}
                     className="mb-4"
