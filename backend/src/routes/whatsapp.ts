@@ -1,8 +1,9 @@
 import express from "express";
 import twilio from "twilio";
+import config from "../../config";
 
 const whatsappRouter = express.Router();
-const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+const client = twilio(config.twilio.account_sid, config.twilio.token);
 
 whatsappRouter.post("/send-whatsapp", async (req, res, next) => {
     const { to, message } = req.body;
@@ -14,7 +15,7 @@ whatsappRouter.post("/send-whatsapp", async (req, res, next) => {
             to: `whatsapp:${to}`
         });
 
-        res.json({ success: true, sid: msg.sid });
+        res.send({ success: true, sid: msg.sid });
     } catch (err) {
        next(err)
     }

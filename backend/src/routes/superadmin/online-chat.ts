@@ -2,10 +2,12 @@ import express from "express";
 import ChatSession from "../../models/ChatSession";
 import mongoose from "mongoose";
 import {onlineClients} from "../online-chat";
+import {RequestWithUser} from "../../middleware/authAdmin";
+import {MongoFilter} from "../../../types";
 
 const chatAdminRouter = express.Router();
 
-chatAdminRouter.get("/", async (req, res, next) => {
+chatAdminRouter.get("/", async (req:RequestWithUser, res, next) => {
     try {
         const page = parseInt(req.query.page as string) || 1;
         const limit = parseInt(req.query.limit as string) || 20;
@@ -19,12 +21,16 @@ chatAdminRouter.get("/", async (req, res, next) => {
         const updatedTo = req.query.updatedTo as string | undefined;
         const adminId = req.query.adminId as string | undefined;
 
-        type FilterValue =
-            | string
-            | { $regex: string; $options: string }
-            | { $gte?: Date; $lte?: Date };
+        const filter: MongoFilter = {};
 
-        const filter: Record<string, FilterValue> = {};
+        const hasFilters =
+            !!status ||
+            !!clientName ||
+            !!createdFrom ||
+            !!createdTo ||
+            !!updatedFrom ||
+            !!updatedTo ||
+            !!adminId;
 
         if (status) filter.status = status;
         if (clientName) filter.clientName = { $regex: clientName, $options: "i" };
@@ -40,6 +46,13 @@ chatAdminRouter.get("/", async (req, res, next) => {
             filter.updatedAt = {};
             if (updatedFrom) filter.updatedAt.$gte = new Date(updatedFrom + "T00:00:00Z");
             if (updatedTo) filter.updatedAt.$lte = new Date(updatedTo + "T23:59:59Z");
+        }
+
+        if (req.user?.role === "admin" && !hasFilters) {
+            filter.$or = [
+                { status: { $ne: "В работе" } },
+                { status: "В работе", adminId: req.user._id }
+            ];
         }
 
         const [chats, totalCount] = await Promise.all([

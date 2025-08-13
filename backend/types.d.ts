@@ -151,3 +151,7 @@ export interface  ChatMessage  {
 }
 
 export type IncomingMessage = ClientMessage | AdminMessage;
+
+export interface MongoFilter {
+    [key: string]: string | number | boolean | Date | RegExp | MongoFilter | MongoFilter[];
+}

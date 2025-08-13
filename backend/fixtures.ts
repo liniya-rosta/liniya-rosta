@@ -1287,7 +1287,7 @@ const run = async () => {
 
     await ChatSession.create([
         {
-            clientName: "User 1",
+            clientName: "Настя",
             adminId: Bob,
             status: "Новый",
             createdAt: new Date(),
@@ -1301,7 +1301,7 @@ const run = async () => {
             ],
         },
         {
-            clientName: "User 2",
+            clientName: "Алексей",
             adminId: Alice,
             status: "В работе",
             createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 1),
@@ -1321,14 +1321,14 @@ const run = async () => {
             ],
         },
         {
-            clientName: "User 3",
+            clientName: "Айбек",
             adminId: Bob,
             status: "Завершена",
             createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2),
             messages: [
                 {
                     sender: "client",
-                    senderName: "User 3",
+                    senderName: "Айбек",
                     text: "Спасибо за помощь!",
                     timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2 + 1000 * 60 * 20),
                 },
@@ -1341,42 +1341,42 @@ const run = async () => {
             ],
         },
         {
-            clientName: "User 4",
+            clientName: "Адилет",
             adminId: null,
             status: "Без ответа",
             createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 3),
             messages: [
                 {
                     sender: "client",
-                    senderName: "User 4",
+                    senderName: "Адилет",
                     text: "Алло? Вы здесь?",
                     timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 3 + 1000 * 60 * 3),
                 },
             ],
         },
         {
-            clientName: "User 5",
+            clientName: "Алмаз",
             adminId: Bob,
             status: "Новый",
             createdAt: new Date(),
             messages: [
                 {
                     sender: "client",
-                    senderName: "User 1",
+                    senderName: "Алмаз",
                     text: "Здравствуйте, хочу узнать подробнее.",
                     timestamp: new Date(),
                 },
             ],
         },
         {
-            clientName: "User 6",
+            clientName: "Каныкей",
             adminId: Alice,
             status: "В работе",
             createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 1),
             messages: [
                 {
                     sender: "client",
-                    senderName: "User 2",
+                    senderName: "Каныкей",
                     text: "Есть ли у вас гарантия?",
                     timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 1 + 1000 * 60 * 5),
                 },
@@ -1389,14 +1389,14 @@ const run = async () => {
             ],
         },
         {
-            clientName: "User 7",
+            clientName: "Егор",
             adminId: Bob,
             status: "Завершена",
             createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2),
             messages: [
                 {
                     sender: "client",
-                    senderName: "User 3",
+                    senderName: "Егор",
                     text: "Спасибо за помощь!",
                     timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2 + 1000 * 60 * 20),
                 },
@@ -1409,14 +1409,14 @@ const run = async () => {
             ],
         },
         {
-            clientName: "User 8",
+            clientName: "Николай",
             adminId: null,
             status: "Без ответа",
             createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 3),
             messages: [
                 {
                     sender: "client",
-                    senderName: "User 4",
+                    senderName: "Николай",
                     text: "Алло? Вы здесь?",
                     timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 3 + 1000 * 60 * 3),
                 },
@@ -1424,28 +1424,28 @@ const run = async () => {
         },
 
         {
-            clientName: "User 9",
+            clientName: "Султан",
             adminId: Bob,
             status: "Новый",
             createdAt: new Date(),
             messages: [
                 {
                     sender: "client",
-                    senderName: "User 1",
+                    senderName: "Султан",
                     text: "Здравствуйте, хочу узнать подробнее.",
                     timestamp: new Date(),
                 },
             ],
         },
         {
-            clientName: "User 10",
+            clientName: "Николай",
             adminId: Alice,
             status: "В работе",
             createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 1),
             messages: [
                 {
                     sender: "client",
-                    senderName: "User 2",
+                    senderName: "Николай",
                     text: "Есть ли у вас гарантия?",
                     timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 1 + 1000 * 60 * 5),
                 },
@@ -1458,14 +1458,14 @@ const run = async () => {
             ],
         },
         {
-            clientName: "User 11",
+            clientName: "Полина",
             adminId: Bob,
             status: "Завершена",
             createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2),
             messages: [
                 {
                     sender: "client",
-                    senderName: "User 3",
+                    senderName: "Полина",
                     text: "Спасибо за помощь!",
                     timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2 + 1000 * 60 * 20),
                 },
@@ -1492,21 +1492,21 @@ const run = async () => {
             ],
         },
         {
-            clientName: "User 13",
+            clientName: "Сезим",
             adminId: Bob,
             status: "Новый",
             createdAt: new Date(),
             messages: [
                 {
                     sender: "client",
-                    senderName: "User 1",
+                    senderName: "Сезим",
                     text: "Здравствуйте, хочу узнать подробнее.",
                     timestamp: new Date(),
                 },
             ],
         },
         {
-            clientName: "User 14",
+            clientName: "Аселя",
             adminId: Alice,
             status: "В работе",
             createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 1),
