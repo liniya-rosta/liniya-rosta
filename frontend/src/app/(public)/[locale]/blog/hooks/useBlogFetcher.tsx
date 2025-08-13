@@ -1,10 +1,9 @@
-
 import {useState} from "react";
-import {isAxiosError} from "axios";
 import {PostResponse} from "@/src/lib/types";
 import {getPaginationButtons} from "@/src/lib/utils";
 import {usePostsStore} from "@/store/postsStore";
 import {fetchPosts} from "@/actions/posts";
+import {handleKyError} from "@/src/lib/handleKyError";
 
 export const useBlogFetcher = (limit: string) => {
     const {
@@ -42,13 +41,7 @@ export const useBlogFetcher = (limit: string) => {
 
             setFetchPostsError(null);
         } catch (error) {
-            let errorMessage = "Неизвестная ошибка при загрузке постов";
-
-            if (isAxiosError(error) && error.response) {
-                errorMessage = error.response.data.error;
-            } else if (error instanceof Error) {
-                errorMessage = error.message;
-            }
+            const errorMessage = await handleKyError(error, "Неизвестная ошибка при загрузке постов");
             setFetchPostsError(errorMessage);
         } finally {
             setFetchPostsLoading(false);
