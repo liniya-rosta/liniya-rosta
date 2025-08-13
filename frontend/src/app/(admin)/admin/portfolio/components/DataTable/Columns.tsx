@@ -52,7 +52,8 @@ export const getColumns = (
         enableHiding: false,
     },
     {
-        accessorKey: "coverAlt",
+        id: "coverAlt",
+        accessorFn: row => row.coverAlt?.ru ?? "",
         header: ({column}) => {
             return (
                 <Button
@@ -69,7 +70,8 @@ export const getColumns = (
         ),
     },
     {
-        accessorKey: "description.ru",
+        id: "description",
+        accessorFn: row => row.description?.ru ?? "",
         header: "Описание",
         cell: ({ row }) => {
             const value = row.original.description?.ru  as string | undefined;
