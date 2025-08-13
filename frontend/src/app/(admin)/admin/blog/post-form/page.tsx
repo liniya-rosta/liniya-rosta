@@ -1,6 +1,6 @@
 'use client'
 
-import CreatePostForm from "./components/CreatePostForm";
+import CreatePostForm from "./components/CreatePostForm/CreatePostForm";
 import ImageViewerModal from "@/src/components/shared/ImageViewerModal";
 import React, {useState} from "react";
 import {ImageObject} from "@/src/lib/types";

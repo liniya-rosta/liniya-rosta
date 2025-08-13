@@ -36,11 +36,13 @@ export const generateMetadata = async (): Promise<Metadata> => {
 const BlogPage = async () => {
     let posts: PostResponse | null = null;
     let postsError: string | null = null;
+    const limit = "9";
+
     const tBlog = await getTranslations("BlogPage");
     const tError = await getTranslations("Errors");
 
     try {
-        posts = await fetchPosts();
+        posts = await fetchPosts(limit);
     } catch (e) {
         postsError = await handleKyError(e, tError('newsError'));
     }
@@ -53,7 +55,7 @@ const BlogPage = async () => {
                     {tBlog("subTitle")}
                 </span>
             </h1>
-            <BlogClient data={posts} error={postsError}/>
+            <BlogClient data={posts} error={postsError} limit={limit} />
         </main>
     );
 };

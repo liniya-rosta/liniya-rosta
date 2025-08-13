@@ -14,6 +14,7 @@ import { Post } from '@/src/lib/types';
 import { API_BASE_URL } from '@/src/lib/globalConstants';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/src/components/ui/tooltip';
 import React from "react";
+import parse from "html-react-parser";
 
 export const getPostTableColumns = (
     onEditPost: (post: Post) => void,
@@ -81,7 +82,7 @@ export const getPostTableColumns = (
             header: 'Описание',
             cell: ({ row }) => (
                 <div className="line-clamp-2 max-w-sm text-sm text-muted-foreground">
-                    {row.original.description.ru}
+                    {parse(row.original.description.ru)}
                 </div>
             ),
             filterFn: 'includesString',
@@ -167,18 +168,18 @@ export const getPostTableColumns = (
                             <DropdownMenuItem
                                 onClick={() => onOpenImagesModal(post)}
                             >
-                                <Images className="mr-2 h-4 w-4" />
+                                <Images className="mr-2 h-4 w-4 hover:text-white" />
                                 Все изображения
                             </DropdownMenuItem>
                             <DropdownMenuItem onClick={() => onEditPost(post)}>
-                                <Edit2 className="mr-2 h-4 w-4" />
+                                <Edit2 className="mr-2 h-4 w-4 hover:text-white" />
                                 Редактировать
                             </DropdownMenuItem>
                             <DropdownMenuItem
                                 onClick={() => onDeletePost([post._id])}
                                 className="text-destructive"
                             >
-                                <Trash2 className="mr-2 h-4 w-4" />
+                                <Trash2 className="mr-2 h-4 w-4 hover:text-white" />
                                 Удалить
                             </DropdownMenuItem>
                         </DropdownMenuContent>
