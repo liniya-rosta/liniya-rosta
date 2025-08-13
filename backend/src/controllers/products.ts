@@ -29,11 +29,11 @@ export const getProducts = async (req: Request, res: Response, next: NextFunctio
         const conditions: FilterQuery<IProduct>[] = [];
 
         if (title && typeof title === "string") {
-            conditions.push({ title: { $regex: title, $options: "i" } });
+            conditions.push({ "title.ru": { $regex: title, $options: "i" } });
         }
 
         if (description && typeof description === "string") {
-            conditions.push({ description: { $regex: description, $options: "i" } });
+            conditions.push({ "description.ru": { $regex: description, $options: "i" } });
         }
 
         if (category && typeof category === "string") {

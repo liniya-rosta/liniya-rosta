@@ -59,7 +59,8 @@ export const getPostTableColumns = (
             enableHiding: false,
         },
         {
-            accessorKey: 'title',
+            id: 'title',
+            accessorFn: row => row.title?.ru ?? "",
             header: ({ column }) => {
                 return (
                     <Button
@@ -78,7 +79,8 @@ export const getPostTableColumns = (
             filterFn: 'includesString',
         },
         {
-            accessorKey: 'description',
+            id: 'description',
+            accessorFn: row => row.description?.ru ?? "",
             header: 'Описание',
             cell: ({ row }) => (
                 <div className="line-clamp-2 max-w-sm text-sm text-muted-foreground">
