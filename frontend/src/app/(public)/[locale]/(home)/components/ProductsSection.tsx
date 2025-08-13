@@ -16,7 +16,7 @@ const ProductsSection = () => {
     const tBtn = useTranslations("Buttons");
 
     return (
-        <SectionAnimation ariaLabelledby="products-heading" className="px-4 py-12">
+        <SectionAnimation ariaLabelledby="products-heading" className="py-12">
             <div className="flex flex-col-reverse lg:flex-row items-center lg:items-start gap-8">
                 <div className="w-full lg:w-1/2 flex flex-col items-center gap-4">
                     {fetchProductsError && (
