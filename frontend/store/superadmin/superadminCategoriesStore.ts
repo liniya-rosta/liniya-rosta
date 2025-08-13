@@ -15,11 +15,10 @@ interface AdminCategoryState {
     createCategoryError: string | null;
     setCreateCategoryError: (error: string | null) => void;
 
-
-    deleteLoading: boolean;
-    setDeleteLoading: (loading: boolean) => void;
-    deleteError: string | null;
-    setDeleteError: (error: string | null) => void;
+    deleteCategoryLoading: boolean;
+    setDeleteCategoryLoading: (loading: boolean) => void;
+    deleteCategoryError: string | null;
+    setDeleteCategoryError: (error: string | null) => void;
 }
 
 export const useAdminCategoryStore = create<AdminCategoryState>((set) => ({
@@ -36,8 +35,8 @@ export const useAdminCategoryStore = create<AdminCategoryState>((set) => ({
     createCategoryError: null,
     setCreateCategoryError: (error) => set({ createCategoryError: error }),
 
-    deleteLoading: false,
-    setDeleteLoading: (loading) => set({ deleteLoading: loading }),
-    deleteError: null,
-    setDeleteError: (error) => set({ deleteError: error }),
+    deleteCategoryLoading: false,
+    setDeleteCategoryLoading: (loading) => set({ deleteCategoryLoading: loading }),
+    deleteCategoryError: null,
+    setDeleteCategoryError: (error) => set({ deleteCategoryError: error }),
 }));

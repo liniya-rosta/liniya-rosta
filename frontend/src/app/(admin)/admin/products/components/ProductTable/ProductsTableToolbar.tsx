@@ -13,16 +13,11 @@ import {
 import {ChevronDown} from "lucide-react";
 import {Product} from "@/src/lib/types";
 import {Table} from "@tanstack/react-table";
-import CreateCategoryForm from "@/src/app/(admin)/admin/products/components/Modal/CategoryCreateForm";
 import {useAdminCategoryStore} from "@/store/superadmin/superadminCategoriesStore";
-import {
-    AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
-    AlertDialogDescription, AlertDialogFooter, AlertDialogHeader,
-    AlertDialogTitle, AlertDialogTrigger
-} from "@/src/components/ui/alert-dialog";
 import {handleKyError} from "@/src/lib/handleKyError";
 import {toast} from "react-toastify";
 import {deleteCategory} from "@/actions/superadmin/categories";
+import ConfirmDialog from "@/src/components/ui/ConfirmDialog";
 
 type FilterType = 'title' | 'description';
 
@@ -58,8 +53,7 @@ const ProductsTableToolbar: React.FC<Props> = ({
                                                    setPageSize,
                                                    setPageIndex,
                                                }) => {
-    const { categories, setCategories, setDeleteLoading, setDeleteError } = useAdminCategoryStore();
-    const [isCategoryModalOpen, setIsCategoryModalOpen] = React.useState(false);
+    const {categories, setCategories, setDeleteCategoryLoading, setDeleteCategoryError} = useAdminCategoryStore();
     const [deleteOpen, setDeleteOpen] = React.useState(false);
 
     const getFilterPlaceholder = () => {
@@ -97,8 +91,8 @@ const ProductsTableToolbar: React.FC<Props> = ({
     const onDeleteCategory = async () => {
         if (!categoryId) return;
         try {
-            setDeleteLoading(true);
-            setDeleteError(null);
+            setDeleteCategoryLoading(true);
+            setDeleteCategoryError(null);
 
             await deleteCategory(categoryId);
             setCategories(categories.filter(c => c._id !== categoryId));
@@ -107,16 +101,16 @@ const ProductsTableToolbar: React.FC<Props> = ({
             setPageIndex(0);
         } catch (e) {
             const msg = await handleKyError(e, "Не удалось удалить категорию");
-            setDeleteError(msg);
+            setDeleteCategoryError(msg);
             toast.error(msg);
         } finally {
-            setDeleteLoading(false);
-            setDeleteOpen(false);
+            setDeleteCategoryLoading(false);
         }
     };
 
     return (
-        <div className="flex flex-wrap gap-3 items-start justify-center md:justify-between w-full mb-4 space-y-6 sm:space-y-0">
+        <div
+            className="flex flex-wrap gap-3 items-start justify-center md:justify-between w-full mb-4 space-y-6 sm:space-y-0">
             <div className="flex flex-col sm:flex-row gap-2 flex-1 min-w-[250px]">
                 <Select
                     value={activeFilterType}
@@ -154,14 +148,6 @@ const ProductsTableToolbar: React.FC<Props> = ({
                     }}
                     categories={categories}
                 />
-
-                <Button
-                    onClick={() => setIsCategoryModalOpen(true)}
-                    variant="outline"
-                    className="shrink-0"
-                >
-                    + Категория
-                </Button>
             </div>
 
             <div className="flex gap-2 items-start flex-wrap">
@@ -219,36 +205,22 @@ const ProductsTableToolbar: React.FC<Props> = ({
                 </DropdownMenu>
             </div>
 
-            <CreateCategoryForm
-                open={isCategoryModalOpen}
-                onClose={() => setIsCategoryModalOpen(false)}
-            />
+            <Button
+                variant="destructive"
+                className="shrink-0"
+                disabled={!categoryId}
+                onClick={() => setDeleteOpen(true)}
+            >
+                Удалить категорию
+            </Button>
 
-            <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
-                <AlertDialogTrigger asChild>
-                    <Button
-                        variant="destructive"
-                        className="shrink-0"
-                        disabled={!categoryId}
-                    >
-                        Удалить категорию
-                    </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                    <AlertDialogHeader>
-                        <AlertDialogTitle>Удалить категорию?</AlertDialogTitle>
-                        <AlertDialogDescription>
-                            Будут удалены <b>все продукты</b>, связанные с этой категорией. Операцию нельзя отменить.
-                        </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                        <AlertDialogCancel>Отмена</AlertDialogCancel>
-                        <AlertDialogAction onClick={onDeleteCategory}>
-                            Удалить
-                        </AlertDialogAction>
-                    </AlertDialogFooter>
-                </AlertDialogContent>
-            </AlertDialog>
+            <ConfirmDialog
+                open={deleteOpen}
+                onOpenChange={setDeleteOpen}
+                title="Удалить категорию?"
+                text="Будут удалены все продукты, связанные с этой категорией. Операцию нельзя отменить."
+                onConfirm={onDeleteCategory}
+            />
 
         </div>
     );
