@@ -185,9 +185,9 @@ const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories })
     );
 
     return (
-        <Container>
+        <Container className="md:my-7">
             <div className="border-b bg-card">
-                <div className="py-6 flex flex-col md:flex-row md:justify-between gap-4">
+                <div className="pb-6 flex flex-col md:flex-row md:justify-between gap-4">
                     <AnimatedEntrance className="text-center md:text-left">
                         <h1 className="text-23-30-1_5 font-bold">{tCeilings("title")}</h1>
                         <p className="text-muted-foreground mt-1">{tCeilings("subTitle")}</p>

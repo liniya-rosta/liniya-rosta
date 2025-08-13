@@ -10,7 +10,7 @@ interface Props {
 const AdvantageLaminateCard: React.FC<Props> = ({title, text, icon}) => {
 
     return (
-        <Card className="w-full lg:w-[45%]">
+        <Card className="w-full">
             <CardContent className="p-6 flex flex-col items-center gap-2 flex-grow justify-start">
                 <div className="w-16 h-16 rounded-full flex items-center justify-start">
                     <span className="text-2xl">{icon}</span>

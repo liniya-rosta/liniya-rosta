@@ -4,9 +4,11 @@ import GalleryClient from "@/src/app/(public)/[locale]/portfolio/[slug]/GalleryC
 import {getLocale, getTranslations} from "next-intl/server";
 import {handleKyError} from "@/src/lib/handleKyError";
 import {toast} from "react-toastify";
+import {Container} from '@/src/components/shared/Container';
+
 
 type Props = {
-    params:  Promise<{ slug: string; locale: 'ru' | 'ky' }>;
+    params: Promise<{ slug: string; locale: 'ru' | 'ky' }>;
 };
 
 export async function generateMetadata({params}: Props): Promise<Metadata> {
@@ -54,13 +56,15 @@ const GalleryPage = async ({params}: Props) => {
     }
 
     return (
-        <main className="container mx-auto px-4">
-            <h1 className="text-3xl font-bold text-foreground">
-                Галерея
-            </h1>
-            <p className="mb-8 text-lg text-muted-foreground">{detailItem?.description[locale]}</p>
-            <GalleryClient detailItem={detailItem} error={errorMessage}/>
-        </main>
+        <Container>
+            <div className='md:my-7'>
+                <h1 className="text-3xl font-bold text-foreground">
+                    Галерея
+                </h1>
+                <p className="mb-8 text-lg text-muted-foreground">{detailItem?.description[locale]}</p>
+                <GalleryClient detailItem={detailItem} error={errorMessage}/>
+            </div>
+        </Container>
     );
 };
 
