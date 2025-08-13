@@ -8,7 +8,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import {ChatFilters, User} from "@/src/lib/types";
 import {chat_statuses} from "@/src/app/(admin)/admin/online-chat/constants";
 import {useAdminChatStore} from "@/store/superadmin/adminChatStore";
-import LoaderIcon from "@/src/components/ui/Loading/LoaderIcon";
 
 const filterSchema = z.object({
     status: z.string().optional(),
@@ -31,7 +30,7 @@ const ChatFiltersPanel: React.FC<ChatFiltersPanelProps> = ({ onChange, adminList
         defaultValues: {},
     });
 
-    const {fetchChatLoading} =useAdminChatStore();
+    const {fetchChatLoading, setFetchChatLoading} =useAdminChatStore();
 
     const onSubmit = (data: ChatFilters) => {
         const formatted = {
@@ -41,12 +40,14 @@ const ChatFiltersPanel: React.FC<ChatFiltersPanelProps> = ({ onChange, adminList
             updatedFrom: data.updatedFrom || undefined,
             updatedTo: data.updatedTo || undefined,
         };
+        setFetchChatLoading(true);
         onChange(formatted);
     };
 
     const filterCleaning = () => {
         reset();
         onChange({});
+        setFetchChatLoading(true);
     };
 
     return (
@@ -119,7 +120,7 @@ const ChatFiltersPanel: React.FC<ChatFiltersPanelProps> = ({ onChange, adminList
 
             <div className="flex gap-3 mt-2">
                 <Button type="submit" disabled={fetchChatLoading}>
-                    {fetchChatLoading && <LoaderIcon/>} Применить
+                     Применить
                 </Button>
                 <Button
                     type="button"
@@ -127,7 +128,6 @@ const ChatFiltersPanel: React.FC<ChatFiltersPanelProps> = ({ onChange, adminList
                     onClick={filterCleaning}
                     disabled={fetchChatLoading}
                 >
-                    {fetchChatLoading && <LoaderIcon/>}
                     Сбросить
                 </Button>
             </div>

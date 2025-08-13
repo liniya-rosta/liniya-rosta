@@ -12,8 +12,6 @@ export const fetchAllChats = async (filters: ChatFilters = {}) => {
         }
     });
 
-    console.log(searchParams)
-
     return await kyAPI
         .get("superadmin/online-chat", { searchParams })
         .json<ChatResponse>();

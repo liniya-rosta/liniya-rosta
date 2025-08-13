@@ -1,5 +1,6 @@
 import {ChatMessage} from "@/src/lib/types";
 import { useRef, useState } from "react";
+import {WS_URL} from "@/src/lib/globalConstants";
 
 export const useClientChat = () => {
     const ws = useRef<WebSocket | null>(null);
@@ -10,7 +11,7 @@ export const useClientChat = () => {
     const connect = (clientName: string, phone: string) => {
         if (ws.current) return;
 
-        ws.current = new WebSocket("ws://localhost:8000/ws/online-chat");
+        ws.current = new WebSocket(WS_URL);
         ws.current.onopen = () => {
             console.log("WS клиент в сети");
             setConnected(true);

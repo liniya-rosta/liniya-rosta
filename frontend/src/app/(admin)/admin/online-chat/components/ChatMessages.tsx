@@ -1,12 +1,11 @@
 import React from "react";
-import { ChatMessage } from "@/src/lib/types";
 import { Button } from "@/src/components/ui/button";
-import dayjs from "dayjs";
 import {cn} from "@/src/lib/utils";
 import { ArrowLeft } from "lucide-react";
+import {useAdminChatStore} from "@/store/superadmin/adminChatStore";
+import ChatBubble from "@/src/components/ui/ChatBubble";
 
 interface ChatMessagesProps {
-    messages: ChatMessage[];
     input: string;
     onInputChange: (val: string) => void;
     onSubmit: (e: React.FormEvent) => void;
@@ -15,16 +14,18 @@ interface ChatMessagesProps {
 }
 
 const ChatMessages: React.FC<ChatMessagesProps> = ({
-                                                              messages,
                                                               input,
                                                               onInputChange,
                                                               onSubmit,
                                                               className,
                                                               onBack
                                                           }) => {
+
+    const {oneChatMessages} =useAdminChatStore();
+
     return (
         <div className={cn(className)}>
-            <div className="flex items-center p-4 border-b md:hidden">
+            <div className="flex items-center p-4 border-b">
                 <Button
                     variant="ghost"
                     size="icon"
@@ -36,22 +37,13 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
                 <h2 className="font-medium">Чат</h2>
             </div>
             <div className="flex-1 overflow-y-auto p-4 space-y-2">
-                {messages.length > 0 ? (
-                    messages.map((msg, index) => (
-                        <div
+                {oneChatMessages && oneChatMessages.messages.length > 0 ? (
+                    oneChatMessages.messages.map((msg, index) => (
+                        <ChatBubble
                             key={index}
-                            className={`max-w-[70%] w-auto px-4 py-2 rounded-lg ${
-                                msg.sender === "admin"
-                                    ? "ml-auto bg-blue-100"
-                                    : "bg-gray-100"
-                            }`}
-                        >
-                            <div className="text-sm text-gray-600">{msg.senderName}</div>
-                            <div>{msg.text}</div>
-                            <div className="text-xs text-gray-400 text-right">
-                                {dayjs(msg.timestamp).format('HH:mm')}
-                            </div>
-                        </div>
+                            message={msg}
+                            align={msg.sender === "admin" ? "right" : "left"}
+                        />
                     ))
                 ) : (
                     <p className="text-center text-gray-400">Нет сообщений</p>
@@ -67,7 +59,7 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
                         value={input}
                         onChange={(e) => onInputChange(e.target.value)}
                     />
-                    <Button type="submit" className="px-4 py-2" disabled={messages.length === 0}>
+                    <Button type="submit" className="px-4 py-2" disabled={ oneChatMessages?.messages.length === 0}>
                         Отправить
                     </Button>
                 </form>

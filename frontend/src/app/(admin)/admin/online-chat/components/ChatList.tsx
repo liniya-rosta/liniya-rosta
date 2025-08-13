@@ -1,5 +1,4 @@
 import React from "react";
-import { ChatSession } from "@/src/lib/types";
 import dayjs from "dayjs";
 import { Button} from "@/src/components/ui/button";
 import {chat_statuses} from "@/src/app/(admin)/admin/online-chat/constants";
@@ -7,37 +6,40 @@ import { Select, SelectContent, SelectTrigger, SelectValue, SelectItem } from "@
 import {useAdminChatStore} from "@/store/superadmin/adminChatStore";
 import { Checkbox } from "@/src/components/ui/checkbox";
 import { cn } from "@/src/lib/utils";
+import {LoaderIcon} from "lucide-react";
 
 interface ChatListProps {
-    chats: ChatSession[];
     selectedChatId: string | null;
     onSelect: (chatId: string) => void;
     onRequestDelete: () => void;
     onStatusUpdated: (id: string, status: string) => void;
     onLoadMore: () => void;
-    canLoadMore: boolean;
     className?: string;
 }
 
 const ChatList: React.FC<ChatListProps> = ({
-                                               chats,
                                                selectedChatId,
                                                onSelect,
                                                onRequestDelete,
                                                onStatusUpdated,
                                                onLoadMore,
-                                               canLoadMore=false,
                                                className,
 }) => {
-    const { selectedToDelete, setSelectedToDelete } = useAdminChatStore();
-
-    const allSelected = chats.length > 0 && chats.every((c) => selectedToDelete.includes(c._id));
+    const {
+        allChats,
+        paginationChat,
+        selectedToDelete,
+        deleteChatLoading,
+        fetchChatLoading,
+        setSelectedToDelete,
+    } = useAdminChatStore();
+    const allSelected = allChats.length > 0 && allChats.every((c) => selectedToDelete.includes(c._id));
 
     const toggleAll = () => {
         if (allSelected) {
             setSelectedToDelete([]);
         } else {
-            setSelectedToDelete(chats.map((c) => c._id));
+            setSelectedToDelete(allChats.map((c) => c._id));
         }
     };
 
@@ -48,6 +50,8 @@ const ChatList: React.FC<ChatListProps> = ({
             setSelectedToDelete(selectedToDelete.filter((s) => s !== id));
         }
     };
+
+    const loading = paginationChat && allChats.length > paginationChat.total || deleteChatLoading;
 
     return (
         <div className={cn(className, "border-r")}>
@@ -68,8 +72,8 @@ const ChatList: React.FC<ChatListProps> = ({
             </div>
 
             <div className="flex-1 overflow-y-auto">
-                {chats.length > 0 ? (
-                    chats.map((chat) => {
+                {allChats.length > 0 ? (
+                    allChats.map((chat) => {
                         const isChecked = selectedToDelete.includes(chat._id);
                         return (
                             <div
@@ -102,7 +106,10 @@ const ChatList: React.FC<ChatListProps> = ({
                                 </div>
 
                                 <div className="mt-2 flex flex-wrap gap-3 items-center justify-between">
-                                    <Select onValueChange={(value) => onStatusUpdated(chat._id, value)} defaultValue={chat.status || chat_statuses[0]}>
+                                    <Select
+                                        value={chat.status || chat_statuses[0]}
+                                        onValueChange={(value) => onStatusUpdated(chat._id, value)}
+                                    >
                                         <SelectTrigger className="w-[140px]">
                                             <SelectValue placeholder="Выбрать статус" />
                                         </SelectTrigger>
@@ -131,14 +138,19 @@ const ChatList: React.FC<ChatListProps> = ({
                         );
                     })
                 ) : (
-                    <p className="text-center text-gray-400">Список чатов пуст</p>
+                    <p className="text-center text-gray-400 mt-3">Список чатов пуст</p>
                 )}
             </div>
 
-            {chats.length > 0 && (
+            {allChats.length > 0 && (
                 <div className="p-4 text-center">
-                    <Button variant="outline" onClick={onLoadMore} disabled={canLoadMore}>
-                        Загрузить ещё 20
+                    <Button
+                        variant="outline"
+                        onClick={onLoadMore}
+                        disabled={loading}
+                    >
+                        {fetchChatLoading && <LoaderIcon/>}
+                        Загрузить ещё
                     </Button>
                 </div>
             )}

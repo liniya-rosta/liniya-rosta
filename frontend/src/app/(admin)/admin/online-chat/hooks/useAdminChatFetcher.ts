@@ -1,7 +1,7 @@
 import {useAdminChatStore} from "@/store/superadmin/adminChatStore";
 import {fetchAllChats, fetchChatById} from "@/actions/superadmin/onlineChat";
-import {useState} from "react";
-import {ChatFilters, ChatMessage} from "@/src/lib/types";
+import React, {useState} from "react";
+import {ChatFilters} from "@/src/lib/types";
 import {toast} from "react-toastify";
 import {getAllAdmins} from "@/actions/superadmin/admins";
 import {useSuperadminAdminsStore} from "@/store/superadmin/superadminAdminsStore";
@@ -9,57 +9,49 @@ import useUserStore from "@/store/usersStore";
 
 const useAdminChatFetcher = () => {
     const {
-        allChats,
-        fetchChatError,
         setChats,
+        setOneChatMessages,
         setFetchChatLoading,
         setFetchChatError,
-        addChat
+        setPaginationChat,
     } = useAdminChatStore();
 
     const {user} = useUserStore();
 
     const {admins, setAdmins} = useSuperadminAdminsStore();
-    const [messages, setMessages] = useState<ChatMessage[]>([]);
-    const [totalPages, setTotalPages] = useState<number>(1);
+    const [filters, setFilters] = React.useState<ChatFilters>({});
+    const [limit, setLimit] = useState(20);
 
-    const fetchData = async (filters?: ChatFilters, page?: number) => {
+    const fetchData = async () => {
         setFetchChatError(null);
 
         try {
-            const data = await fetchAllChats({...filters, page});
-            setTotalPages(data.totalPages);
+            const data = await fetchAllChats({ ...filters, limit });
+            setChats(data.items);
 
-            if (page === 1) {
-                setChats(data.items);
-            } else {
-                setChats((prev) =>
-                    Array.from(
-                        new Map(
-                            [...prev, ...data.items].map(chat => [chat._id, chat])
-                        ).values()
-                    )
-                );
-            }
-
+            setPaginationChat({
+                total: data.total,
+                page: data.page,
+                totalPages: data.totalPages,
+                pageSize: data.pageSize,
+            });
         } catch (err) {
-            let errorMessage = "Ошибка при получении данных";
+            let errorMessage = "Ошибка при получении списка чата";
             if (err instanceof Error) {
                 errorMessage = err.message;
             }
-
             setFetchChatError(errorMessage);
         } finally {
-            setFetchChatLoading(false)
+            setFetchChatLoading(false);
         }
-    }
+    };
 
     const fetchOneChat = async (chatId: string) => {
         try {
             const data = await fetchChatById(chatId);
-            setMessages(data.messages);
+            setOneChatMessages({_id: chatId, messages: data.messages});
         } catch (err) {
-            let errorMessage = "Ошибка при получении данных";
+            let errorMessage = "Ошибка при получении данных одного чата";
             if (err instanceof Error) {
                 errorMessage = err.message;
             }
@@ -73,7 +65,7 @@ const useAdminChatFetcher = () => {
             const admins = await getAllAdmins();
             setAdmins(admins);
         } catch (err) {
-            let errorMessage = "Ошибка при получении данных";
+            let errorMessage = "Ошибка при получении списка админов";
             if (err instanceof Error) {
                 errorMessage = err.message;
             }
@@ -83,14 +75,13 @@ const useAdminChatFetcher = () => {
 
     return {
         user,
-        allChats,
-        totalPages,
-        messages,
+        filters,
+        limit,
         admins,
-        fetchChatError,
-        addChat,
         setChats,
-        setMessages,
+        setLimit,
+        setFilters,
+        setOneChatMessages,
         fetchData,
         fetchOneChat,
         fetchAdmins,
