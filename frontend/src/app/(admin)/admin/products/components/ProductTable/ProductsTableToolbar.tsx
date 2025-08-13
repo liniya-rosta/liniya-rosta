@@ -15,6 +15,14 @@ import {Product} from "@/src/lib/types";
 import {Table} from "@tanstack/react-table";
 import CreateCategoryForm from "@/src/app/(admin)/admin/products/components/Modal/CategoryCreateForm";
 import {useAdminCategoryStore} from "@/store/superadmin/superadminCategoriesStore";
+import {
+    AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+    AlertDialogDescription, AlertDialogFooter, AlertDialogHeader,
+    AlertDialogTitle, AlertDialogTrigger
+} from "@/src/components/ui/alert-dialog";
+import {handleKyError} from "@/src/lib/handleKyError";
+import {toast} from "react-toastify";
+import {deleteCategory} from "@/actions/superadmin/categories";
 
 type FilterType = 'title' | 'description';
 
@@ -50,8 +58,9 @@ const ProductsTableToolbar: React.FC<Props> = ({
                                                    setPageSize,
                                                    setPageIndex,
                                                }) => {
-    const {categories} = useAdminCategoryStore();
+    const { categories, setCategories, setDeleteLoading, setDeleteError } = useAdminCategoryStore();
     const [isCategoryModalOpen, setIsCategoryModalOpen] = React.useState(false);
+    const [deleteOpen, setDeleteOpen] = React.useState(false);
 
     const getFilterPlaceholder = () => {
         switch (activeFilterType) {
@@ -83,6 +92,27 @@ const ProductsTableToolbar: React.FC<Props> = ({
         "sale": "Скидка",
         "seoTitle": "SEO заголовок",
         "seoDescription": "SEO описание",
+    };
+
+    const onDeleteCategory = async () => {
+        if (!categoryId) return;
+        try {
+            setDeleteLoading(true);
+            setDeleteError(null);
+
+            await deleteCategory(categoryId);
+            setCategories(categories.filter(c => c._id !== categoryId));
+
+            setCategoryId(null);
+            setPageIndex(0);
+        } catch (e) {
+            const msg = await handleKyError(e, "Не удалось удалить категорию");
+            setDeleteError(msg);
+            toast.error(msg);
+        } finally {
+            setDeleteLoading(false);
+            setDeleteOpen(false);
+        }
     };
 
     return (
@@ -193,6 +223,32 @@ const ProductsTableToolbar: React.FC<Props> = ({
                 open={isCategoryModalOpen}
                 onClose={() => setIsCategoryModalOpen(false)}
             />
+
+            <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
+                <AlertDialogTrigger asChild>
+                    <Button
+                        variant="destructive"
+                        className="shrink-0"
+                        disabled={!categoryId}
+                    >
+                        Удалить категорию
+                    </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Удалить категорию?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Будут удалены <b>все продукты</b>, связанные с этой категорией. Операцию нельзя отменить.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>Отмена</AlertDialogCancel>
+                        <AlertDialogAction onClick={onDeleteCategory}>
+                            Удалить
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
 
         </div>
     );
