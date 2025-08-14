@@ -1,36 +1,47 @@
 import React from "react";
 import { Button } from "@/src/components/ui/button";
-import {cn} from "@/src/lib/utils";
 import { ArrowLeft } from "lucide-react";
 import {useAdminChatStore} from "@/store/superadmin/adminChatStore";
 import ChatBubble from "@/src/components/ui/ChatBubble";
+import { motion } from "motion/react";
+import useUserStore from "@/store/usersStore";
 
 interface ChatMessagesProps {
     input: string;
     onInputChange: (val: string) => void;
     onSubmit: (e: React.FormEvent) => void;
     onBack: () => void;
-    className?: string;
 }
 
 const ChatMessages: React.FC<ChatMessagesProps> = ({
                                                               input,
                                                               onInputChange,
                                                               onSubmit,
-                                                              className,
                                                               onBack
                                                           }) => {
 
     const {oneChatMessages} =useAdminChatStore();
+    const {user} = useUserStore();
+
+    const disabledBtn = oneChatMessages?.messages.length === 0 || oneChatMessages?.status === "Без ответа" ||
+        oneChatMessages?.status === "Завершена" || (oneChatMessages?.adminId !== user?._id && oneChatMessages?.status !== "Новый");
 
     return (
-        <div className={cn(className)}>
+        <motion.div
+
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 50 }}
+            transition={{ duration: 0.3 }}
+            className="flex flex-col w-full lg:flex lg:w-2/3 h-full"
+        >
             <div className="flex items-center p-4 border-b">
                 <Button
                     variant="ghost"
                     size="icon"
                     onClick={onBack}
                     className="mr-2"
+                    disabled={!oneChatMessages}
                 >
                     <ArrowLeft className="h-5 w-5" />
                 </Button>
@@ -50,8 +61,8 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
                 )}
             </div>
 
-            <div className="sticky bottom-0 bg-white border-t p-4 shrink-0">
-                <form onSubmit={onSubmit} className="flex space-x-2">
+            <div className="sticky bottom-0 bg-white border-t px-4 py-6 shrink-0">
+                <form onSubmit={onSubmit} className="flex gap-3 justify-between items-center">
                     <input
                         type="text"
                         placeholder="Введите сообщение"
@@ -59,12 +70,12 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
                         value={input}
                         onChange={(e) => onInputChange(e.target.value)}
                     />
-                    <Button type="submit" className="px-4 py-2" disabled={ oneChatMessages?.messages.length === 0}>
+                    <Button type="submit" className="px-4 py-2" disabled={disabledBtn}>
                         Отправить
                     </Button>
                 </form>
             </div>
-        </div>
+        </motion.div>
     );
 };
 

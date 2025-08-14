@@ -365,5 +365,7 @@ export interface ChatFilters {
 
 export interface Chat {
     _id: string;
+    adminId: string;
+    status: string;
     messages: ChatMessage[];
 }

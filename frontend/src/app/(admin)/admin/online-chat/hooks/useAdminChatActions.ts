@@ -48,14 +48,6 @@ const useAdminChatActions = (setChats: React.Dispatch<React.SetStateAction<ChatS
         }
     };
 
-    const updateChatOnlineStatus = (chatId: string, isOnline: boolean) => {
-        setChats((prev) =>
-            prev.map((chat) =>
-                chat._id === chatId ? {...chat, isClientOnline: isOnline} : chat
-            )
-        );
-    };
-
     return {
         selectedToDelete,
         deleteChatLoading,
@@ -64,7 +56,6 @@ const useAdminChatActions = (setChats: React.Dispatch<React.SetStateAction<ChatS
         setShowConfirm,
         handleDelete,
         handleStatusChange,
-        updateChatOnlineStatus
     };
 };
 

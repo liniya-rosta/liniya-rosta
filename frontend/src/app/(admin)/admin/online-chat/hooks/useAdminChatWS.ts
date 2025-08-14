@@ -1,17 +1,26 @@
-import { useEffect, useRef } from "react";
+import {useCallback, useEffect, useRef} from "react";
 import useUserStore from "@/store/usersStore";
 import { WS_URL } from "@/src/lib/globalConstants";
 import { toast } from "react-toastify";
 import {useAdminChatStore} from "@/store/superadmin/adminChatStore";
 
-interface Props {
-    updateChatOnlineStatus: (chatId: string, isOnline: boolean) => void;
-}
-
-export const useAdminChatWS = ({ updateChatOnlineStatus }: Props) => {
+export const useAdminChatWS = () => {
     const wsRef = useRef<WebSocket | null>(null);
     const { accessToken } = useUserStore();
     const {setOneChatMessages} = useAdminChatStore();
+
+    const handleNewMessage = useCallback((data: any) => {
+        console.log(data)
+        if (data.type === "new_message") {
+            setOneChatMessages((prev) => {
+                if (!prev || prev._id !== data.chatId) return prev;
+                return {
+                    ...prev,
+                    messages: [...prev.messages, data],
+                };
+            });
+        }
+    }, [setOneChatMessages]);
 
     useEffect(() => {
         const wsUrl = `${WS_URL}?token=${accessToken}`;
@@ -25,21 +34,7 @@ export const useAdminChatWS = ({ updateChatOnlineStatus }: Props) => {
             try {
 
                 const data = JSON.parse(event.data);
-
-                if (data.type === "new_message") {
-                    console.log(data);
-                    setOneChatMessages((prev) => {
-                        if (!prev || prev._id !== data.chatId) return prev;
-                        return {
-                            ...prev,
-                            messages: [...prev.messages, data],
-                        };
-                    });
-                }
-
-                if (data.type === "client_offline") {
-                    updateChatOnlineStatus?.(data.chatId, false);
-                }
+                handleNewMessage(data);
             } catch {
                 toast.error("Ошибка получения сообщения");
             }
@@ -48,7 +43,7 @@ export const useAdminChatWS = ({ updateChatOnlineStatus }: Props) => {
         return () => {
             ws.close();
         };
-    }, [accessToken]);
+    }, [accessToken, handleNewMessage]);
 
     const sendMessage = (chatId: string, text: string) => {
         if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) return;

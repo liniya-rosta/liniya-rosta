@@ -5,8 +5,8 @@ import {chat_statuses} from "@/src/app/(admin)/admin/online-chat/constants";
 import { Select, SelectContent, SelectTrigger, SelectValue, SelectItem } from "@/src/components/ui/select";
 import {useAdminChatStore} from "@/store/superadmin/adminChatStore";
 import { Checkbox } from "@/src/components/ui/checkbox";
-import { cn } from "@/src/lib/utils";
 import {LoaderIcon} from "lucide-react";
+import { motion } from "motion/react";
 
 interface ChatListProps {
     selectedChatId: string | null;
@@ -15,6 +15,7 @@ interface ChatListProps {
     onStatusUpdated: (id: string, status: string) => void;
     onLoadMore: () => void;
     className?: string;
+    isLoadMoreDisabled: boolean;
 }
 
 const ChatList: React.FC<ChatListProps> = ({
@@ -24,14 +25,14 @@ const ChatList: React.FC<ChatListProps> = ({
                                                onStatusUpdated,
                                                onLoadMore,
                                                className,
+                                               isLoadMoreDisabled
 }) => {
     const {
         allChats,
-        paginationChat,
         selectedToDelete,
-        deleteChatLoading,
         fetchChatLoading,
         setSelectedToDelete,
+        deleteChatLoading,
     } = useAdminChatStore();
     const allSelected = allChats.length > 0 && allChats.every((c) => selectedToDelete.includes(c._id));
 
@@ -51,10 +52,16 @@ const ChatList: React.FC<ChatListProps> = ({
         }
     };
 
-    const loading = paginationChat && allChats.length > paginationChat.total || deleteChatLoading;
+    const isDeleteBtnDisabled = deleteChatLoading || selectedToDelete.length === 0;
 
     return (
-        <div className={cn(className, "border-r")}>
+        <motion.div
+            initial={{opacity: 0, x: -50}}
+            animate={{opacity: 1, x: 0}}
+            exit={{opacity: 0, x: -50}}
+            transition={{duration: 0.3}}
+            className={className}
+        >
             <div className="p-4 border-b-3 flex items-center justify-between">
                 <div className="flex items-center gap-3">
                     <Checkbox
@@ -68,6 +75,7 @@ const ChatList: React.FC<ChatListProps> = ({
                     <Button
                         onClick={onRequestDelete}
                         variant="destructive"
+                        disabled={isDeleteBtnDisabled}
                     >Удалить ({selectedToDelete.length})</Button>
             </div>
 
@@ -147,14 +155,14 @@ const ChatList: React.FC<ChatListProps> = ({
                     <Button
                         variant="outline"
                         onClick={onLoadMore}
-                        disabled={loading}
+                        disabled={isLoadMoreDisabled}
                     >
                         {fetchChatLoading && <LoaderIcon/>}
                         Загрузить ещё
                     </Button>
                 </div>
             )}
-        </div>
+        </motion.div>
     );
 };
 

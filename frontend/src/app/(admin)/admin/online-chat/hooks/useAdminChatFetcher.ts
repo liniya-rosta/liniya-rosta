@@ -1,6 +1,6 @@
 import {useAdminChatStore} from "@/store/superadmin/adminChatStore";
 import {fetchAllChats, fetchChatById} from "@/actions/superadmin/onlineChat";
-import React, {useState} from "react";
+import React, {useCallback, useState} from "react";
 import {ChatFilters} from "@/src/lib/types";
 import {toast} from "react-toastify";
 import {getAllAdmins} from "@/actions/superadmin/admins";
@@ -17,18 +17,21 @@ const useAdminChatFetcher = () => {
     } = useAdminChatStore();
 
     const {user} = useUserStore();
-
     const {admins, setAdmins} = useSuperadminAdminsStore();
     const [filters, setFilters] = React.useState<ChatFilters>({});
     const [limit, setLimit] = useState(20);
 
-    const fetchData = async () => {
+    const fetchData = useCallback(async () => {
         setFetchChatError(null);
 
         try {
-            const data = await fetchAllChats({ ...filters, limit });
-            setChats(data.items);
+            const hasFilters = Object.keys(filters).length > 0;
+            const params = hasFilters
+                ? { ...filters }
+                : { ...filters, limit };
 
+            const data = await fetchAllChats(params);
+            setChats(data.items);
             setPaginationChat({
                 total: data.total,
                 page: data.page,
@@ -44,12 +47,17 @@ const useAdminChatFetcher = () => {
         } finally {
             setFetchChatLoading(false);
         }
-    };
+    }, [filters, limit, setChats, setFetchChatError, setFetchChatLoading, setPaginationChat]);
 
-    const fetchOneChat = async (chatId: string) => {
+    const fetchOneChat = useCallback (async (chatId: string) => {
         try {
             const data = await fetchChatById(chatId);
-            setOneChatMessages({_id: chatId, messages: data.messages});
+            setOneChatMessages({
+                _id: chatId,
+                messages: data.messages,
+                status: data.status,
+                adminId: data.adminId,
+            });
         } catch (err) {
             let errorMessage = "Ошибка при получении данных одного чата";
             if (err instanceof Error) {
@@ -58,9 +66,9 @@ const useAdminChatFetcher = () => {
 
             setFetchChatError(errorMessage);
         }
-    }
+    }, [setFetchChatError, setOneChatMessages])
 
-    const fetchAdmins = async () => {
+    const fetchAdmins = useCallback(async () => {
         try {
             const admins = await getAllAdmins();
             setAdmins(admins);
@@ -71,7 +79,7 @@ const useAdminChatFetcher = () => {
             }
             toast.error(errorMessage);
         }
-    }
+    }, [setAdmins]);
 
     return {
         user,
