@@ -144,7 +144,7 @@ export const getProductTableColumns = (
         {
             accessorKey: "characteristics",
             header: "Характеристики",
-            cell: ({row}) => {
+            cell: ({ row }) => {
                 const chars = Array.isArray(row.original.characteristics)
                     ? row.original.characteristics
                     : [];
@@ -155,18 +155,17 @@ export const getProductTableColumns = (
                     .slice(0, 3)
                     .map((c) => `${c.key?.ru}: ${c.value?.ru}`);
 
-                const fullText = chars
-                    .map((c) => `${c.key?.ru}: ${c.value?.ru}`)
-                    .join("\n");
+                const fullHtmlList = `
+                        <ul style="padding-left:20px;list-style:disc;margin:0">
+                        ${chars
+                        .map((c) => `<li>${c.key?.ru}: ${c.value?.ru}</li>`)
+                        .join("")}
+                         </ul>`;
 
                 const Preview = (
                     <div className="text-sm max-w-[300px]">
                         {previewItems.map((line, i) => (
-                            <div
-                                key={i}
-                                className="truncate"
-                                title={line}
-                            >
+                            <div key={i} className="truncate" title={line}>
                                 {line}
                             </div>
                         ))}
@@ -179,7 +178,7 @@ export const getProductTableColumns = (
                             <TooltipTrigger asChild>
                                 <div
                                     className="cursor-pointer max-w-[300px]"
-                                    onClick={() => onSaleLabelClick(fullText)}
+                                    onClick={() => onSaleLabelClick(fullHtmlList)}
                                     aria-label="Показать все характеристики"
                                 >
                                     {Preview}

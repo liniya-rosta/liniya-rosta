@@ -4,7 +4,7 @@ import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import parse from "html-react-parser";
 
 interface Props {
-    saleLabel: string | null; // может быть HTML или plain text
+    saleLabel: string | null;
     onClose: () => void;
 }
 
@@ -17,7 +17,6 @@ const SaleLabelModal: React.FC<Props> = ({ saleLabel, onClose }) => {
         <Dialog
             open={!!saleLabel}
             onOpenChange={(open) => {
-                // закрываем только при попытке закрыть
                 if (!open) onClose();
             }}
         >
