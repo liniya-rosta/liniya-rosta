@@ -27,7 +27,7 @@ const imageItemSchema = z.object({
 });
 
 export const imagesSchema = z.object({
-    image: z.instanceof(File).nullable().optional(),
+    file: z.union([z.instanceof(File), z.null()]),
     alt: i18nString.optional(),
 });
 
@@ -73,6 +73,9 @@ export const updateProductSchema = z.object({
     sale: saleSchema.optional(),
     seoTitle: i18nStringOptional.optional(),
     seoDescription: i18nStringOptional.optional(),
+    images: z
+        .array(imagesSchema)
+        .optional(),
 });
 
 export type CreateProductFormData = z.infer<typeof createProductSchema>;

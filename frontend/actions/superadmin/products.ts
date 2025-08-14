@@ -1,5 +1,6 @@
 import {Product, ProductMutation, ProductUpdateMutation} from "@/src/lib/types";
 import kyAPI from "@/src/lib/kyAPI";
+import {UpdateProductFormData} from "@/src/lib/zodSchemas/admin/productSchema";
 
 export const createProduct = async (productData: ProductMutation): Promise<Product> => {
     const formData = new FormData();
@@ -61,55 +62,32 @@ export const createProduct = async (productData: ProductMutation): Promise<Produ
     return data.product;
 };
 
-export const updateProduct = async (id: string, productData: ProductUpdateMutation): Promise<Product> => {
+export const updateProduct = async (id: string, productData: UpdateProductFormData, mode: "replace" | "append" = "replace"): Promise<Product> => {
     const formData = new FormData();
 
-    if (productData.category) {
-        formData.append('category', productData.category);
-    }
-
-    if (productData.title) {
-        formData.append('title', productData.title.ru);
-    }
-
-    if (productData.description) {
-        formData.append('description', productData.description.ru);
-    }
-
-    if (productData.seoTitle) {
-        formData.append('seoTitle', productData.seoTitle.ru);
-    }
-
-    if (productData.seoDescription) {
-        formData.append('seoDescription', productData.seoDescription.ru);
-    }
-
-    if (productData.cover) {
-        formData.append('cover', productData.cover);
-    }
-
-    if (productData.coverAlt) {
-        formData.append('coverAlt', productData.coverAlt.ru);
-    }
-
-    if (productData.characteristics) {
-        formData.append('characteristics', JSON.stringify(productData.characteristics));
-    }
-
+    if (productData.category) formData.append('category', productData.category);
+    if (productData.title) formData.append('title', productData.title.ru);
+    if (productData.description) formData.append('description', productData.description.ru);
+    if (productData.seoTitle) formData.append('seoTitle', productData.seoTitle.ru);
+    if (productData.seoDescription) formData.append('seoDescription', productData.seoDescription.ru);
+    if (productData.cover) formData.append('cover', productData.cover);
+    if (productData.coverAlt) formData.append('coverAlt', productData.coverAlt.ru);
+    if (productData.characteristics) formData.append('characteristics', JSON.stringify(productData.characteristics));
     if (productData.sale) {
         formData.append('isOnSale', String(productData.sale.isOnSale));
         if (productData.sale.label) {
             formData.append('saleLabel', productData.sale.label);
         }
     }
+    if (productData.icon instanceof File) formData.append('icon', productData.icon);
+    if (productData.iconAlt) formData.append('iconAlt', productData.iconAlt.ru);
 
-    if (productData.icon instanceof File) {
-        formData.append('icon', productData.icon);
-    }
+    formData.append("mode", mode);
 
-    if (productData.iconAlt) {
-        formData.append('iconAlt', productData.iconAlt.ru);
-    }
+    productData.images?.forEach((img) => {
+        if (img.file) formData.append("images", img.file);
+        formData.append("alts", img.alt ? img.alt?.ru : "");
+    });
 
     const data = await kyAPI.patch(
         `superadmin/products/${id}`, {body: formData}).json<{ message: string, product: Product }>();

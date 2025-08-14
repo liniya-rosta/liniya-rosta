@@ -32,8 +32,8 @@ export const updatePostSchema = z
                 alt: altSchema.optional(),
             })
         ).optional(),
-        seoTitle: langString,
-        seoDescription: langString,
+        seoTitle:  langString.optional(),
+        seoDescription: langString.optional(),
     })
     .refine(
         (data) => data.title || data.description || data.images,

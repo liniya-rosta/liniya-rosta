@@ -11,7 +11,7 @@ import {API_BASE_URL} from "@/src/lib/globalConstants";
 import {deleteProductImage,} from "@/actions/superadmin/products";
 import {useAdminProductStore} from "@/store/superadmin/superadminProductsStore";
 import {fetchProductById} from "@/actions/products";
-import ImagesEditForm from "@/src/app/(admin)/admin/products/components/Modal/ImagesEditForm";
+import ImagesEditForm from "@/src/app/(admin)/admin/products/edit-product/components/ImagesEditForm";
 import {handleKyError} from "@/src/lib/handleKyError";
 
 interface Props {

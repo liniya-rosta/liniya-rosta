@@ -19,8 +19,9 @@ import {useProductsTableLogic} from "@/src/app/(admin)/admin/products/hooks/useP
 import ProductTableContent from "@/src/app/(admin)/admin/products/components/ProductTable/ProductsTableContent";
 import {useProductsQuery} from "@/src/app/(admin)/admin/products/hooks/useProductsQuery";
 import ProductsTablePagination from "@/src/app/(admin)/admin/products/components/ProductTable/ProductsTablePagination";
-import ProductEditModal from "@/src/app/(admin)/admin/products/components/Modal/ProductEditModal";
+// import ProductEditModal from "@/src/app/(admin)/admin/products/components/Modal/ProductEditModal";
 import ImageModal from "@/src/app/(admin)/admin/portfolio/components/ImageModal";
+import {useRouter} from "next/navigation";
 
 interface ProductsTableProps {
     actionLoading: boolean;
@@ -33,18 +34,6 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
                                                          onDeleteProduct,
                                                          onDeleteSelectedProducts,
                                                      }) => {
-    const [editingProduct, setEditingProduct] = React.useState<Product | null>(null);
-    const [isModalOpen, setIsModalOpen] = React.useState(false);
-
-    const handleEditProduct = React.useCallback((product: Product) => {
-        setEditingProduct(product);
-        setIsModalOpen(true);
-    }, []);
-
-    const resetAndCloseModal = React.useCallback(() => {
-        setEditingProduct(null);
-        setIsModalOpen(false);
-    }, []);
 
     const {categories} = useCategoryStore();
 
@@ -68,18 +57,23 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
         pageSize, setPageSize,
         totalPages,
         totalItems,
-        refresh,
     } = useProductsQuery();
+
+    const router = useRouter();
+
+    const handleEditProduct = React.useCallback((product: Product) => {
+        router.push(`/admin/products/edit-product/${product._id}`);
+    }, [router]);
 
     const columns = React.useMemo(
         () =>
             getProductTableColumns(
                 categories,
-                handleEditProduct,
                 (id: string) => {
                     setIdsToDelete([id]);
                     setShowConfirmDialog(true);
                 },
+                handleEditProduct,
                 actionLoading,
                 onImageClick,
                 onSaleLabelClick,
@@ -185,14 +179,6 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
                 onClose={() => setIsImagesModalOpen(false)}
             />
 
-            {editingProduct && (
-                <ProductEditModal
-                    open={isModalOpen}
-                    onClose={resetAndCloseModal}
-                    product={editingProduct}
-                    refresh={refresh}
-                />
-            )}
         </div>
     );
 };
