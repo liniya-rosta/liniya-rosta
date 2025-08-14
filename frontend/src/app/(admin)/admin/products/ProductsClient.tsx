@@ -124,7 +124,7 @@ const ProductsClient: React.FC<ProductsClientProps> = ({
             <div className="flex flex-col sm:flex-row sm:justify-between items-center gap-4">
                 <div>
                     <h1 className="text-23-30-1_5 font-bold text-center sm:text-left">
-                        Управление продуктами
+                        Управление товарами
                     </h1>
                     <p className="text-muted-foreground mt-1 text-center sm:text-left">
                         Создавайте и редактируйте товары
