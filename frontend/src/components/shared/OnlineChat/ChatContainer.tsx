@@ -11,6 +11,8 @@ import ConfirmDialog from "@/src/components/ui/ConfirmDialog";
 import {RotateCcw, X} from "lucide-react";
 import {useTranslations} from "next-intl";
 import ChatBubble from "@/src/components/ui/ChatBubble";
+import PhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/style.css'
 
 export type ChatType = "online" | "whatsapp";
 
@@ -35,8 +37,8 @@ const ChatContainer = () => {
     const [isChatOpen, setIsChatOpen] = useState(false);
     const [isShowConfirm, setIsShowConfirm] = useState(false);
 
-    const {connect, sendMessage, chatMessages, connected, setChatMessages } = useClientChat();
-    const {whatsAppMessages, sendWAppMessage, setWhatsAppMessages} = useWhatsAppChat();
+    const { connect, sendMessage, chatMessages, connected } = useClientChat();
+    const { whatsAppMessages, sendWAppMessage } = useWhatsAppChat();
 
     const currentData = chatData[chatType];
 
@@ -71,7 +73,7 @@ const ChatContainer = () => {
         if (chatType === "online") {
             sendMessage(message, currentData.name);
         } else {
-            await sendWAppMessage(message, "client", currentData.phone);
+            await sendWAppMessage(message, currentData.name, currentData.phone);
         }
         setMessage("");
     };
@@ -82,12 +84,6 @@ const ChatContainer = () => {
             [chatType]: {name: "", phone: "", entered: false}
         }));
         setMessage("");
-
-        if (chatType === "online") {
-            setChatMessages([]);
-        } else {
-            setWhatsAppMessages([]);
-        }
     };
 
     return (
@@ -100,12 +96,12 @@ const ChatContainer = () => {
                         animate={{opacity: 1, scale: 1}}
                         exit={{opacity: 0, scale: 0.8}}
                         transition={{duration: 0.3}}
-                        className="w-100 border bg-white rounded-xl shadow p-2"
+                        className="w-100 border bg-white rounded-xl shadow py-4 px-2"
                     >
                         <div className="flex justify-between items-center mb-2 border-b pb-3">
 
                             <Button variant="outline" onClick={() => setIsShowConfirm(true)}>
-                                <RotateCcw/>{tFormChat("chatReset")}
+                                <RotateCcw/> Сброс
                             </Button>
                             {chatType === "whatsapp" && <span>WhatsApp</span>}
                             <Button variant="outline" onClick={() => setIsChatOpen(false)}> <X/></Button>
@@ -133,11 +129,14 @@ const ChatContainer = () => {
                                         placeholder={tFormChat("namePlaceholder")}
                                         className="border p-1 rounded w-full"
                                     />
-                                    <Input
+                                    <PhoneInput
                                         value={currentData.phone}
-                                        onChange={(e) => updateCurrentData("phone", e.target.value)}
+                                        country="kg"
+                                        onChange={(value) => updateCurrentData("phone", value)}
                                         placeholder={tFormChat("phonePlaceholder")}
-                                        className="border p-1 rounded w-full"
+                                        containerClass="w-full"
+                                        inputClass="!w-full border p-1 rounded"
+                                        buttonClass="!border !border-gray-300"
                                     />
                                     <Button
                                         onClick={handleEnterName}
@@ -151,7 +150,6 @@ const ChatContainer = () => {
                                     <Input
                                         value={message}
                                         onChange={(e) => setMessage(e.target.value)}
-                                        placeholder={tFormChat("messagePlaceholder")}
                                         className="border p-1 rounded w-full"
                                     />
                                     <Button onClick={handleSend}>➤</Button>
@@ -175,6 +173,8 @@ const ChatContainer = () => {
                 title={tConfirm("chatResetTitle")}
                 onConfirm={handleReset}
                 text={tConfirm("chatResetDescription")}
+                confirmText={tConfirm("confirmBtn")}
+                cancelText={tConfirm("cancelBtn")}
             />
         </div>
     );

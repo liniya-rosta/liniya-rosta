@@ -1,12 +1,14 @@
 import {ChatMessage} from "@/src/lib/types";
 import { useRef, useState } from "react";
 import {WS_URL} from "@/src/lib/globalConstants";
+import {useTranslations} from "next-intl";
 
 export const useClientChat = () => {
     const ws = useRef<WebSocket | null>(null);
     const [chatId, setChatId] = useState<string | null>(null);
     const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
     const [connected, setConnected] = useState(false);
+    const tFormChat = useTranslations("FormChat");
 
     const connect = (clientName: string, phone: string) => {
         if (ws.current) return;
@@ -19,7 +21,7 @@ export const useClientChat = () => {
             ws.current?.send(JSON.stringify({
                 type: "client_message",
                 name: clientName,
-                text: `Здравствуйте! Я хочу проконсультироваться. Мой телефон: ${phone}`,
+                text: tFormChat("automaticMsg") + phone,
             }));
         };
 

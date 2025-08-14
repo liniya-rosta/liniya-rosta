@@ -21,6 +21,8 @@ interface Props {
     onConfirm: () => void;
     loading?: boolean;
     text?: string;
+    confirmText?: string;
+    cancelText?:string,
 }
 
 const ConfirmDialog: React.FC<PropsWithChildren<Props>> = ({
@@ -30,14 +32,17 @@ const ConfirmDialog: React.FC<PropsWithChildren<Props>> = ({
                                                          onConfirm,
                                                          loading = false,
                                                          children,
-                                                               text = "Это действие невозможно отменить"
+                                                         text = "Это действие невозможно отменить",
+                                                         confirmText = "Подтвердить",
+                                                         cancelText = "Отмена"
                                                      }) => {
+
     return (
         <AlertDialog
             open={open}
             onOpenChange={onOpenChange}
         >
-            <AlertDialogContent className="!max-w-sm !w-full flex flex-col items-center justify-center text-center gap-4 max-w-lg">
+            <AlertDialogContent className="!max-w-sm !w-full flex flex-col items-center justify-center text-center gap-4">
                 <AlertDialogHeader className="text-center">
                     <AlertDialogTitle>{title}</AlertDialogTitle>
                 </AlertDialogHeader>
@@ -47,11 +52,14 @@ const ConfirmDialog: React.FC<PropsWithChildren<Props>> = ({
                 {children}
                 <AlertDialogFooter className="flex justify-center gap-4 mt-4">
                     <AlertDialogCancel asChild>
-                        <Button variant="outline">Отмена</Button>
+                        <Button variant="outline">
+                            {cancelText}
+                        </Button>
                     </AlertDialogCancel>
                     <AlertDialogAction asChild>
                         <Button onClick={onConfirm}>
-                            {loading && <LoaderIcon/>}Подтвердить
+                            {loading && <LoaderIcon/>}
+                            {confirmText}
                         </Button>
                     </AlertDialogAction>
                 </AlertDialogFooter>

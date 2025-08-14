@@ -10,7 +10,6 @@ export const useAdminChatWS = () => {
     const {setOneChatMessages} = useAdminChatStore();
 
     const handleNewMessage = useCallback((data: any) => {
-        console.log(data)
         if (data.type === "new_message") {
             setOneChatMessages((prev) => {
                 if (!prev || prev._id !== data.chatId) return prev;

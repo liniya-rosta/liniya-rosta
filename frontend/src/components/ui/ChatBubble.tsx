@@ -20,7 +20,7 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({
         <div className={cn("my-1", isRight ? "text-right" : "text-left")}>
             <div
                 className={cn(
-                    "inline-block rounded max-w-[70%] py-2 px-3 mb-2 break-words whitespace-pre-wrap",
+                    "inline-block rounded-xl max-w-[70%] py-2 px-4 mb-2 break-words whitespace-pre-wrap",
                     isRight ? "bg-blue-100" : "bg-gray-100"
                 )}
             >
