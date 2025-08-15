@@ -1,7 +1,6 @@
 import {ColumnDef} from '@tanstack/react-table';
 import {Edit2, Images, MoreHorizontal, Trash2} from 'lucide-react';
 import Image from 'next/image';
-import React from 'react';
 
 import {Button} from '@/src/components/ui/button';
 import {Checkbox} from '@/src/components/ui/checkbox';
@@ -65,13 +64,28 @@ export const getPostTableColumns = (
             enableHiding: false,
         },
         {
-            accessorKey: "title",
-            header: "Название",
-            cell: ({row}) => row.original.title.ru || "—",
+            id: 'title',
+            accessorFn: row => row.title?.ru ?? "",
+            header: ({ column }) => {
+                return (
+                    <Button
+                        variant="ghost"
+                        onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+                    >
+                        Заголовок
+                        <ArrowUpDown className="ml-2 h-4 w-4" />
+                    </Button>
+                );
+            },
+            cell: ({ row }) =>
+                <div className="font-medium max-w-[200px] truncate">
+                    {row.original.title.ru}
+                </div>,
+            filterFn: 'includesString',
         },
-
         {
-            accessorKey: 'description',
+            id: 'description',
+            accessorFn: row => row.description?.ru ?? "",
             header: 'Описание',
             cell: ({ row }) => {
                 const html = row.original.description?.ru ?? '';
@@ -109,7 +123,6 @@ export const getPostTableColumns = (
             },
             filterFn: 'includesString',
         },
-
         {
             accessorKey: 'imageCount',
             header: () => <div className="text-center">Кол-во изображений</div>,
@@ -151,7 +164,11 @@ export const getPostTableColumns = (
                 );
             },
         },
-
+        {
+            accessorKey: "seoTitle",
+            header: "SEO заголовок",
+            cell: ({row}) => row.original.seoTitle?.ru || "—",
+        },
         {
             accessorKey: 'seoDescription',
             header: 'SEO описание',
@@ -185,7 +202,6 @@ export const getPostTableColumns = (
                 );
             },
         },
-
         {
             accessorKey: 'image',
             header: 'Изображение',
@@ -216,14 +232,12 @@ export const getPostTableColumns = (
                         </TooltipContent>
                     </Tooltip>
                 ) : (
-                    <div
-                        className="w-16 h-16 bg-muted rounded-md flex items-center justify-center text-xs text-muted-foreground text-center flex-shrink-0">
+                    <div className="w-16 h-16 bg-muted rounded-md flex items-center justify-center text-xs text-muted-foreground text-center flex-shrink-0">
                         Нет фото
                     </div>
                 );
             },
         },
-
         {
             id: 'действия',
             enableHiding: false,
@@ -235,27 +249,26 @@ export const getPostTableColumns = (
                         <DropdownMenuTrigger asChild>
                             <Button variant="ghost" className="h-8 w-8 p-0">
                                 <span className="sr-only">Открыть меню</span>
-                                <MoreHorizontal className="h-4 w-4"/>
+                                <MoreHorizontal className="h-4 w-4" />
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                             <DropdownMenuLabel>Действия</DropdownMenuLabel>
-
-                            <DropdownMenuItem onClick={() => onOpenImagesModal(post)}>
-                                <Images className="mr-2 h-4 w-4"/>
+                            <DropdownMenuItem
+                                onClick={() => onOpenImagesModal(post)}
+                            >
+                                <Images className="mr-2 h-4 w-4 hover:text-white" />
                                 Все изображения
                             </DropdownMenuItem>
-
                             <DropdownMenuItem onClick={() => onEditPost(post)}>
-                                <Edit2 className="mr-2 h-4 w-4"/>
+                                <Edit2 className="mr-2 h-4 w-4 hover:text-white" />
                                 Редактировать
                             </DropdownMenuItem>
-
                             <DropdownMenuItem
                                 onClick={() => onDeletePost([post._id])}
                                 className="text-destructive"
                             >
-                                <Trash2 className="mr-2 h-4 w-4"/>
+                                <Trash2 className="mr-2 h-4 w-4 hover:text-white" />
                                 Удалить
                             </DropdownMenuItem>
                         </DropdownMenuContent>

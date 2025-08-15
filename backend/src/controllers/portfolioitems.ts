@@ -25,17 +25,19 @@ export const getPortfolioItems = async (req: Request, res: Response, next: NextF
         const parsedPage = Math.max(1, parseInt(page as string));
         const skip = (parsedPage - 1) * parsedLimit;
 
-        const matchStage: Partial<{
-            description: { $regex: string; $options: string };
-            coverAlt: { $regex: string; $options: string };
-        }> = {};
+        type MatchStage = Partial<{
+            "description.ru": { $regex: string; $options: string };
+            "coverAlt.ru": { $regex: string; $options: string };
+        }>;
+
+        const matchStage: MatchStage = {};
 
         if (description && typeof description === "string") {
-            matchStage.description = {$regex: description, $options: "i"};
+            matchStage["description.ru"] = { $regex: description, $options: "i" };
         }
 
         if (coverAlt && typeof coverAlt === "string") {
-            matchStage.coverAlt = {$regex: coverAlt, $options: "i"};
+            matchStage["coverAlt.ru"] = { $regex: coverAlt, $options: "i" };
         }
 
         const aggregationPipeline = [

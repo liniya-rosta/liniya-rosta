@@ -47,7 +47,7 @@ const BlogClient: React.FC<Props> = ({data, error, limit}) => {
     if (error) return <p>{tError("newsError")}</p>
 
     return (
-        <div className="container">
+        <div className="container mb-15">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[50px]">
 
                 {posts && posts.length > 0 ? (
