@@ -1,5 +1,5 @@
 import {ColumnDef} from '@tanstack/react-table';
-import {Edit2, Images, MoreHorizontal, Trash2} from 'lucide-react';
+import {ArrowUpDown, Edit2, Images, MoreHorizontal, Trash2} from 'lucide-react';
 import Image from 'next/image';
 
 import {Button} from '@/src/components/ui/button';
