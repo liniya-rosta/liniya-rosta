@@ -21,10 +21,10 @@ const ProductsTablePagination = <T, >({table, totalItems}: TablePaginationProps<
       </span>
 
             <div className="flex flex-col items-center w-full sm:w-auto">
-        <span className="text-sm text-muted-foreground mb-2">
-          Страница <span className="font-medium">{currentPage + 1}</span> из{" "}
-            <span className="font-medium">{totalPages}</span>
-        </span>
+                <span className="text-sm text-muted-foreground mb-2">
+                    Страница <span className="font-medium">{currentPage + 1}</span> из{" "}
+                    <span className="font-medium">{totalPages}</span>
+                </span>
 
                 <div className="flex gap-2">
                     <Tooltip>

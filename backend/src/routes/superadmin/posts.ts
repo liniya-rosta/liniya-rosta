@@ -5,6 +5,7 @@ import {postImage} from "../../middleware/multer";
 import {updatePost} from "../../../types";
 import slugify from "slugify";
 import {translateYandex} from "../../../translateYandex";
+import {extractTags, restoreTags} from "../../../tagExtractor";
 
 const postsSuperAdminRouter = express.Router();
 
@@ -36,7 +37,10 @@ postsSuperAdminRouter.post("/", postImage.array("images"), async (req, res, next
         }));
 
         const kyTitle = await translateYandex(title, 'ky');
-        const kyDes = await translateYandex(description, 'ky');
+
+        const {cleanText, tags} = extractTags(description);
+        const translated = await translateYandex(cleanText, 'ky');
+        const kyDes = restoreTags(translated, tags);
 
         const post = new Post({
             title: {ru: title, ky: kyTitle},
@@ -115,7 +119,9 @@ postsSuperAdminRouter.patch("/:id", postImage.array("images"), async (req, res, 
             updateData.slug = uniqueSlug;
         }
 
-        const kyDes = await translateYandex(title, 'ky');
+        const {cleanText, tags} = extractTags(description);
+        const translated = await translateYandex(cleanText, 'ky');
+        const kyDes = restoreTags(translated, tags);
 
         if (description?.trim()) updateData.description = {
             ru: description,
@@ -196,7 +202,13 @@ postsSuperAdminRouter.patch("/:id/update-image", postImage.single("newImage"), a
             imageItem.image = `post/${req.file.filename}`;
         }
 
-        if (alt !== undefined) imageItem.alt = alt;
+        if (alt !== undefined) {
+            const kyAlt = await translateYandex(alt, 'ky')
+            imageItem.alt = {
+                ru: alt,
+                ky: kyAlt
+            };
+        }
 
         await post.save();
 
@@ -251,6 +263,19 @@ postsSuperAdminRouter.patch("/:id/remove-images", async (req, res, next) => {
     }
 
     try {
+
+        const post = await Post.findById(id);
+
+        if (!post) {
+            res.status(404).json({error: "Пост не найден"});
+            return
+        }
+
+        if (post.images.length === 1) {
+            res.status(400).json({error: "Нельзя удалить последнее изображение"});
+            return
+        }
+
         const updatedPost = await Post.findByIdAndUpdate(
             id,
             {$pull: {images: {image: image}}},

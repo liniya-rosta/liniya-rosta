@@ -10,6 +10,8 @@ import ErrorMsg from "@/src/components/ui/ErrorMsg";
 import LoadingFullScreen from "@/src/components/ui/Loading/LoadingFullScreen";
 import {useTranslations} from "next-intl";
 import AnimatedEntrance from "@/src/components/shared/AnimatedEntrance";
+import {Container} from '@/src/components/shared/Container';
+
 
 interface Props {
     data: Contact | null;
@@ -34,17 +36,19 @@ const ContactsClient: React.FC<Props> = ({data, error}) => {
     }, [data, error, setContact, setFetchContactError, setFetchContactLoading]);
 
     if (fetchContactLoading) return <LoadingFullScreen/>;
-    if (fetchContactError) return <ErrorMsg error={fetchContactError} />
+    if (fetchContactError) return <ErrorMsg error={fetchContactError}/>
 
     return (
-        <div className="container mx-auto px-4 py-8">
-            <h1 className="text-30-48-1_2 text-center md:text-left font-bold mb-6">{tContacts("contactsTitle")}</h1>
-            <AnimatedEntrance direction="bottom" className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
-                <ContactInfoCard />
-                <WorkingHoursCard workingHours={contact?.workingHours ?? {}}/>
-            </AnimatedEntrance>
-            <MapSection />
-        </div>
+        <Container>
+            <div className='md:my-7'>
+                <h1 className="text-30-48-1_2 text-center md:text-left font-bold mb-6">{tContacts("contactsTitle")}</h1>
+                <AnimatedEntrance direction="bottom" className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+                    <ContactInfoCard/>
+                    <WorkingHoursCard workingHours={contact?.workingHours ?? {}}/>
+                </AnimatedEntrance>
+                <MapSection/>
+            </div>
+        </Container>
     );
 };
 

@@ -1,10 +1,10 @@
 import Link from 'next/link';
 import { Button } from '@/src/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
-import { useTranslations } from 'next-intl';
+import {getTranslations} from "next-intl/server";
 
-const NotFound = () => {
-    const t = useTranslations('NotFound');
+const NotFound = async () => {
+    const t = await getTranslations('NotFound');
 
     return (
         <div className="min-h-screen flex flex-col justify-center items-center text-center px-4">

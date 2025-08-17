@@ -6,7 +6,10 @@ import {getTranslations} from "next-intl/server";
 import {handleKyError} from "@/src/lib/handleKyError";
 
 type Props = {
-    params:  Promise<{ slug: string; locale: 'ru' | 'ky' }>;
+    params: Promise<{
+        slug: string;
+        locale: 'ru' | 'ky';
+    }>;
 };
 
 export async function generateMetadata({params}: Props): Promise<Metadata> {

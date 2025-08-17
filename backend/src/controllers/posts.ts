@@ -11,16 +11,16 @@ export const getPosts = async (req: Request, res: Response, next: NextFunction) 
         const skip = (parsedPage - 1) * parsedLimit;
 
         const matchStage: Partial<{
-            description: { $regex: string; $options: string };
-            title: { $regex: string; $options: string };
+            "description.ru": { $regex: string; $options: string };
+            "title.ru": { $regex: string; $options: string };
         }> = {};
 
         if (description && typeof description === "string") {
-            matchStage.description = {$regex: description, $options: "i"};
+            matchStage["description.ru"] = {$regex: description, $options: "i"};
         }
 
         if (title && typeof title === "string") {
-            matchStage.title = {$regex: title, $options: "i"};
+            matchStage["title.ru"] = {$regex: title, $options: "i"};
         }
         const aggregationPipeline = [
             Object.keys(matchStage).length > 0 ? {$match: matchStage} : null,

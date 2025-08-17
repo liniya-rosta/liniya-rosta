@@ -20,7 +20,7 @@ const PortfolioSection = () => {
     return (
         <SectionAnimation
             ariaLabelledby="portfolio-heading"
-            className="px-4 py-12"
+            className="py-12"
         >
             <div className="flex flex-col lg:flex-row items-center lg:items-start gap-8">
                 <div className="w-full lg:w-1/2 space-y-4 my-auto">

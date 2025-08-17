@@ -1,18 +1,20 @@
 'use client';
 
-import { Alert, AlertDescription, AlertTitle } from "@/src/components/ui/alert";
-import { Button } from "@/src/components/ui/button";
-import {Card, CardContent, CardHeader, CardTitle} from "@/src/components/ui/card";
+import {Alert, AlertDescription, AlertTitle} from "@/src/components/ui/alert";
+import {Button} from "@/src/components/ui/button";
+import {Card, CardContent} from "@/src/components/ui/card";
 import Loading from "@/src/components/ui/Loading/Loading";
-import { Post } from "@/src/lib/types";
-import { usePostsStore } from "@/store/postsStore";
-import {ArrowLeft, Terminal } from "lucide-react";
-import { useRouter } from "next/navigation";
-import {useEffect, useState } from "react";
+import {Post} from "@/src/lib/types";
+import {usePostsStore} from "@/store/postsStore";
+import {ArrowLeft, Terminal} from "lucide-react";
+import {useRouter} from "next/navigation";
+import {useEffect, useState} from "react";
 import {API_BASE_URL} from "@/src/lib/globalConstants";
-import {Separator} from "@radix-ui/react-separator";
-import Image from "next/image";
 import {useLocale, useTranslations} from "next-intl";
+import parse from "html-react-parser";
+import {Swiper, SwiperSlide} from "swiper/react";
+import {Autoplay, Navigation, Pagination} from "swiper/modules";
+import Image from "next/image";
 
 interface Props {
     data: Post | null;
@@ -73,54 +75,50 @@ const PostClient: React.FC<Props> = ({data, error}) => {
     }
 
     return (
-        <div className="max-w-4xl mx-auto px-4 py-8">
+        <div className="max-w-6xl mx-auto px-4 py-8">
             <Button
                 variant="ghost"
                 onClick={() => router.back()}
-                className="mb-6 pl-0 text-muted-foreground hover:text-foreground"
+                className="mb-[40px] pl-0 text-muted-foreground hover:text-foreground"
             >
                 <ArrowLeft className="mr-2 h-4 w-4"/>
                 {tBtn("returnToBlog")}
             </Button>
+            <div className="mb-[30px]">
+                <h3 className="text-3xl font-extrabold leading-tight text-foreground mb-4">
+                    {data.title[locale]}
+                </h3>
+            </div>
+                <Swiper
+                    loop={true}
+                    autoplay={{
+                        delay: 4000,
+                        disableOnInteraction: false,
+                        reverseDirection: true,
+                    }}
+                    modules={[Navigation, Autoplay, Pagination]}
+                    pagination={{clickable: true}}
+                    className="w-full rounded-2xl mb-[30px]"
+                    navigation
+                >
+                    {data.images.map((img, i) => (
+                        <SwiperSlide key={i}>
+                            <div className="aspect-[4/2]">
+                                <Image
+                                    src={`${API_BASE_URL}/${img.image}`}
+                                    alt={img.alt?.[locale] || ""}
+                                    fill
+                                    className="object-cover "
+                                />
+                            </div>
+                        </SwiperSlide>
+                    ))}
+                </Swiper>
 
-            <Card className="overflow-hidden">
-                <div className="relative aspect-video md:aspect-[2/1] w-full">
-                    <Image
-                        src={`${API_BASE_URL}/${data.images[0].image}`}
-                        fill
-                        sizes="(max-width: 768px) 100vw, 1200px"
-                        priority
-                        onError={(e) => {
-                            (e.target as HTMLImageElement).src =
-                                'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=800&h=400&fit=crop';
-                        }}
-                        alt={data.title[locale]}
-                        className="object-cover"
-                    />
+                <div className="prose prose-lg max-w-none text-muted-foreground">
+                    {parse(data.description[locale])}
                 </div>
-
-                <CardHeader className="space-y-4 pt-6 pb-4">
-                    <CardTitle
-                        className="text-4xl font-extrabold leading-tight text-foreground">{data.title[locale]}</CardTitle>
-                    <div className="prose prose-lg max-w-none text-muted-foreground">
-                        <p className="leading-relaxed text-lg">{data.description[locale]}</p>
-                    </div>
-                </CardHeader>
-
-                <CardContent className="pt-4 pb-6">
-                    <Separator className="my-6"/>
-                    <div className="flex justify-between items-center">
-                        <Button
-                            variant="outline"
-                            onClick={() => router.push('/blog')}
-                            className="text-muted-foreground hover:text-foreground"
-                        >
-                            ← {tBtn("allPosts")}
-                        </Button>
-                    </div>
-                </CardContent>
-            </Card>
-        </div>
+            </div>
     );
 };
 

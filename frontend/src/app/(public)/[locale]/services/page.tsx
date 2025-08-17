@@ -56,7 +56,7 @@ const ServicePage = async () => {
                 className="w-full min-h-[560px] lg:h-[560px] bg-black/50 bg-[url('/images/services/main-service.JPG')] py-14 bg-cover bg-center bg-blend-overlay mb-20">
                 <Container>
                     <div
-                        className="min-h-full px-6 md:py-15 lg:py-0 grid grid-cols-1 lg:grid-cols-2 items-stretch justify-between gap-10">
+                        className="min-h-full md:py-15 lg:py-0 grid grid-cols-1 lg:grid-cols-2 items-stretch justify-between gap-10">
                         <ServicesTitle/>
                         <ServicesForm/>
                     </div>
