@@ -11,13 +11,7 @@ WORKDIR /app
 COPY package*.json ./
 COPY tsconfig.json ./
 
-COPY src ./src
-COPY public ./public
-COPY index.ts ./index.ts
-COPY config.ts ./config.ts
-COPY translateYandex.ts ./translateYandex.ts
-COPY types.d.ts ./types.d.ts
-COPY fixtures.ts ./fixtures.ts
+COPY . .
 
 COPY --from=deps /app/node_modules ./node_modules
 
