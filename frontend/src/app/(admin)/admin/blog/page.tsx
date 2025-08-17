@@ -29,6 +29,7 @@ import {usePostsFetcher} from "@/src/app/(admin)/admin/blog/hooks/usePostsFetche
 import Link from 'next/link';
 import {useRouter} from 'next/navigation';
 import ImageViewerModal from "@/src/components/shared/ImageViewerModal";
+import SaleLabelModal from "@/src/app/(admin)/admin/products/components/Modal/SaleLabelModal";
 
 const AdminBlogPage = () => {
     const [sorting, setSorting] = useState<SortingState>([]);
@@ -47,6 +48,7 @@ const AdminBlogPage = () => {
     const [previewImage, setPreviewImage] = useState<ImageObject | null>(null);
     const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
+    const [textContent, setTextContent] = useState<string | null>(null);
     const router = useRouter();
 
     const {
@@ -105,6 +107,10 @@ const AdminBlogPage = () => {
         setRowSelection({});
     }, [pagination.pageIndex]);
 
+    const onShowText = (htmlOrText: string) => {
+        setTextContent(htmlOrText);
+    };
+
     const table = useReactTable<Post>({
         data: posts,
         columns: getPostTableColumns(
@@ -117,7 +123,8 @@ const AdminBlogPage = () => {
             (post) => {
                 setDetailPost(post);
                 setIsImagesModalOpen(true);
-            }
+            },
+            onShowText
         ),
         pageCount: paginationPost?.totalPages ?? 1,
         manualPagination: true,
@@ -182,6 +189,11 @@ const AdminBlogPage = () => {
                 loading={deleteLoading}
             />
 
+            <SaleLabelModal
+                saleLabel={textContent}
+                onClose={() => setTextContent(null)}
+            />
+
             <ImageEditForm
                 open={isImageModalEdit}
                 imageUrl={selectImageEdit}
@@ -219,15 +231,13 @@ const AdminBlogPage = () => {
                         setImageDelete(true);
                     }}
                     canReorder={true}
-                    onSaveOrder={ async (newOrder) => {
+                    onSaveOrder={async (newOrder) => {
                         await handleReorderImages(detailPost._id, newOrder);
                     }}
                     deleteLoading={deleteLoading}
                     updateLoading={updateLoading}
                 />
-            )
-            }
-
+            )}
         </div>
     )
 };

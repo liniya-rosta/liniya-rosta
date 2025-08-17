@@ -1,6 +1,6 @@
 "use client";
 
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import Image from "next/image";
 import {Dialog, DialogContent, DialogHeader, DialogTitle,} from "@/src/components/ui/dialog";
 import {Button} from "@/src/components/ui/button";
@@ -8,19 +8,21 @@ import {Checkbox} from "@/src/components/ui/checkbox";
 import {Card, CardContent, CardFooter} from "@/src/components/ui/card";
 import {toast} from "react-toastify";
 import {API_BASE_URL} from "@/src/lib/globalConstants";
-import {deleteProductImage,} from "@/actions/superadmin/products";
+import {deleteProductImage, addProductImages} from "@/actions/superadmin/products";
 import {useAdminProductStore} from "@/store/superadmin/superadminProductsStore";
 import {fetchProductById} from "@/actions/products";
 import ImagesEditForm from "@/src/app/(admin)/admin/products/components/Modal/ImagesEditForm";
 import {handleKyError} from "@/src/lib/handleKyError";
+import {LoaderIcon} from "lucide-react";
 
 interface Props {
     open: boolean;
     onClose: () => void;
+    onAfterChange?: () => void;
 }
 
-const ImagesModal: React.FC<Props> = ({open, onClose}) => {
-    const {productDetail, setProductDetail, setProducts, products, setUpdateError} = useAdminProductStore();
+const ImagesModal: React.FC<Props> = ({open, onClose, onAfterChange}) => {
+    const {productDetail, setProductDetail, setUpdateError} = useAdminProductStore();
 
     const images = productDetail?.images ?? [];
     const productId = productDetail?._id ?? "";
@@ -32,6 +34,33 @@ const ImagesModal: React.FC<Props> = ({open, onClose}) => {
         setSelectedIds((prev) =>
             prev.includes(id) ? prev.filter((_id) => _id !== id) : [...prev, id]
         );
+    };
+
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const [uploading, setUploading] = useState(false);
+
+    const handleAddImagesClick = () => {
+        fileInputRef.current?.click();
+    };
+
+    const handleAddImages = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const files = e.target.files ? Array.from(e.target.files) : [];
+        if (!files.length || !productId) return;
+
+        try {
+            setUploading(true);
+            await addProductImages(productId, files);
+            await refreshProduct();
+            onAfterChange?.();
+
+            toast.success("Изображения добавлены");
+        } catch (err) {
+            const msg = await handleKyError(err, "Не удалось добавить изображения");
+            toast.error(msg);
+        } finally {
+            setUploading(false);
+            if (e.target) e.target.value = "";
+        }
     };
 
     const clearSelection = () => {
@@ -49,12 +78,14 @@ const ImagesModal: React.FC<Props> = ({open, onClose}) => {
     const handleDelete = async (ids: string[]) => {
         try {
             await Promise.all(ids.map((id) => deleteProductImage(id)));
+            const updated = await refreshProduct();
+            onAfterChange?.();
+
             toast.success("Удаление успешно");
             clearSelection();
             setSelectedIds([]);
-            await refreshProduct();
 
-            if (images.length === ids.length) {
+            if (updated && updated.images.length === 0) {
                 setProductDetail(null);
                 onClose();
             }
@@ -65,21 +96,22 @@ const ImagesModal: React.FC<Props> = ({open, onClose}) => {
     };
 
     const refreshProduct = React.useCallback(async () => {
+        if (!productId) return null;
         try {
             const product = await fetchProductById(productId);
             setProductDetail(product);
-            setProducts(
-                products.map((p) =>
-                    p._id === product._id ? product : p
-                )
-            );
+
+            const { products: current, setProducts: newSetProducts } = useAdminProductStore.getState();
+            newSetProducts(current.map(p => (p._id === product._id ? product : p)));
+
+            return product;
         } catch (e) {
             const msg = await handleKyError(e, "Ошибка при обновлении изображений");
             setUpdateError(msg);
             toast.error(msg);
-            console.error(e);
+            return null;
         }
-    }, [productId, products, setProductDetail, setProducts, setUpdateError]);
+    }, [productId, setProductDetail, setUpdateError]);
 
     useEffect(() => {
         if (open && productId) {
@@ -93,6 +125,7 @@ const ImagesModal: React.FC<Props> = ({open, onClose}) => {
             onOpenChange={(isOpen) => {
                 if (!isOpen) {
                     clearSelection();
+                    setUploading(false);
                     setProductDetail(null);
                     onClose();
                 }
@@ -102,6 +135,11 @@ const ImagesModal: React.FC<Props> = ({open, onClose}) => {
                 <DialogHeader className="flex justify-between items-center gap-4">
                     <DialogTitle>Галерея изображений</DialogTitle>
                     <div className="flex gap-2">
+                        <Button variant="outline" onClick={handleAddImagesClick} disabled={uploading || !productId}>
+                            {uploading && <LoaderIcon/>}
+                            Добавить изображения
+                        </Button>
+
                         {selectionMode ? (
                             <>
                                 <Button
@@ -120,6 +158,15 @@ const ImagesModal: React.FC<Props> = ({open, onClose}) => {
                                 Выбрать изображения
                             </Button>
                         )}
+
+                        <input
+                            ref={fileInputRef}
+                            type="file"
+                            accept="image/*"
+                            multiple
+                            className="hidden"
+                            onChange={handleAddImages}
+                        />
                     </div>
                 </DialogHeader>
 

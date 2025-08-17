@@ -45,9 +45,8 @@ const ImagesEditForm: React.FC<Props> = ({onSaved, image}) => {
             alt: {ru: image.alt?.ru},
             image: undefined,
         });
-
         setPreviewUrl(null);
-    }, [image._id, image.url, image.alt, reset]);
+    }, [image._id, reset]);
 
     const onChangeFile = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -79,15 +78,15 @@ const ImagesEditForm: React.FC<Props> = ({onSaved, image}) => {
         <form onSubmit={handleSubmit(onSubmit)}>
             <div className="border-b border-b-gray-500 py-3 mb-4">
                 <div className="mb-4">
-                    <Label htmlFor="alt" className="mb-2">Альтернативное название</Label>
+                    <Label htmlFor="alt.ru" className="mb-2">Альтернативное название</Label>
                     <Input
                         id="alt.ru"
                         type="text"
                         disabled={updateLoading}
                         {...register("alt.ru")}
                     />
-                    {errors.alt && (
-                        <p className="text-red-500 text-sm mb-4">{errors.alt.message}</p>
+                    {errors.alt?.ru && (
+                        <p className="text-red-500 text-sm mb-4">{String(errors.alt.ru.message)}</p>
                     )}
                 </div>
 

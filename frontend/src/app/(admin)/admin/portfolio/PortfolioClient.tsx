@@ -30,6 +30,7 @@ import ErrorMsg from "@/src/components/ui/ErrorMsg";
 import {usePersistedPageSize} from "@/hooks/usePersistedPageSize";
 import ModalGallery from "@/src/components/shared/ModalGallery";
 import {handleKyError} from "@/src/lib/handleKyError";
+import SaleLabelModal from "@/src/app/(admin)/admin/products/components/Modal/SaleLabelModal";
 
 interface Props {
     error?: string | null;
@@ -56,6 +57,8 @@ const AdminPortfolioClient: React.FC<Props> = ({error}) => {
         pageIndex: 0,
         pageSize: pageSize,
     });
+
+    const [modalText, setModalText] = useState<string | null>(null);
 
     const {
         items,
@@ -211,6 +214,7 @@ const AdminPortfolioClient: React.FC<Props> = ({error}) => {
             },
             openEditModalCover,
             openGalleryModal,
+            (text) => setModalText(text)
         ),
         pageCount: paginationPortfolio?.totalPages ?? 1,
         manualPagination: true,
@@ -336,6 +340,10 @@ const AdminPortfolioClient: React.FC<Props> = ({error}) => {
                 />
             }
 
+            <SaleLabelModal
+                saleLabel={modalText}
+                onClose={() => setModalText(null)}
+            />
 
             <ConfirmDialog
                 open={showConfirm}

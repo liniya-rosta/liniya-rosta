@@ -12,7 +12,6 @@ import {getProductTableColumns} from "./ProductTableColumns";
 import {Product} from "@/src/lib/types";
 import ConfirmDialog from "@/src/components/ui/ConfirmDialog";
 import SaleLabelModal from "@/src/app/(admin)/admin/products/components/Modal/SaleLabelModal";
-import {useCategoryStore} from "@/store/categoriesStore";
 import ProductsTableToolbar from "@/src/app/(admin)/admin/products/components/ProductTable/ProductsTableToolbar";
 import ImagesModal from "@/src/app/(admin)/admin/products/components/Modal/ImagesModal";
 import {useProductsTableLogic} from "@/src/app/(admin)/admin/products/hooks/useProductsTableLogic";
@@ -21,6 +20,7 @@ import {useProductsQuery} from "@/src/app/(admin)/admin/products/hooks/useProduc
 import ProductsTablePagination from "@/src/app/(admin)/admin/products/components/ProductTable/ProductsTablePagination";
 import ProductEditModal from "@/src/app/(admin)/admin/products/components/Modal/ProductEditModal";
 import ImageModal from "@/src/app/(admin)/admin/portfolio/components/ImageModal";
+import {useAdminCategoryStore} from "@/store/superadmin/superadminCategoriesStore";
 
 interface ProductsTableProps {
     actionLoading: boolean;
@@ -34,19 +34,12 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
                                                          onDeleteSelectedProducts,
                                                      }) => {
     const [editingProduct, setEditingProduct] = React.useState<Product | null>(null);
-    const [isModalOpen, setIsModalOpen] = React.useState(false);
 
     const handleEditProduct = React.useCallback((product: Product) => {
         setEditingProduct(product);
-        setIsModalOpen(true);
     }, []);
 
-    const resetAndCloseModal = React.useCallback(() => {
-        setEditingProduct(null);
-        setIsModalOpen(false);
-    }, []);
-
-    const {categories} = useCategoryStore();
+    const {categories} = useAdminCategoryStore();
 
     const {
         previewImage, setPreviewImage,
@@ -183,12 +176,13 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
             <ImagesModal
                 open={isImagesModalOpen}
                 onClose={() => setIsImagesModalOpen(false)}
+                onAfterChange={refresh}
             />
 
             {editingProduct && (
                 <ProductEditModal
-                    open={isModalOpen}
-                    onClose={resetAndCloseModal}
+                    open={true}
+                    onClose={() => setEditingProduct(null)}
                     product={editingProduct}
                     refresh={refresh}
                 />

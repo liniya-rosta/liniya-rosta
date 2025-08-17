@@ -116,10 +116,24 @@ export const updateProduct = async (id: string, productData: ProductUpdateMutati
     return data.product;
 };
 
+export const addProductImages = async (
+    productId: string,
+    files: File[],
+    alts?: string[]
+) => {
+    const fd = new FormData();
+    files.forEach((f) => fd.append("images", f));
+    (alts || []).forEach((a) => fd.append("alt[ru]", a));
+
+    return await kyAPI
+        .post(`superadmin/products/${productId}/images`, {body: fd})
+        .json<{ message: string; product: Product }>();
+};
+
 export const updateProductImage = async (imageId: string, file?: File, alt?: string): Promise<Product> => {
         const formData = new FormData();
         if (file) formData.append("images", file);
-        if (alt) formData.append("alt", alt);
+        if (alt) formData.append("alt[ru]", alt);
 
         const data = await kyAPI.patch(`superadmin/products/images/${imageId}`, {body: formData}).json<{
             product: Product
