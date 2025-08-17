@@ -30,6 +30,7 @@ interface Props {
 const ProductEditModal: React.FC<Props> = ({open, onClose, product, refresh}) => {
     const {categories} = useAdminCategoryStore();
     const {
+        setUpdateLoading,
         updateLoading,
         setUpdateError,
         products,
@@ -96,10 +97,13 @@ const ProductEditModal: React.FC<Props> = ({open, onClose, product, refresh}) =>
     };
 
     const onSubmit = async (data: UpdateProductFormData) => {
+        setUpdateLoading(true)
         try {
             setUpdateError(null);
             const updated = await updateProduct(product._id, data);
-            setProducts(products.map((p) => (p._id === updated._id ? updated : p)));
+            if (Array.isArray(products)) {
+                setProducts(products.map((p) => (p._id === updated._id ? updated : p)));
+            }
             refresh();
             toast.success("Продукт успешно обновлён");
             onClose();
@@ -107,6 +111,8 @@ const ProductEditModal: React.FC<Props> = ({open, onClose, product, refresh}) =>
             const msg = await handleKyError(e, "Ошибка при обновлении продукта");
             toast.error(msg);
             console.error(msg);
+        } finally {
+            setUpdateLoading(false);
         }
     };
 

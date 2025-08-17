@@ -53,43 +53,45 @@ const PortfolioClient: React.FC<Props> = ({data, error, limit}) => {
 
     return (
         <Container>
-            <AnimatedEntrance direction="bottom">
-                <HeroSectionPortfolio/>
-            </AnimatedEntrance>
+            <div className='md:my-7'>
+                <AnimatedEntrance direction="bottom">
+                    <HeroSectionPortfolio/>
+                </AnimatedEntrance>
 
-            <AnimatedEntrance direction="bottom" duration={0.8}>
-                <h3 className="text-23-30-1_5 font-bold text-center mb-5">{tPortfolio("sectionTitle")}</h3>
+                <AnimatedEntrance direction="bottom" duration={0.8}>
+                    <h3 className="text-23-30-1_5 font-bold text-center mb-5">{tPortfolio("sectionTitle")}</h3>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mb-15">
-                    {items && items.length > 0 ? (
-                        items.map((item) => {
-                            const imageUrl = IMG_BASE + "/" + item.cover;
-                            const pageUrl = "/portfolio/" + item.slug;
-                            return (
-                                <Link key={item._id} href={pageUrl}>
-                                    <CartPortfolio
-                                        alt={item.coverAlt[locale]}
-                                        imageSrc={imageUrl}
-                                    />
-                                </Link>
-                            );
-                        })
-                    ) : (
-                        <div className="flex flex-col items-center justify-center col-span-full min-h-[300px]">
-                            <EmptyState message={tPortfolio("noData")}/>
-                        </div>
-                    )}
-                </div>
-            </AnimatedEntrance>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mb-15">
+                        {items && items.length > 0 ? (
+                            items.map((item) => {
+                                const imageUrl = IMG_BASE + "/" + item.cover;
+                                const pageUrl = "/portfolio/" + item.slug;
+                                return (
+                                    <Link key={item._id} href={pageUrl}>
+                                        <CartPortfolio
+                                            alt={item.coverAlt[locale]}
+                                            imageSrc={imageUrl}
+                                        />
+                                    </Link>
+                                );
+                            })
+                        ) : (
+                            <div className="flex flex-col items-center justify-center col-span-full min-h-[300px]">
+                                <EmptyState message={tPortfolio("noData")}/>
+                            </div>
+                        )}
+                    </div>
+                </AnimatedEntrance>
 
-            {paginationPortfolio && paginationPortfolio.totalPages > 1 && (
-                <PaginationButtons
-                    page={page}
-                    totalPages={paginationPortfolio.totalPages}
-                    paginationButtons={paginationButtons ?? []}
-                    onPageChange={handlePageChange}
-                />
-            )}
+                {paginationPortfolio && paginationPortfolio.totalPages > 1 && (
+                    <PaginationButtons
+                        page={page}
+                        totalPages={paginationPortfolio.totalPages}
+                        paginationButtons={paginationButtons ?? []}
+                        onPageChange={handlePageChange}
+                    />
+                )}
+            </div>
         </Container>
     );
 };

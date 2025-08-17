@@ -7,6 +7,7 @@ import {toast} from "react-toastify";
 import {ImageObject} from "@/src/lib/types";
 import {reorderPostImages} from "@/actions/superadmin/posts";
 import {handleKyError} from "@/src/lib/handleKyError";
+import {useRouter, useSearchParams} from "next/navigation";
 
 export const usePostsFetcher = () => {
     const {
@@ -18,6 +19,8 @@ export const usePostsFetcher = () => {
         setUpdateLoading,
     } = useSuperAdminPostStore();
 
+    const router = useRouter();
+    const searchParams = useSearchParams();
     const [pageSize, setPageSize] = usePersistedPageSize("admin_post_table_size");
 
     const [filters, setFilters] = useState({title: "", description: ""});
@@ -80,10 +83,19 @@ export const usePostsFetcher = () => {
         }
     }
 
+    const handlePaginationChange = (updater: React.SetStateAction<PaginationState>) => {
+        const newState = typeof updater === "function" ? updater(pagination) : updater;
+        setPagination(newState);
+        setPageSize(newState.pageSize);
+        router.push(`/admin/blog?page=${newState.pageIndex + 1}`);
+    };
+
     return {
+        searchParams,
         pagination,
         filters,
         pageSize,
+        handlePaginationChange,
         setPagination,
         fetchData,
         fetchOnePost,

@@ -6,38 +6,49 @@ import {PostResponse} from "@/src/lib/types";
 import CardSkeleton from "@/src/app/(public)/[locale]/blog/components/CardSkeleton";
 import PostCard from "@/src/app/(public)/[locale]/blog/components/PostCard";
 import {useLocale, useTranslations} from "next-intl";
+import {useBlogFetcher} from "@/src/app/(public)/[locale]/blog/hooks/useBlogFetcher";
+import LoadingFullScreen from "@/src/components/ui/Loading/LoadingFullScreen";
+import PaginationButtons from "@/src/components/shared/PaginationsButtons";
 
 interface Props {
     data: PostResponse | null;
     error: string | null;
+    limit: string;
 }
 
-const BlogClient: React.FC<Props> = ({data, error}) => {
+const BlogClient: React.FC<Props> = ({data, error, limit}) => {
     const {
         posts,
+        paginationPosts,
         fetchPostsLoading,
-        setPosts,
         setFetchPostsError,
-        setFetchPostsLoading
     } = usePostsStore();
+
+    const {
+        page,
+        updatedData,
+        paginationButtons,
+        handlePageChange,
+    } = useBlogFetcher(limit);
+
     const tBlog = useTranslations("BlogPage");
     const tError = useTranslations("Errors");
     const locale = useLocale() as "ky" | "ru";
 
     useEffect(() => {
         if (data) {
-            setPosts(data.items);
+            void updatedData(data);
         }
         setFetchPostsError(error);
-        setFetchPostsLoading(false);
-    }, [data, error, setPosts, setFetchPostsError, setFetchPostsLoading]);
+    }, [data, error]);
 
+    if (fetchPostsLoading) return <LoadingFullScreen/>
     if (fetchPostsLoading) return <CardSkeleton/>;
     if (error) return <p>{tError("newsError")}</p>
 
     return (
-        <div className="container mx-auto px-4 py-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="container mb-15">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[50px]">
 
                 {posts && posts.length > 0 ? (
                     posts.map((post) => (
@@ -54,6 +65,14 @@ const BlogClient: React.FC<Props> = ({data, error}) => {
                 </div>
                 }
             </div>
+            {paginationPosts && paginationPosts.totalPages > 1 && (
+                <PaginationButtons
+                    page={page}
+                    totalPages={paginationPosts.totalPages}
+                    paginationButtons={paginationButtons ?? []}
+                    onPageChange={handlePageChange}
+                />
+            )}
         </div>
     );
 };

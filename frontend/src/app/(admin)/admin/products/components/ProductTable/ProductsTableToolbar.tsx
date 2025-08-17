@@ -13,8 +13,11 @@ import {
 import {ChevronDown} from "lucide-react";
 import {Product} from "@/src/lib/types";
 import {Table} from "@tanstack/react-table";
-import CreateCategoryForm from "@/src/app/(admin)/admin/products/components/Modal/CategoryCreateForm";
 import {useAdminCategoryStore} from "@/store/superadmin/superadminCategoriesStore";
+import {handleKyError} from "@/src/lib/handleKyError";
+import {toast} from "react-toastify";
+import {deleteCategory} from "@/actions/superadmin/categories";
+import ConfirmDialog from "@/src/components/ui/ConfirmDialog";
 
 type FilterType = 'title' | 'description';
 
@@ -50,8 +53,8 @@ const ProductsTableToolbar: React.FC<Props> = ({
                                                    setPageSize,
                                                    setPageIndex,
                                                }) => {
-    const {categories} = useAdminCategoryStore();
-    const [isCategoryModalOpen, setIsCategoryModalOpen] = React.useState(false);
+    const {categories, setCategories, setDeleteCategoryLoading, setDeleteCategoryError} = useAdminCategoryStore();
+    const [deleteOpen, setDeleteOpen] = React.useState(false);
 
     const getFilterPlaceholder = () => {
         switch (activeFilterType) {
@@ -85,8 +88,29 @@ const ProductsTableToolbar: React.FC<Props> = ({
         "seoDescription": "SEO описание",
     };
 
+    const onDeleteCategory = async () => {
+        if (!categoryId) return;
+        try {
+            setDeleteCategoryLoading(true);
+            setDeleteCategoryError(null);
+
+            await deleteCategory(categoryId);
+            setCategories(categories.filter(c => c._id !== categoryId));
+
+            setCategoryId(null);
+            setPageIndex(0);
+        } catch (e) {
+            const msg = await handleKyError(e, "Не удалось удалить категорию");
+            setDeleteCategoryError(msg);
+            toast.error(msg);
+        } finally {
+            setDeleteCategoryLoading(false);
+        }
+    };
+
     return (
-        <div className="flex flex-wrap gap-3 items-start justify-center md:justify-between w-full mb-4 space-y-6 sm:space-y-0">
+        <div
+            className="flex flex-wrap gap-3 items-start justify-center md:justify-between w-full mb-4 space-y-6 sm:space-y-0">
             <div className="flex flex-col sm:flex-row gap-2 flex-1 min-w-[250px]">
                 <Select
                     value={activeFilterType}
@@ -124,14 +148,6 @@ const ProductsTableToolbar: React.FC<Props> = ({
                     }}
                     categories={categories}
                 />
-
-                <Button
-                    onClick={() => setIsCategoryModalOpen(true)}
-                    variant="outline"
-                    className="shrink-0"
-                >
-                    + Категория
-                </Button>
             </div>
 
             <div className="flex gap-2 items-start flex-wrap">
@@ -189,9 +205,21 @@ const ProductsTableToolbar: React.FC<Props> = ({
                 </DropdownMenu>
             </div>
 
-            <CreateCategoryForm
-                open={isCategoryModalOpen}
-                onClose={() => setIsCategoryModalOpen(false)}
+            <Button
+                variant="destructive"
+                className="shrink-0"
+                disabled={!categoryId}
+                onClick={() => setDeleteOpen(true)}
+            >
+                Удалить категорию
+            </Button>
+
+            <ConfirmDialog
+                open={deleteOpen}
+                onOpenChange={setDeleteOpen}
+                title="Удалить категорию?"
+                text="Будут удалены все продукты, связанные с этой категорией. Операцию нельзя отменить."
+                onConfirm={onDeleteCategory}
             />
 
         </div>

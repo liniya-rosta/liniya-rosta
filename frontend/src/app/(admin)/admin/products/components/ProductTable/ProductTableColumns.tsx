@@ -119,56 +119,79 @@ export const getProductTableColumns = (
                 const text = row.original.description?.ru || "—";
                 if (text === "—") return text;
 
-                const preview = text.length > 30 ? text.slice(0, 30) + "..." : text;
-                return (
-                    <Tooltip>
-                        <TooltipTrigger asChild>
-                            <span
-                                className="cursor-pointer text-sm"
-                                onClick={() => onSaleLabelClick(text)}
-                            >
-                                {preview}
-                            </span>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                            <p>Нажмите чтобы посмотреть полное описание</p>
-                        </TooltipContent>
-                    </Tooltip>
-                );
+                if (text.length > 30) {
+                    const preview = text.slice(0, 30) + "...";
+                    return (
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <span
+                                    className="cursor-pointer text-sm"
+                                    onClick={() => onSaleLabelClick(text)}
+                                >
+                                     {preview}
+                                </span>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>Нажмите чтобы посмотреть полное описание</p>
+                            </TooltipContent>
+                        </Tooltip>
+                    );
+                }
+
+                return <span className="text-sm">{text}</span>;
             },
         },
         {
             accessorKey: "characteristics",
             header: "Характеристики",
-            cell: ({row}) => {
-                const chars = row.original.characteristics || [];
+            cell: ({ row }) => {
+                const chars = Array.isArray(row.original.characteristics)
+                    ? row.original.characteristics
+                    : [];
 
-                if (!Array.isArray(chars) || chars.length === 0) return "—";
+                if (!chars.length) return "—";
 
-                const preview = chars
+                const previewItems = chars
                     .slice(0, 3)
-                    .map((c) => `${c.key.ru}: ${c.value.ru}`)
-                    .join(", ") + (chars.length > 3 ? ", ..." : "");
+                    .map((c) => `${c.key?.ru}: ${c.value?.ru}`);
 
-                const fullText = chars
-                    .map((c) => `${c.key.ru}: ${c.value.ru}`)
-                    .join("\n");
+                const fullHtmlList = `
+                        <ul style="padding-left:20px;list-style:disc;margin:0">
+                        ${chars
+                        .map((c) => `<li>${c.key?.ru}: ${c.value?.ru}</li>`)
+                        .join("")}
+                         </ul>`;
 
-                return (
-                    <Tooltip>
-                        <TooltipTrigger asChild>
-                            <span
-                                className="cursor-pointer min-w-[400px] text-sm whitespace-normal block"
-                                onClick={() => onSaleLabelClick(fullText)}
-                            >
-                                {preview}
-                            </span>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                            <p>Нажмите чтобы посмотреть все характеристики</p>
-                        </TooltipContent>
-                    </Tooltip>
+                const Preview = (
+                    <div className="text-sm max-w-[300px]">
+                        {previewItems.map((line, i) => (
+                            <div key={i} className="truncate" title={line}>
+                                {line}
+                            </div>
+                        ))}
+                    </div>
                 );
+
+                if (chars.length > 3) {
+                    return (
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <div
+                                    className="cursor-pointer max-w-[300px]"
+                                    onClick={() => onSaleLabelClick(fullHtmlList)}
+                                    aria-label="Показать все характеристики"
+                                >
+                                    {Preview}
+                                </div>
+                            </TooltipTrigger>
+                            <TooltipContent className="max-w-[420px]">
+                                <p>Нажмите чтобы посмотреть все характеристики</p>
+                            </TooltipContent>
+                        </Tooltip>
+                    );
+                }
+
+                return Preview;
             },
         },
         {
@@ -236,7 +259,31 @@ export const getProductTableColumns = (
         {
             accessorKey: "seoTitle",
             header: "SEO заголовок",
-            cell: ({row}) => row.original.seoTitle.ru || "—",
+            cell: ({row}) => {
+                const text = row.original.seoTitle?.ru || "—";
+                if (text === "—") return text;
+
+                if (text.length > 30) {
+                    const preview = text.slice(0, 30) + "...";
+                    return (
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <span
+                                    className="cursor-pointer text-sm"
+                                    onClick={() => onSaleLabelClick(text)}
+                                >
+                                    {preview}
+                                </span>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>Нажмите чтобы посмотреть полный SEO заголовок</p>
+                            </TooltipContent>
+                        </Tooltip>
+                    );
+                }
+
+                return <span className="text-sm">{text}</span>;
+            },
         },
         {
             accessorKey: "seoDescription",

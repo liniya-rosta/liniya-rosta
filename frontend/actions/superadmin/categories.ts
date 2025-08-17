@@ -12,3 +12,9 @@ export const createCategory = async (data: CreateCategoryPayload) => {
         .post("superadmin/categories", { json: data })
         .json<{ category: Category }>();
 };
+
+export const deleteCategory = async (id: string) => {
+    return await kyAPI
+        .delete(`superadmin/categories/${id}`)
+        .json<{ message: string }>();
+};

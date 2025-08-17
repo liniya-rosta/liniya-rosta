@@ -19,7 +19,7 @@ const Footer = async () => {
     }
 
     return (
-        <footer className="py-20 mt-10">
+        <footer className="py-20">
             <Container>
                 <div className="flex flex-wrap items-center justify-center sm:justify-between w-full">
                     <FooterContent contactData={contactData} contactError={contactError}/>

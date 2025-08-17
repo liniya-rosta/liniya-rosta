@@ -7,6 +7,7 @@ import Link from "next/link";
 import React, {useState} from "react";
 import {BtnArrow} from "@/src/components/ui/btn-arrow";
 import {useLocale, useTranslations} from "next-intl";
+import parse from 'html-react-parser';
 
 interface Props {
     slug: string;
@@ -27,14 +28,14 @@ const PostCard: React.FC<Props> = ({slug, images, title, description}) => {
     const currentImage = images[currentIndex];
 
     return (
-        <Card className="group relative overflow-hidden rounded-lg shadow-md transition hover:shadow-xl flex flex-col">
+        <Card className="group relative overflow-hidden border-none shadow-none transition flex flex-col">
             <div className="relative h-56 w-full bg-gray-100">
                 <Image
                     src={`${IMG_BASE}/${currentImage.image}`}
                     alt={currentImage.alt?.[locale] || "Изображение"}
                     fill
                     sizes="(max-width: 768px) 100vw, 33vw"
-                    className="object-cover transition-opacity duration-300"
+                    className="object-cover transition-opacity duration-300 border rounded-2xl"
                     priority
                     onError={(e) => {
                         (e.target as HTMLImageElement).src =
@@ -46,26 +47,26 @@ const PostCard: React.FC<Props> = ({slug, images, title, description}) => {
                         <BtnArrow
                             onClick={showPrev}
                             isLeft
-                            className="absolute top-1/2 left-2 -translate-y-1/2 bg-white/80 p-1 rounded-full hover:bg-white z-10"
+                            className="absolute top-1/2 left-2 -translate-y-1/2 bg-white/50 p-1 rounded-full hover:bg-white z-10"
                             classNameIcon="text-black"
                         />
                         <BtnArrow
                             onClick={showNext}
-                            className="absolute top-1/2 right-2 -translate-y-1/2 bg-white/80 p-1 rounded-full hover:bg-white z-10"
+                            className="absolute top-1/2 right-2 -translate-y-1/2 bg-white/50 p-1 rounded-full hover:bg-white z-10"
                             classNameIcon="text-black"
                         />
                     </>
                 )}
             </div>
 
-            <CardHeader className="p-4">
+            <CardHeader className="px-0">
                 <CardTitle className="text-lg font-semibold leading-snug line-clamp-2">{title}</CardTitle>
                 <CardDescription className="text-sm mt-1 line-clamp-3 text-muted-foreground">
-                    {description}
+                    {parse(description)}
                 </CardDescription>
             </CardHeader>
 
-            <CardFooter className="px-4 pb-4 mt-auto">
+            <CardFooter className="px-0 pb-4 mt-auto">
                 <Link href={`/blog/${slug}`} passHref>
                     <BtnArrow className="text-sm hover:underline">
                         {tBtn("detailBtn")}

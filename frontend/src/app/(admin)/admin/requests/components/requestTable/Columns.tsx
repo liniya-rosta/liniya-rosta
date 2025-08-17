@@ -4,35 +4,38 @@ import {ArrowUpDown} from "lucide-react";
 import {Checkbox} from "@/src/components/ui/checkbox";
 import dayjs from "dayjs";
 
+const makePreview = (text: string, max = 80) =>
+    text.length > max ? text.slice(0, max) + "…" : text;
+
 export const columns: ColumnDef<IRequest>[] = [
     {
         accessorKey: "_id",
         accessorFn: (row) => row._id,
-    header: ({ table }) => (
-    <Checkbox
-        checked={
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-    />
-),
-    cell: ({ row }) => (
-    <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        onClick={(e) => e.stopPropagation()}
-        aria-label="Select row"
-    />
-),
-    enableSorting: false,
-    enableHiding: false,
-},
+        header: ({table}) => (
+            <Checkbox
+                checked={
+                    table.getIsAllPageRowsSelected() ||
+                    (table.getIsSomePageRowsSelected() && "indeterminate")
+                }
+                onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+                aria-label="Select all"
+            />
+        ),
+        cell: ({row}) => (
+            <Checkbox
+                checked={row.getIsSelected()}
+                onCheckedChange={(value) => row.toggleSelected(!!value)}
+                onClick={(e) => e.stopPropagation()}
+                aria-label="Select row"
+            />
+        ),
+        enableSorting: false,
+        enableHiding: false,
+    },
     {
         accessorKey: "name",
         header: "Имя",
-        cell: ({ row }) => {
+        cell: ({row}) => {
             const name = row.getValue("name") as string
             return (
                 <span className={`font-medium mr-[15px]`}>
@@ -53,11 +56,33 @@ export const columns: ColumnDef<IRequest>[] = [
     {
         accessorKey: "commentOfManager",
         header: "Комментарий",
+        cell: ({row}) => {
+            const text = (row.getValue("commentOfManager") as string) || "—";
+            if (text === "—") return "—";
+
+            const LIMIT = 40;
+            const isLong = text.length > LIMIT;
+            const preview = makePreview(text, LIMIT);
+
+            if (!isLong) {
+                return <span className="text-sm text-muted-foreground">{text}</span>;
+            }
+
+            return (
+                <span
+                    className="cursor-pointer text-sm text-muted-foreground line-clamp-2 max-w-[420px] block"
+                    title={text}
+                >
+              {preview}
+            </span>
+            );
+        },
     },
+
     {
         accessorKey: "status",
         header: "Статус",
-        cell: ({ row }) => {
+        cell: ({row}) => {
             const status = row.getValue("status") as string
             return (
                 <span className={`font-medium ${
@@ -75,18 +100,18 @@ export const columns: ColumnDef<IRequest>[] = [
     },
     {
         accessorKey: "createdAt",
-        header: ({ column }) => {
+        header: ({column}) => {
             return (
                 <div
                     className="flex cursor-pointer"
                     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                 >
                     Дата создания
-                    <ArrowUpDown className="ml-2 h-4 w-4 mt-0.5" />
+                    <ArrowUpDown className="ml-2 h-4 w-4 mt-0.5"/>
                 </div>
             )
         },
-        cell: ({ row }) => {
+        cell: ({row}) => {
             return dayjs(row.original.createdAt).format("DD-MM-YYYY HH:mm");
         },
         filterFn: (row, columnId, filterValue: [string, string]) => {
@@ -110,18 +135,18 @@ export const columns: ColumnDef<IRequest>[] = [
     },
     {
         accessorKey: "updatedAt",
-        header: ({ column }) => {
+        header: ({column}) => {
             return (
                 <div
                     className="flex cursor-pointer"
                     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                 >
                     Дата обновления
-                    <ArrowUpDown className="ml-2 h-4 w-4 mt-0.5" />
+                    <ArrowUpDown className="ml-2 h-4 w-4 mt-0.5"/>
                 </div>
             )
         },
-        cell: ({ row }) => {
+        cell: ({row}) => {
             return dayjs(row.original.createdAt).format("DD-MM-YYYY HH:mm");
         },
         meta: {
