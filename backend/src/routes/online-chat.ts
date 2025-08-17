@@ -5,10 +5,17 @@ import ChatSession from "../models/ChatSession";
 import jwt from "jsonwebtoken";
 import {JWT_SECRET} from "../models/User";
 import { ChatMessage, IncomingMessage} from "../../types";
+import {cleanText, hasBadWords} from "../../profanityFilter";
 
 const connectedClients: Record<string, WebSocket[]> = {};
 const adminSockets: WebSocket[] = [];
 export const onlineClients = new Set<string>();
+const messageHistory = new WeakMap<WebSocket, number[]>();
+
+const hasRepeatingChars = (text: string, limit = 5): boolean => {
+    const regex = new RegExp(`(.)\\1{${limit},}`, "i");
+    return regex.test(text);
+};
 
 export const getOnlineChatRouter = (
     wsInstance: ReturnType<typeof expressWs>
@@ -44,7 +51,30 @@ export const getOnlineChatRouter = (
             try {
                 const data = JSON.parse(msg.toString()) as IncomingMessage;
 
+                if (data.text) {
+                    if (data.text.length > 500) {
+                        ws.send(JSON.stringify({ type: "error", message: "Сообщение слишком длинное (макс 500 символов)" }));
+                        return;
+                    }
+
+                    const now = Date.now();
+                    const timestamps = messageHistory.get(ws) || [];
+                    const recent = timestamps.filter((t) => now - t < 5000);
+                    if (recent.length >= 5) {
+                        ws.send(JSON.stringify({ type: "error", message: "Слишком часто отправляете сообщения" }));
+                        return;
+                    }
+
+                    recent.push(now);
+                    messageHistory.set(ws, recent);
+                }
+
                 if (data.type === "client_message") {
+                    if (hasBadWords(data.name) || hasRepeatingChars(data.name)) {
+                        ws.send(JSON.stringify({ type: "error", message: "Имя недопустимо" }));
+                        return;
+                    }
+
                     if (!data.chatId) {
                         const session = await ChatSession.create({
                             clientName: data.name,
@@ -81,10 +111,17 @@ export const getOnlineChatRouter = (
                         onlineClients.add(chatId);
                     }
 
+                    if (hasBadWords(data.text) || hasRepeatingChars(data.text)) {
+                        ws.send(JSON.stringify({ type: "error", message: "Сообщение недопустимо" }));
+                        return;
+                    }
+
+                    const filteredText = cleanText(data.text);
+
                     const message: ChatMessage = {
                         sender: "client",
                         senderName: data.name,
-                        text: data.text,
+                        text: filteredText,
                         timestamp: new Date(),
                     };
 
@@ -105,10 +142,12 @@ export const getOnlineChatRouter = (
                 }
 
                 if (data.type === "admin_message" && isAdmin && admin) {
+                    const filteredText = cleanText(data.text);
+
                     const message: ChatMessage = {
                         sender: "admin",
                         senderName: nickname || "Админ",
-                        text: data.text,
+                        text: filteredText,
                         timestamp: new Date(),
                     };
 
