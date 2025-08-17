@@ -152,6 +152,7 @@
   "FormChat": {
     "namePlaceholder": "Введите имя",
     "phonePlaceholder": "Введите номер телефона",
+    "messagePlaceholder": "Введите сообщение",
     "contactAdminMessage": "Свяжитесь с одним из наших админов!",
     "openChat": "Открыть чат",
     "automaticMsg": "Здравствуйте! Я хочу проконсультироваться. Мой телефон: "
@@ -185,9 +186,15 @@
   },
   "FormErrors": {
     "name": "Введите имя",
+    "nameRepeatingChars": "Имя содержит недопустимые слова",
     "email": "Введите корректную почту",
     "phoneMin": "Введите номер телефона",
-    "phoneInvalid": "Введите корректный номер телефона"
+    "phoneInvalid": "Введите корректный номер телефона",
+    "messageEmpty": "Введите сообщение",
+    "messageTooLong": "Сообщение слишком длинное (макс. 500 символов)",
+    "messageTooLongWord": "Слишком длинное слово (разделите пробелами)",
+    "messageHasBadWords": "Сообщение содержит недопустимые слова",
+    "messageRepeatingChars": "Слишком много повторяющихся символов"
   },
   "Toasts": {
     "success": {
@@ -203,12 +210,5 @@
   },
   "Actions": {
     "copied": "Скопировано"
-  },
-
-  "Confirms": {
-    "chatResetTitle": "Вы уверены?",
-    "chatResetDescription": "При сбросе поменяются ваши данные",
-    "confirmBtn": "Подтвердить",
-    "cancelBtn": "Отмена"
   }
 }

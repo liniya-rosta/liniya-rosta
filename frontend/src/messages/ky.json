@@ -154,6 +154,7 @@
     "namePlaceholder": "Атыңызды жазыңыз",
     "phonePlaceholder": "Телефон номериңизди жазыңыз",
     "contactAdminMessage": "Биздин бир администратор менен байланышыңыз!",
+    "messagePlaceholder": "Кабарды жазыңыз",
     "openChat": "Баарлашууну баштоо",
     "automaticMsg": "Саламатсызбы! Мен сизден кеңеш алгым келет. Телефон: "
   },
@@ -185,9 +186,15 @@
   },
   "FormErrors": {
     "name": "Атыңызды жазыңыз",
+    "nameRepeatingChars": "Атта тыюу салынган сөздөр бар",
     "email": "Туура почтаны жазыңыз",
     "phoneMin": "Телефон номерин жазыңыз",
-    "phoneInvalid": "Туура телефон номерин жазыңыз"
+    "phoneInvalid": "Туура телефон номерин жазыңыз",
+    "messageEmpty": "Кабарды жазыңыз",
+    "messageTooLong": "Кабар өтө узун (эн көп 500 тамга)",
+    "messageTooLongWord": "Өтө узун сөз (бөлүп жазыңыз)",
+    "messageHasBadWords": "Кабарда тыюу салынган сөздөр бар",
+    "messageRepeatingChars": "Кайталанган белгилер өтө көп"
   },
   "Toasts": {
     "success": {
@@ -200,13 +207,5 @@
   },
   "Actions": {
     "copied": "Көчүрүлдү"
-  },
-
-  "Confirms": {
-    "chatResetTitle": "Маалыматтарыңызды тазалоого макулсузбу?",
-    "chatResetDescription": "Маалыматтарыңыздын баары баштапкы абалга келтирилет",
-    "confirmBtn": "Ырастоо",
-    "cancelBtn": "Жокко чыгаруу"
   }
-
 }

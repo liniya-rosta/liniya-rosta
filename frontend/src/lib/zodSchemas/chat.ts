@@ -1,23 +1,26 @@
 import {z} from "zod";
 import {hasBadWords} from "@/src/lib/profanityFilter";
 
-export const chatUserSchema = z.object({
-    name: z.string()
-        .min(2, "Имя слишком короткое")
-        .max(50, "Имя слишком длинное")
-        .refine((val) => !hasBadWords(val), "Имя содержит недопустимые слова")
-        .refine((val) => !/(.)\1{4,}/.test(val), "Имя содержит повторяющиеся символы"),
-    phone: z.string()
-        .min(11, "Введите полный номер телефона"),
-});
+export const createChatUserSchema = (t: (key: string) => string) =>
+    z.object({
+        name: z.string()
+            .min(2, t("name"))
+            .max(50, t("name"))
+            .refine((val) => !hasBadWords(val), t("messageHasBadWords"))
+            .refine((val) => !/(.)\1{4,}/.test(val), t("nameRepeatingChars")),
+        phone: z.string()
+            .min(11, t("phoneMin")),
+    });
 
-export const chatMessageSchema = z.object({
-    text: z.string()
-        .min(1, "Сообщение не может быть пустым")
-        .max(500, "Сообщение слишком длинное")
-        .refine((val) => !hasBadWords(val), "Сообщение содержит недопустимые слова")
-        .refine((val) => !/(.)\1{5,}/.test(val), "Сообщение содержит повторяющиеся символы"),
-});
+export const createChatMessageSchema = (t: (key: string) => string) =>
+    z.object({
+        text: z.string()
+            .min(1, t("messageEmpty"))
+            .max(500, t("messageTooLong"))
+            .refine((val) => !/\S{30,}/.test(val), t("messageTooLongWord"))
+            .refine((val) => !hasBadWords(val), t("messageHasBadWords"))
+            .refine((val) => !/(.)\1{5,}/.test(val), t("messageRepeatingChars")),
+    });
 
-export type ChatUserForm = z.infer<typeof chatUserSchema>;
-export type ChatMessageForm = z.infer<typeof chatMessageSchema>;
+export type ChatUserForm = z.infer<ReturnType<typeof createChatUserSchema>>;
+export type ChatMessageForm = z.infer<ReturnType<typeof createChatMessageSchema>>;

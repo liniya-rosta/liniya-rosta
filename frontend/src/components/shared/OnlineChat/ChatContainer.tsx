@@ -3,93 +3,57 @@
 import React, {useState} from "react";
 import {useClientChat} from "./hooks/useOnlineChat";
 import {Button} from "@/src/components/ui/button";
-import {motion, AnimatePresence} from "framer-motion";
-import {Input} from "../../ui/input";
+import {Input} from "@/src/components/ui/input";
 import ChatIconsButtons from "@/src/components/shared/OnlineChat/ChatIconsButtons";
-import useWhatsAppChat from "@/src/components/shared/OnlineChat/hooks/useWhatsAppChat";
-import ConfirmDialog from "@/src/components/ui/ConfirmDialog";
-import {RotateCcw, X} from "lucide-react";
-import {useTranslations} from "next-intl";
 import ChatBubble from "@/src/components/ui/ChatBubble";
-import PhoneInput from 'react-phone-input-2';
-import 'react-phone-input-2/lib/style.css';
-import { ChatMessageForm, chatMessageSchema, ChatUserForm, chatUserSchema} from "@/src/lib/zodSchemas/chat";
+import {X} from "lucide-react";
+import {useTranslations} from "next-intl";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 import {Controller, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
+import {ChatUserForm, ChatMessageForm, createChatUserSchema, createChatMessageSchema} from "@/src/lib/zodSchemas/chat";
 import FormErrorMessage from "@/src/components/ui/FormErrorMessage";
+import useWhatsAppChat from "@/src/components/shared/OnlineChat/hooks/useWhatsAppChat";
 
 export type ChatType = "online" | "whatsapp";
 
-interface ChatUserData {
-    name: string;
-    phone: string;
-    entered: boolean;
-}
-
 const ChatContainer = () => {
-    const tConfirm = useTranslations("Confirms");
     const tFormChat = useTranslations("FormChat");
-
-    const {
-        control: controlUser,
-        register: registerUser,
-        handleSubmit: handleUserSubmit,
-        formState: { errors: userErrors }
-    } = useForm<ChatUserForm>({
-        resolver: zodResolver(chatUserSchema),
-        defaultValues: { name: "", phone: "" },
-    });
-
-
-    const {
-        register: registerMessage,
-        handleSubmit: handleMessageSubmit,
-        formState: { errors: messageErrors }
-    } = useForm<ChatMessageForm>({
-        resolver: zodResolver(chatMessageSchema),
-        defaultValues: { text: "" },
-    });
-
-    const onSendMessage = async (data: ChatMessageForm) => {
-        if (chatType === "online") {
-            sendMessage(data.text, currentData.name);
-        } else {
-            await sendWAppMessage(data.text, currentData.name, currentData.phone);
-        }
-    };
-
-
-    const onEnterChat = (data: ChatUserForm) => {
-        if (chatType === "online" && !connected) {
-            connect(data.name, data.phone);
-        }
-        updateCurrentData("name", data.name);
-        updateCurrentData("phone", data.phone);
-        updateCurrentData("entered", true);
-    };
-
+    const tFormError = useTranslations("FormErrors");
 
     const [chatType, setChatType] = useState<ChatType>("online");
-    const [chatData, setChatData] = useState<Record<ChatType, ChatUserData>>({
-        online: {name: "", phone: "", entered: false},
-        whatsapp: {name: "", phone: "", entered: false}
-    });
-
-    const [message, setMessage] = useState("");
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isChatOpen, setIsChatOpen] = useState(false);
-    const [isShowConfirm, setIsShowConfirm] = useState(false);
+    const [userEntered, setUserEntered] = useState(false);
 
-    const { connect, sendMessage, chatMessages, connected } = useClientChat();
-    const { whatsAppMessages, sendWAppMessage } = useWhatsAppChat();
+    const {connect, sendMessage, chatMessages, connected} = useClientChat();
+    const {whatsAppMessages, sendWAppMessage} = useWhatsAppChat();
 
-    const currentData = chatData[chatType];
+    const userForm = useForm<ChatUserForm>({
+        resolver: zodResolver(createChatUserSchema(tFormError)),
+        defaultValues: {name: "", phone: ""},
+    });
 
-    const updateCurrentData = (field: keyof ChatUserData, value: string | boolean) => {
-        setChatData(prev => ({
-            ...prev,
-            [chatType]: {...prev[chatType], [field]: value}
-        }));
+    const messageForm = useForm<ChatMessageForm>({
+        resolver: zodResolver(createChatMessageSchema(tFormError)),
+        defaultValues: {text: ""},
+    });
+
+    const currentUser = userForm.watch();
+    const messages = chatType === "online" ? chatMessages : whatsAppMessages;
+
+    const onEnterChat = (data: ChatUserForm) => {
+        if (chatType === "online" && !connected) connect(data.name, data.phone);
+    };
+
+    const onSendMessage = async ({text}: ChatMessageForm) => {
+        if (chatType === "online") {
+            sendMessage(text, currentUser.name);
+        } else {
+            await sendWAppMessage(text, currentUser.name, currentUser.phone);
+        }
+        messageForm.reset();
     };
 
     const handleMainButtonClick = () => setIsMenuOpen(prev => !prev);
@@ -100,140 +64,108 @@ const ChatContainer = () => {
         setIsMenuOpen(false);
     };
 
-    // const handleEnterName = () => {
-    //     if (!currentData.name.trim() || !currentData.phone.trim()) return;
-    //
-    //     if (chatType === "online" && !connected) {
-    //         connect(currentData.name, currentData.phone);
-    //     }
-    //
-    //     updateCurrentData("entered", true);
-    // };
-    //
-    // const handleSend = async () => {
-    //     if (!message.trim()) return;
-    //
-    //     const error = validateChatInput(currentData.name, message);
-    //     if (error) {
-    //         toast.error(error);
-    //         return;
-    //     }
-    //
-    //     if (chatType === "online") {
-    //         sendMessage(message, currentData.name);
-    //     } else {
-    //         await sendWAppMessage(message, currentData.name, currentData.phone);
-    //     }
-    //     setMessage("");
-    // };
-
-    const handleReset = () => {
-        setChatData(prev => ({
-            ...prev,
-            [chatType]: {name: "", phone: "", entered: false}
-        }));
-        setMessage("");
-    };
-
     return (
-        <div className="fixed bottom-24 right-24 z-50 flex flex-col items-center gap-3">
-            <AnimatePresence>
-                {isChatOpen && (
-                    <motion.div
-                        key="chat-container"
-                        initial={{opacity: 0, scale: 0.8}}
-                        animate={{opacity: 1, scale: 1}}
-                        exit={{opacity: 0, scale: 0.8}}
-                        transition={{duration: 0.3}}
-                        className="w-100 border bg-white rounded-xl shadow py-4 px-2"
-                    >
-                        <div className="flex justify-between items-center mb-2 border-b pb-3">
+        <div className={`fixed z-50 flex flex-col
+                    bottom-0 right-0 w-full h-screen
+                    lg:bottom-24 lg:max-w-[400px] lg:right-24 lg:w-100 lg:h-140 lg:items-center md:gap-3`}>
 
-                            <Button variant="outline" onClick={() => setIsShowConfirm(true)}>
-                                <RotateCcw/> Сброс
-                            </Button>
-                            {chatType === "whatsapp" && <span>WhatsApp</span>}
-                            <Button variant="outline" onClick={() => setIsChatOpen(false)}> <X/></Button>
-                        </div>
+            {isChatOpen && (
+                <div className="flex flex-col border bg-white rounded-xl shadow py-4 px-2 h-full lg:h-[560px]">
 
-                        <div className="flex flex-col h-96">
-                            <div className="flex-1 overflow-y-auto space-y-1 pr-1">
-                                {(chatType === "online" ? chatMessages : whatsAppMessages).length === 0
-                                    ?
-                                    <p className="text-center text-gray-400 mt-4">{tFormChat("contactAdminMessage")}</p>
-                                    : (chatType === "online" ? chatMessages : whatsAppMessages).map((message, i) => (
-                                        <ChatBubble
-                                            key={i}
-                                            message={message}
-                                            align={message.sender === "client" ? "right" : "left"}/>
-                                    ))
-                                }
-                            </div>
+                <div className="flex justify-between items-center mb-2 border-b pb-3">
+                        {chatType === "whatsapp" && <span>WhatsApp</span>}
+                        <Button variant="outline" onClick={() => setIsChatOpen(false)}>
+                            <X/>
+                        </Button>
+                    </div>
 
-                            {!currentData.entered ? (
-                                <form onSubmit={handleUserSubmit(onEnterChat)} className="mt-2 flex flex-col gap-2">
-                                    <Input
-                                        {...registerUser("name")}
-                                        placeholder={tFormChat("namePlaceholder")}
-                                        className="border p-1 rounded w-full"
-                                    />
-                                    {userErrors.name && <FormErrorMessage>{userErrors.name.message}</FormErrorMessage>}
+                    <div className="flex-1 overflow-y-auto space-y-1 pr-1">
+                        {messages.length === 0 ? (
+                            <p className="text-center text-gray-400 mt-4">
+                                {tFormChat("contactAdminMessage")}
+                            </p>
+                        ) : (
+                            messages.map((message, i) => (
+                                <ChatBubble
+                                    key={i}
+                                    message={message}
+                                    align={message.sender === "client" ? "right" : "left"}
+                                />
+                            ))
+                        )}
+                    </div>
 
-                                    <Controller
-                                        name="phone"
-                                        control={controlUser}
-                                        render={({ field }) => (
-                                            <PhoneInput
-                                                country="kg"
-                                                value={field.value}
-                                                onChange={(val) => field.onChange(val)}
-                                                onBlur={field.onBlur}
-                                                inputProps={{ name: field.name, required: true }}
-                                                containerClass="w-full"
-                                                inputClass="!w-full border p-1 rounded"
-                                                buttonClass="!border !border-gray-300"
-                                            />
-                                        )}
-                                    />
-                                    {userErrors.phone && <FormErrorMessage>{userErrors.phone.message}</FormErrorMessage>}
-
-                                    <Button type="submit">
-                                        {tFormChat("openChat")}
-                                    </Button>
-                                </form>
-                            ) : (
-                                <form onSubmit={handleMessageSubmit(onSendMessage)} className="mt-2 flex gap-2">
-                                    <div className="flex-1">
-                                        <Input
-                                            {...registerMessage("text")}
-                                            className="border p-1 rounded w-full"
-                                        />
-                                        {messageErrors.text && <FormErrorMessage>{messageErrors.text.message}</FormErrorMessage>}
-                                    </div>
-
-                                    <Button type="submit">➤</Button>
-                                </form>
+                    {!userEntered ? (
+                        <form onSubmit={userForm.handleSubmit((data) => {
+                            onEnterChat(data);
+                            setUserEntered(true);
+                        })}>
+                            <Input
+                                {...userForm.register("name")}
+                                placeholder={tFormChat("namePlaceholder")}
+                                className="border p-1 rounded w-full mb-2"
+                            />
+                            {userForm.formState.errors.name && (
+                                <FormErrorMessage className="mb-3">
+                                    {userForm.formState.errors.name.message}
+                                </FormErrorMessage>
                             )}
-                        </div>
-                    </motion.div>
-                )}
 
-                <ChatIconsButtons
-                    isChatOpen={isChatOpen}
-                    isMenuOpen={isMenuOpen}
-                    onSelectChat={handleSelectChat}
-                    onMainButtonClick={handleMainButtonClick}
-                />
-            </AnimatePresence>
+                            <Controller
+                                name="phone"
+                                control={userForm.control}
+                                render={({field}) => (
+                                    <PhoneInput
+                                        country="kg"
+                                        value={field.value}
+                                        onChange={(val) => field.onChange(val)}
+                                        onBlur={field.onBlur}
+                                        inputProps={{name: field.name, required: true}}
+                                        containerClass="w-full"
+                                        inputClass="!w-full border p-1 rounded"
+                                        buttonClass="!border !border-gray-300"
+                                    />
+                                )}
+                            />
+                            {userForm.formState.errors.phone && (
+                                <FormErrorMessage className="mb-3">
+                                    {userForm.formState.errors.phone.message}
+                                </FormErrorMessage>
+                            )}
 
-            <ConfirmDialog
-                open={isShowConfirm}
-                onOpenChange={setIsShowConfirm}
-                title={tConfirm("chatResetTitle")}
-                onConfirm={handleReset}
-                text={tConfirm("chatResetDescription")}
-                confirmText={tConfirm("confirmBtn")}
-                cancelText={tConfirm("cancelBtn")}
+                            <Button
+                                className="mt-4"
+                                type="submit">{tFormChat("openChat")}</Button>
+                        </form>
+                    ) : (
+                        <>
+                            {messageForm.formState.errors.text && (
+                                <FormErrorMessage className="mt-1">
+                                    {messageForm.formState.errors.text.message}
+                                </FormErrorMessage>
+                            )}
+
+                            <form onSubmit={messageForm.handleSubmit(onSendMessage)}
+                                  className="mt-2 flex items-center gap-2 border-t-2 py-4 lg:pt-4">
+                                <div className="flex-1 flex flex-col">
+                                    <Input
+                                        {...messageForm.register("text")}
+                                        placeholder={tFormChat("messagePlaceholder")}
+                                        className={"border p-1 rounded w-full"}
+                                    />
+                                </div>
+                                <Button type="submit">➤</Button>
+                            </form>
+                        </>
+                    )}
+                </div>
+            )}
+
+            <ChatIconsButtons
+                isChatOpen={isChatOpen}
+                isMenuOpen={isMenuOpen}
+                onSelectChat={handleSelectChat}
+                onMainButtonClick={handleMainButtonClick}
             />
         </div>
     );

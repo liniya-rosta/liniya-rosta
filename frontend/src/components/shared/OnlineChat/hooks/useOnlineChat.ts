@@ -40,6 +40,15 @@ export const useClientChat = () => {
             if (data.type === "new_message") {
                 setChatMessages((prev) => [...prev, data]);
             }
+
+            if (data.type === "user_reset") {
+                setChatMessages(prev => [...prev, {
+                    sender: "client",
+                    senderName: "",
+                    text: "Вы сбросили данные. Введите имя и телефон снова.",
+                    timestamp: new Date(),
+                }]);
+            }
         };
 
         ws.current.onclose = () => {
