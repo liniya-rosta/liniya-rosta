@@ -51,7 +51,7 @@ export const getOnlineChatRouter = (
             try {
                 const data = JSON.parse(msg.toString()) as IncomingMessage;
 
-                if (data.text) {
+                if (data.type === "client_message" || data.type === "admin_message") {
                     if (data.text.length > 500) {
                         ws.send(JSON.stringify({ type: "error", message: "Сообщение слишком длинное (макс 500 символов)" }));
                         return;

@@ -150,7 +150,13 @@ export interface  ChatMessage  {
     timestamp: Date;
 }
 
-export type IncomingMessage = ClientMessage | AdminMessage;
+export interface ResetUserMessage {
+    type: "reset_user";
+    chatId: string;
+    name:string;
+}
+
+export type IncomingMessage = ClientMessage | AdminMessage | ResetUserMessage;
 
 export interface MongoFilter {
     [key: string]: string | number | boolean | Date | RegExp | MongoFilter | MongoFilter[];

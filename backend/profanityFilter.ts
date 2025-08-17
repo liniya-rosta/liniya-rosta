@@ -31,11 +31,11 @@ const kyrgyzBadWords = [
 
 leoProfanity.add(kyrgyzBadWords);
 
-const normalizeText = (text: string) =>
-    text.toLowerCase().replace(/і/g, "и").replace(/\s+/g, "");
+const normalizeForCheck = (text: string) =>
+    text.toLowerCase().replace(/і/g, "и");
 
 export const hasBadWords = (text: string): boolean =>
-    leoProfanity.check(normalizeText(text));
+    leoProfanity.check(normalizeForCheck(text));
 
 export const cleanText = (text: string): string =>
-    leoProfanity.clean(normalizeText(text));
+    leoProfanity.clean(text);
