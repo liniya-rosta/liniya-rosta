@@ -73,7 +73,10 @@ const ChatList: React.FC<ChatListProps> = ({
                     <h2 className="font-medium">Чаты</h2>
                 </div>
                     <Button
-                        onClick={onRequestDelete}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onRequestDelete();
+                        }}
                         variant="destructive"
                         disabled={isDeleteBtnDisabled}
                     >Удалить ({selectedToDelete.length})</Button>
@@ -84,65 +87,69 @@ const ChatList: React.FC<ChatListProps> = ({
                     allChats.map((chat) => {
                         const isChecked = selectedToDelete.includes(chat._id);
                         return (
-                            <div
-                                key={chat._id}
-                                className={`p-4 border-b cursor-pointer hover:bg-gray-50 ${selectedChatId === chat._id ? "bg-gray-100" : ""}`}
-                                onClick={() => onSelect(chat._id)}
-                            >
-                                <div className="flex items-start gap-3">
-                                    <div onClick={(e) => e.stopPropagation()}>
-                                        <Checkbox
-                                            checked={isChecked}
-                                            onCheckedChange={(val) => {
-                                                const checked = Boolean(val);
-                                                toggleOne(chat._id, checked)
-                                            }}
-                                            aria-label={`Выбрать чат ${chat.clientName}`}
-                                        />
-                                    </div>
+                           <div key={chat._id}
+                                className={`flex flex-col border-b p-4 hover:bg-gray-50 ${selectedChatId === chat._id ? "bg-gray-100" : ""}`}
+                           >
+                               <div
+                                   className="flex items-start gap-3 cursor-pointer"
+                                   onClick={() => onSelect(chat._id)}
+                               >
+                                   <div className="flex items-start gap-3">
+                                       <div onClick={(e) => e.stopPropagation()}>
+                                           <Checkbox
+                                               checked={isChecked}
+                                               onCheckedChange={(val) => {
+                                                   const checked = Boolean(val);
+                                                   toggleOne(chat._id, checked)
+                                               }}
+                                               aria-label={`Выбрать чат ${chat.clientName}`}
+                                           />
+                                       </div>
 
-                                    <div className="flex-1">
-                                        <div className="font-medium flex items-center gap-2">
-                                            {chat.clientName}
-                                            {chat.isClientOnline && <span className="text-green-500 text-xs">● онлайн</span>}
-                                        </div>
+                                       <div className="flex-1">
+                                           <div className="font-medium flex items-center gap-2">
+                                               {chat.clientName}
+                                               {chat.isClientOnline && <span className="text-green-500 text-xs">● онлайн</span>}
+                                           </div>
 
-                                        <div className="text-sm text-gray-500">
-                                            {dayjs(chat.createdAt).format("DD.MM.YYYY HH:mm")}
-                                        </div>
-                                    </div>
-                                </div>
+                                           <div className="text-sm text-gray-500">
+                                               {dayjs(chat.createdAt).format("DD.MM.YYYY HH:mm")}
+                                           </div>
+                                       </div>
+                                   </div>
 
-                                <div className="mt-2 flex flex-wrap gap-3 items-center justify-between">
-                                    <Select
-                                        value={chat.status || chat_statuses[0]}
-                                        onValueChange={(value) => onStatusUpdated(chat._id, value)}
-                                    >
-                                        <SelectTrigger className="w-[140px]">
-                                            <SelectValue placeholder="Выбрать статус" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            {chat_statuses.map((status) => (
-                                                <SelectItem key={status} value={status}>
-                                                    {status}
-                                                </SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
+                               </div>
 
-                                    <Button
-                                        variant="outline"
-                                        size="sm"
-                                        className="text-destructive hover:bg-destructive"
-                                        onClick={() => {
-                                            onRequestDelete();
-                                            setSelectedToDelete([chat._id]);
-                                        }}
-                                    >
-                                        Удалить
-                                    </Button>
-                                </div>
-                            </div>
+                               <div className="mt-auto pt-3 flex flex-wrap gap-3 items-center justify-between">
+                                   <Select
+                                       value={chat.status || chat_statuses[0]}
+                                       onValueChange={(value) => onStatusUpdated(chat._id, value)}
+                                   >
+                                       <SelectTrigger className="w-[140px]">
+                                           <SelectValue placeholder="Выбрать статус" />
+                                       </SelectTrigger>
+                                       <SelectContent>
+                                           {chat_statuses.map((status) => (
+                                               <SelectItem key={status} value={status}>
+                                                   {status}
+                                               </SelectItem>
+                                           ))}
+                                       </SelectContent>
+                                   </Select>
+
+                                   <Button
+                                       variant="outline"
+                                       size="sm"
+                                       className="text-destructive hover:bg-destructive"
+                                       onClick={() => {
+                                           onRequestDelete();
+                                           setSelectedToDelete([chat._id]);
+                                       }}
+                                   >
+                                       Удалить
+                                   </Button>
+                               </div>
+                           </div>
                         );
                     })
                 ) : (

@@ -369,3 +369,9 @@ export interface Chat {
     status: string;
     messages: ChatMessage[];
 }
+
+export interface ChatFormRegister {
+    name: string;
+    phone: string;
+    text: string;
+}

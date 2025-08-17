@@ -12,7 +12,11 @@ import {RotateCcw, X} from "lucide-react";
 import {useTranslations} from "next-intl";
 import ChatBubble from "@/src/components/ui/ChatBubble";
 import PhoneInput from 'react-phone-input-2';
-import 'react-phone-input-2/lib/style.css'
+import 'react-phone-input-2/lib/style.css';
+import { ChatMessageForm, chatMessageSchema, ChatUserForm, chatUserSchema} from "@/src/lib/zodSchemas/chat";
+import {Controller, useForm} from "react-hook-form";
+import {zodResolver} from "@hookform/resolvers/zod";
+import FormErrorMessage from "@/src/components/ui/FormErrorMessage";
 
 export type ChatType = "online" | "whatsapp";
 
@@ -25,6 +29,45 @@ interface ChatUserData {
 const ChatContainer = () => {
     const tConfirm = useTranslations("Confirms");
     const tFormChat = useTranslations("FormChat");
+
+    const {
+        control: controlUser,
+        register: registerUser,
+        handleSubmit: handleUserSubmit,
+        formState: { errors: userErrors }
+    } = useForm<ChatUserForm>({
+        resolver: zodResolver(chatUserSchema),
+        defaultValues: { name: "", phone: "" },
+    });
+
+
+    const {
+        register: registerMessage,
+        handleSubmit: handleMessageSubmit,
+        formState: { errors: messageErrors }
+    } = useForm<ChatMessageForm>({
+        resolver: zodResolver(chatMessageSchema),
+        defaultValues: { text: "" },
+    });
+
+    const onSendMessage = async (data: ChatMessageForm) => {
+        if (chatType === "online") {
+            sendMessage(data.text, currentData.name);
+        } else {
+            await sendWAppMessage(data.text, currentData.name, currentData.phone);
+        }
+    };
+
+
+    const onEnterChat = (data: ChatUserForm) => {
+        if (chatType === "online" && !connected) {
+            connect(data.name, data.phone);
+        }
+        updateCurrentData("name", data.name);
+        updateCurrentData("phone", data.phone);
+        updateCurrentData("entered", true);
+    };
+
 
     const [chatType, setChatType] = useState<ChatType>("online");
     const [chatData, setChatData] = useState<Record<ChatType, ChatUserData>>({
@@ -57,26 +100,32 @@ const ChatContainer = () => {
         setIsMenuOpen(false);
     };
 
-    const handleEnterName = () => {
-        if (!currentData.name.trim() || !currentData.phone.trim()) return;
-
-        if (chatType === "online" && !connected) {
-            connect(currentData.name, currentData.phone);
-        }
-
-        updateCurrentData("entered", true);
-    };
-
-    const handleSend = async () => {
-        if (!message.trim()) return;
-
-        if (chatType === "online") {
-            sendMessage(message, currentData.name);
-        } else {
-            await sendWAppMessage(message, currentData.name, currentData.phone);
-        }
-        setMessage("");
-    };
+    // const handleEnterName = () => {
+    //     if (!currentData.name.trim() || !currentData.phone.trim()) return;
+    //
+    //     if (chatType === "online" && !connected) {
+    //         connect(currentData.name, currentData.phone);
+    //     }
+    //
+    //     updateCurrentData("entered", true);
+    // };
+    //
+    // const handleSend = async () => {
+    //     if (!message.trim()) return;
+    //
+    //     const error = validateChatInput(currentData.name, message);
+    //     if (error) {
+    //         toast.error(error);
+    //         return;
+    //     }
+    //
+    //     if (chatType === "online") {
+    //         sendMessage(message, currentData.name);
+    //     } else {
+    //         await sendWAppMessage(message, currentData.name, currentData.phone);
+    //     }
+    //     setMessage("");
+    // };
 
     const handleReset = () => {
         setChatData(prev => ({
@@ -122,38 +171,48 @@ const ChatContainer = () => {
                             </div>
 
                             {!currentData.entered ? (
-                                <div className="mt-2 flex flex-col gap-2">
+                                <form onSubmit={handleUserSubmit(onEnterChat)} className="mt-2 flex flex-col gap-2">
                                     <Input
-                                        value={currentData.name}
-                                        onChange={(e) => updateCurrentData("name", e.target.value)}
+                                        {...registerUser("name")}
                                         placeholder={tFormChat("namePlaceholder")}
                                         className="border p-1 rounded w-full"
                                     />
-                                    <PhoneInput
-                                        value={currentData.phone}
-                                        country="kg"
-                                        onChange={(value) => updateCurrentData("phone", value)}
-                                        placeholder={tFormChat("phonePlaceholder")}
-                                        containerClass="w-full"
-                                        inputClass="!w-full border p-1 rounded"
-                                        buttonClass="!border !border-gray-300"
+                                    {userErrors.name && <FormErrorMessage>{userErrors.name.message}</FormErrorMessage>}
+
+                                    <Controller
+                                        name="phone"
+                                        control={controlUser}
+                                        render={({ field }) => (
+                                            <PhoneInput
+                                                country="kg"
+                                                value={field.value}
+                                                onChange={(val) => field.onChange(val)}
+                                                onBlur={field.onBlur}
+                                                inputProps={{ name: field.name, required: true }}
+                                                containerClass="w-full"
+                                                inputClass="!w-full border p-1 rounded"
+                                                buttonClass="!border !border-gray-300"
+                                            />
+                                        )}
                                     />
-                                    <Button
-                                        onClick={handleEnterName}
-                                        disabled={!currentData.phone.trim() || !currentData.name.trim()}
-                                    >
+                                    {userErrors.phone && <FormErrorMessage>{userErrors.phone.message}</FormErrorMessage>}
+
+                                    <Button type="submit">
                                         {tFormChat("openChat")}
                                     </Button>
-                                </div>
+                                </form>
                             ) : (
-                                <div className="mt-2 flex gap-2">
-                                    <Input
-                                        value={message}
-                                        onChange={(e) => setMessage(e.target.value)}
-                                        className="border p-1 rounded w-full"
-                                    />
-                                    <Button onClick={handleSend}>➤</Button>
-                                </div>
+                                <form onSubmit={handleMessageSubmit(onSendMessage)} className="mt-2 flex gap-2">
+                                    <div className="flex-1">
+                                        <Input
+                                            {...registerMessage("text")}
+                                            className="border p-1 rounded w-full"
+                                        />
+                                        {messageErrors.text && <FormErrorMessage>{messageErrors.text.message}</FormErrorMessage>}
+                                    </div>
+
+                                    <Button type="submit">➤</Button>
+                                </form>
                             )}
                         </div>
                     </motion.div>

@@ -90,7 +90,6 @@ const ProfileForm: React.FC<Props> = ({closeModal}) => {
                     <DialogDescription>
                         Сохраните свои данные, чтобы обновить изменения.
                     </DialogDescription>
-                    <DialogDescription>Сохраните свои данные, чтобы обновить изменения.</DialogDescription>
                 </DialogHeader>
 
                 <div className="grid gap-4 py-4">

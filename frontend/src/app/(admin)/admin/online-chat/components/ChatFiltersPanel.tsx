@@ -53,6 +53,7 @@ const ChatFiltersPanel: React.FC<ChatFiltersPanelProps> = ({ onChange, adminList
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="p-4 rounded-xl shadow mb-6">
             <div className="flex gap-4 mb-8 flex-wrap justify-between items-center">
+
                 <div className="flex flex-wrap md:flex-nowrap items-center gap-4">
                     <label className="flex flex-col w-full max-w-xs text-sm">
                         <span className="mb-1">Имя клиента</span>
@@ -85,7 +86,7 @@ const ChatFiltersPanel: React.FC<ChatFiltersPanelProps> = ({ onChange, adminList
                             value={watch("adminId") || ""}
                         >
                             <SelectTrigger>
-                                <SelectValue placeholder="Выбрать админа" />
+                                <SelectValue placeholder="Выбрать" />
                             </SelectTrigger>
                             <SelectContent>
                                 {adminList.map((admin) => (

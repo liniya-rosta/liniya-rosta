@@ -2,6 +2,7 @@ import {ChatMessage} from "@/src/lib/types";
 import { useRef, useState } from "react";
 import {WS_URL} from "@/src/lib/globalConstants";
 import {useTranslations} from "next-intl";
+import {toast} from "react-toastify";
 
 export const useClientChat = () => {
     const ws = useRef<WebSocket | null>(null);
@@ -27,6 +28,10 @@ export const useClientChat = () => {
 
         ws.current.onmessage = (event) => {
             const data = JSON.parse(event.data);
+
+            if (data.type === "error") {
+                toast.error(data.message);
+            }
 
             if (data.type === "session_created") {
                 setChatId(data.chatId);

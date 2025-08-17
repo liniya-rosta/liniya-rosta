@@ -135,7 +135,6 @@ const Page = () => {
                     {selectedChatId && (
                         <ChatMessages
                             key="chat-messages"
-                            className="h-full"
                             input={inputMessage}
                             onInputChange={setInputMessage}
                             onSubmit={handleSubmit}
