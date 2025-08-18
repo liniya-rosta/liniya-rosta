@@ -5,7 +5,6 @@ import React, {useEffect, useState} from "react";
 import {GalleryEditValues} from "@/src/lib/types";
 import {Input} from "@/src/components/ui/input";
 import Image from "next/image";
-import {API_BASE_URL} from "@/src/lib/globalConstants";
 import {Button} from "@/src/components/ui/button";
 import {editGalleryItem} from "@/actions/superadmin/portfolios";
 import LoaderIcon from "@/src/components/ui/Loading/LoaderIcon";
@@ -17,6 +16,7 @@ import {Label} from "@/src/components/ui/label";
 import ImageModal from "@/src/app/(admin)/admin/portfolio/components/ImageModal";
 import {gallerySchema} from "@/src/lib/zodSchemas/admin/portfolioSchema";
 import {handleKyError} from "@/src/lib/handleKyError";
+import {IMG_BASE} from "@/src/lib/globalConstants";
 
 interface Props {
     onSaved: () => void;
@@ -135,7 +135,7 @@ const GalleryEditForm: React.FC<Props> = ({onSaved}) => {
                         <p className="mb-3">Предыдущее изображение</p>
                         <div className="relative w-[200px] h-[200px]">
                             <Image
-                                src={API_BASE_URL + "/" + galleryItem.image}
+                                src={IMG_BASE + "/" + galleryItem.image}
                                 alt={galleryItem.alt.ru}
                                 fill
                                 sizes="(max-width: 768px) 100vw, 200px"
