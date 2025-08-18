@@ -951,14 +951,10 @@ const run = async () => {
             }
         },
         {
-            cover: 'test/IMG_2687.jpg',
+            cover: 'test/IMG_2683.jpg',
             coverAlt: {ru: 'Обложка проекта 2', ky: 'Долбоордун мукабасы 2'},
             gallery: [
                 {image: 'test/IMG_2683.jpg', alt: {ru: 'Галерея 1', ky: 'Галерея 1'}},
-                {image: 'test/IMG_2682.jpg', alt: {ru: 'Галерея 2', ky: 'Галерея 2'}},
-                {image: 'test/IMG_2688.jpg', alt: {ru: 'Галерея 3', ky: 'Галерея 3'}},
-                {image: 'test/IMG_2685.jpg', alt: {ru: 'Галерея 4', ky: 'Галерея 4'}},
-                {image: 'test/IMG_2689.jpg', alt: {ru: 'Галерея 5', ky: 'Галерея 5'}},
                 {image: 'test/IMG_2690.jpg', alt: {ru: 'Галерея 6', ky: 'Галерея 6'}},
                 {image: 'test/IMG_2691.jpg', alt: {ru: 'Галерея 7', ky: 'Галерея 7'}},
                 {image: 'test/IMG_2692.jpg', alt: {ru: 'Галерея 8', ky: 'Галерея 8'}},
@@ -1005,14 +1001,10 @@ const run = async () => {
             }
         },
         {
-            cover: 'test/IMG_2688.jpg',
+            cover: 'test/IMG_2682.jpg',
             coverAlt: {ru: 'Обложка проекта 4', ky: 'Долбоордун мукабасы 4'},
             gallery: [
-                {image: 'test/IMG_2683.jpg', alt: {ru: 'Галерея 1', ky: 'Галерея 1'}},
                 {image: 'test/IMG_2682.jpg', alt: {ru: 'Галерея 2', ky: 'Галерея 2'}},
-                {image: 'test/IMG_2688.jpg', alt: {ru: 'Галерея 3', ky: 'Галерея 3'}},
-                {image: 'test/IMG_2685.jpg', alt: {ru: 'Галерея 4', ky: 'Галерея 4'}},
-                {image: 'test/IMG_2689.jpg', alt: {ru: 'Галерея 5', ky: 'Галерея 5'}},
                 {image: 'test/IMG_2690.jpg', alt: {ru: 'Галерея 6', ky: 'Галерея 6'}},
                 {image: 'test/IMG_2691.jpg', alt: {ru: 'Галерея 7', ky: 'Галерея 7'}},
                 {image: 'test/IMG_2692.jpg', alt: {ru: 'Галерея 8', ky: 'Галерея 8'}},
@@ -1033,40 +1025,11 @@ const run = async () => {
             }
         },
         {
-            cover: 'test/IMG_0454.jpg',
-            coverAlt: {ru: 'Обложка проекта 5', ky: 'Долбоордун мукабасы 5'},
-            gallery: [
-                {image: 'test/IMG_0450.jpg', alt: 'Галерея 1 - 1'},
-                {image: 'test/IMG_0451.jpg', alt: 'Галерея 1 - 2'},
-                {image: 'test/IMG_0449.jpg', alt: 'Галерея 1 - 3'},
-                {image: 'test/IMG_0453.jpg', alt: 'Галерея 1 - 4'},
-                {image: 'test/IMG_0454.jpg', alt: 'Галерея 1 - 5'},
-                {image: 'test/IMG_0455.jpg', alt: 'Галерея 1 - 6'},
-                {image: 'test/IMG_0610.jpg', alt: 'Галерея 1 - 7'},
-                {image: 'test/IMG_0611.jpg', alt: 'Галерея 1 - 8'},
-            ],
-            description: {
-                ru: 'Современная гостиная с натяжным потолком',
-                ky: 'Заманбап конок бөлмө чоюлма шып менен',
-            },
-            seoTitle: {
-                ru: "Проект №5 — Галерея | Линия роста",
-                ky: "№5 долбоор — Галерея | Линия роста"
-            },
-            seoDescription: {
-                ru: "Посмотрите фотографии проекта №5 — современный интерьер с натяжными потолками.",
-                ky: "№5 долбоордун сүрөттөрүн караңыз — заманбап чоюлма шыптар менен интерьер."
-            }
-        },
-        {
             cover: 'test/IMG_2682.jpg',
             coverAlt: {ru: 'Обложка проекта 6', ky: 'Долбоордун мукабасы 6'},
             gallery: [
                 {image: 'test/IMG_2683.jpg', alt: {ru: 'Галерея 1', ky: 'Галерея 1'}},
                 {image: 'test/IMG_2682.jpg', alt: {ru: 'Галерея 2', ky: 'Галерея 2'}},
-                {image: 'test/IMG_2688.jpg', alt: {ru: 'Галерея 3', ky: 'Галерея 3'}},
-                {image: 'test/IMG_2685.jpg', alt: {ru: 'Галерея 4', ky: 'Галерея 4'}},
-                {image: 'test/IMG_2689.jpg', alt: {ru: 'Галерея 5', ky: 'Галерея 5'}},
                 {image: 'test/IMG_2690.jpg', alt: {ru: 'Галерея 6', ky: 'Галерея 6'}},
                 {image: 'test/IMG_2691.jpg', alt: {ru: 'Галерея 7', ky: 'Галерея 7'}},
                 {image: 'test/IMG_2692.jpg', alt: {ru: 'Галерея 8', ky: 'Галерея 8'}},
@@ -1113,34 +1076,6 @@ const run = async () => {
             }
         },
         {
-            cover: 'test/IMG_2687.jpg',
-            coverAlt: {ru: 'Обложка проекта 8', ky: 'Долбоордун мукабасы 8'},
-            gallery: [
-                {image: 'test/IMG_2683.jpg', alt: {ru: 'Галерея 1', ky: "Галерея 1"}},
-                {image: 'test/IMG_2682.jpg', alt: {ru: 'Галерея 2 ', ky: "Галерея 2"}},
-                {image: 'test/IMG_2688.jpg', alt: {ru: 'Галерея 3', ky: "Галерея 3"}},
-                {image: 'test/IMG_2685.jpg', alt: {ru: 'Галерея 4', ky: "Галерея 4"}},
-                {image: 'test/IMG_2689.jpg', alt: {ru: 'Галерея 5', ky: "Галерея 5"}},
-                {image: 'test/IMG_2690.jpg', alt: {ru: 'Галерея 6', ky: "Галерея 6"}},
-                {image: 'test/IMG_2691.jpg', alt: {ru: 'Галерея 7', ky: "Галерея 7"}},
-                {image: 'test/IMG_2692.jpg', alt: {ru: 'Галерея 8', ky: "Галерея 8"}},
-                {image: 'test/IMG_2683.jpg', alt: {ru: 'Галерея 9', ky: "Галерея 9"}},
-                {image: 'test/IMG_2682.jpg', alt: {ru: 'Галерея 10', ky: "Галерея 10"}},
-            ],
-            description: {
-                ru: 'Современная гостиная с натяжным потолком',
-                ky: 'Заманбап конок бөлмө чоюлма шып менен',
-            },
-            seoTitle: {
-                ru: "Проект №8 — Галерея | Линия роста",
-                ky: "№8 долбоор — Галерея | Линия роста"
-            },
-            seoDescription: {
-                ru: "Посмотрите фотографии проекта №8 — современный интерьер с натяжными потолками.",
-                ky: "№8 долбоордун сүрөттөрүн караңыз — заманбап чоюлма шыптар менен интерьер."
-            }
-        },
-        {
             cover: 'test/IMG_0448.jpg',
             coverAlt: {ru: 'Обложка проекта 9', ky: 'Долбоордун мукабасы 9'},
             gallery: [
@@ -1167,14 +1102,10 @@ const run = async () => {
             }
         },
         {
-            cover: 'test/IMG_2687.jpg',
+            cover: 'test/IMG_2682.jpg',
             coverAlt: {ru: 'Обложка проекта 10', ky: 'Долбоордун мукабасы 10'},
             gallery: [
-                {image: 'test/IMG_2683.jpg', alt: {ru: 'Галерея 1', ky: 'Галерея 1'}},
                 {image: 'test/IMG_2682.jpg', alt: {ru: 'Галерея 2', ky: 'Галерея 2'}},
-                {image: 'test/IMG_2688.jpg', alt: {ru: 'Галерея 3', ky: 'Галерея 3'}},
-                {image: 'test/IMG_2685.jpg', alt: {ru: 'Галерея 4', ky: 'Галерея 4'}},
-                {image: 'test/IMG_2689.jpg', alt: {ru: 'Галерея 5', ky: 'Галерея 5'}},
                 {image: 'test/IMG_2690.jpg', alt: {ru: 'Галерея 6', ky: 'Галерея 6'}},
                 {image: 'test/IMG_2691.jpg', alt: {ru: 'Галерея 7', ky: 'Галерея 7'}},
                 {image: 'test/IMG_2692.jpg', alt: {ru: 'Галерея 8', ky: 'Галерея 8'}},
