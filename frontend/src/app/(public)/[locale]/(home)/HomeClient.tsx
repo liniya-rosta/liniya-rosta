@@ -136,15 +136,12 @@ const HomePageClient: React.FC<HomePageClientProps> = ({
     return (
         <>
             <HeroSection title={title} />
-
             <ServiceSection/>
+
             <Container className="space-y-16">
                 <ProductsSection />
-
                 <PortfolioSection />
-
                 <ConsultationSection />
-
                 <InstagramSection />
             </Container>
         </>

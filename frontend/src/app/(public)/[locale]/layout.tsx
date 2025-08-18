@@ -3,6 +3,8 @@ import { getMessages } from 'next-intl/server';
 import Header from "@/src/components/shared/Header";
 import Footer from "@/src/components/shared/Footer/Footer";
 import type {Metadata} from "next";
+import ChatContainer from "@/src/components/shared/OnlineChat/ChatContainer";
+import React from "react";
 
 export const metadata: Metadata = {
     metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL!),
@@ -44,6 +46,7 @@ export default async function LocaleLayout({
             <div className="min-h-screen flex flex-col">
                 <Header />
                 <main className="flex-grow">{children}</main>
+                <ChatContainer/>
                 <Footer />
             </div>
         </NextIntlClientProvider>

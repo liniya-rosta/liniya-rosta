@@ -8,6 +8,7 @@ import {PortfolioItem} from "./src/models/PortfolioItem";
 import RequestFromClient from "./src/models/Request";
 import Contact from "./src/models/Contact";
 import Service from "./src/models/Service";
+import ChatSession from "./src/models/ChatSession";
 
 const run = async () => {
     await mongoose.connect(config.db);
@@ -22,11 +23,12 @@ const run = async () => {
         await db.dropCollection('requests');
         await db.dropCollection('contacts');
         await db.dropCollection('services');
+        await db.dropCollection('chatsessions');
     } catch (e) {
         console.log('Коллекции отсутствовали, пропуск сброса');
     }
 
-    await User.create(
+    const [Bob, Alice] = await User.create(
         {
             email: 'bob@gmail.com',
             password: '123',
@@ -1427,6 +1429,386 @@ const run = async () => {
             },
         }
     );
+
+    await ChatSession.create([
+        {
+            clientName: "Настя",
+            adminId: Bob,
+            status: "Новый",
+            createdAt: new Date(),
+            messages: [
+                {
+                    sender: "client",
+                    senderName: "User 1",
+                    text: "Здравствуйте, хочу узнать подробнее.",
+                    timestamp: new Date(),
+                },
+            ],
+        },
+        {
+            clientName: "Алексей",
+            adminId: Alice,
+            status: "В работе",
+            createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 1),
+            messages: [
+                {
+                    sender: "client",
+                    senderName: "User 2",
+                    text: "Есть ли у вас гарантия?",
+                    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 1 + 1000 * 60 * 5),
+                },
+                {
+                    sender: "admin",
+                    senderName: "Alice",
+                    text: "Да, конечно. Мы даём гарантию на 2 года.",
+                    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 1 + 1000 * 60 * 10),
+                },
+            ],
+        },
+        {
+            clientName: "Айбек",
+            adminId: Bob,
+            status: "Завершена",
+            createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2),
+            messages: [
+                {
+                    sender: "client",
+                    senderName: "Айбек",
+                    text: "Спасибо за помощь!",
+                    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2 + 1000 * 60 * 20),
+                },
+                {
+                    sender: "admin",
+                    senderName: "Bob",
+                    text: "Обращайтесь!",
+                    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2 + 1000 * 60 * 25),
+                },
+            ],
+        },
+        {
+            clientName: "Адилет",
+            adminId: null,
+            status: "Без ответа",
+            createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 3),
+            messages: [
+                {
+                    sender: "client",
+                    senderName: "Адилет",
+                    text: "Алло? Вы здесь?",
+                    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 3 + 1000 * 60 * 3),
+                },
+            ],
+        },
+        {
+            clientName: "Алмаз",
+            adminId: Bob,
+            status: "Новый",
+            createdAt: new Date(),
+            messages: [
+                {
+                    sender: "client",
+                    senderName: "Алмаз",
+                    text: "Здравствуйте, хочу узнать подробнее.",
+                    timestamp: new Date(),
+                },
+            ],
+        },
+        {
+            clientName: "Каныкей",
+            adminId: Alice,
+            status: "В работе",
+            createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 1),
+            messages: [
+                {
+                    sender: "client",
+                    senderName: "Каныкей",
+                    text: "Есть ли у вас гарантия?",
+                    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 1 + 1000 * 60 * 5),
+                },
+                {
+                    sender: "admin",
+                    senderName: "Alice",
+                    text: "Да, конечно. Мы даём гарантию на 2 года.",
+                    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 1 + 1000 * 60 * 10),
+                },
+            ],
+        },
+        {
+            clientName: "Егор",
+            adminId: Bob,
+            status: "Завершена",
+            createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2),
+            messages: [
+                {
+                    sender: "client",
+                    senderName: "Егор",
+                    text: "Спасибо за помощь!",
+                    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2 + 1000 * 60 * 20),
+                },
+                {
+                    sender: "admin",
+                    senderName: "Bob",
+                    text: "Обращайтесь!",
+                    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2 + 1000 * 60 * 25),
+                },
+            ],
+        },
+        {
+            clientName: "Николай",
+            adminId: null,
+            status: "Без ответа",
+            createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 3),
+            messages: [
+                {
+                    sender: "client",
+                    senderName: "Николай",
+                    text: "Алло? Вы здесь?",
+                    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 3 + 1000 * 60 * 3),
+                },
+            ],
+        },
+
+        {
+            clientName: "Султан",
+            adminId: Bob,
+            status: "Новый",
+            createdAt: new Date(),
+            messages: [
+                {
+                    sender: "client",
+                    senderName: "Султан",
+                    text: "Здравствуйте, хочу узнать подробнее.",
+                    timestamp: new Date(),
+                },
+            ],
+        },
+        {
+            clientName: "Николай",
+            adminId: Alice,
+            status: "В работе",
+            createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 1),
+            messages: [
+                {
+                    sender: "client",
+                    senderName: "Николай",
+                    text: "Есть ли у вас гарантия?",
+                    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 1 + 1000 * 60 * 5),
+                },
+                {
+                    sender: "admin",
+                    senderName: "Alice",
+                    text: "Да, конечно. Мы даём гарантию на 2 года.",
+                    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 1 + 1000 * 60 * 10),
+                },
+            ],
+        },
+        {
+            clientName: "Полина",
+            adminId: Bob,
+            status: "Завершена",
+            createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2),
+            messages: [
+                {
+                    sender: "client",
+                    senderName: "Полина",
+                    text: "Спасибо за помощь!",
+                    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2 + 1000 * 60 * 20),
+                },
+                {
+                    sender: "admin",
+                    senderName: "Bob",
+                    text: "Обращайтесь!",
+                    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2 + 1000 * 60 * 25),
+                },
+            ],
+        },
+        {
+            clientName: "User 12",
+            adminId: null,
+            status: "Без ответа",
+            createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 3),
+            messages: [
+                {
+                    sender: "client",
+                    senderName: "User 4",
+                    text: "Алло? Вы здесь?",
+                    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 3 + 1000 * 60 * 3),
+                },
+            ],
+        },
+        {
+            clientName: "Сезим",
+            adminId: Bob,
+            status: "Новый",
+            createdAt: new Date(),
+            messages: [
+                {
+                    sender: "client",
+                    senderName: "Сезим",
+                    text: "Здравствуйте, хочу узнать подробнее.",
+                    timestamp: new Date(),
+                },
+            ],
+        },
+        {
+            clientName: "Аселя",
+            adminId: Alice,
+            status: "В работе",
+            createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 1),
+            messages: [
+                {
+                    sender: "client",
+                    senderName: "User 2",
+                    text: "Есть ли у вас гарантия?",
+                    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 1 + 1000 * 60 * 5),
+                },
+                {
+                    sender: "admin",
+                    senderName: "Alice",
+                    text: "Да, конечно. Мы даём гарантию на 2 года.",
+                    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 1 + 1000 * 60 * 10),
+                },
+            ],
+        },
+        {
+            clientName: "User 15",
+            adminId: Bob,
+            status: "Завершена",
+            createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2),
+            messages: [
+                {
+                    sender: "client",
+                    senderName: "User 3",
+                    text: "Спасибо за помощь!",
+                    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2 + 1000 * 60 * 20),
+                },
+                {
+                    sender: "admin",
+                    senderName: "Bob",
+                    text: "Обращайтесь!",
+                    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2 + 1000 * 60 * 25),
+                },
+            ],
+        },
+        {
+            clientName: "User 16",
+            adminId: null,
+            status: "Без ответа",
+            createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 3),
+            messages: [
+                {
+                    sender: "client",
+                    senderName: "User 4",
+                    text: "Алло? Вы здесь?",
+                    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 3 + 1000 * 60 * 3),
+                },
+            ],
+        },
+
+        {
+            clientName: "User 17",
+            adminId: Bob,
+            status: "Новый",
+            createdAt: new Date(),
+            messages: [
+                {
+                    sender: "client",
+                    senderName: "User 1",
+                    text: "Здравствуйте, хочу узнать подробнее.",
+                    timestamp: new Date(),
+                },
+            ],
+        },
+        {
+            clientName: "User 18",
+            adminId: Alice,
+            status: "В работе",
+            createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 1),
+            messages: [
+                {
+                    sender: "client",
+                    senderName: "User 2",
+                    text: "Есть ли у вас гарантия?",
+                    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 1 + 1000 * 60 * 5),
+                },
+                {
+                    sender: "admin",
+                    senderName: "Alice",
+                    text: "Да, конечно. Мы даём гарантию на 2 года.",
+                    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 1 + 1000 * 60 * 10),
+                },
+            ],
+        },
+        {
+            clientName: "User 19",
+            adminId: Bob,
+            status: "Завершена",
+            createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2),
+            messages: [
+                {
+                    sender: "client",
+                    senderName: "User 3",
+                    text: "Спасибо за помощь!",
+                    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2 + 1000 * 60 * 20),
+                },
+                {
+                    sender: "admin",
+                    senderName: "Bob",
+                    text: "Обращайтесь!",
+                    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2 + 1000 * 60 * 25),
+                },
+            ],
+        },
+        {
+            clientName: "User 20",
+            adminId: null,
+            status: "Без ответа",
+            createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 3),
+            messages: [
+                {
+                    sender: "client",
+                    senderName: "User 4",
+                    text: "Алло? Вы здесь?",
+                    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 3 + 1000 * 60 * 3),
+                },
+            ],
+        },
+        {
+            clientName: "User 21",
+            adminId: Bob,
+            status: "Новый",
+            createdAt: new Date(),
+            messages: [
+                {
+                    sender: "client",
+                    senderName: "User 1",
+                    text: "Здравствуйте, хочу узнать подробнее.",
+                    timestamp: new Date(),
+                },
+            ],
+        },
+        {
+            clientName: "User 22",
+            adminId: Alice,
+            status: "В работе",
+            createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 1),
+            messages: [
+                {
+                    sender: "client",
+                    senderName: "User 2",
+                    text: "Есть ли у вас гарантия?",
+                    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 1 + 1000 * 60 * 5),
+                },
+                {
+                    sender: "admin",
+                    senderName: "Alice",
+                    text: "Да, конечно. Мы даём гарантию на 2 года.",
+                    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 1 + 1000 * 60 * 10),
+                },
+            ],
+        },
+    ]);
+
     await db.close();
 }
 
