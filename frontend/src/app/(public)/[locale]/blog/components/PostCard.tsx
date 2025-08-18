@@ -1,7 +1,7 @@
 "use client"
 
 import Image from "next/image";
-import {API_BASE_URL} from "@/src/lib/globalConstants";
+import {IMG_BASE} from "@/src/lib/globalConstants";
 import {Card, CardDescription, CardFooter, CardHeader, CardTitle} from "@/src/components/ui/card";
 import Link from "next/link";
 import React, {useState} from "react";
@@ -11,7 +11,7 @@ import parse from 'html-react-parser';
 
 interface Props {
     slug: string;
-    images: { image: string, alt?: {ru: string, ky?: string} }[];
+    images: { image: string, alt?: { ru: string, ky?: string } }[];
     title: string;
     description: string;
 }
@@ -31,7 +31,7 @@ const PostCard: React.FC<Props> = ({slug, images, title, description}) => {
         <Card className="group relative overflow-hidden border-none shadow-none transition flex flex-col">
             <div className="relative h-56 w-full bg-gray-100">
                 <Image
-                    src={`${API_BASE_URL}/${currentImage.image}`}
+                    src={`${IMG_BASE}/${currentImage.image}`}
                     alt={currentImage.alt?.[locale] || "Изображение"}
                     fill
                     sizes="(max-width: 768px) 100vw, 33vw"

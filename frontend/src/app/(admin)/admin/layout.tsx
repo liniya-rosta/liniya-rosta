@@ -12,6 +12,7 @@ export default function AdminLayout({children}: { children: React.ReactNode }) {
     const router = useRouter();
     const pathname = usePathname();
     const isLogin = pathname === "/admin/login";
+    const adminAllowedPaths = ["/admin", "/admin/online-chat"];
 
     const {user, accessToken, hasHydrated} = useUserStore();
     const [authorized, setAuthorized] = useState(false);
@@ -32,7 +33,7 @@ export default function AdminLayout({children}: { children: React.ReactNode }) {
         if (role === "superadmin") {
             setAuthorized(true);
         } else if (role === "admin") {
-            if (pathname === "/admin") {
+            if (adminAllowedPaths.includes(pathname)) {
                 setAuthorized(true);
             } else {
                 router.replace("/admin");

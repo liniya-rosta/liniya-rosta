@@ -329,3 +329,49 @@ export interface FetchRequestsResponse {
     totalItems: number;
 }
 
+export interface ChatMessage {
+    sender: "client" | "admin";
+    senderName: string;
+    text: string;
+    timestamp: Date;
+}
+
+export interface ChatSession {
+    _id: string;
+    clientName: string;
+    adminId: string;
+    messages: ChatMessage[];
+    createdAt: Date;
+    updatedAt: Date;
+    status: string;
+    isClientOnline: boolean;
+}
+
+export interface ChatResponse extends PaginationMeta {
+    items: ChatSession[],
+}
+
+export interface ChatFilters {
+    status?: string;
+    clientName?: string;
+    createdFrom?: string;
+    createdTo?: string;
+    updatedFrom?: string;
+    updatedTo?: string;
+    adminId?: string;
+    page?: number;
+    limit?: number;
+}
+
+export interface Chat {
+    _id: string;
+    adminId: string;
+    status: string;
+    messages: ChatMessage[];
+}
+
+export interface ChatFormRegister {
+    name: string;
+    phone: string;
+    text: string;
+}

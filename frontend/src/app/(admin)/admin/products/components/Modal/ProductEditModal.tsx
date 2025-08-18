@@ -16,7 +16,7 @@ import {toast} from "react-toastify";
 import {Trash2} from "lucide-react";
 import Image from "next/image";
 import {UpdateProductFormData, updateProductSchema} from "@/src/lib/zodSchemas/admin/productSchema";
-import {API_BASE_URL} from "@/src/lib/globalConstants";
+import {IMG_BASE} from "@/src/lib/globalConstants";
 import {useAdminCategoryStore} from "@/store/superadmin/superadminCategoriesStore";
 import {handleKyError} from "@/src/lib/handleKyError";
 
@@ -37,8 +37,8 @@ const ProductEditModal: React.FC<Props> = ({open, onClose, product, refresh}) =>
         setProducts
     } = useAdminProductStore();
 
-    const [coverPreview, setCoverPreview] = useState<string | null>(product.cover?.url ? `${API_BASE_URL}/${product.cover.url}` : null);
-    const [iconPreview, setIconPreview] = useState<string | null>(product.icon?.url ? `${API_BASE_URL}/${product.icon.url}` : null);
+    const [coverPreview, setCoverPreview] = useState<string | null>(product.cover?.url ? `${IMG_BASE}/${product.cover.url}` : null);
+    const [iconPreview, setIconPreview] = useState<string | null>(product.icon?.url ? `${IMG_BASE}/${product.icon.url}` : null);
 
     const form = useForm<UpdateProductFormData>({
         resolver: zodResolver(updateProductSchema),

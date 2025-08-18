@@ -29,7 +29,7 @@ const RequestsPage = () => {
             setFetchAllError(null);
 
             try {
-                const response: FetchRequestsResponse = await fetchAllRequests({ page: 1, archived: false });
+                const response: FetchRequestsResponse = await fetchAllRequests({page: 1, archived: false});
                 setRequests(response.data);
                 setPage(1);
                 setLastPage(response.totalPages);
