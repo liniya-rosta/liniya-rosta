@@ -3,23 +3,32 @@ import useUserStore from "@/store/usersStore";
 import { WS_URL } from "@/src/lib/globalConstants";
 import { toast } from "react-toastify";
 import {useAdminChatStore} from "@/store/superadmin/adminChatStore";
+import {Chat, ChatMessage} from "@/src/lib/types";
 
 export const useAdminChatWS = () => {
     const wsRef = useRef<WebSocket | null>(null);
     const { accessToken } = useUserStore();
     const {setOneChatMessages} = useAdminChatStore();
 
-    const handleNewMessage = useCallback((data: any) => {
-        if (data.type === "new_message") {
-            setOneChatMessages((prev) => {
-                if (!prev || prev._id !== data.chatId) return prev;
-                return {
-                    ...prev,
-                    messages: [...prev.messages, data],
-                };
-            });
-        }
+    const handleNewMessage = useCallback((data: ChatMessage & { type: "new_message"; chatId: string }) => {
+        setOneChatMessages((prev: Chat | null) => {
+            if (!prev || prev._id !== data.chatId) return prev;
+            return { ...prev, messages: [...prev.messages, data] };
+        });
     }, [setOneChatMessages]);
+
+    //
+    // const handleNewMessage = useCallback((data: any) => {
+    //     if (data.type === "new_message") {
+    //         setOneChatMessages((prev) => {
+    //             if (!prev || prev._id !== data.chatId) return prev;
+    //             return {
+    //                 ...prev,
+    //                 messages: [...prev.messages, data],
+    //             };
+    //         });
+    //     }
+    // }, [setOneChatMessages]);
 
     useEffect(() => {
         const wsUrl = `${WS_URL}?token=${accessToken}`;
