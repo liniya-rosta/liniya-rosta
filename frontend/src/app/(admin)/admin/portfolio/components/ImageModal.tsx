@@ -1,6 +1,6 @@
 import {Dialog, DialogContent} from "@/src/components/ui/dialog";
 import {DialogTitle} from "@radix-ui/react-dialog";
-import {API_BASE_URL} from "@/src/lib/globalConstants";
+import {IMG_BASE} from "@/src/lib/globalConstants";
 import Image from "next/image";
 import React from "react";
 
@@ -12,7 +12,7 @@ interface Props {
 }
 
 const ImageModal: React.FC<Props> = ({open, openChange, alt, image}) => {
-    const imageUrl = image.startsWith("blob:") ? image : API_BASE_URL + "/" + image;
+    const imageUrl = image.startsWith("blob:") ? image : IMG_BASE + "/" + image;
 
     return (
         <Dialog open={open} onOpenChange={openChange}>

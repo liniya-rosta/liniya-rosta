@@ -9,7 +9,7 @@ import {usePostsStore} from "@/store/postsStore";
 import {ArrowLeft, Terminal} from "lucide-react";
 import {useRouter} from "next/navigation";
 import {useEffect, useState} from "react";
-import {API_BASE_URL} from "@/src/lib/globalConstants";
+import {IMG_BASE} from "@/src/lib/globalConstants";
 import {useLocale, useTranslations} from "next-intl";
 import parse from "html-react-parser";
 import {Swiper, SwiperSlide} from "swiper/react";
@@ -89,36 +89,36 @@ const PostClient: React.FC<Props> = ({data, error}) => {
                     {data.title[locale]}
                 </h3>
             </div>
-                <Swiper
-                    loop={true}
-                    autoplay={{
-                        delay: 4000,
-                        disableOnInteraction: false,
-                        reverseDirection: true,
-                    }}
-                    modules={[Navigation, Autoplay, Pagination]}
-                    pagination={{clickable: true}}
-                    className="w-full rounded-2xl mb-[30px]"
-                    navigation
-                >
-                    {data.images.map((img, i) => (
-                        <SwiperSlide key={i}>
-                            <div className="aspect-[4/2]">
-                                <Image
-                                    src={`${API_BASE_URL}/${img.image}`}
-                                    alt={img.alt?.[locale] || ""}
-                                    fill
-                                    className="object-cover "
-                                />
-                            </div>
-                        </SwiperSlide>
-                    ))}
-                </Swiper>
+            <Swiper
+                loop={true}
+                autoplay={{
+                    delay: 4000,
+                    disableOnInteraction: false,
+                    reverseDirection: true,
+                }}
+                modules={[Navigation, Autoplay, Pagination]}
+                pagination={{clickable: true}}
+                className="w-full rounded-2xl mb-[30px]"
+                navigation
+            >
+                {data.images.map((img, i) => (
+                    <SwiperSlide key={i}>
+                        <div className="aspect-[4/2]">
+                            <Image
+                                src={`${IMG_BASE}/${img.image}`}
+                                alt={img.alt?.[locale] || ""}
+                                fill
+                                className="object-cover "
+                            />
+                        </div>
+                    </SwiperSlide>
+                ))}
+            </Swiper>
 
-                <div className="prose prose-lg max-w-none text-muted-foreground">
-                    {parse(data.description[locale])}
-                </div>
+            <div className="prose prose-lg max-w-none text-muted-foreground">
+                {parse(data.description[locale])}
             </div>
+        </div>
     );
 };
 

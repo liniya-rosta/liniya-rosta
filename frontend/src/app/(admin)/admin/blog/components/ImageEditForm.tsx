@@ -11,12 +11,12 @@ import {Eye} from "lucide-react";
 import {Tooltip, TooltipContent, TooltipTrigger} from "@/src/components/ui/tooltip";
 import LoaderIcon from "@//src/components/ui/Loading/LoaderIcon";
 import Image from "next/image";
-import {API_BASE_URL} from "@/src/lib/globalConstants";
 import {ImageObject} from "@/src/lib/types";
 import {fetchPostById} from "@/actions/posts";
 import {toast} from "react-toastify";
 import {updatePostImage} from "@/actions/superadmin/posts";
 import {handleKyError} from "@/src/lib/handleKyError";
+import {IMG_BASE} from "@/src/lib/globalConstants";
 
 interface Props {
     open: boolean;
@@ -150,7 +150,7 @@ const ImageEditForm: React.FC<React.PropsWithChildren<Props>> = (
                                 <p className="mb-3">Предыдущее изображение</p>
                                 <div className="relative w-[200px] h-[200px]">
                                     <Image
-                                        src={API_BASE_URL + "/" + found.image}
+                                        src={IMG_BASE + "/" + found.image}
                                         alt={found.alt?.ru || "Изображение"}
                                         fill
                                         sizes="(max-width: 768px) 100vw, 200px"

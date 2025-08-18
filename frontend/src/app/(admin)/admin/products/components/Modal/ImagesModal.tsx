@@ -7,8 +7,8 @@ import {Button} from "@/src/components/ui/button";
 import {Checkbox} from "@/src/components/ui/checkbox";
 import {Card, CardContent, CardFooter} from "@/src/components/ui/card";
 import {toast} from "react-toastify";
-import {API_BASE_URL} from "@/src/lib/globalConstants";
-import {deleteProductImage, addProductImages} from "@/actions/superadmin/products";
+import {IMG_BASE} from "@/src/lib/globalConstants";
+import {addProductImages, deleteProductImage} from "@/actions/superadmin/products";
 import {useAdminProductStore} from "@/store/superadmin/superadminProductsStore";
 import {fetchProductById} from "@/actions/products";
 import ImagesEditForm from "@/src/app/(admin)/admin/products/components/Modal/ImagesEditForm";
@@ -101,7 +101,7 @@ const ImagesModal: React.FC<Props> = ({open, onClose, onAfterChange}) => {
             const product = await fetchProductById(productId);
             setProductDetail(product);
 
-            const { products: current, setProducts: newSetProducts } = useAdminProductStore.getState();
+            const {products: current, setProducts: newSetProducts} = useAdminProductStore.getState();
             newSetProducts(current.map(p => (p._id === product._id ? product : p)));
 
             return product;
@@ -173,7 +173,7 @@ const ImagesModal: React.FC<Props> = ({open, onClose, onAfterChange}) => {
                 {images.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-h-[70vh] overflow-y-auto p-2">
                         {images.map((item) => {
-                            const imageUrl = `${API_BASE_URL}/${item.url}`;
+                            const imageUrl = `${IMG_BASE}/${item.url}`;
                             const isSelected = selectedIds.includes(item._id);
 
                             return (

@@ -10,7 +10,7 @@ import Image from "next/image";
 import {toast} from "react-toastify";
 import LoaderIcon from "@/src/components/ui/Loading/LoaderIcon";
 import {Tooltip, TooltipContent, TooltipTrigger} from "@/src/components/ui/tooltip";
-import {API_BASE_URL} from "@/src/lib/globalConstants";
+import {IMG_BASE} from "@/src/lib/globalConstants";
 import {useAdminProductStore} from "@/store/superadmin/superadminProductsStore";
 import {updateProductImage} from "@/actions/superadmin/products";
 import {ImagesEditValues} from "@/src/lib/types";
@@ -110,7 +110,7 @@ const ImagesEditForm: React.FC<Props> = ({onSaved, image}) => {
                 <div className="relative w-[200px] h-[200px]">
                     <Image
                         key={previewUrl || image.url}
-                        src={previewUrl || `${API_BASE_URL}/${image.url}`}
+                        src={previewUrl || `${IMG_BASE}/${image.url}`}
                         alt={image.alt?.ru || "Изображение"}
                         fill
                         sizes="(max-width: 768px) 100vw, 200px"

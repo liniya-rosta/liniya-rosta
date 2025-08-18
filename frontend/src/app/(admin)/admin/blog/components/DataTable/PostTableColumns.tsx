@@ -12,7 +12,7 @@ import {
     DropdownMenuTrigger,
 } from '@/src/components/ui/dropdown-menu';
 import {Post} from '@/src/lib/types';
-import {API_BASE_URL} from '@/src/lib/globalConstants';
+import {IMG_BASE} from '@/src/lib/globalConstants';
 import {Tooltip, TooltipContent, TooltipTrigger} from '@/src/components/ui/tooltip';
 import parse from 'html-react-parser';
 
@@ -66,18 +66,18 @@ export const getPostTableColumns = (
         {
             id: 'title',
             accessorFn: row => row.title?.ru ?? "",
-            header: ({ column }) => {
+            header: ({column}) => {
                 return (
                     <Button
                         variant="ghost"
                         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                     >
                         Заголовок
-                        <ArrowUpDown className="ml-2 h-4 w-4" />
+                        <ArrowUpDown className="ml-2 h-4 w-4"/>
                     </Button>
                 );
             },
-            cell: ({ row }) =>
+            cell: ({row}) =>
                 <div className="font-medium max-w-[200px] truncate">
                     {row.original.title.ru}
                 </div>,
@@ -87,7 +87,7 @@ export const getPostTableColumns = (
             id: 'description',
             accessorFn: row => row.description?.ru ?? "",
             header: 'Описание',
-            cell: ({ row }) => {
+            cell: ({row}) => {
                 const html = row.original.description?.ru ?? '';
                 const plain = stripHtml(html);
                 if (!plain) return '—';
@@ -215,7 +215,7 @@ export const getPostTableColumns = (
                                 onClick={() => onOpenImagesModal(row.original)}
                             >
                                 <Image
-                                    src={`${API_BASE_URL}/${imageUrl}`}
+                                    src={`${IMG_BASE}/${imageUrl}`}
                                     alt={row.original.title?.ru ?? 'Изображение'}
                                     fill
                                     sizes="64px"
@@ -232,7 +232,8 @@ export const getPostTableColumns = (
                         </TooltipContent>
                     </Tooltip>
                 ) : (
-                    <div className="w-16 h-16 bg-muted rounded-md flex items-center justify-center text-xs text-muted-foreground text-center flex-shrink-0">
+                    <div
+                        className="w-16 h-16 bg-muted rounded-md flex items-center justify-center text-xs text-muted-foreground text-center flex-shrink-0">
                         Нет фото
                     </div>
                 );
@@ -249,7 +250,7 @@ export const getPostTableColumns = (
                         <DropdownMenuTrigger asChild>
                             <Button variant="ghost" className="h-8 w-8 p-0">
                                 <span className="sr-only">Открыть меню</span>
-                                <MoreHorizontal className="h-4 w-4" />
+                                <MoreHorizontal className="h-4 w-4"/>
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
@@ -257,18 +258,18 @@ export const getPostTableColumns = (
                             <DropdownMenuItem
                                 onClick={() => onOpenImagesModal(post)}
                             >
-                                <Images className="mr-2 h-4 w-4 hover:text-white" />
+                                <Images className="mr-2 h-4 w-4 hover:text-white"/>
                                 Все изображения
                             </DropdownMenuItem>
                             <DropdownMenuItem onClick={() => onEditPost(post)}>
-                                <Edit2 className="mr-2 h-4 w-4 hover:text-white" />
+                                <Edit2 className="mr-2 h-4 w-4 hover:text-white"/>
                                 Редактировать
                             </DropdownMenuItem>
                             <DropdownMenuItem
                                 onClick={() => onDeletePost([post._id])}
                                 className="text-destructive"
                             >
-                                <Trash2 className="mr-2 h-4 w-4 hover:text-white" />
+                                <Trash2 className="mr-2 h-4 w-4 hover:text-white"/>
                                 Удалить
                             </DropdownMenuItem>
                         </DropdownMenuContent>
