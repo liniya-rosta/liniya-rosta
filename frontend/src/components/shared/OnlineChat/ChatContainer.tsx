@@ -65,9 +65,11 @@ const ChatContainer = () => {
     };
 
     return (
-        <div className={`fixed z-50 flex flex-col
-                    bottom-0 right-0 w-full h-screen
-                    lg:bottom-24 lg:max-w-[400px] lg:right-24 lg:w-100 lg:h-140 lg:items-center md:gap-3`}>
+        <div
+            className={` fixed z-50 flex flex-col ${isChatOpen
+                ? "bottom-0 right-0 w-full h-screen lg:bottom-24 lg:max-w-[400px] lg:right-24 lg:w-100 lg:h-140"
+                : "bottom-24 right-24"}`}
+        >
 
             {isChatOpen && (
                 <div className="flex flex-col border bg-white rounded-xl shadow py-4 px-2 h-full lg:h-[560px]">

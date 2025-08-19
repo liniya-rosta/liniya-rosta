@@ -9,7 +9,7 @@ import {Navigation} from "swiper/modules";
 import LoadingFullScreen from "@/src/components/ui/Loading/LoadingFullScreen";
 import {useProductStore} from "@/store/productsStore";
 import {useLocale, useTranslations} from "next-intl";
-import {Container} from '@/src/components/shared/Container';
+import {CustomContainer} from '@/src/components/shared/CustomContainer';
 
 interface Props {
     productData: Product | null;
@@ -51,7 +51,7 @@ const ProductDetailView: React.FC<Props> = ({productData, fetchProductError}) =>
     const src = `${IMG_BASE}/${product?.cover.url}`;
 
     if (product) return (
-        <Container>
+        <CustomContainer>
             <div
                 className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(320px,400px)] gap-10 md:my-7">
                 <div>
@@ -136,7 +136,7 @@ const ProductDetailView: React.FC<Props> = ({productData, fetchProductError}) =>
 
 
             </div>
-        </Container>
+        </CustomContainer>
     );
 };
 

@@ -1,11 +1,11 @@
 import React from 'react';
-import { Container } from '@/src/components/shared/Container';
+import { CustomContainer } from '@/src/components/shared/CustomContainer';
 
 const Page = () => {
     return (
-        <Container>
+        <CustomContainer>
             Натяжные обои
-        </Container>
+        </CustomContainer>
     );
 };
 
