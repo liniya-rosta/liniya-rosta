@@ -27,7 +27,7 @@ const ServiceSection = () => {
                                 transition={{ type: "spring", stiffness: 100, damping: 20, delay: index * 0.1 }}
                             >
                                 <ServiceContentCard
-                                    title={service.title[locale]}
+                                    title={service.title[locale]!}
                                     description={service.description?.[locale] || ""}
                                 />
                             </motion.div>

@@ -20,14 +20,14 @@ const saleSchema = z.object({
 
 const imageItemSchema = z.object({
     alt: i18nStringOptional.optional(),
-    url: z.union([z.instanceof(File), z.null()])
+    image: z.union([z.instanceof(File), z.null()])
         .refine((file) => file instanceof File && file.size > 0, {
             message: "Файл обязателен",
         }),
 });
 
 export const imagesSchema = z.object({
-    file: z.union([z.instanceof(File), z.null()]),
+    image: z.instanceof(File, { message: "Файл обязателен" }).nullable().optional(),
     alt: i18nString.optional(),
 });
 

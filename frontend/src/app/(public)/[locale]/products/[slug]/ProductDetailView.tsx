@@ -73,7 +73,7 @@ const ProductDetailView: React.FC<Props> = ({productData, fetchProductError}) =>
                                     <SwiperSlide key={img._id}
                                                  className="!w-[300px]"
                                                  onClick={() => setPreviewImage({
-                                                     url: img.url,
+                                                     url: img.image,
                                                      alt: img.alt || {ru: "Изображение", ky: "Сүрөт"}
                                                  })}
 
@@ -81,7 +81,7 @@ const ProductDetailView: React.FC<Props> = ({productData, fetchProductError}) =>
                                         <div
                                             className="relative w-full h-[200px] rounded-lg overflow-hidden shadow-md border hover:scale-105 transition-transform duration-300">
                                             <Image
-                                                src={`${API_BASE_URL}/${img.url}`}
+                                                src={`${API_BASE_URL}/${img.image}`}
                                                 alt={img.alt?.[locale] || "Изображение"}
                                                 fill
                                                 className="object-cover"

@@ -19,8 +19,6 @@ import {useProductsTableLogic} from "@/src/app/(admin)/admin/products/hooks/useP
 import ProductTableContent from "@/src/app/(admin)/admin/products/components/ProductTable/ProductsTableContent";
 import {useProductsQuery} from "@/src/app/(admin)/admin/products/hooks/useProductsQuery";
 import ProductsTablePagination from "@/src/app/(admin)/admin/products/components/ProductTable/ProductsTablePagination";
-// import ProductEditModal from "@/src/app/(admin)/admin/products/components/Modal/ProductEditModal";
-import ImageModal from "@/src/app/(admin)/admin/portfolio/components/ImageModal";
 import {useRouter} from "next/navigation";
 
 interface ProductsTableProps {
@@ -38,7 +36,6 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
     const {categories} = useCategoryStore();
 
     const {
-        previewImage, setPreviewImage,
         saleLabel, setSaleLabel,
         isImagesModalOpen, setIsImagesModalOpen,
         showConfirmDialog, setShowConfirmDialog,
@@ -160,13 +157,6 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
                 onConfirm={confirmDeletion}
                 loading={actionLoading}
                 text="Это действие нельзя отменить. Вы уверены, что хотите удалить?"
-            />
-
-            <ImageModal
-                open={!!previewImage}
-                openChange={() => setPreviewImage(null)}
-                image={previewImage?.url || ""}
-                alt={previewImage?.alt?.ru || "Изображение"}
             />
 
             <SaleLabelModal

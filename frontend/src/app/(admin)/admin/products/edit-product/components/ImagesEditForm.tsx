@@ -19,12 +19,14 @@ import {handleKyError} from "@/src/lib/handleKyError";
 
 interface Props {
     onSaved: () => void;
-    image: { _id: string; url: string; alt?: { ru: string } };
+    image?: { _id?: string; image: string; alt?: { ru: string } };
 }
 
 const ImagesEditForm: React.FC<Props> = ({onSaved, image}) => {
     const {setUpdateLoading, updateLoading, setUpdateError} = useAdminProductStore();
     const [previewUrl, setPreviewUrl] = React.useState<string | null>(null);
+
+    if (!image) return null;
 
     const {
         register,
@@ -36,18 +38,18 @@ const ImagesEditForm: React.FC<Props> = ({onSaved, image}) => {
         resolver: zodResolver(imagesSchema),
         defaultValues: {
             alt: {ru: image.alt?.ru},
-            image: undefined,
+            image: null,
         },
     });
 
     useEffect(() => {
         reset({
             alt: {ru: image.alt?.ru},
-            image: undefined,
+            image: null,
         });
 
         setPreviewUrl(null);
-    }, [image._id, image.url, image.alt, reset]);
+    }, [image._id, image.image, image.alt, reset]);
 
     const onChangeFile = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -62,7 +64,7 @@ const ImagesEditForm: React.FC<Props> = ({onSaved, image}) => {
     const onSubmit = async (data: ImagesEditValues) => {
         try {
             setUpdateLoading(true);
-            await updateProductImage(image._id, data.image || undefined, data.alt?.ru);
+            await updateProductImage(image._id!, data.image || null, data.alt?.ru);
 
             toast.success("Изображение успешно обновлено");
             onSaved();
@@ -81,13 +83,13 @@ const ImagesEditForm: React.FC<Props> = ({onSaved, image}) => {
                 <div className="mb-4">
                     <Label htmlFor="alt" className="mb-2">Альтернативное название</Label>
                     <Input
-                        id="alt.ru"
+                        id="alt"
                         type="text"
                         disabled={updateLoading}
                         {...register("alt.ru")}
                     />
-                    {errors.alt && (
-                        <p className="text-red-500 text-sm mb-4">{errors.alt.message}</p>
+                    {errors.alt?.ru && (
+                        <p className="text-red-500 text-sm mb-4">{errors.alt.ru.message}</p>
                     )}
                 </div>
 
@@ -110,8 +112,8 @@ const ImagesEditForm: React.FC<Props> = ({onSaved, image}) => {
                 <p className="mb-3">Текущее изображение</p>
                 <div className="relative w-[200px] h-[200px]">
                     <Image
-                        key={previewUrl || image.url}
-                        src={previewUrl || `${API_BASE_URL}/${image.url}`}
+                        key={previewUrl || image.image}
+                        src={previewUrl || `${API_BASE_URL}/${image.image}`}
                         alt={image.alt?.ru || "Изображение"}
                         fill
                         sizes="(max-width: 768px) 100vw, 200px"

@@ -24,7 +24,7 @@ export const getProductTableColumns = (
     onSaleLabelClick: (label: string) => void,
 onImagesClick: (data: {
         productId: string;
-        images: { url: string; alt?: { ru: string, ky: string } | null; _id: string }[]
+        images: { image: string; alt?: { ru: string, ky: string } | null; _id?: string }[]
     }) => void): ColumnDef<Product>[] => {
     const getCategoryTitle = (category: string | Category) => {
         if (typeof category === "object" && category !== null) {

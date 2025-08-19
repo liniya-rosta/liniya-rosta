@@ -5,7 +5,6 @@ import {Plus, Eye} from 'lucide-react';
 import {Label} from '@/src/components/ui/label';
 import FormErrorMessage from '@/src/components/ui/FormErrorMessage';
 import {Input} from '@/src/components/ui/input';
-import {UpdatePostFormData} from '@/src/lib/zodSchemas/admin/postSchema';
 import {ImageObject} from '@/src/lib/types';
 import {UpdateProductFormData} from "@/src/lib/zodSchemas/admin/productSchema";
 
@@ -62,7 +61,7 @@ const ImagesSection: React.FC<Props> = ({
                     type="button"
                     variant="outline"
                     onClick={() => {
-                            append({alt: {ru: ""}, file: null});
+                            append({alt: {ru: ""}, image: null});
                     }}
                     disabled={updateLoading}
                     className="mb-4"
@@ -133,8 +132,8 @@ const ImagesSection: React.FC<Props> = ({
                             disabled={updateLoading}
                             onChange={(e) => handleImageChange(index, e)}
                         />
-                        {errors.images?.[index]?.file && (
-                            <FormErrorMessage>{errors.images[index]?.file?.message}</FormErrorMessage>
+                        {errors.images?.[index]?.image && (
+                            <FormErrorMessage>{errors.images[index]?.image?.message}</FormErrorMessage>
                         )}
 
                         <div className="flex flex-wrap items-center justify-between">
@@ -143,7 +142,7 @@ const ImagesSection: React.FC<Props> = ({
                                 variant="outline"
                                 disabled={updateLoading}
                                 onClick={() => {
-                                    const file = control._formValues.images?.[index]?.file;
+                                    const file = control._formValues.images?.[index]?.image;
                                     if (file instanceof File) {
                                         showImagePreview(file, control._formValues.images[index]?.alt);
                                     }

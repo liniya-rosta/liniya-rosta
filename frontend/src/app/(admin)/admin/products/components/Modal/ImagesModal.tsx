@@ -11,8 +11,9 @@ import {API_BASE_URL} from "@/src/lib/globalConstants";
 import {deleteProductImage,} from "@/actions/superadmin/products";
 import {useAdminProductStore} from "@/store/superadmin/superadminProductsStore";
 import {fetchProductById} from "@/actions/products";
-import ImagesEditForm from "@/src/app/(admin)/admin/products/edit-product/components/ImagesEditForm";
 import {handleKyError} from "@/src/lib/handleKyError";
+import ConfirmDialog from "@/src/components/ui/ConfirmDialog";
+import ImagesEditForm from "@/src/app/(admin)/admin/products/edit-product/components/ImagesEditForm";
 
 interface Props {
     open: boolean;
@@ -28,6 +29,7 @@ const ImagesModal: React.FC<Props> = ({open, onClose}) => {
     const [selectionMode, setSelectionMode] = useState(false);
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
     const [editingId, setEditingId] = useState<string | null>(null);
+    const [imageToDelete, setImageToDelete] = useState<string | null>(null);
     const toggleSelect = (id: string) => {
         setSelectedIds((prev) =>
             prev.includes(id) ? prev.filter((_id) => _id !== id) : [...prev, id]
@@ -53,9 +55,7 @@ const ImagesModal: React.FC<Props> = ({open, onClose}) => {
             clearSelection();
             setSelectedIds([]);
             await refreshProduct();
-
             if (images.length === ids.length) {
-                setProductDetail(null);
                 onClose();
             }
         } catch (e) {
@@ -79,7 +79,7 @@ const ImagesModal: React.FC<Props> = ({open, onClose}) => {
             toast.error(msg);
             console.error(e);
         }
-    }, [productId, products, setProductDetail, setProducts, setUpdateError]);
+    }, [productId, setProductDetail, setProducts, setUpdateError]);
 
     useEffect(() => {
         if (open && productId) {
@@ -93,7 +93,6 @@ const ImagesModal: React.FC<Props> = ({open, onClose}) => {
             onOpenChange={(isOpen) => {
                 if (!isOpen) {
                     clearSelection();
-                    setProductDetail(null);
                     onClose();
                 }
             }}
@@ -126,9 +125,9 @@ const ImagesModal: React.FC<Props> = ({open, onClose}) => {
                 {images.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-h-[70vh] overflow-y-auto p-2">
                         {images.map((item) => {
-                            const imageUrl = `${API_BASE_URL}/${item.url}`;
+                            if (!item._id) return null;
+                            const imageUrl = `${API_BASE_URL}/${item.image}`;
                             const isSelected = selectedIds.includes(item._id);
-
                             return (
                                 <Card
                                     key={item._id}
@@ -136,7 +135,7 @@ const ImagesModal: React.FC<Props> = ({open, onClose}) => {
                                         ${selectionMode ? "cursor-pointer" : ""}
                                         ${isSelected ? "ring-2 ring-primary" : ""}`}
                                     onClick={() => {
-                                        if (selectionMode) toggleSelect(item._id);
+                                        if (selectionMode && item._id) toggleSelect(item._id);
                                     }}
                                 >
                                     <a
@@ -148,7 +147,9 @@ const ImagesModal: React.FC<Props> = ({open, onClose}) => {
                                             <div className="absolute z-10 top-2 left-2">
                                                 <Checkbox
                                                     checked={isSelected}
-                                                    onCheckedChange={() => toggleSelect(item._id)}
+                                                    onCheckedChange={() => {
+                                                        if (item._id) toggleSelect(item._id)}
+                                                    }
                                                 />
                                             </div>
                                         )}
@@ -169,7 +170,9 @@ const ImagesModal: React.FC<Props> = ({open, onClose}) => {
                                         <Button
                                             variant="outline"
                                             size="sm"
-                                            onClick={() => handleEditClick(item._id)}
+                                            onClick={() => {
+                                                if (item._id) handleEditClick(item._id)
+                                            }}
                                             disabled={selectionMode}
                                         >
                                             Редактировать
@@ -177,7 +180,7 @@ const ImagesModal: React.FC<Props> = ({open, onClose}) => {
                                         <Button
                                             variant="destructive"
                                             size="sm"
-                                            onClick={() => handleDelete([item._id])}
+                                            onClick={() => setImageToDelete(item._id!)}
                                             disabled={selectionMode}
                                         >
                                             Удалить
@@ -190,25 +193,38 @@ const ImagesModal: React.FC<Props> = ({open, onClose}) => {
                 ) : (
                     <p className="text-center py-4">Нет изображений</p>
                 )}
+                <ConfirmDialog
+                    open={!!imageToDelete}
+                    onOpenChange={(open) => {
+                        if (!open) setImageToDelete(null);
+                    }}
+                    title="Удалить изображение?"
+                    text="Изображение будет удалено безвозвратно."
+                    onConfirm={() => {
+                        if (imageToDelete) {
+                            void handleDelete([imageToDelete]);
+                            setImageToDelete(null);
+                        }
+                    }}
+                />
+                {editingId && (
+                    <Dialog open={true} onOpenChange={() => setEditingId(null)}>
+                        <DialogContent className="max-w-2xl">
+                            <DialogHeader>
+                                <DialogTitle>Редактирование изображения</DialogTitle>
+                            </DialogHeader>
+                            <ImagesEditForm
+                                image={images.find((img) => img._id === editingId)!}
+                                onSaved={async () => {
+                                    await refreshProduct();
+                                    setEditingId(null);
+                                    clearSelection();
+                                }}
+                            />
+                        </DialogContent>
+                    </Dialog>
+                )}
             </DialogContent>
-
-            {editingId && (
-                <Dialog open={true} onOpenChange={() => setEditingId(null)}>
-                    <DialogContent className="max-w-2xl">
-                        <DialogHeader>
-                            <DialogTitle>Редактирование изображения</DialogTitle>
-                        </DialogHeader>
-                        <ImagesEditForm
-                            image={images.find((img) => img._id === editingId)!}
-                            onSaved={async () => {
-                                await refreshProduct();
-                                setEditingId(null);
-                                clearSelection();
-                            }}
-                        />
-                    </DialogContent>
-                </Dialog>
-            )}
         </Dialog>
     );
 };

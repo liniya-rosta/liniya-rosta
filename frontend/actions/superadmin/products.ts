@@ -1,4 +1,4 @@
-import {Product, ProductMutation, ProductUpdateMutation} from "@/src/lib/types";
+import {Product, ProductMutation} from "@/src/lib/types";
 import kyAPI from "@/src/lib/kyAPI";
 import {UpdateProductFormData} from "@/src/lib/zodSchemas/admin/productSchema";
 
@@ -29,8 +29,8 @@ export const createProduct = async (productData: ProductMutation): Promise<Produ
 
     if (productData.images) {
         productData.images.forEach((img) => {
-            if (img.url instanceof File) {
-                formData.append("images", img.url);
+            if (img.image instanceof File) {
+                formData.append("images", img.image);
                 formData.append("alt", img.alt?.ru || "Элемент галереи");
             }
         });
@@ -85,8 +85,10 @@ export const updateProduct = async (id: string, productData: UpdateProductFormDa
     formData.append("mode", mode);
 
     productData.images?.forEach((img) => {
-        if (img.file) formData.append("images", img.file);
-        formData.append("alts", img.alt ? img.alt?.ru : "");
+        if (img.image instanceof File) {
+            formData.append("images", img.image);
+            formData.append("alts", img.alt?.ru || "");
+        }
     });
 
     const data = await kyAPI.patch(
@@ -94,7 +96,7 @@ export const updateProduct = async (id: string, productData: UpdateProductFormDa
     return data.product;
 };
 
-export const updateProductImage = async (imageId: string, file?: File, alt?: string): Promise<Product> => {
+export const updateProductImage = async (imageId: string, file: File | null, alt?: string): Promise<Product> => {
         const formData = new FormData();
         if (file) formData.append("images", file);
         if (alt) formData.append("alt", alt);
@@ -103,8 +105,8 @@ export const updateProductImage = async (imageId: string, file?: File, alt?: str
             product: Product
         }>();
         return data.product;
-    }
-;
+    };
+
 export const deleteProductImage = async (imageId: string): Promise<string> => {
     const data = await kyAPI.delete(`superadmin/products/images/${imageId}`).json<{ message: string }>();
     return data.message;

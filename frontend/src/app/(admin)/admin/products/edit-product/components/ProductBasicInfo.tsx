@@ -32,20 +32,20 @@ interface ProductBasicInfoProps {
 }
 
 const ProductBasicInfo: React.FC<ProductBasicInfoProps> = ({
-                              updateLoading,
-                              errors,
-                              register,
-                              categories,
-                              fileInputCoverRef,
-                              coverPreview,
-                              onCoverChange,
-                              fileInputIconRef,
-                              iconPreview,
-                              appendCharacteristic,
-                              onIconChange,
-                              characteristicFields,
-                              removeCharacteristic
-                          }) => {
+                                                               updateLoading,
+                                                               errors,
+                                                               register,
+                                                               categories,
+                                                               fileInputCoverRef,
+                                                               coverPreview,
+                                                               onCoverChange,
+                                                               fileInputIconRef,
+                                                               iconPreview,
+                                                               appendCharacteristic,
+                                                               onIconChange,
+                                                               characteristicFields,
+                                                               removeCharacteristic,
+                                                           }) => {
     return (
         <>
             <div>
@@ -61,7 +61,7 @@ const ProductBasicInfo: React.FC<ProductBasicInfoProps> = ({
                         className="w-full rounded-md text-sm border border-gray-300 bg-gray-50 px-4 py-2 text-gray-900">
                     <option value="">Выберите категорию</option>
                     {categories.map((cat) => (
-                        <option key={cat._id} value={cat._id}>
+                        <option key={cat._id} value={String(cat._id)}>
                             {cat.title.ru}
                         </option>
                     ))}

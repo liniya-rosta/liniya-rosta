@@ -30,6 +30,8 @@ const AdminProductsPage = async () => {
         })()
     ]);
 
+
+
     return (
         <>
             <ProductsClient

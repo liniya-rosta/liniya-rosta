@@ -28,7 +28,7 @@ export const updatePostSchema = z
         description: langString.optional(),
         images: z.array(
             z.object({
-                file: z.instanceof(File, { message: "Файл обязателен" }).nullable(),
+                image: z.instanceof(File, { message: "Файл обязателен" }).nullable(),
                 alt: altSchema.optional(),
             })
         ).optional(),
