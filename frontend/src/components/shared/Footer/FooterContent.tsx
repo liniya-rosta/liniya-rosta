@@ -68,7 +68,7 @@ const FooterContent: React.FC<ContactProps> = ({contactData, contactError}) => {
                     </a>
                 </p>
 
-                <div className="flex justify-center sm:justify-normal items-center gap-3 mt-2">
+                <div className="flex justify-center sm:justify-normal items-center gap-3 mt-4">
                     <Button
                         variant="secondary"
                         size="icon"

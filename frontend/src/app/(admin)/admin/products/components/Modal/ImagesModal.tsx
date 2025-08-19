@@ -7,7 +7,7 @@ import {Button} from "@/src/components/ui/button";
 import {Checkbox} from "@/src/components/ui/checkbox";
 import {Card, CardContent, CardFooter} from "@/src/components/ui/card";
 import {toast} from "react-toastify";
-import {API_BASE_URL} from "@/src/lib/globalConstants";
+import {IMG_BASE} from "@/src/lib/globalConstants";
 import {deleteProductImage,} from "@/actions/superadmin/products";
 import {useAdminProductStore} from "@/store/superadmin/superadminProductsStore";
 import {fetchProductById} from "@/actions/products";
@@ -55,7 +55,9 @@ const ImagesModal: React.FC<Props> = ({open, onClose}) => {
             clearSelection();
             setSelectedIds([]);
             await refreshProduct();
+
             if (images.length === ids.length) {
+                setProductDetail(null);
                 onClose();
             }
         } catch (e) {
@@ -65,6 +67,7 @@ const ImagesModal: React.FC<Props> = ({open, onClose}) => {
     };
 
     const refreshProduct = React.useCallback(async () => {
+        if (!productId) return null;
         try {
             const product = await fetchProductById(productId);
             setProductDetail(product);
@@ -77,7 +80,7 @@ const ImagesModal: React.FC<Props> = ({open, onClose}) => {
             const msg = await handleKyError(e, "Ошибка при обновлении изображений");
             setUpdateError(msg);
             toast.error(msg);
-            console.error(e);
+            return null;
         }
     }, [productId, setProductDetail, setProducts, setUpdateError]);
 
@@ -126,7 +129,7 @@ const ImagesModal: React.FC<Props> = ({open, onClose}) => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-h-[70vh] overflow-y-auto p-2">
                         {images.map((item) => {
                             if (!item._id) return null;
-                            const imageUrl = `${API_BASE_URL}/${item.image}`;
+                            const imageUrl = `${IMG_BASE}/${item.image}`;
                             const isSelected = selectedIds.includes(item._id);
                             return (
                                 <Card

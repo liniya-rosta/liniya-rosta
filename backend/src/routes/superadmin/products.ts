@@ -117,6 +117,56 @@ productsSuperAdminRouter.post("/", productImage.fields([
     }
 });
 
+productsSuperAdminRouter.post(
+    "/:id/images",
+    productImage.array("images", 20),
+    async (req, res, next) => {
+        try {
+            const {id} = req.params;
+            if (!mongoose.Types.ObjectId.isValid(id)) {
+                res.status(400).send({error: "Неверный формат ID продукта"});
+                return;
+            }
+
+            const product = await Product.findById(id);
+            if (!product) {
+                res.status(404).send({error: "Продукт не найден"});
+                return;
+            }
+
+            const imagesFiles = (req.files as Express.Multer.File[]) || [];
+            if (!Array.isArray(imagesFiles) || imagesFiles.length === 0) {
+                res.status(400).send({error: "Файлы изображений не получены"});
+                return;
+            }
+
+            const alts: string[] = Array.isArray(req.body.alt)
+                ? req.body.alt
+                : (req.body.alt ? [req.body.alt] : []);
+
+            const altsKy = await Promise.all(
+                alts.map((alt) => translateYandex(alt || "", "ky"))
+            );
+
+            const newImages = imagesFiles.map((file, i) => ({
+                url: "product/" + file.filename,
+                alt: {
+                    ru: alts[i] || "",
+                    ky: altsKy[i] || "",
+                },
+            }));
+
+            product.images.push(...newImages);
+            await product.save();
+
+            const updated = await Product.findById(product._id).populate("category");
+            res.send({message: "Изображения добавлены", product: updated});
+        } catch (e) {
+            next(e);
+        }
+    }
+);
+
 productsSuperAdminRouter.patch("/:id", productImage.fields([
     {name: "cover", maxCount: 1},
     {name: "images"},
@@ -199,7 +249,7 @@ productsSuperAdminRouter.patch("/:id", productImage.fields([
             try {
                 const original = JSON.parse(req.body.characteristics);
                 const translatedChars = await Promise.all(
-                    original.map(async (char: {key: {ru: string}; value: { ru: string }}) => ({
+                    original.map(async (char: { key: { ru: string }; value: { ru: string } }) => ({
                         key: {
                             ru: char.key.ru,
                             ky: await translateYandex(char.key.ru, "ky")
@@ -329,7 +379,7 @@ productsSuperAdminRouter.patch("/images/:imageId", productImage.fields([{
         }
 
         const updatedProduct = await Product.findOne({"images._id": imageId});
-        res.send(updatedProduct);
+        res.send({product: updatedProduct});
     } catch (e) {
         next(e);
     }

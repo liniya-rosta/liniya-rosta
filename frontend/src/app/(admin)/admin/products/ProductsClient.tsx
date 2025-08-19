@@ -1,6 +1,6 @@
 "use client";
 
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {Plus} from "lucide-react";
 import {Button} from "@/src/components/ui/button";
 import {CardContent} from "@/src/components/ui/card";
@@ -14,6 +14,7 @@ import ErrorMsg from "@/src/components/ui/ErrorMsg";
 import Link from "next/link";
 import {useAdminCategoryStore} from "@/store/superadmin/superadminCategoriesStore";
 import {handleKyError} from "@/src/lib/handleKyError";
+import CreateCategoryForm from "@/src/app/(admin)/admin/products/components/Modal/CategoryCreateForm";
 
 interface ProductsClientProps {
     initialProducts: Product[];
@@ -50,7 +51,7 @@ const ProductsClient: React.FC<ProductsClientProps> = ({
     } = useAdminProductStore();
 
     const {setCategories, fetchCategoriesError, setFetchCategoriesError} = useAdminCategoryStore();
-
+    const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
     const anyLoading = createLoading || updateLoading || deleteLoading;
     const overallError = fetchError || fetchCategoriesError;
 
@@ -123,19 +124,25 @@ const ProductsClient: React.FC<ProductsClientProps> = ({
             <div className="flex flex-col sm:flex-row sm:justify-between items-center gap-4">
                 <div>
                     <h1 className="text-23-30-1_5 font-bold text-center sm:text-left">
-                        Управление продуктами
+                        Управление товарами
                     </h1>
                     <p className="text-muted-foreground mt-1 text-center sm:text-left">
                         Создавайте и редактируйте товары
                     </p>
                 </div>
-                <Link href="/admin/products/add-product">
-                    <Button className="flex items-center gap-2 w-full sm:w-auto" disabled={anyLoading}
+                <div className="flex gap-2 flex-wrap">
+                    <Link href="/admin/products/add-product">
+                        <Button className="flex items-center gap-2" disabled={anyLoading}>
+                            <Plus size={16}/> Создать продукт
+                        </Button>
+                    </Link>
+                    <Button
+                        onClick={() => setIsCategoryModalOpen(true)}
+                        variant="outline"
                     >
-                        <Plus size={16}/>
-                        Создать продукт
+                        + Категория
                     </Button>
-                </Link>
+                </div>
             </div>
 
             <CardContent className="px-0">
@@ -154,6 +161,11 @@ const ProductsClient: React.FC<ProductsClientProps> = ({
                     />
                 )}
             </CardContent>
+
+            <CreateCategoryForm
+                open={isCategoryModalOpen}
+                onClose={() => setIsCategoryModalOpen(false)}
+            />
         </div>
     );
 };

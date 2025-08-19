@@ -10,7 +10,7 @@ import Image from "next/image";
 import {toast} from "react-toastify";
 import LoaderIcon from "@/src/components/ui/Loading/LoaderIcon";
 import {Tooltip, TooltipContent, TooltipTrigger} from "@/src/components/ui/tooltip";
-import {API_BASE_URL} from "@/src/lib/globalConstants";
+import {IMG_BASE} from "@/src/lib/globalConstants";
 import {useAdminProductStore} from "@/store/superadmin/superadminProductsStore";
 import {updateProductImage} from "@/actions/superadmin/products";
 import {ImagesEditValues} from "@/src/lib/types";
@@ -47,7 +47,6 @@ const ImagesEditForm: React.FC<Props> = ({onSaved, image}) => {
             alt: {ru: image.alt?.ru},
             image: null,
         });
-
         setPreviewUrl(null);
     }, [image._id, image.image, image.alt, reset]);
 
@@ -81,15 +80,15 @@ const ImagesEditForm: React.FC<Props> = ({onSaved, image}) => {
         <form onSubmit={handleSubmit(onSubmit)}>
             <div className="border-b border-b-gray-500 py-3 mb-4">
                 <div className="mb-4">
-                    <Label htmlFor="alt" className="mb-2">Альтернативное название</Label>
+                    <Label htmlFor="alt.ru" className="mb-2">Альтернативное название</Label>
                     <Input
-                        id="alt"
+                        id="alt.ru"
                         type="text"
                         disabled={updateLoading}
                         {...register("alt.ru")}
                     />
                     {errors.alt?.ru && (
-                        <p className="text-red-500 text-sm mb-4">{errors.alt.ru.message}</p>
+                        <p className="text-red-500 text-sm mb-4">{String(errors.alt.ru.message)}</p>
                     )}
                 </div>
 
@@ -113,7 +112,7 @@ const ImagesEditForm: React.FC<Props> = ({onSaved, image}) => {
                 <div className="relative w-[200px] h-[200px]">
                     <Image
                         key={previewUrl || image.image}
-                        src={previewUrl || `${API_BASE_URL}/${image.image}`}
+                        src={previewUrl || `${IMG_BASE}/${image.image}`}
                         alt={image.alt?.ru || "Изображение"}
                         fill
                         sizes="(max-width: 768px) 100vw, 200px"
