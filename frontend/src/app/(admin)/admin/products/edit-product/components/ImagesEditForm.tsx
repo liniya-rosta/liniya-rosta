@@ -19,7 +19,7 @@ import {handleKyError} from "@/src/lib/handleKyError";
 
 interface Props {
     onSaved: () => void;
-    image: { _id: string; url: string; alt?: { ru: string } };
+    image?: { _id?: string; image: string; alt?: { ru: string } };
 }
 
 const ImagesEditForm: React.FC<Props> = ({onSaved, image}) => {
@@ -35,18 +35,19 @@ const ImagesEditForm: React.FC<Props> = ({onSaved, image}) => {
     } = useForm<ImagesEditValues>({
         resolver: zodResolver(imagesSchema),
         defaultValues: {
-            alt: {ru: image.alt?.ru},
-            image: undefined,
+            alt: {ru: image?.alt?.ru ?? ""},
+            image: null,
         },
     });
 
     useEffect(() => {
+        if (!image) return;
         reset({
             alt: {ru: image.alt?.ru},
-            image: undefined,
+            image: null,
         });
         setPreviewUrl(null);
-    }, [image._id, reset]);
+    }, [image?._id, image?.image, image?.alt, reset]);
 
     const onChangeFile = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -59,9 +60,10 @@ const ImagesEditForm: React.FC<Props> = ({onSaved, image}) => {
     };
 
     const onSubmit = async (data: ImagesEditValues) => {
+        if (!image?._id) return;
         try {
             setUpdateLoading(true);
-            await updateProductImage(image._id, data.image || undefined, data.alt?.ru);
+            await updateProductImage(image._id!, data.image || null, data.alt?.ru);
 
             toast.success("Изображение успешно обновлено");
             onSaved();
@@ -109,9 +111,9 @@ const ImagesEditForm: React.FC<Props> = ({onSaved, image}) => {
                 <p className="mb-3">Текущее изображение</p>
                 <div className="relative w-[200px] h-[200px]">
                     <Image
-                        key={previewUrl || image.url}
-                        src={previewUrl || `${IMG_BASE}/${image.url}`}
-                        alt={image.alt?.ru || "Изображение"}
+                        key={previewUrl || image?.image}
+                        src={previewUrl || `${IMG_BASE}/${image?.image}`}
+                        alt={image?.alt?.ru || "Изображение"}
                         fill
                         sizes="(max-width: 768px) 100vw, 200px"
                         className="object-contain rounded"

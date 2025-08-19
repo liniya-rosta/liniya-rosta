@@ -44,7 +44,7 @@ productsSuperAdminRouter.post("/", productImage.fields([
 
 
         const images = imagesFiles.map((file, i) => ({
-            url: "product/" + file.filename,
+            image: "product/" + file.filename,
             alt: {
                 ru: alts[i],
                 ky: altsKy[i]
@@ -56,7 +56,7 @@ productsSuperAdminRouter.post("/", productImage.fields([
         if (req.body.characteristics) {
             const original = JSON.parse(req.body.characteristics);
             parsedCharacteristics = await Promise.all(
-                original.map(async (char: { key: { ru: string }; value: { ru: string } }) => ({
+                original.map(async (char: {key: {ru: string}; value: { ru: string }}) => ({
                     key: {
                         ru: char.key.ru,
                         ky: await translateYandex(char.key.ru, "ky")
@@ -182,7 +182,7 @@ productsSuperAdminRouter.patch("/:id", productImage.fields([
         const iconFile = files.icon?.[0];
 
         const {id} = req.params;
-        const {category, title, description, seoTitle, seoDescription} = req.body;
+        const {category, title, description, seoTitle, seoDescription, mode = "replace"} = req.body;
 
         if (!mongoose.Types.ObjectId.isValid(id)) {
             res.status(400).send({error: "Неверный формат ID продукта"});
@@ -268,21 +268,26 @@ productsSuperAdminRouter.patch("/:id", productImage.fields([
             }
         }
 
-        if (req.body.images) {
+        if (imagesFiles && imagesFiles.length > 0) {
             try {
-                const alts: string[] = Array.isArray(req.body.alt) ? req.body.alt : [req.body.alt];
-                const altsKy = await Promise.all(alts.map((alt) => translateYandex(alt, "ky")));
+                const alts: string[] = Array.isArray(req.body.alts) ? req.body.alts : [req.body.alts];
+                const altsKy = await Promise.all(alts.map((alt) => translateYandex(alt || '', "ky")));
 
-                const images = imagesFiles.map((file, i) => ({
-                    url: "product/" + file.filename,
+                const newImages = imagesFiles.map((file, i) => ({
+                    image: "product/" + file.filename,
                     alt: {
                         ru: alts[i] || '',
                         ky: altsKy[i] || '',
                     },
                 }));
 
-                product.set('images', images);
-            } catch {
+                if (mode === "append") {
+                    product.set('images', [...(product.images || []), ...newImages]);
+                } else {
+                    product.set('images', newImages);
+                }
+            } catch (error) {
+                console.error('Error processing images:', error);
                 res.status(400).send({error: "Некорректный формат images"});
                 return;
             }
@@ -351,8 +356,11 @@ productsSuperAdminRouter.patch("/images/:imageId", productImage.fields([{
         const newAlt = req.body.alt;
 
         const updateFields: any = {};
-        if (file) updateFields["images.$.url"] = "product/" + file.filename;
-        if (newAlt) updateFields["images.$.alt"] = newAlt;
+        if (file) updateFields["images.$.image"] = "product/" + file.filename;
+        if (newAlt) {
+            updateFields["images.$.alt.ru"] = newAlt;
+            updateFields["images.$.alt.ky"] = await translateYandex(newAlt, "ky");
+        }
 
         const product = await Product.findOne({"images._id": imageId});
         if (!product) {

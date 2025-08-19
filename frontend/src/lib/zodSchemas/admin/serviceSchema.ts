@@ -7,6 +7,8 @@ export const languageSchema = z.object({
 export const serviceSchema = z.object({
     title: languageSchema,
     description: languageSchema.partial().optional(),
+    seoTitle: languageSchema.partial().optional(),
+    seoDescription: languageSchema.partial().optional(),
 });
 
 export const serviceEditSchema = serviceSchema.partial();

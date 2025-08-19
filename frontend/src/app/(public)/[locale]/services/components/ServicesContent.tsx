@@ -33,7 +33,7 @@ const ServicesContent: React.FC<Props> = ({text}) => {
                                 className="w-full sm:w-[calc(50%-1rem)] md:w-[calc(33.333%-1.333rem)] md:min-w-[280px]"
                             >
                                 <ServiceContentCard
-                                    title={service.title[locale]}
+                                    title={service.title[locale]!}
                                     description={service.description?.[locale]}
                                 />
                             </div>

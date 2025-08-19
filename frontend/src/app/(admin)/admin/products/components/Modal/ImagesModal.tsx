@@ -1,6 +1,6 @@
 "use client";
 
-import React, {useEffect, useRef, useState} from "react";
+import React, {useEffect, useState} from "react";
 import Image from "next/image";
 import {Dialog, DialogContent, DialogHeader, DialogTitle,} from "@/src/components/ui/dialog";
 import {Button} from "@/src/components/ui/button";
@@ -8,21 +8,20 @@ import {Checkbox} from "@/src/components/ui/checkbox";
 import {Card, CardContent, CardFooter} from "@/src/components/ui/card";
 import {toast} from "react-toastify";
 import {IMG_BASE} from "@/src/lib/globalConstants";
-import {addProductImages, deleteProductImage} from "@/actions/superadmin/products";
+import {deleteProductImage,} from "@/actions/superadmin/products";
 import {useAdminProductStore} from "@/store/superadmin/superadminProductsStore";
 import {fetchProductById} from "@/actions/products";
-import ImagesEditForm from "@/src/app/(admin)/admin/products/components/Modal/ImagesEditForm";
 import {handleKyError} from "@/src/lib/handleKyError";
-import {LoaderIcon} from "lucide-react";
+import ConfirmDialog from "@/src/components/ui/ConfirmDialog";
+import ImagesEditForm from "@/src/app/(admin)/admin/products/edit-product/components/ImagesEditForm";
 
 interface Props {
     open: boolean;
     onClose: () => void;
-    onAfterChange?: () => void;
 }
 
-const ImagesModal: React.FC<Props> = ({open, onClose, onAfterChange}) => {
-    const {productDetail, setProductDetail, setUpdateError} = useAdminProductStore();
+const ImagesModal: React.FC<Props> = ({open, onClose}) => {
+    const {productDetail, setProductDetail, setProducts, products, setUpdateError} = useAdminProductStore();
 
     const images = productDetail?.images ?? [];
     const productId = productDetail?._id ?? "";
@@ -30,37 +29,11 @@ const ImagesModal: React.FC<Props> = ({open, onClose, onAfterChange}) => {
     const [selectionMode, setSelectionMode] = useState(false);
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
     const [editingId, setEditingId] = useState<string | null>(null);
+    const [imageToDelete, setImageToDelete] = useState<string | null>(null);
     const toggleSelect = (id: string) => {
         setSelectedIds((prev) =>
             prev.includes(id) ? prev.filter((_id) => _id !== id) : [...prev, id]
         );
-    };
-
-    const fileInputRef = useRef<HTMLInputElement>(null);
-    const [uploading, setUploading] = useState(false);
-
-    const handleAddImagesClick = () => {
-        fileInputRef.current?.click();
-    };
-
-    const handleAddImages = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        const files = e.target.files ? Array.from(e.target.files) : [];
-        if (!files.length || !productId) return;
-
-        try {
-            setUploading(true);
-            await addProductImages(productId, files);
-            await refreshProduct();
-            onAfterChange?.();
-
-            toast.success("Изображения добавлены");
-        } catch (err) {
-            const msg = await handleKyError(err, "Не удалось добавить изображения");
-            toast.error(msg);
-        } finally {
-            setUploading(false);
-            if (e.target) e.target.value = "";
-        }
     };
 
     const clearSelection = () => {
@@ -78,14 +51,12 @@ const ImagesModal: React.FC<Props> = ({open, onClose, onAfterChange}) => {
     const handleDelete = async (ids: string[]) => {
         try {
             await Promise.all(ids.map((id) => deleteProductImage(id)));
-            const updated = await refreshProduct();
-            onAfterChange?.();
-
             toast.success("Удаление успешно");
             clearSelection();
             setSelectedIds([]);
+            await refreshProduct();
 
-            if (updated && updated.images.length === 0) {
+            if (images.length === ids.length) {
                 setProductDetail(null);
                 onClose();
             }
@@ -100,18 +71,18 @@ const ImagesModal: React.FC<Props> = ({open, onClose, onAfterChange}) => {
         try {
             const product = await fetchProductById(productId);
             setProductDetail(product);
-
-            const {products: current, setProducts: newSetProducts} = useAdminProductStore.getState();
-            newSetProducts(current.map(p => (p._id === product._id ? product : p)));
-
-            return product;
+            setProducts(
+                products.map((p) =>
+                    p._id === product._id ? product : p
+                )
+            );
         } catch (e) {
             const msg = await handleKyError(e, "Ошибка при обновлении изображений");
             setUpdateError(msg);
             toast.error(msg);
             return null;
         }
-    }, [productId, setProductDetail, setUpdateError]);
+    }, [productId, setProductDetail, setProducts, setUpdateError]);
 
     useEffect(() => {
         if (open && productId) {
@@ -125,8 +96,6 @@ const ImagesModal: React.FC<Props> = ({open, onClose, onAfterChange}) => {
             onOpenChange={(isOpen) => {
                 if (!isOpen) {
                     clearSelection();
-                    setUploading(false);
-                    setProductDetail(null);
                     onClose();
                 }
             }}
@@ -135,11 +104,6 @@ const ImagesModal: React.FC<Props> = ({open, onClose, onAfterChange}) => {
                 <DialogHeader className="flex justify-between items-center gap-4">
                     <DialogTitle>Галерея изображений</DialogTitle>
                     <div className="flex gap-2">
-                        <Button variant="outline" onClick={handleAddImagesClick} disabled={uploading || !productId}>
-                            {uploading && <LoaderIcon/>}
-                            Добавить изображения
-                        </Button>
-
                         {selectionMode ? (
                             <>
                                 <Button
@@ -158,24 +122,15 @@ const ImagesModal: React.FC<Props> = ({open, onClose, onAfterChange}) => {
                                 Выбрать изображения
                             </Button>
                         )}
-
-                        <input
-                            ref={fileInputRef}
-                            type="file"
-                            accept="image/*"
-                            multiple
-                            className="hidden"
-                            onChange={handleAddImages}
-                        />
                     </div>
                 </DialogHeader>
 
                 {images.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-h-[70vh] overflow-y-auto p-2">
                         {images.map((item) => {
-                            const imageUrl = `${IMG_BASE}/${item.url}`;
+                            if (!item._id) return null;
+                            const imageUrl = `${IMG_BASE}/${item.image}`;
                             const isSelected = selectedIds.includes(item._id);
-
                             return (
                                 <Card
                                     key={item._id}
@@ -183,7 +138,7 @@ const ImagesModal: React.FC<Props> = ({open, onClose, onAfterChange}) => {
                                         ${selectionMode ? "cursor-pointer" : ""}
                                         ${isSelected ? "ring-2 ring-primary" : ""}`}
                                     onClick={() => {
-                                        if (selectionMode) toggleSelect(item._id);
+                                        if (selectionMode && item._id) toggleSelect(item._id);
                                     }}
                                 >
                                     <a
@@ -195,7 +150,9 @@ const ImagesModal: React.FC<Props> = ({open, onClose, onAfterChange}) => {
                                             <div className="absolute z-10 top-2 left-2">
                                                 <Checkbox
                                                     checked={isSelected}
-                                                    onCheckedChange={() => toggleSelect(item._id)}
+                                                    onCheckedChange={() => {
+                                                        if (item._id) toggleSelect(item._id)}
+                                                    }
                                                 />
                                             </div>
                                         )}
@@ -216,7 +173,9 @@ const ImagesModal: React.FC<Props> = ({open, onClose, onAfterChange}) => {
                                         <Button
                                             variant="outline"
                                             size="sm"
-                                            onClick={() => handleEditClick(item._id)}
+                                            onClick={() => {
+                                                if (item._id) handleEditClick(item._id)
+                                            }}
                                             disabled={selectionMode}
                                         >
                                             Редактировать
@@ -224,7 +183,7 @@ const ImagesModal: React.FC<Props> = ({open, onClose, onAfterChange}) => {
                                         <Button
                                             variant="destructive"
                                             size="sm"
-                                            onClick={() => handleDelete([item._id])}
+                                            onClick={() => setImageToDelete(item._id!)}
                                             disabled={selectionMode}
                                         >
                                             Удалить
@@ -237,25 +196,38 @@ const ImagesModal: React.FC<Props> = ({open, onClose, onAfterChange}) => {
                 ) : (
                     <p className="text-center py-4">Нет изображений</p>
                 )}
+                <ConfirmDialog
+                    open={!!imageToDelete}
+                    onOpenChange={(open) => {
+                        if (!open) setImageToDelete(null);
+                    }}
+                    title="Удалить изображение?"
+                    text="Изображение будет удалено безвозвратно."
+                    onConfirm={() => {
+                        if (imageToDelete) {
+                            void handleDelete([imageToDelete]);
+                            setImageToDelete(null);
+                        }
+                    }}
+                />
+                {editingId && (
+                    <Dialog open={true} onOpenChange={() => setEditingId(null)}>
+                        <DialogContent className="max-w-2xl">
+                            <DialogHeader>
+                                <DialogTitle>Редактирование изображения</DialogTitle>
+                            </DialogHeader>
+                            <ImagesEditForm
+                                image={images.find((img) => img._id === editingId)!}
+                                onSaved={async () => {
+                                    await refreshProduct();
+                                    setEditingId(null);
+                                    clearSelection();
+                                }}
+                            />
+                        </DialogContent>
+                    </Dialog>
+                )}
             </DialogContent>
-
-            {editingId && (
-                <Dialog open={true} onOpenChange={() => setEditingId(null)}>
-                    <DialogContent className="max-w-2xl">
-                        <DialogHeader>
-                            <DialogTitle>Редактирование изображения</DialogTitle>
-                        </DialogHeader>
-                        <ImagesEditForm
-                            image={images.find((img) => img._id === editingId)!}
-                            onSaved={async () => {
-                                await refreshProduct();
-                                setEditingId(null);
-                                clearSelection();
-                            }}
-                        />
-                    </DialogContent>
-                </Dialog>
-            )}
         </Dialog>
     );
 };
