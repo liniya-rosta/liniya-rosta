@@ -16,6 +16,7 @@ import {Loader2} from "lucide-react";
 import React from "react";
 import {z} from "zod";
 import {handleKyError} from "@/src/lib/handleKyError";
+import FormErrorMessage from "@/src/components/ui/FormErrorMessage";
 
 interface Props {
     contact: Contact;
@@ -83,25 +84,27 @@ const AdminContactForm: React.FC<Props> = ({contact}) => {
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            <Card className="mt-3">
+            <Card className="mt-3 text-foreground">
                 <CardContent className="p-6 space-y-6">
-                    <Label htmlFor="location.ru" className="capitalize">Локация</Label>
-                    <Controller
-                        name="location.ru"
-                        control={control}
-                        render={({field}) => (
-                            <Input
-                                {...field}
-                                id="location.ru"
-                                placeholder="г. Бишкек, ул., д."
-                                disabled={isLoading}
-                                className={errors.location?.ru ? "border-red-500" : ""}
-                            />
+                    <div className="space-y-1">
+                        <Label htmlFor="location.ru" className="capitalize">Локация</Label>
+                        <Controller
+                            name="location.ru"
+                            control={control}
+                            render={({field}) => (
+                                <Input
+                                    {...field}
+                                    id="location.ru"
+                                    placeholder="г. Бишкек, ул., д."
+                                    disabled={isLoading}
+                                    className={errors.location?.ru ? "border-red-500" : ""}
+                                />
+                            )}
+                        />
+                        {errors.location?.ru && (
+                            <FormErrorMessage>{errors.location.ru.message}</FormErrorMessage>
                         )}
-                    />
-                    {errors.location?.ru && (
-                        <p className="text-sm text-red-600">{errors.location.ru.message}</p>
-                    )}
+                    </div>
 
                     {Object.entries(fieldLabels).map(([field, label]) => (
                         <div key={field} className="space-y-1">
@@ -124,9 +127,9 @@ const AdminContactForm: React.FC<Props> = ({contact}) => {
                                 />
                             )}
                             {errors[field as keyof typeof defaultValues] && (
-                                <p className="text-sm text-red-600">
+                                <FormErrorMessage>
                                     {String(errors[field as keyof typeof defaultValues]?.message)}
-                                </p>
+                                </FormErrorMessage>
                             )}
                         </div>
                     ))}
@@ -151,9 +154,9 @@ const AdminContactForm: React.FC<Props> = ({contact}) => {
                                         )}
                                     />
                                     {errors.workingHours?.[day]?.ru && (
-                                        <p className="text-sm text-red-600">
+                                        <FormErrorMessage>
                                             {String(errors.workingHours[day]?.ru?.message)}
-                                        </p>
+                                        </FormErrorMessage>
                                     )}
                                 </div>
                             ))}
