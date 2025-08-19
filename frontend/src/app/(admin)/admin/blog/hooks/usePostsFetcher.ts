@@ -24,8 +24,10 @@ export const usePostsFetcher = () => {
     const [pageSize, setPageSize] = usePersistedPageSize("admin_post_table_size");
 
     const [filters, setFilters] = useState({title: "", description: ""});
+    const initialPage = Number(searchParams.get("page")) || 1;
+
     const [pagination, setPagination] = useState<PaginationState>({
-        pageIndex: 0,
+        pageIndex: initialPage - 1,
         pageSize,
     });
 
@@ -87,8 +89,12 @@ export const usePostsFetcher = () => {
         const newState = typeof updater === "function" ? updater(pagination) : updater;
         setPagination(newState);
         setPageSize(newState.pageSize);
-        router.push(`/admin/blog?page=${newState.pageIndex + 1}`);
-    }, [pagination, router, setPageSize]);
+
+        const params = new URLSearchParams(searchParams.toString());
+        params.set("page", (newState.pageIndex + 1).toString());
+
+        router.push(`/admin/blog?${params.toString()}`, { scroll: false });
+    }, [pagination, router, setPageSize, searchParams]);
 
     return {
         searchParams,
