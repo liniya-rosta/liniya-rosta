@@ -26,8 +26,6 @@ const ImagesEditForm: React.FC<Props> = ({onSaved, image}) => {
     const {setUpdateLoading, updateLoading, setUpdateError} = useAdminProductStore();
     const [previewUrl, setPreviewUrl] = React.useState<string | null>(null);
 
-    if (!image) return null;
-
     const {
         register,
         handleSubmit,
@@ -37,18 +35,19 @@ const ImagesEditForm: React.FC<Props> = ({onSaved, image}) => {
     } = useForm<ImagesEditValues>({
         resolver: zodResolver(imagesSchema),
         defaultValues: {
-            alt: {ru: image.alt?.ru},
+            alt: {ru: image?.alt?.ru ?? ""},
             image: null,
         },
     });
 
     useEffect(() => {
+        if (!image) return;
         reset({
             alt: {ru: image.alt?.ru},
             image: null,
         });
         setPreviewUrl(null);
-    }, [image._id, image.image, image.alt, reset]);
+    }, [image?._id, image?.image, image?.alt, reset]);
 
     const onChangeFile = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -61,6 +60,7 @@ const ImagesEditForm: React.FC<Props> = ({onSaved, image}) => {
     };
 
     const onSubmit = async (data: ImagesEditValues) => {
+        if (!image?._id) return;
         try {
             setUpdateLoading(true);
             await updateProductImage(image._id!, data.image || null, data.alt?.ru);
@@ -111,9 +111,9 @@ const ImagesEditForm: React.FC<Props> = ({onSaved, image}) => {
                 <p className="mb-3">Текущее изображение</p>
                 <div className="relative w-[200px] h-[200px]">
                     <Image
-                        key={previewUrl || image.image}
-                        src={previewUrl || `${IMG_BASE}/${image.image}`}
-                        alt={image.alt?.ru || "Изображение"}
+                        key={previewUrl || image?.image}
+                        src={previewUrl || `${IMG_BASE}/${image?.image}`}
+                        alt={image?.alt?.ru || "Изображение"}
                         fill
                         sizes="(max-width: 768px) 100vw, 200px"
                         className="object-contain rounded"

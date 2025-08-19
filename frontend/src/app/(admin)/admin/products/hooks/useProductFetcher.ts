@@ -1,7 +1,5 @@
-import {useSuperAdminPostStore} from "@/store/superadmin/superAdminPostsStore";
 import {useState} from "react";
 import {PaginationState} from "@tanstack/react-table";
-import {fetchPostById, fetchPosts} from "@/actions/posts";
 import {usePersistedPageSize} from "@/hooks/usePersistedPageSize";
 import {toast} from "react-toastify";
 import {ImageObject} from "@/src/lib/types";

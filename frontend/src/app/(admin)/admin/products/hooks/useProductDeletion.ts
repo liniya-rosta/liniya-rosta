@@ -1,12 +1,11 @@
-import {deletePost, deletePostImage } from "@/actions/superadmin/posts";
-import { useSuperAdminPostStore } from "@/store/superadmin/superAdminPostsStore";
-import { PaginationState, RowSelectionState } from "@tanstack/react-table";
-import React, { Dispatch, useState } from "react";
-import { toast } from "react-toastify";
+import {deletePost, deletePostImage} from "@/actions/superadmin/posts";
+import {PaginationState, RowSelectionState} from "@tanstack/react-table";
+import React, {Dispatch, useState} from "react";
+import {toast} from "react-toastify";
 import {handleKyError} from "@/src/lib/handleKyError";
 import {useAdminProductStore} from "@/store/superadmin/superadminProductsStore";
 
-interface UsePostDeletionProps  {
+interface UsePostDeletionProps {
     pagination: PaginationState;
     setPagination?: React.Dispatch<React.SetStateAction<PaginationState>>;
     fetchData?: () => Promise<void>;
@@ -15,12 +14,12 @@ interface UsePostDeletionProps  {
 }
 
 export const useProductDeletion = ({
-                                    pagination,
-                                    setPagination,
-                                    fetchData,
-                                    fetchOneProduct,
-                                    setRowSelection,
-                                }: UsePostDeletionProps) => {
+                                       pagination,
+                                       setPagination,
+                                       fetchData,
+                                       fetchOneProduct,
+                                       setRowSelection,
+                                   }: UsePostDeletionProps) => {
     const {
         products,
         productDetail,
@@ -33,7 +32,7 @@ export const useProductDeletion = ({
 
     const goToPreviousPageIfEmpty = (): boolean => {
         if (products.length === 1 && pagination.pageIndex > 0 && setPagination) {
-            setPagination(prev => ({ ...prev, pageIndex: prev.pageIndex - 1 }));
+            setPagination(prev => ({...prev, pageIndex: prev.pageIndex - 1}));
             return true;
         }
         return false;
@@ -80,7 +79,7 @@ export const useProductDeletion = ({
 
             const isLastPage = products.length === selectedToDelete.length && pagination.pageIndex > 0 && setPagination;
             if (isLastPage) {
-                setPagination?.(prev => ({ ...prev, pageIndex: prev.pageIndex - 1 }));
+                setPagination?.(prev => ({...prev, pageIndex: prev.pageIndex - 1}));
             } else {
                 if (fetchData) await fetchData();
             }

@@ -55,13 +55,13 @@ const ProductEditForm: React.FC<Props> = ({openImagesModal, setPreviewImage, set
                 setFetchCategoriesLoading(true)
                 const cats = await fetchCategories();
                 if (cats) setCategories(cats);
-            } catch (err) {
+            } catch {
                 console.error("Ошибка при загрузке категорий");
             } finally {
                 setFetchCategoriesLoading(false);
             }
         };
-       void loadCategories();
+        void loadCategories();
     }, [setCategories]);
 
     useEffect(() => {
@@ -134,7 +134,7 @@ const ProductEditForm: React.FC<Props> = ({openImagesModal, setPreviewImage, set
     if (!productDetail || fetchCategoriesLoading) {
         return (
             <div className="flex justify-center items-center py-8">
-                <LoaderIcon />
+                <LoaderIcon/>
             </div>
         );
     }
