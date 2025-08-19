@@ -23,7 +23,7 @@ jobs:
       - name: Deploy
         run: |
           ssh ${{ secrets.DO_USER }}@${{ secrets.DO_HOST }} << 'EOF'
-            cd shop-js-27
+            cd liniya-rosta
             git pull origin main
             docker-compose down
             docker-compose up -d --build
