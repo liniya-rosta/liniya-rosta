@@ -1,4 +1,4 @@
-import {Product} from '@/src/lib/types';
+import {Product, ProductResponse} from '@/src/lib/types';
 import kyAPI from "@/src/lib/kyAPI";
 
 export const fetchProducts = async ({
@@ -25,13 +25,7 @@ export const fetchProducts = async ({
     if (categoryId) query.append("category", categoryId);
     if (categoryExclude) query.append("categoryExclude", categoryExclude);
 
-    return await kyAPI.get(`products?${query.toString()}`).json<{
-        items: Product[];
-        page: number;
-        pageSize: number;
-        total: number;
-        totalPages: number;
-    }>();
+    return await kyAPI.get(`products?${query.toString()}`).json<ProductResponse>();
 };
 
 export const fetchProductById = async (id: string): Promise<Product> => {

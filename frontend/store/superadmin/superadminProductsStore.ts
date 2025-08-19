@@ -1,9 +1,12 @@
 import { create } from 'zustand';
-import { Product } from '@/src/lib/types';
+import {PaginationMeta, Product} from '@/src/lib/types';
 
 interface AdminProductState {
     products: Product[];
     setProducts: (products: Product[]) => void;
+
+    productPagination: PaginationMeta | null;
+    setProductPagination: (data: PaginationMeta) => void;
 
     productDetail: Product | null;
     setProductDetail: (product: Product | null) => void;
@@ -36,6 +39,7 @@ interface AdminProductState {
 export const useAdminProductStore = create<AdminProductState>((set) => ({
     products: [],
     productDetail: null,
+    productPagination: null,
 
     fetchLoading: true,
     createLoading: false,
@@ -49,6 +53,7 @@ export const useAdminProductStore = create<AdminProductState>((set) => ({
 
     setProducts: (products) => set({ products }),
     setProductDetail: (product) => set({ productDetail: product }),
+    setProductPagination: (products) => set({ productPagination: products }),
 
     setFetchLoading: (loading) => set({ fetchLoading: loading }),
     setCreateLoading: (loading) => set({ createLoading: loading }),

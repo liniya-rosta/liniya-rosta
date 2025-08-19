@@ -251,6 +251,10 @@ export interface Product {
     updatedAt: string;
 }
 
+export interface ProductResponse extends PaginationMeta {
+    items: Product[];
+}
+
 export interface ProductMutation {
     category: string;
     title: { ru: string };

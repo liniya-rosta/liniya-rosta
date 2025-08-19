@@ -118,6 +118,8 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
         } else if (idsToDelete.length === 1) {
             onDeleteProduct(idsToDelete[0]);
         }
+
+        refresh();
         setShowConfirmDialog(false);
         setIdsToDelete([]);
     };
