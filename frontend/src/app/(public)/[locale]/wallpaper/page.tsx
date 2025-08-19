@@ -4,7 +4,7 @@ import { CustomContainer } from '@/src/components/shared/CustomContainer';
 const Page = () => {
     return (
         <CustomContainer>
-            Натяжные обои
+            Натяжные фываобои
         </CustomContainer>
     );
 };
