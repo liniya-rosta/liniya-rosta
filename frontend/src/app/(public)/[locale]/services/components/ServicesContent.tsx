@@ -2,7 +2,7 @@ import React from 'react';
 import ServiceContentCard from "@/src/app/(public)/[locale]/services/components/ServiceContentCard";
 import {useServiceStore} from "@/store/serviceStore";
 import {useLocale, useTranslations} from "next-intl";
-import { Container } from '@/src/components/shared/Container';
+import { CustomContainer } from '@/src/components/shared/CustomContainer';
 import SectionAnimation from "@/src/components/shared/SectionAnimation";
 
 interface Props {
@@ -17,7 +17,7 @@ const ServicesContent: React.FC<Props> = ({text}) => {
 
     return (
         <SectionAnimation className="bg-gray-100 py-16 px-6 mb-10 md:mb-20">
-            <Container>
+            <CustomContainer>
                 <div className="text-center mb-12">
                     <h2 className="text-23-30-1_5 font-bold mb-4">{tServices("advantagesTitle")}</h2>
                     <p className="text-gray-600">
@@ -33,7 +33,7 @@ const ServicesContent: React.FC<Props> = ({text}) => {
                                 className="w-full sm:w-[calc(50%-1rem)] md:w-[calc(33.333%-1.333rem)] md:min-w-[280px]"
                             >
                                 <ServiceContentCard
-                                    title={service.title[locale]}
+                                    title={service.title[locale]!}
                                     description={service.description?.[locale]}
                                 />
                             </div>
@@ -46,7 +46,7 @@ const ServicesContent: React.FC<Props> = ({text}) => {
                         </div>
                     )}
                 </div>
-            </Container>
+            </CustomContainer>
         </SectionAnimation>
     );
 };

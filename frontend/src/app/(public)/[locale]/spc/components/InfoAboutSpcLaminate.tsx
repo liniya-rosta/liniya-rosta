@@ -2,7 +2,7 @@ import React from 'react';
 import ClientActions from "@/src/app/(public)/[locale]/spc/components/ClientActions";
 import {getTranslations} from "next-intl/server";
 import AnimatedEntrance from "@/src/components/shared/AnimatedEntrance";
-import {Container} from "@/src/components/shared/Container";
+import {CustomContainer} from "@/src/components/shared/CustomContainer";
 
 const InfoAboutSpcLaminate = async () => {
     const tSpc = await getTranslations('SpcPage');
@@ -11,7 +11,7 @@ const InfoAboutSpcLaminate = async () => {
 
     return (
         <div className="shadow-md">
-            <Container>
+            <CustomContainer>
                 <div className='w-full flex justify-end items-center pb-10 mb-20 -mt-8 '>
                     <div className="w-full flex justify-end my-5">
                         <AnimatedEntrance>
@@ -38,7 +38,7 @@ const InfoAboutSpcLaminate = async () => {
                     >
                     </div>
                 </div>
-            </Container>
+            </CustomContainer>
         </div>
     );
 };

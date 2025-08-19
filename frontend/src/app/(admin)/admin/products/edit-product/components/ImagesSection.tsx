@@ -5,16 +5,16 @@ import {Plus, Eye} from 'lucide-react';
 import {Label} from '@/src/components/ui/label';
 import FormErrorMessage from '@/src/components/ui/FormErrorMessage';
 import {Input} from '@/src/components/ui/input';
-import {UpdatePostFormData} from '@/src/lib/zodSchemas/admin/postSchema';
 import {ImageObject} from '@/src/lib/types';
+import {UpdateProductFormData} from "@/src/lib/zodSchemas/admin/productSchema";
 
 interface Props {
     fields: { id: string }[];
-    append: UseFieldArrayAppend<UpdatePostFormData, 'images'>;
+    append: UseFieldArrayAppend<UpdateProductFormData, 'images'>;
     remove: (index: number) => void;
-    register: UseFormRegister<UpdatePostFormData>;
-    control: Control<UpdatePostFormData>;
-    errors: FieldErrors<UpdatePostFormData>;
+    register: UseFormRegister<UpdateProductFormData>;
+    control: Control<UpdateProductFormData>;
+    errors: FieldErrors<UpdateProductFormData>;
     updateLoading: boolean;
     expanded: boolean;
     setExpanded: React.Dispatch<React.SetStateAction<boolean>>;

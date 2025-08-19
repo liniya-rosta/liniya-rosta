@@ -20,14 +20,14 @@ const saleSchema = z.object({
 
 const imageItemSchema = z.object({
     alt: i18nStringOptional.optional(),
-    url: z.union([z.instanceof(File), z.null()])
+    image: z.union([z.instanceof(File), z.null()])
         .refine((file) => file instanceof File && file.size > 0, {
             message: "Файл обязателен",
         }),
 });
 
 export const imagesSchema = z.object({
-    image: z.instanceof(File).nullable().optional(),
+    image: z.instanceof(File, { message: "Файл обязателен" }).nullable().optional(),
     alt: i18nString.optional(),
 });
 
@@ -73,6 +73,9 @@ export const updateProductSchema = z.object({
     sale: saleSchema.optional(),
     seoTitle: i18nStringOptional.optional(),
     seoDescription: i18nStringOptional.optional(),
+    images: z
+        .array(imagesSchema)
+        .optional(),
 });
 
 export type CreateProductFormData = z.infer<typeof createProductSchema>;

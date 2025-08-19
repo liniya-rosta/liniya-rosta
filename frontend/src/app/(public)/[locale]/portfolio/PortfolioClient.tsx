@@ -14,7 +14,7 @@ import {usePortfolioFetcher} from "@/src/app/(public)/[locale]/portfolio/hooks/u
 import PaginationButtons from "@/src/components/shared/PaginationButtons";
 import AnimatedEntrance from "@/src/components/shared/AnimatedEntrance";
 import HeroSectionPortfolio from "@/src/app/(public)/[locale]/portfolio/components/HeroSectionPortfolio";
-import {Container} from "@/src/components/shared/Container";
+import {CustomContainer} from "@/src/components/shared/CustomContainer";
 
 interface Props {
     data: PortfolioResponse | null;
@@ -52,7 +52,7 @@ const PortfolioClient: React.FC<Props> = ({data, error, limit}) => {
     if (fetchErrorPortfolio) return <ErrorMsg error={fetchErrorPortfolio}/>;
 
     return (
-        <Container>
+        <CustomContainer>
             <div className='md:my-7'>
                 <AnimatedEntrance direction="bottom">
                     <HeroSectionPortfolio/>
@@ -92,7 +92,7 @@ const PortfolioClient: React.FC<Props> = ({data, error, limit}) => {
                     />
                 )}
             </div>
-        </Container>
+        </CustomContainer>
     );
 };
 

@@ -4,7 +4,7 @@ import {fetchContacts} from "@/actions/contacts";
 import FooterBtn from "@/src/components/shared/Footer/FooterBtn";
 import FooterContent from "@/src/components/shared/Footer/FooterContent";
 import {getTranslations} from "next-intl/server";
-import {Container} from '../Container';
+import {CustomContainer} from '../CustomContainer';
 import {handleKyError} from "@/src/lib/handleKyError";
 
 const Footer = async () => {
@@ -20,7 +20,7 @@ const Footer = async () => {
 
     return (
         <footer className="py-20">
-            <Container>
+            <CustomContainer>
                 <div className="flex flex-wrap items-center justify-center sm:justify-between w-full">
                     <FooterContent contactData={contactData} contactError={contactError}/>
 
@@ -30,7 +30,7 @@ const Footer = async () => {
                         </div>
                     </div>
                 </div>
-            </Container>
+            </CustomContainer>
         </footer>
     );
 };
