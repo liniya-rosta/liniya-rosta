@@ -1,5 +1,5 @@
 import {useSuperAdminPostStore} from "@/store/superadmin/superAdminPostsStore";
-import {useState} from "react";
+import {useCallback, useState} from "react";
 import {PaginationState} from "@tanstack/react-table";
 import {fetchPostById, fetchPosts} from "@/actions/posts";
 import {usePersistedPageSize} from "@/hooks/usePersistedPageSize";
@@ -29,7 +29,7 @@ export const usePostsFetcher = () => {
         pageSize,
     });
 
-    const fetchData = async () => {
+    const fetchData = useCallback(async () => {
         try {
             const data = await fetchPosts(
                 pagination.pageSize.toString(),
@@ -48,11 +48,11 @@ export const usePostsFetcher = () => {
             const msg = await handleKyError(error, "Ошибка при получении постов");
             setFetchError(msg);
         } finally {
-            setFetchLoading(false)
+            setFetchLoading(false);
         }
-    };
+    }, [pagination.pageSize, pagination.pageIndex, filters.title, filters.description, setPosts, setPaginationPost, setFetchError, setFetchLoading]);
 
-    const fetchOnePost = async (postId: string) => {
+    const fetchOnePost = useCallback(async (postId: string) => {
         try {
             const data = await fetchPostById(postId);
             setDetailPost(data);
@@ -62,33 +62,33 @@ export const usePostsFetcher = () => {
         } finally {
             setFetchLoading(false);
         }
-    }
+    }, [setDetailPost, setFetchError, setFetchLoading]);
 
-    const handleFilterChange = (column: string, value: string) => {
-        setFilters((prev) => ({...prev, [column]: value}));
-        setPagination((prev) => ({...prev, pageIndex: 0}));
-    };
+    const handleFilterChange = useCallback((column: string, value: string) => {
+        setFilters((prev) => ({ ...prev, [column]: value }));
+        setPagination((prev) => ({ ...prev, pageIndex: 0 }));
+    }, []);
 
-    const handleReorderImages = async (postId: string, newOrder: ImageObject[]) => {
+    const handleReorderImages = useCallback(async (postId: string, newOrder: ImageObject[]) => {
         try {
             setUpdateLoading(true);
             await reorderPostImages(postId, newOrder);
             toast.success("Порядок изображений изменен");
             await fetchData();
         } catch (error) {
-            const msg = handleKyError(error, "Ошибка при получении изображений");
+            const msg = await handleKyError(error, "Ошибка при изменении порядка изображений");
             toast.error(msg);
         } finally {
             setUpdateLoading(false);
         }
-    }
+    }, [fetchData, setUpdateLoading]);
 
-    const handlePaginationChange = (updater: React.SetStateAction<PaginationState>) => {
+    const handlePaginationChange = useCallback((updater: React.SetStateAction<PaginationState>) => {
         const newState = typeof updater === "function" ? updater(pagination) : updater;
         setPagination(newState);
         setPageSize(newState.pageSize);
         router.push(`/admin/blog?page=${newState.pageIndex + 1}`);
-    };
+    }, [pagination, router, setPageSize]);
 
     return {
         searchParams,

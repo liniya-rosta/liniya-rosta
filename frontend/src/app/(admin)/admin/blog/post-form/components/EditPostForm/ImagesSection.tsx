@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {UseFormRegister, Control, FieldErrors, UseFieldArrayAppend} from 'react-hook-form';
 import {Button} from '@/src/components/ui/button';
 import {Plus, Eye} from 'lucide-react';
@@ -7,6 +7,7 @@ import FormErrorMessage from '@/src/components/ui/FormErrorMessage';
 import {Input} from '@/src/components/ui/input';
 import {UpdatePostFormData} from '@/src/lib/zodSchemas/admin/postSchema';
 import {ImageObject} from '@/src/lib/types';
+import ConfirmDialog from '@/src/components/ui/ConfirmDialog';
 
 interface Props {
     fields: { id: string }[];
@@ -20,7 +21,6 @@ interface Props {
     setExpanded: React.Dispatch<React.SetStateAction<boolean>>;
     replaceAllImages: boolean;
     onCancelReplace: () => void;
-    requestConfirmation: (type: "replace" | "backToPage") => void;
     openImagesModal: () => void;
     setPreviewImage: (image: ImageObject | null) => void;
     setIsPreviewOpen: (value: boolean) => void;
@@ -39,12 +39,19 @@ const ImagesSection: React.FC<Props> = ({
                                             setExpanded,
                                             replaceAllImages,
                                             onCancelReplace,
-                                            requestConfirmation,
                                             openImagesModal,
                                             setPreviewImage,
                                             setIsPreviewOpen,
                                             handleImageChange,
                                         }) => {
+
+    const [showConfirm, setShowConfirm] = useState(false);
+
+    const handleReplaceConfirm = () => {
+        setShowConfirm(false);
+        onCancelReplace();
+        append({ alt: { ru: "" }, file: null });
+    };
 
     const showImagePreview = (file: File, alt = {ru: ""}) => {
         const localUrl = URL.createObjectURL(file);
@@ -85,7 +92,7 @@ const ImagesSection: React.FC<Props> = ({
                         if (replaceAllImages) {
                             onCancelReplace();
                         } else {
-                            requestConfirmation("replace");
+                            setShowConfirm(true);
                         }
                     }}
                 >
@@ -96,7 +103,7 @@ const ImagesSection: React.FC<Props> = ({
                     type="button"
                     variant="outline"
                     onClick={() => setExpanded(prev => !prev)}
-                    className="text-sm"
+                    className="text-sm mb-4"
                     disabled={updateLoading || fields.length < 5}
                 >
                     {expanded ? 'Свернуть' : 'Развернуть все'}
@@ -165,6 +172,15 @@ const ImagesSection: React.FC<Props> = ({
                     </div>
                 ))}
             </div>
+
+            <ConfirmDialog
+                open={showConfirm}
+                onOpenChange={setShowConfirm}
+                title="Заменить изображения?"
+                text="При этом действии ВСЕ предыдущие изображения будут заменены"
+                onConfirm={handleReplaceConfirm}
+                loading={updateLoading}
+            />
         </div>
     );
 };

@@ -165,11 +165,6 @@ export const getPostTableColumns = (
             },
         },
         {
-            accessorKey: "seoTitle",
-            header: "SEO заголовок",
-            cell: ({row}) => row.original.seoTitle?.ru || "—",
-        },
-        {
             accessorKey: 'seoDescription',
             header: 'SEO описание',
             cell: ({row}) => {
