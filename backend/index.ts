@@ -29,7 +29,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(
     cors({
-        origin: "http://localhost:3000",
+        origin: [
+            'http://liniya-rosta.com',
+            'http://www.liniya-rosta.com',
+            'http://localhost:3000',
+        ],
         credentials: true,
     }),
 );
