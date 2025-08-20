@@ -12,15 +12,14 @@ import {getProductTableColumns} from "./ProductTableColumns";
 import {Product} from "@/src/lib/types";
 import ConfirmDialog from "@/src/components/ui/ConfirmDialog";
 import SaleLabelModal from "@/src/app/(admin)/admin/products/components/Modal/SaleLabelModal";
+import {useCategoryStore} from "@/store/categoriesStore";
 import ProductsTableToolbar from "@/src/app/(admin)/admin/products/components/ProductTable/ProductsTableToolbar";
 import ImagesModal from "@/src/app/(admin)/admin/products/components/Modal/ImagesModal";
 import {useProductsTableLogic} from "@/src/app/(admin)/admin/products/hooks/useProductsTableLogic";
 import ProductTableContent from "@/src/app/(admin)/admin/products/components/ProductTable/ProductsTableContent";
 import {useProductsQuery} from "@/src/app/(admin)/admin/products/hooks/useProductsQuery";
 import ProductsTablePagination from "@/src/app/(admin)/admin/products/components/ProductTable/ProductsTablePagination";
-import ProductEditModal from "@/src/app/(admin)/admin/products/components/Modal/ProductEditModal";
-import ImageModal from "@/src/app/(admin)/admin/portfolio/components/ImageModal";
-import {useAdminCategoryStore} from "@/store/superadmin/superadminCategoriesStore";
+import {useRouter} from "next/navigation";
 
 interface ProductsTableProps {
     actionLoading: boolean;
@@ -33,16 +32,10 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
                                                          onDeleteProduct,
                                                          onDeleteSelectedProducts,
                                                      }) => {
-    const [editingProduct, setEditingProduct] = React.useState<Product | null>(null);
 
-    const handleEditProduct = React.useCallback((product: Product) => {
-        setEditingProduct(product);
-    }, []);
-
-    const {categories} = useAdminCategoryStore();
+    const {categories} = useCategoryStore();
 
     const {
-        previewImage, setPreviewImage,
         saleLabel, setSaleLabel,
         isImagesModalOpen, setIsImagesModalOpen,
         showConfirmDialog, setShowConfirmDialog,
@@ -61,18 +54,23 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
         pageSize, setPageSize,
         totalPages,
         totalItems,
-        refresh,
     } = useProductsQuery();
+
+    const router = useRouter();
+
+    const handleEditProduct = React.useCallback((product: Product) => {
+        router.push(`/admin/products/edit-product/${product._id}`);
+    }, [router]);
 
     const columns = React.useMemo(
         () =>
             getProductTableColumns(
                 categories,
-                handleEditProduct,
                 (id: string) => {
                     setIdsToDelete([id]);
                     setShowConfirmDialog(true);
                 },
+                handleEditProduct,
                 actionLoading,
                 onImageClick,
                 onSaleLabelClick,
@@ -163,13 +161,6 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
                 text="Это действие нельзя отменить. Вы уверены, что хотите удалить?"
             />
 
-            <ImageModal
-                open={!!previewImage}
-                openChange={() => setPreviewImage(null)}
-                image={previewImage?.url || ""}
-                alt={previewImage?.alt?.ru || "Изображение"}
-            />
-
             <SaleLabelModal
                 saleLabel={saleLabel}
                 onClose={() => setSaleLabel(null)}
@@ -178,17 +169,8 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
             <ImagesModal
                 open={isImagesModalOpen}
                 onClose={() => setIsImagesModalOpen(false)}
-                onAfterChange={refresh}
             />
 
-            {editingProduct && (
-                <ProductEditModal
-                    open={true}
-                    onClose={() => setEditingProduct(null)}
-                    product={editingProduct}
-                    refresh={refresh}
-                />
-            )}
         </div>
     );
 };

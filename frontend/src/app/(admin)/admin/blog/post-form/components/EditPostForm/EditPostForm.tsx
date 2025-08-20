@@ -22,7 +22,7 @@ interface Props {
 }
 
 const EditPostForm: React.FC<Props> = ({openImagesModal, setPreviewImage, setIsPreviewOpen}) => {
-    const {detailPost, updateLoading, setUpdateLoading} = useSuperAdminPostStore();
+    const { detailPost, updateLoading, setUpdateLoading } = useSuperAdminPostStore();
     const router = useRouter();
 
     const {
@@ -66,7 +66,7 @@ const EditPostForm: React.FC<Props> = ({openImagesModal, setPreviewImage, setIsP
     const handleImageChange = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
-        setValue(`images.${index}.file`, file, {shouldValidate: true});
+        setValue(`images.${index}.image`, file, {shouldValidate: true});
     };
 
     const handleBackConfirm = () => {

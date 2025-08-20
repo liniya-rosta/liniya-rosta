@@ -4,13 +4,12 @@ import React, {useEffect} from "react";
 import Image from "next/image";
 import {Badge} from "@/src/components/ui/badge";
 import {Product} from "@/src/lib/types";
-import {API_BASE_URL} from "@/src/lib/globalConstants";
 import {Swiper, SwiperSlide} from "swiper/react";
 import {Navigation} from "swiper/modules";
 import LoadingFullScreen from "@/src/components/ui/Loading/LoadingFullScreen";
 import {useProductStore} from "@/store/productsStore";
 import {useLocale, useTranslations} from "next-intl";
-import { Container } from '@/src/components/shared/Container';
+import {CustomContainer} from '@/src/components/shared/CustomContainer';
 
 interface Props {
     productData: Product | null;
@@ -45,15 +44,18 @@ const ProductDetailView: React.FC<Props> = ({productData, fetchProductError}) =>
     if (fetchProductsLoading) return <LoadingFullScreen/>;
     if (fetchProductsError) return <p>{tError("CeilingDetailError")}</p>
 
+    const IMG_BASE = process.env.NEXT_PUBLIC_IMG_SERVER;
+    const src = `${IMG_BASE}/${product?.cover.url}`;
+
     if (product) return (
-        <Container>
+        <CustomContainer>
             <div
                 className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(320px,400px)] gap-10 md:my-7">
                 <div>
                     <div
                         className="relative w-full h-[360px] sm:h-[440px] md:h-[500px] rounded-xl overflow-hidden border shadow-lg">
                         <Image
-                            src={`${API_BASE_URL}/${product.cover.url}`}
+                            src={src}
                             alt={product.cover.alt[locale] || product.title[locale] || "Изображение"}
                             fill
                             className="object-cover"
@@ -73,7 +75,7 @@ const ProductDetailView: React.FC<Props> = ({productData, fetchProductError}) =>
                                     <SwiperSlide key={img._id}
                                                  className="!w-[300px]"
                                                  onClick={() => setPreviewImage({
-                                                     url: img.url,
+                                                     url: img.image,
                                                      alt: img.alt || {ru: "Изображение", ky: "Сүрөт"}
                                                  })}
 
@@ -81,7 +83,7 @@ const ProductDetailView: React.FC<Props> = ({productData, fetchProductError}) =>
                                         <div
                                             className="relative w-full h-[200px] rounded-lg overflow-hidden shadow-md border hover:scale-105 transition-transform duration-300">
                                             <Image
-                                                src={`${API_BASE_URL}/${img.url}`}
+                                                src={`${IMG_BASE}/${img.image}`}
                                                 alt={img.alt?.[locale] || "Изображение"}
                                                 fill
                                                 className="object-cover"
@@ -131,7 +133,7 @@ const ProductDetailView: React.FC<Props> = ({productData, fetchProductError}) =>
 
 
             </div>
-        </Container>
+        </CustomContainer>
     );
 };
 

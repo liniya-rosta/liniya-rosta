@@ -11,10 +11,12 @@ import {ArrowUpDown, Edit2, MoreHorizontal, Trash2} from "lucide-react";
 import React from "react";
 import {Checkbox} from "@/src/components/ui/checkbox";
 import {Service} from "@/src/lib/types";
+import {Tooltip, TooltipContent, TooltipTrigger} from "@/src/components/ui/tooltip";
 
 export const getColumns = (
     onRequestDelete: (id: string) => void,
     onEdit: (id: string) => void,
+    onSaleLabelClick: (label: string) => void,
 ): ColumnDef<Service>[] => [
     {
         id: "select",
@@ -68,10 +70,21 @@ export const getColumns = (
         accessorFn: (row) => row.description?.ru ?? "",
         cell: ({ getValue }) => {
             const value = getValue<string>().trim();
+            const preview = value.length > 30 ? value.slice(0, 30) + "..." : value;
             return (
-                <div className="capitalize">
-                    {value ? value : <span className="text-muted-foreground italic">Нет описания</span>}
-                </div>
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                            <span
+                                className="cursor-pointer text-sm"
+                                onClick={() => onSaleLabelClick(value)}
+                            >
+                                {preview}
+                            </span>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                        <p>Нажмите чтобы посмотреть полное SEO описание</p>
+                    </TooltipContent>
+                </Tooltip>
             );
         },
 

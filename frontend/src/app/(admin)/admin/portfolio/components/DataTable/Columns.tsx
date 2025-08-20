@@ -1,6 +1,6 @@
 import {ColumnDef} from "@tanstack/react-table";
 import {PortfolioItemPreview} from "@/src/lib/types";
-import {API_BASE_URL} from "@/src/lib/globalConstants";
+import {IMG_BASE} from "@/src/lib/globalConstants";
 import {Tooltip, TooltipContent, TooltipTrigger} from "@/src/components/ui/tooltip";
 import Image from "next/image";
 import {
@@ -175,7 +175,7 @@ export const getColumns = (
         cell: ({row}) => {
             const cover: string = row.getValue("cover");
             const alt: string = row.original.coverAlt.ru;
-            const imageUrl = `${API_BASE_URL}/${cover}`;
+            const imageUrl = `${IMG_BASE}/${cover}`;
 
             return (
                 <Tooltip>

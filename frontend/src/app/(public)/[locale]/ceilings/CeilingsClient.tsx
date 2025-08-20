@@ -1,21 +1,21 @@
 "use client"
 
-import React, { useEffect, useMemo, useState, useCallback } from 'react';
-import { Filter, MessageCircle, Phone, Search, X } from 'lucide-react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import {Filter, MessageCircle, Phone, Search, X} from 'lucide-react';
 import RequestForm from "@/src/components/shared/RequestForm";
-import { Dialog, DialogHeader } from '@/src/components/ui/dialog';
-import { Category, Product } from "@/src/lib/types";
-import { useCategoryStore } from "@/store/categoriesStore";
-import { useProductStore } from "@/store/productsStore";
-import { API_BASE_URL } from "@/src/lib/globalConstants";
+import {Dialog, DialogHeader} from '@/src/components/ui/dialog';
+import {Category, Product} from "@/src/lib/types";
+import {useCategoryStore} from "@/store/categoriesStore";
+import {useProductStore} from "@/store/productsStore";
+import {IMG_BASE} from "@/src/lib/globalConstants";
 import Image from "next/image";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/src/components/ui/card';
-import { Button } from '@/src/components/ui/button';
-import { Input } from '@/src/components/ui/input';
-import { Badge } from '@/src/components/ui/badge';
-import { Skeleton } from '@/src/components/ui/skeleton';
+import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from '@/src/components/ui/card';
+import {Button} from '@/src/components/ui/button';
+import {Input} from '@/src/components/ui/input';
+import {Badge} from '@/src/components/ui/badge';
+import {Skeleton} from '@/src/components/ui/skeleton';
 import {useLocale, useTranslations} from "next-intl";
-import { Container } from '@/src/components/shared/Container';
+import {CustomContainer} from '@/src/components/shared/CustomContainer';
 import {DialogTitle} from "@radix-ui/react-dialog";
 import AnimatedEntrance from "@/src/components/shared/AnimatedEntrance";
 
@@ -24,7 +24,7 @@ type Props = {
     initialCategories: Category[];
 };
 
-const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories }) => {
+const CeilingsClient: React.FC<Props> = ({initialProducts, initialCategories}) => {
     const [selectedCategory, setSelectedCategory] = useState<string>('all');
     const [showConsultationModal, setShowConsultationModal] = useState<boolean>(false);
     const [searchTerm, setSearchTerm] = useState<string>('');
@@ -109,16 +109,16 @@ const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories })
 
     const renderSkeleton = () => (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-            {Array.from({ length: 6 }).map((_, i) => (
+            {Array.from({length: 6}).map((_, i) => (
                 <Card key={i} className="overflow-hidden">
-                    <Skeleton className="h-48 w-full" />
+                    <Skeleton className="h-48 w-full"/>
                     <CardHeader>
-                        <Skeleton className="h-6 w-3/4" />
-                        <Skeleton className="h-4 w-full" />
-                        <Skeleton className="h-4 w-1/2" />
+                        <Skeleton className="h-6 w-3/4"/>
+                        <Skeleton className="h-4 w-full"/>
+                        <Skeleton className="h-4 w-1/2"/>
                     </CardHeader>
                     <CardFooter>
-                        <Skeleton className="h-10 w-full" />
+                        <Skeleton className="h-10 w-full"/>
                     </CardFooter>
                 </Card>
             ))}
@@ -128,7 +128,7 @@ const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories })
     const renderEmptyState = () => (
         <Card className="text-center p-12">
             <CardContent className="space-y-4">
-                <Search className="h-12 w-12 mx-auto text-muted-foreground" />
+                <Search className="h-12 w-12 mx-auto text-muted-foreground"/>
                 <CardTitle>Товары не найдены</CardTitle>
                 <CardDescription>
                     Попробуйте изменить критерии поиска или фильтры
@@ -146,7 +146,7 @@ const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories })
         <Card key={product._id} className="overflow-hidden hover:shadow-lg transition-shadow">
             <div className="relative w-full h-48">
                 <Image
-                    src={`${API_BASE_URL}/${product.cover.url}`}
+                    src={`${IMG_BASE}/${product.cover.url}`}
                     fill
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     onError={handleImageError}
@@ -185,7 +185,7 @@ const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories })
     );
 
     return (
-        <Container className="md:my-7">
+        <CustomContainer className="md:my-7">
             <div className="border-b bg-card">
                 <div className="pb-6 flex flex-col md:flex-row md:justify-between gap-4">
                     <AnimatedEntrance className="text-center md:text-left">
@@ -195,12 +195,12 @@ const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories })
 
                     <AnimatedEntrance direction="right" className="flex gap-3 justify-center">
                         <Button onClick={openConsultationModal} className="btn-hover-scale">
-                            <Phone className="h-4 w-4" />
+                            <Phone className="h-4 w-4"/>
                             {tBtn("requestBtn1")}
                         </Button>
                         <Button asChild variant="secondary" className="btn-hover-scale">
                             <a href="https://wa.me/996552088988" target="_blank" rel="noopener noreferrer">
-                                <MessageCircle className="h-4 w-4" />
+                                <MessageCircle className="h-4 w-4"/>
                                 WhatsApp
                             </a>
                         </Button>
@@ -217,13 +217,14 @@ const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories })
                     <Card className="sticky top-4">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
-                                <Filter className="h-5 w-5" />
+                                <Filter className="h-5 w-5"/>
                                 {tCeilings("filter.categoriesTitle")}
                             </CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-6">
                             <div className="relative">
-                                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+                                <Search
+                                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4"/>
                                 <Input
                                     type="text"
                                     placeholder={tCeilings("filter.filterSearch")}
@@ -238,7 +239,7 @@ const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories })
                                         onClick={() => setSearchTerm('')}
                                         className="absolute right-1 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0"
                                     >
-                                        <X className="h-3 w-3" />
+                                        <X className="h-3 w-3"/>
                                     </Button>
                                 )}
                             </div>
@@ -268,7 +269,8 @@ const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories })
                 <div className="flex-1">
                     <div className="flex justify-between items-center mb-6">
                         <p className="text-muted-foreground">
-                            {tCeilings("filter.countProductsTitle")} <span className="font-semibold text-foreground">{filteredProducts.length}</span>
+                            {tCeilings("filter.countProductsTitle")} <span
+                            className="font-semibold text-foreground">{filteredProducts.length}</span>
                         </p>
                         {selectedCategory !== 'all' && (
                             <Button
@@ -277,7 +279,7 @@ const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories })
                                 onClick={() => setSelectedCategory('all')}
                                 className="gap-1"
                             >
-                                <X className="h-4 w-4" />
+                                <X className="h-4 w-4"/>
                                 {tCeilings("filter.removeFilter")}
                             </Button>
                         )}
@@ -286,7 +288,8 @@ const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories })
                     {fetchProductsLoading ? (
                         renderSkeleton()
                     ) : filteredProducts.length > 0 ? (
-                        <AnimatedEntrance direction="bottom" className="grid grid-cols-[repeat(auto-fit,minmax(260px,1fr))] gap-6 justify-center">
+                        <AnimatedEntrance direction="bottom"
+                                          className="grid grid-cols-[repeat(auto-fit,minmax(260px,1fr))] gap-6 justify-center">
                             {filteredProducts.map(renderProductCard)}
                         </AnimatedEntrance>
                     ) : (
@@ -303,7 +306,7 @@ const CeilingsClient: React.FC<Props> = ({ initialProducts, initialCategories })
                     <RequestForm closeModal={() => setShowConsultationModal(false)}/>
                 </Dialog>
             )}
-        </Container>
+        </CustomContainer>
     );
 };
 

@@ -73,11 +73,9 @@ const ServiceFormModal: React.FC<Props> = ({open, openChange, id}) => {
             const safeData: ServiceForm = {
                 title: {
                     ru: data.title!.ru,
-                    ky: "",
                 },
                 description: {
                     ru: data.description?.ru ?? "",
-                    ky: "",
                 },
             };
             if (isEditMode && id) {
@@ -123,8 +121,8 @@ const ServiceFormModal: React.FC<Props> = ({open, openChange, id}) => {
                             disabled={createServiceLoading}
                             {...register("title.ru")}
                         />
-                        {errors.title && (
-                            <FormErrorMessage>{errors.title.message}</FormErrorMessage>
+                        {errors.title && errors.title.ru && (
+                            <FormErrorMessage>{errors.title.ru.message}</FormErrorMessage>
                         )}
                     </div>
                     <div className="mb-3">
@@ -134,8 +132,8 @@ const ServiceFormModal: React.FC<Props> = ({open, openChange, id}) => {
                             disabled={createServiceLoading}
                             {...register("description.ru")}
                         />
-                        {errors.description && (
-                            <FormErrorMessage>{errors.description.message}</FormErrorMessage>
+                        {errors.description && errors.description.ru && (
+                            <FormErrorMessage>{errors.description.ru.message}</FormErrorMessage>
                         )}
                     </div>
 

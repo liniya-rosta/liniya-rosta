@@ -1,6 +1,6 @@
 "use client";
 
-import React, {useEffect, useState}from "react";
+import React, {useEffect, useState} from "react";
 import {Plus} from "lucide-react";
 import {Button} from "@/src/components/ui/button";
 import {CardContent} from "@/src/components/ui/card";
@@ -133,7 +133,7 @@ const ProductsClient: React.FC<ProductsClientProps> = ({
                 <div className="flex gap-2 flex-wrap">
                     <Link href="/admin/products/add-product">
                         <Button className="flex items-center gap-2" disabled={anyLoading}>
-                            <Plus size={16} /> Создать продукт
+                            <Plus size={16}/> Создать продукт
                         </Button>
                     </Link>
                     <Button

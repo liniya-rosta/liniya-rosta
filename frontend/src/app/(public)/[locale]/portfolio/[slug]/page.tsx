@@ -4,7 +4,7 @@ import GalleryClient from "@/src/app/(public)/[locale]/portfolio/[slug]/GalleryC
 import {getLocale, getTranslations} from "next-intl/server";
 import {handleKyError} from "@/src/lib/handleKyError";
 import {toast} from "react-toastify";
-import {Container} from '@/src/components/shared/Container';
+import {CustomContainer} from '@/src/components/shared/CustomContainer';
 
 
 type Props = {
@@ -56,7 +56,7 @@ const GalleryPage = async ({params}: Props) => {
     }
 
     return (
-        <Container>
+        <CustomContainer>
             <div className='md:my-7'>
                 <h1 className="text-3xl font-bold text-foreground">
                     Галерея
@@ -64,7 +64,7 @@ const GalleryPage = async ({params}: Props) => {
                 <p className="mb-8 text-lg text-muted-foreground">{detailItem?.description[locale]}</p>
                 <GalleryClient detailItem={detailItem} error={errorMessage}/>
             </div>
-        </Container>
+        </CustomContainer>
     );
 };
 

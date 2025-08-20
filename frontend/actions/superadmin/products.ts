@@ -1,5 +1,6 @@
-import {Product, ProductMutation, ProductUpdateMutation} from "@/src/lib/types";
+import {Product, ProductMutation} from "@/src/lib/types";
 import kyAPI from "@/src/lib/kyAPI";
+import {UpdateProductFormData} from "@/src/lib/zodSchemas/admin/productSchema";
 
 export const createProduct = async (productData: ProductMutation): Promise<Product> => {
     const formData = new FormData();
@@ -28,8 +29,8 @@ export const createProduct = async (productData: ProductMutation): Promise<Produ
 
     if (productData.images) {
         productData.images.forEach((img) => {
-            if (img.url instanceof File) {
-                formData.append("images", img.url);
+            if (img.image instanceof File) {
+                formData.append("images", img.image);
                 formData.append("alt", img.alt?.ru || "Элемент галереи");
             }
         });
@@ -61,86 +62,51 @@ export const createProduct = async (productData: ProductMutation): Promise<Produ
     return data.product;
 };
 
-export const updateProduct = async (id: string, productData: ProductUpdateMutation): Promise<Product> => {
+export const updateProduct = async (id: string, productData: UpdateProductFormData, mode: "replace" | "append" = "replace"): Promise<Product> => {
     const formData = new FormData();
 
-    if (productData.category) {
-        formData.append('category', productData.category);
-    }
-
-    if (productData.title) {
-        formData.append('title', productData.title.ru);
-    }
-
-    if (productData.description) {
-        formData.append('description', productData.description.ru);
-    }
-
-    if (productData.seoTitle) {
-        formData.append('seoTitle', productData.seoTitle.ru);
-    }
-
-    if (productData.seoDescription) {
-        formData.append('seoDescription', productData.seoDescription.ru);
-    }
-
-    if (productData.cover) {
-        formData.append('cover', productData.cover);
-    }
-
-    if (productData.coverAlt) {
-        formData.append('coverAlt', productData.coverAlt.ru);
-    }
-
-    if (productData.characteristics) {
-        formData.append('characteristics', JSON.stringify(productData.characteristics));
-    }
-
+    if (productData.category) formData.append('category', productData.category);
+    if (productData.title) formData.append('title', productData.title.ru);
+    if (productData.description) formData.append('description', productData.description.ru);
+    if (productData.seoTitle) formData.append('seoTitle', productData.seoTitle.ru);
+    if (productData.seoDescription) formData.append('seoDescription', productData.seoDescription.ru);
+    if (productData.cover) formData.append('cover', productData.cover);
+    if (productData.coverAlt) formData.append('coverAlt', productData.coverAlt.ru);
+    if (productData.characteristics) formData.append('characteristics', JSON.stringify(productData.characteristics));
     if (productData.sale) {
         formData.append('isOnSale', String(productData.sale.isOnSale));
         if (productData.sale.label) {
             formData.append('saleLabel', productData.sale.label);
         }
     }
+    if (productData.icon instanceof File) formData.append('icon', productData.icon);
+    if (productData.iconAlt) formData.append('iconAlt', productData.iconAlt.ru);
 
-    if (productData.icon instanceof File) {
-        formData.append('icon', productData.icon);
-    }
+    formData.append("mode", mode);
 
-    if (productData.iconAlt) {
-        formData.append('iconAlt', productData.iconAlt.ru);
-    }
+    productData.images?.forEach((img) => {
+        if (img.image instanceof File) {
+            formData.append("images", img.image);
+            formData.append("alts", img.alt?.ru || "");
+        }
+    });
 
     const data = await kyAPI.patch(
         `superadmin/products/${id}`, {body: formData}).json<{ message: string, product: Product }>();
     return data.product;
 };
 
-export const addProductImages = async (
-    productId: string,
-    files: File[],
-    alts?: string[]
-) => {
-    const fd = new FormData();
-    files.forEach((f) => fd.append("images", f));
-    (alts || []).forEach((a) => fd.append("alt[ru]", a));
-
-    return await kyAPI
-        .post(`superadmin/products/${productId}/images`, {body: fd})
-        .json<{ message: string; product: Product }>();
-};
-
-export const updateProductImage = async (imageId: string, file?: File, alt?: string): Promise<Product> => {
+export const updateProductImage = async (imageId: string, file: File | null, alt?: string): Promise<Product> => {
         const formData = new FormData();
         if (file) formData.append("images", file);
-        if (alt) formData.append("alt[ru]", alt);
+        if (alt) formData.append("alt", alt);
 
         const data = await kyAPI.patch(`superadmin/products/images/${imageId}`, {body: formData}).json<{
             product: Product
         }>();
         return data.product;
-    }
-;
+    };
+
 export const deleteProductImage = async (imageId: string): Promise<string> => {
     const data = await kyAPI.delete(`superadmin/products/images/${imageId}`).json<{ message: string }>();
     return data.message;

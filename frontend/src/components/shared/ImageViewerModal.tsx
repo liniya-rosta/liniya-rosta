@@ -1,4 +1,4 @@
-import { API_BASE_URL } from '@/src/lib/globalConstants';
+import {IMG_BASE} from '@/src/lib/globalConstants';
 
 import React from 'react';
 import Image from "next/image";
@@ -11,8 +11,8 @@ interface Props {
     image: string;
 }
 
-const ImageViewerModal: React.FC<Props> = ({open, openChange, alt="Нет альтернативного названия", image}) => {
-    const imageUrl = image.startsWith("blob:") ? image : API_BASE_URL + "/" + image;
+const ImageViewerModal: React.FC<Props> = ({open, openChange, alt = "Нет альтернативного названия", image}) => {
+    const imageUrl = image.startsWith("blob:") ? image : IMG_BASE + "/" + image;
 
     return (
         <Dialog open={open} onOpenChange={openChange}>

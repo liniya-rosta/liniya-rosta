@@ -8,6 +8,7 @@ import {PortfolioItem} from "./src/models/PortfolioItem";
 import RequestFromClient from "./src/models/Request";
 import Contact from "./src/models/Contact";
 import Service from "./src/models/Service";
+import ChatSession from "./src/models/ChatSession";
 
 const run = async () => {
     await mongoose.connect(config.db);
@@ -22,11 +23,12 @@ const run = async () => {
         await db.dropCollection('requests');
         await db.dropCollection('contacts');
         await db.dropCollection('services');
+        await db.dropCollection('chatsessions');
     } catch (e) {
         console.log('Коллекции отсутствовали, пропуск сброса');
     }
 
-    await User.create(
+    const [Bob, Alice] = await User.create(
         {
             email: 'bob@gmail.com',
             password: '123',
@@ -949,14 +951,10 @@ const run = async () => {
             }
         },
         {
-            cover: 'test/IMG_2687.jpg',
+            cover: 'test/IMG_2683.jpg',
             coverAlt: {ru: 'Обложка проекта 2', ky: 'Долбоордун мукабасы 2'},
             gallery: [
                 {image: 'test/IMG_2683.jpg', alt: {ru: 'Галерея 1', ky: 'Галерея 1'}},
-                {image: 'test/IMG_2682.jpg', alt: {ru: 'Галерея 2', ky: 'Галерея 2'}},
-                {image: 'test/IMG_2688.jpg', alt: {ru: 'Галерея 3', ky: 'Галерея 3'}},
-                {image: 'test/IMG_2685.jpg', alt: {ru: 'Галерея 4', ky: 'Галерея 4'}},
-                {image: 'test/IMG_2689.jpg', alt: {ru: 'Галерея 5', ky: 'Галерея 5'}},
                 {image: 'test/IMG_2690.jpg', alt: {ru: 'Галерея 6', ky: 'Галерея 6'}},
                 {image: 'test/IMG_2691.jpg', alt: {ru: 'Галерея 7', ky: 'Галерея 7'}},
                 {image: 'test/IMG_2692.jpg', alt: {ru: 'Галерея 8', ky: 'Галерея 8'}},
@@ -1003,14 +1001,10 @@ const run = async () => {
             }
         },
         {
-            cover: 'test/IMG_2688.jpg',
+            cover: 'test/IMG_2682.jpg',
             coverAlt: {ru: 'Обложка проекта 4', ky: 'Долбоордун мукабасы 4'},
             gallery: [
-                {image: 'test/IMG_2683.jpg', alt: {ru: 'Галерея 1', ky: 'Галерея 1'}},
                 {image: 'test/IMG_2682.jpg', alt: {ru: 'Галерея 2', ky: 'Галерея 2'}},
-                {image: 'test/IMG_2688.jpg', alt: {ru: 'Галерея 3', ky: 'Галерея 3'}},
-                {image: 'test/IMG_2685.jpg', alt: {ru: 'Галерея 4', ky: 'Галерея 4'}},
-                {image: 'test/IMG_2689.jpg', alt: {ru: 'Галерея 5', ky: 'Галерея 5'}},
                 {image: 'test/IMG_2690.jpg', alt: {ru: 'Галерея 6', ky: 'Галерея 6'}},
                 {image: 'test/IMG_2691.jpg', alt: {ru: 'Галерея 7', ky: 'Галерея 7'}},
                 {image: 'test/IMG_2692.jpg', alt: {ru: 'Галерея 8', ky: 'Галерея 8'}},
@@ -1031,40 +1025,11 @@ const run = async () => {
             }
         },
         {
-            cover: 'test/IMG_0454.jpg',
-            coverAlt: {ru: 'Обложка проекта 5', ky: 'Долбоордун мукабасы 5'},
-            gallery: [
-                {image: 'test/IMG_0450.jpg', alt: 'Галерея 1 - 1'},
-                {image: 'test/IMG_0451.jpg', alt: 'Галерея 1 - 2'},
-                {image: 'test/IMG_0449.jpg', alt: 'Галерея 1 - 3'},
-                {image: 'test/IMG_0453.jpg', alt: 'Галерея 1 - 4'},
-                {image: 'test/IMG_0454.jpg', alt: 'Галерея 1 - 5'},
-                {image: 'test/IMG_0455.jpg', alt: 'Галерея 1 - 6'},
-                {image: 'test/IMG_0610.jpg', alt: 'Галерея 1 - 7'},
-                {image: 'test/IMG_0611.jpg', alt: 'Галерея 1 - 8'},
-            ],
-            description: {
-                ru: 'Современная гостиная с натяжным потолком',
-                ky: 'Заманбап конок бөлмө чоюлма шып менен',
-            },
-            seoTitle: {
-                ru: "Проект №5 — Галерея | Линия роста",
-                ky: "№5 долбоор — Галерея | Линия роста"
-            },
-            seoDescription: {
-                ru: "Посмотрите фотографии проекта №5 — современный интерьер с натяжными потолками.",
-                ky: "№5 долбоордун сүрөттөрүн караңыз — заманбап чоюлма шыптар менен интерьер."
-            }
-        },
-        {
             cover: 'test/IMG_2682.jpg',
             coverAlt: {ru: 'Обложка проекта 6', ky: 'Долбоордун мукабасы 6'},
             gallery: [
                 {image: 'test/IMG_2683.jpg', alt: {ru: 'Галерея 1', ky: 'Галерея 1'}},
                 {image: 'test/IMG_2682.jpg', alt: {ru: 'Галерея 2', ky: 'Галерея 2'}},
-                {image: 'test/IMG_2688.jpg', alt: {ru: 'Галерея 3', ky: 'Галерея 3'}},
-                {image: 'test/IMG_2685.jpg', alt: {ru: 'Галерея 4', ky: 'Галерея 4'}},
-                {image: 'test/IMG_2689.jpg', alt: {ru: 'Галерея 5', ky: 'Галерея 5'}},
                 {image: 'test/IMG_2690.jpg', alt: {ru: 'Галерея 6', ky: 'Галерея 6'}},
                 {image: 'test/IMG_2691.jpg', alt: {ru: 'Галерея 7', ky: 'Галерея 7'}},
                 {image: 'test/IMG_2692.jpg', alt: {ru: 'Галерея 8', ky: 'Галерея 8'}},
@@ -1111,34 +1076,6 @@ const run = async () => {
             }
         },
         {
-            cover: 'test/IMG_2687.jpg',
-            coverAlt: {ru: 'Обложка проекта 8', ky: 'Долбоордун мукабасы 8'},
-            gallery: [
-                {image: 'test/IMG_2683.jpg', alt: {ru: 'Галерея 1', ky: "Галерея 1"}},
-                {image: 'test/IMG_2682.jpg', alt: {ru: 'Галерея 2 ', ky: "Галерея 2"}},
-                {image: 'test/IMG_2688.jpg', alt: {ru: 'Галерея 3', ky: "Галерея 3"}},
-                {image: 'test/IMG_2685.jpg', alt: {ru: 'Галерея 4', ky: "Галерея 4"}},
-                {image: 'test/IMG_2689.jpg', alt: {ru: 'Галерея 5', ky: "Галерея 5"}},
-                {image: 'test/IMG_2690.jpg', alt: {ru: 'Галерея 6', ky: "Галерея 6"}},
-                {image: 'test/IMG_2691.jpg', alt: {ru: 'Галерея 7', ky: "Галерея 7"}},
-                {image: 'test/IMG_2692.jpg', alt: {ru: 'Галерея 8', ky: "Галерея 8"}},
-                {image: 'test/IMG_2683.jpg', alt: {ru: 'Галерея 9', ky: "Галерея 9"}},
-                {image: 'test/IMG_2682.jpg', alt: {ru: 'Галерея 10', ky: "Галерея 10"}},
-            ],
-            description: {
-                ru: 'Современная гостиная с натяжным потолком',
-                ky: 'Заманбап конок бөлмө чоюлма шып менен',
-            },
-            seoTitle: {
-                ru: "Проект №8 — Галерея | Линия роста",
-                ky: "№8 долбоор — Галерея | Линия роста"
-            },
-            seoDescription: {
-                ru: "Посмотрите фотографии проекта №8 — современный интерьер с натяжными потолками.",
-                ky: "№8 долбоордун сүрөттөрүн караңыз — заманбап чоюлма шыптар менен интерьер."
-            }
-        },
-        {
             cover: 'test/IMG_0448.jpg',
             coverAlt: {ru: 'Обложка проекта 9', ky: 'Долбоордун мукабасы 9'},
             gallery: [
@@ -1165,14 +1102,10 @@ const run = async () => {
             }
         },
         {
-            cover: 'test/IMG_2687.jpg',
+            cover: 'test/IMG_2682.jpg',
             coverAlt: {ru: 'Обложка проекта 10', ky: 'Долбоордун мукабасы 10'},
             gallery: [
-                {image: 'test/IMG_2683.jpg', alt: {ru: 'Галерея 1', ky: 'Галерея 1'}},
                 {image: 'test/IMG_2682.jpg', alt: {ru: 'Галерея 2', ky: 'Галерея 2'}},
-                {image: 'test/IMG_2688.jpg', alt: {ru: 'Галерея 3', ky: 'Галерея 3'}},
-                {image: 'test/IMG_2685.jpg', alt: {ru: 'Галерея 4', ky: 'Галерея 4'}},
-                {image: 'test/IMG_2689.jpg', alt: {ru: 'Галерея 5', ky: 'Галерея 5'}},
                 {image: 'test/IMG_2690.jpg', alt: {ru: 'Галерея 6', ky: 'Галерея 6'}},
                 {image: 'test/IMG_2691.jpg', alt: {ru: 'Галерея 7', ky: 'Галерея 7'}},
                 {image: 'test/IMG_2692.jpg', alt: {ru: 'Галерея 8', ky: 'Галерея 8'}},
@@ -1427,6 +1360,386 @@ const run = async () => {
             },
         }
     );
+
+    await ChatSession.create([
+        {
+            clientName: "Настя",
+            adminId: Bob,
+            status: "Новый",
+            createdAt: new Date(),
+            messages: [
+                {
+                    sender: "client",
+                    senderName: "User 1",
+                    text: "Здравствуйте, хочу узнать подробнее.",
+                    timestamp: new Date(),
+                },
+            ],
+        },
+        {
+            clientName: "Алексей",
+            adminId: Alice,
+            status: "В работе",
+            createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 1),
+            messages: [
+                {
+                    sender: "client",
+                    senderName: "User 2",
+                    text: "Есть ли у вас гарантия?",
+                    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 1 + 1000 * 60 * 5),
+                },
+                {
+                    sender: "admin",
+                    senderName: "Alice",
+                    text: "Да, конечно. Мы даём гарантию на 2 года.",
+                    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 1 + 1000 * 60 * 10),
+                },
+            ],
+        },
+        {
+            clientName: "Айбек",
+            adminId: Bob,
+            status: "Завершена",
+            createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2),
+            messages: [
+                {
+                    sender: "client",
+                    senderName: "Айбек",
+                    text: "Спасибо за помощь!",
+                    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2 + 1000 * 60 * 20),
+                },
+                {
+                    sender: "admin",
+                    senderName: "Bob",
+                    text: "Обращайтесь!",
+                    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2 + 1000 * 60 * 25),
+                },
+            ],
+        },
+        {
+            clientName: "Адилет",
+            adminId: null,
+            status: "Без ответа",
+            createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 3),
+            messages: [
+                {
+                    sender: "client",
+                    senderName: "Адилет",
+                    text: "Алло? Вы здесь?",
+                    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 3 + 1000 * 60 * 3),
+                },
+            ],
+        },
+        {
+            clientName: "Алмаз",
+            adminId: Bob,
+            status: "Новый",
+            createdAt: new Date(),
+            messages: [
+                {
+                    sender: "client",
+                    senderName: "Алмаз",
+                    text: "Здравствуйте, хочу узнать подробнее.",
+                    timestamp: new Date(),
+                },
+            ],
+        },
+        {
+            clientName: "Каныкей",
+            adminId: Alice,
+            status: "В работе",
+            createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 1),
+            messages: [
+                {
+                    sender: "client",
+                    senderName: "Каныкей",
+                    text: "Есть ли у вас гарантия?",
+                    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 1 + 1000 * 60 * 5),
+                },
+                {
+                    sender: "admin",
+                    senderName: "Alice",
+                    text: "Да, конечно. Мы даём гарантию на 2 года.",
+                    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 1 + 1000 * 60 * 10),
+                },
+            ],
+        },
+        {
+            clientName: "Егор",
+            adminId: Bob,
+            status: "Завершена",
+            createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2),
+            messages: [
+                {
+                    sender: "client",
+                    senderName: "Егор",
+                    text: "Спасибо за помощь!",
+                    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2 + 1000 * 60 * 20),
+                },
+                {
+                    sender: "admin",
+                    senderName: "Bob",
+                    text: "Обращайтесь!",
+                    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2 + 1000 * 60 * 25),
+                },
+            ],
+        },
+        {
+            clientName: "Николай",
+            adminId: null,
+            status: "Без ответа",
+            createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 3),
+            messages: [
+                {
+                    sender: "client",
+                    senderName: "Николай",
+                    text: "Алло? Вы здесь?",
+                    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 3 + 1000 * 60 * 3),
+                },
+            ],
+        },
+
+        {
+            clientName: "Султан",
+            adminId: Bob,
+            status: "Новый",
+            createdAt: new Date(),
+            messages: [
+                {
+                    sender: "client",
+                    senderName: "Султан",
+                    text: "Здравствуйте, хочу узнать подробнее.",
+                    timestamp: new Date(),
+                },
+            ],
+        },
+        {
+            clientName: "Николай",
+            adminId: Alice,
+            status: "В работе",
+            createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 1),
+            messages: [
+                {
+                    sender: "client",
+                    senderName: "Николай",
+                    text: "Есть ли у вас гарантия?",
+                    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 1 + 1000 * 60 * 5),
+                },
+                {
+                    sender: "admin",
+                    senderName: "Alice",
+                    text: "Да, конечно. Мы даём гарантию на 2 года.",
+                    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 1 + 1000 * 60 * 10),
+                },
+            ],
+        },
+        {
+            clientName: "Полина",
+            adminId: Bob,
+            status: "Завершена",
+            createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2),
+            messages: [
+                {
+                    sender: "client",
+                    senderName: "Полина",
+                    text: "Спасибо за помощь!",
+                    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2 + 1000 * 60 * 20),
+                },
+                {
+                    sender: "admin",
+                    senderName: "Bob",
+                    text: "Обращайтесь!",
+                    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2 + 1000 * 60 * 25),
+                },
+            ],
+        },
+        {
+            clientName: "User 12",
+            adminId: null,
+            status: "Без ответа",
+            createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 3),
+            messages: [
+                {
+                    sender: "client",
+                    senderName: "User 4",
+                    text: "Алло? Вы здесь?",
+                    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 3 + 1000 * 60 * 3),
+                },
+            ],
+        },
+        {
+            clientName: "Сезим",
+            adminId: Bob,
+            status: "Новый",
+            createdAt: new Date(),
+            messages: [
+                {
+                    sender: "client",
+                    senderName: "Сезим",
+                    text: "Здравствуйте, хочу узнать подробнее.",
+                    timestamp: new Date(),
+                },
+            ],
+        },
+        {
+            clientName: "Аселя",
+            adminId: Alice,
+            status: "В работе",
+            createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 1),
+            messages: [
+                {
+                    sender: "client",
+                    senderName: "User 2",
+                    text: "Есть ли у вас гарантия?",
+                    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 1 + 1000 * 60 * 5),
+                },
+                {
+                    sender: "admin",
+                    senderName: "Alice",
+                    text: "Да, конечно. Мы даём гарантию на 2 года.",
+                    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 1 + 1000 * 60 * 10),
+                },
+            ],
+        },
+        {
+            clientName: "User 15",
+            adminId: Bob,
+            status: "Завершена",
+            createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2),
+            messages: [
+                {
+                    sender: "client",
+                    senderName: "User 3",
+                    text: "Спасибо за помощь!",
+                    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2 + 1000 * 60 * 20),
+                },
+                {
+                    sender: "admin",
+                    senderName: "Bob",
+                    text: "Обращайтесь!",
+                    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2 + 1000 * 60 * 25),
+                },
+            ],
+        },
+        {
+            clientName: "User 16",
+            adminId: null,
+            status: "Без ответа",
+            createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 3),
+            messages: [
+                {
+                    sender: "client",
+                    senderName: "User 4",
+                    text: "Алло? Вы здесь?",
+                    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 3 + 1000 * 60 * 3),
+                },
+            ],
+        },
+
+        {
+            clientName: "User 17",
+            adminId: Bob,
+            status: "Новый",
+            createdAt: new Date(),
+            messages: [
+                {
+                    sender: "client",
+                    senderName: "User 1",
+                    text: "Здравствуйте, хочу узнать подробнее.",
+                    timestamp: new Date(),
+                },
+            ],
+        },
+        {
+            clientName: "User 18",
+            adminId: Alice,
+            status: "В работе",
+            createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 1),
+            messages: [
+                {
+                    sender: "client",
+                    senderName: "User 2",
+                    text: "Есть ли у вас гарантия?",
+                    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 1 + 1000 * 60 * 5),
+                },
+                {
+                    sender: "admin",
+                    senderName: "Alice",
+                    text: "Да, конечно. Мы даём гарантию на 2 года.",
+                    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 1 + 1000 * 60 * 10),
+                },
+            ],
+        },
+        {
+            clientName: "User 19",
+            adminId: Bob,
+            status: "Завершена",
+            createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2),
+            messages: [
+                {
+                    sender: "client",
+                    senderName: "User 3",
+                    text: "Спасибо за помощь!",
+                    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2 + 1000 * 60 * 20),
+                },
+                {
+                    sender: "admin",
+                    senderName: "Bob",
+                    text: "Обращайтесь!",
+                    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2 + 1000 * 60 * 25),
+                },
+            ],
+        },
+        {
+            clientName: "User 20",
+            adminId: null,
+            status: "Без ответа",
+            createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 3),
+            messages: [
+                {
+                    sender: "client",
+                    senderName: "User 4",
+                    text: "Алло? Вы здесь?",
+                    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 3 + 1000 * 60 * 3),
+                },
+            ],
+        },
+        {
+            clientName: "User 21",
+            adminId: Bob,
+            status: "Новый",
+            createdAt: new Date(),
+            messages: [
+                {
+                    sender: "client",
+                    senderName: "User 1",
+                    text: "Здравствуйте, хочу узнать подробнее.",
+                    timestamp: new Date(),
+                },
+            ],
+        },
+        {
+            clientName: "User 22",
+            adminId: Alice,
+            status: "В работе",
+            createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 1),
+            messages: [
+                {
+                    sender: "client",
+                    senderName: "User 2",
+                    text: "Есть ли у вас гарантия?",
+                    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 1 + 1000 * 60 * 5),
+                },
+                {
+                    sender: "admin",
+                    senderName: "Alice",
+                    text: "Да, конечно. Мы даём гарантию на 2 года.",
+                    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 1 + 1000 * 60 * 10),
+                },
+            ],
+        },
+    ]);
+
     await db.close();
 }
 

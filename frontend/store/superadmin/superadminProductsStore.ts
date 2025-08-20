@@ -34,6 +34,13 @@ interface AdminProductState {
 
     deleteError: string | null;
     setDeleteError: (error: string | null) => void;
+
+    selectedToDelete: string[];
+    setSelectedToDelete: (selectedToDelete: string[]) => void;
+
+    paginationProduct: PaginationMeta | null,
+    setPaginationProduct: (data: PaginationMeta) => void;
+
 }
 
 export const useAdminProductStore = create<AdminProductState>((set) => ({
@@ -50,6 +57,12 @@ export const useAdminProductStore = create<AdminProductState>((set) => ({
     createError: null,
     updateError: null,
     deleteError: null,
+
+    paginationProduct: null,
+    setPaginationProduct: (data) => set({ paginationProduct: data }),
+
+    selectedToDelete: [],
+    setSelectedToDelete: (ids) => set({ selectedToDelete: ids }),
 
     setProducts: (products) => set({ products }),
     setProductDetail: (product) => set({ productDetail: product }),

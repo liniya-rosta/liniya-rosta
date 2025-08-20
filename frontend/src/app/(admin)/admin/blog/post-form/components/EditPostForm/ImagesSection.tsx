@@ -68,7 +68,7 @@ const ImagesSection: React.FC<Props> = ({
                     type="button"
                     variant="outline"
                     onClick={() => {
-                            append({alt: {ru: ""}, file: null});
+                            append({alt: {ru: ""}, image: null});
                     }}
                     disabled={updateLoading}
                     className="mb-4"
@@ -139,8 +139,8 @@ const ImagesSection: React.FC<Props> = ({
                             disabled={updateLoading}
                             onChange={(e) => handleImageChange(index, e)}
                         />
-                        {errors.images?.[index]?.file && (
-                            <FormErrorMessage>{errors.images[index]?.file?.message}</FormErrorMessage>
+                        {errors.images?.[index]?.image && (
+                            <FormErrorMessage>{errors.images[index]?.image?.message}</FormErrorMessage>
                         )}
 
                         <div className="flex flex-wrap items-center justify-between">
@@ -149,7 +149,7 @@ const ImagesSection: React.FC<Props> = ({
                                 variant="outline"
                                 disabled={updateLoading}
                                 onClick={() => {
-                                    const file = control._formValues.images?.[index]?.file;
+                                    const file = control._formValues.images?.[index]?.image;
                                     if (file instanceof File) {
                                         showImagePreview(file, control._formValues.images[index]?.alt);
                                     }

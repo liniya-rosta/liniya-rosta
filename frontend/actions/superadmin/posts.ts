@@ -27,7 +27,7 @@ export const updatePost = async (postId: string, postData: UpdatePostFormData, m
     formData.append("mode", mode);
 
     postData.images?.forEach((img) => {
-        if (img.file) formData.append("images", img.file);
+        if (img.image) formData.append("images", img.image);
         formData.append("alts", img.alt ? img.alt?.ru : "");
     });
 

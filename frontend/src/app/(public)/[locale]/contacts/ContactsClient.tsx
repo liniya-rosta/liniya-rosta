@@ -10,7 +10,7 @@ import ErrorMsg from "@/src/components/ui/ErrorMsg";
 import LoadingFullScreen from "@/src/components/ui/Loading/LoadingFullScreen";
 import {useTranslations} from "next-intl";
 import AnimatedEntrance from "@/src/components/shared/AnimatedEntrance";
-import {Container} from '@/src/components/shared/Container';
+import {CustomContainer} from '@/src/components/shared/CustomContainer';
 
 
 interface Props {
@@ -39,7 +39,7 @@ const ContactsClient: React.FC<Props> = ({data, error}) => {
     if (fetchContactError) return <ErrorMsg error={fetchContactError}/>
 
     return (
-        <Container>
+        <CustomContainer>
             <div className='md:my-7'>
                 <h1 className="text-30-48-1_2 text-center md:text-left font-bold mb-6">{tContacts("contactsTitle")}</h1>
                 <AnimatedEntrance direction="bottom" className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
@@ -48,7 +48,7 @@ const ContactsClient: React.FC<Props> = ({data, error}) => {
                 </AnimatedEntrance>
                 <MapSection/>
             </div>
-        </Container>
+        </CustomContainer>
     );
 };
 

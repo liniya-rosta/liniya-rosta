@@ -203,14 +203,8 @@ export interface UpdateImagePost {
 }
 
 export interface ProductImagesForm {
-    url: File | null;
+    image: File | null;
     alt?: { ru: string };
-}
-
-interface ImageItem {
-    _id: string;
-    url: string;
-    alt: { ru: string, ky?: string; };
 }
 
 export interface Product {
@@ -233,7 +227,7 @@ export interface Product {
         url: string;
         alt: { ru: string, ky?: string; };
     };
-    images: ImageItem[];
+    images: ImageObject[];
     characteristics?: {
         key: { ru: string, ky?: string };
         value: { ru: string, ky?: string };
@@ -279,7 +273,7 @@ export interface ProductMutation {
 type ImagesEditValues = Partial<GalleryForm>;
 
 export interface ProductUpdateMutation extends ProductMutation {
-    images?: null;
+    images: null;
     cover?: File | null;
 }
 
@@ -298,11 +292,11 @@ export interface IRequest {
 export interface ServiceForm {
     title: {
         ru: string;
-        ky: string;
+        ky?: string;
     };
     description?: {
         ru: string;
-        ky: string;
+        ky?: string;
     };
 }
 
@@ -333,3 +327,49 @@ export interface FetchRequestsResponse {
     totalItems: number;
 }
 
+export interface ChatMessage {
+    sender: "client" | "admin";
+    senderName: string;
+    text: string;
+    timestamp: Date;
+}
+
+export interface ChatSession {
+    _id: string;
+    clientName: string;
+    adminId: string;
+    messages: ChatMessage[];
+    createdAt: Date;
+    updatedAt: Date;
+    status: string;
+    isClientOnline: boolean;
+}
+
+export interface ChatResponse extends PaginationMeta {
+    items: ChatSession[],
+}
+
+export interface ChatFilters {
+    status?: string;
+    clientName?: string;
+    createdFrom?: string;
+    createdTo?: string;
+    updatedFrom?: string;
+    updatedTo?: string;
+    adminId?: string;
+    page?: number;
+    limit?: number;
+}
+
+export interface Chat {
+    _id: string;
+    adminId: string;
+    status: string;
+    messages: ChatMessage[];
+}
+
+export interface ChatFormRegister {
+    name: string;
+    phone: string;
+    text: string;
+}

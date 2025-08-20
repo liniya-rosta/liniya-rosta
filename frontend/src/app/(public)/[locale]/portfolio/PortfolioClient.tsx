@@ -2,7 +2,7 @@
 
 import {usePortfolioStore} from "@/store/portfolioItemStore";
 import React, {useEffect} from "react";
-import {API_BASE_URL} from "@/src/lib/globalConstants";
+import {IMG_BASE} from "@/src/lib/globalConstants";
 import {CartPortfolio} from '@/src/app/(public)/[locale]/portfolio/components/CartPortfolio';
 import {PortfolioResponse} from "@/src/lib/types";
 import Link from "next/link";
@@ -14,7 +14,7 @@ import {usePortfolioFetcher} from "@/src/app/(public)/[locale]/portfolio/hooks/u
 import PaginationButtons from "@/src/components/shared/PaginationButtons";
 import AnimatedEntrance from "@/src/components/shared/AnimatedEntrance";
 import HeroSectionPortfolio from "@/src/app/(public)/[locale]/portfolio/components/HeroSectionPortfolio";
-import {Container} from "@/src/components/shared/Container";
+import {CustomContainer} from "@/src/components/shared/CustomContainer";
 
 interface Props {
     data: PortfolioResponse | null;
@@ -52,7 +52,7 @@ const PortfolioClient: React.FC<Props> = ({data, error, limit}) => {
     if (fetchErrorPortfolio) return <ErrorMsg error={fetchErrorPortfolio}/>;
 
     return (
-        <Container>
+        <CustomContainer>
             <div className='md:my-7'>
                 <AnimatedEntrance direction="bottom">
                     <HeroSectionPortfolio/>
@@ -64,7 +64,7 @@ const PortfolioClient: React.FC<Props> = ({data, error, limit}) => {
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mb-15">
                         {items && items.length > 0 ? (
                             items.map((item) => {
-                                const imageUrl = API_BASE_URL + "/" + item.cover;
+                                const imageUrl = IMG_BASE + "/" + item.cover;
                                 const pageUrl = "/portfolio/" + item.slug;
                                 return (
                                     <Link key={item._id} href={pageUrl}>
@@ -92,7 +92,7 @@ const PortfolioClient: React.FC<Props> = ({data, error, limit}) => {
                     />
                 )}
             </div>
-        </Container>
+        </CustomContainer>
     );
 };
 

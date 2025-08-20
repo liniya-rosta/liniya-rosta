@@ -129,3 +129,35 @@ export interface IProduct {
     createdAt: Date;
     updatedAt: Date;
 }
+
+export interface ClientMessage  {
+    type: "client_message";
+    chatId?: string;
+    name: string;
+    text: string;
+}
+
+export interface AdminMessage {
+    type: "admin_message";
+    chatId: string;
+    text: string;
+}
+
+export interface  ChatMessage  {
+    sender: "client" | "admin";
+    senderName: string;
+    text: string;
+    timestamp: Date;
+}
+
+export interface ResetUserMessage {
+    type: "reset_user";
+    chatId: string;
+    name:string;
+}
+
+export type IncomingMessage = ClientMessage | AdminMessage | ResetUserMessage;
+
+export interface MongoFilter {
+    [key: string]: string | number | boolean | Date | RegExp | MongoFilter | MongoFilter[];
+}

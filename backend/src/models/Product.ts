@@ -5,7 +5,7 @@ import slugify from "slugify";
 const Schema = mongoose.Schema;
 
 const ImageItemSchema = new Schema({
-    url: {type: String, required: true},
+    image: {type: String, required: true},
     alt: {
         ru: {type: String, default: null, maxLength: 150},
         ky: {type: String},

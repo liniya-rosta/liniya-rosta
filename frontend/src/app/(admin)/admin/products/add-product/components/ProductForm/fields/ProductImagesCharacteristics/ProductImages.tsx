@@ -19,7 +19,7 @@ const ProductImages: React.FC<Props> = ({form}) => {
     const onImagesChange = async (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
-        form.setValue(`images.${index}.url`, file, {shouldValidate: true});
+        form.setValue(`images.${index}.image`, file, {shouldValidate: true});
     };
 
     return (
@@ -28,8 +28,8 @@ const ProductImages: React.FC<Props> = ({form}) => {
                 type="button"
                 onClick={() => {
                     const lastImage = form.getValues("images")?.at(-1);
-                    if (lastImage && !(lastImage.url instanceof File)) return;
-                    append({alt: {ru: ""}, url: null});
+                    if (lastImage && !(lastImage.image instanceof File)) return;
+                    append({alt: {ru: ""}, image: null});
                 }}
                 className='cursor-pointer'
                 disabled={createLoading}
@@ -79,14 +79,14 @@ const ProductImages: React.FC<Props> = ({form}) => {
                             disabled={createLoading}
                             onChange={(e) => onImagesChange(index, e)}
                         />
-                        {form.formState.errors.images?.[index]?.url?.message && (
+                        {form.formState.errors.images?.[index]?.image?.message && (
                             <FormErrorMessage>
-                                {form.formState.errors.images?.[index]?.url?.message}
+                                {form.formState.errors.images?.[index]?.image?.message}
                             </FormErrorMessage>
                         )}
                         <div className="flex items-center justify-between pt-2">
                             {(() => {
-                                const file = form.watch(`images.${index}.url`);
+                                const file = form.watch(`images.${index}.image`);
                                 if (!(file instanceof File)) return null;
 
                                 const objectUrl = URL.createObjectURL(file);

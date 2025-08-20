@@ -1,31 +1,32 @@
 import {
-    DndContext,
     closestCenter,
+    DndContext,
+    DragEndEvent,
     KeyboardSensor,
     PointerSensor,
     useSensor,
-    useSensors, DragEndEvent
+    useSensors
 } from '@dnd-kit/core';
 import {
     arrayMove,
     SortableContext,
     sortableKeyboardCoordinates,
+    useSortable,
     verticalListSortingStrategy
 } from '@dnd-kit/sortable';
-import {useSortable} from '@dnd-kit/sortable';
 import {CSS} from '@dnd-kit/utilities';
 import {Dialog, DialogContent, DialogHeader, DialogTitle} from "@/src/components/ui/dialog";
-import React, {useState, useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import Image from "next/image";
 import {Card, CardContent, CardFooter} from "@/src/components/ui/card";
 import {Button} from "@/src/components/ui/button";
-import {API_BASE_URL} from "@/src/lib/globalConstants";
 import {Checkbox} from "@/src/components/ui/checkbox";
 import {ImageObject} from "@/src/lib/types";
 import {GripVertical} from "lucide-react";
 import {TooltipContent, TooltipProvider, TooltipTrigger} from '../ui/tooltip';
 import {Tooltip} from "@/src/components/ui/tooltip";
 import LoaderIcon from "@/src/components/ui/Loading/LoaderIcon";
+import {IMG_BASE} from "@/src/lib/globalConstants";
 
 interface Props {
     open: boolean;
@@ -54,7 +55,17 @@ const SortableImage: React.FC<{
     onRequestDelete: (id: string) => void;
     canReorder: boolean;
     deleteLoading: boolean;
-}> = ({item, id, isSelected, selectionMode, toggleSelect, isOpenModalEdit, onRequestDelete, canReorder, deleteLoading}) => {
+}> = ({
+          item,
+          id,
+          isSelected,
+          selectionMode,
+          toggleSelect,
+          isOpenModalEdit,
+          onRequestDelete,
+          canReorder,
+          deleteLoading
+      }) => {
     const {attributes, listeners, setNodeRef, transform, transition, isDragging} = useSortable({id});
 
     const style = {
@@ -67,7 +78,7 @@ const SortableImage: React.FC<{
         border: isDragging ? '2px solid #3b82f6' : undefined,
     };
 
-    const imageUrl = API_BASE_URL + '/' + item.image;
+    const imageUrl = IMG_BASE + '/' + item.image;
 
     return (
         <Card
@@ -122,7 +133,8 @@ const SortableImage: React.FC<{
             </a>
 
             <CardContent className="flex-1">
-                <div className="text-sm text-gray-700 line-clamp-2">{item.alt?.ru || "Нет альтернативного названия"}</div>
+                <div
+                    className="text-sm text-gray-700 line-clamp-2">{item.alt?.ru || "Нет альтернативного названия"}</div>
             </CardContent>
 
             <CardFooter className="flex justify-between gap-2">
@@ -260,7 +272,7 @@ const ModalGallery: React.FC<Props> = ({
                             </Button>
                         )}
 
-                        {canReorder && onSaveOrder && !selectionMode &&(
+                        {canReorder && onSaveOrder && !selectionMode && (
                             <Button
                                 variant="default"
                                 size="sm"
