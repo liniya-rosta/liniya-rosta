@@ -142,6 +142,11 @@ export const getOnlineChatRouter = (
                 }
 
                 if (data.type === "admin_message" && isAdmin && admin) {
+                    if (hasBadWords(data.text) || hasRepeatingChars(data.text)) {
+                        ws.send(JSON.stringify({ type: "error", message: "Сообщение недопустимо" }));
+                        return;
+                    }
+
                     const filteredText = cleanText(data.text);
 
                     const message: ChatMessage = {
