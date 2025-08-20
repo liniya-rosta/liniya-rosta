@@ -62,8 +62,8 @@ const ImagesSection: React.FC<Props> = ({
     };
 
     return (
-        <div className="w-full max-w-4xl mb-3">
-            <label className="block mb-4">Изображения:</label>
+        <div className="w-full max-w-4xl mb-3 space-y-4">
+            <label className="block">Изображения:</label>
 
             <div className="flex flex-wrap gap-2 md:gap-5">
                 <Button
@@ -73,7 +73,6 @@ const ImagesSection: React.FC<Props> = ({
                             append({alt: {ru: ""}, image: null});
                     }}
                     disabled={updateLoading}
-                    className="mb-4"
                 >
                     <Plus className="w-4 h-4 mr-2"/>
                     Добавить изображение
@@ -111,41 +110,45 @@ const ImagesSection: React.FC<Props> = ({
                     {expanded ? 'Свернуть' : 'Развернуть все'}
                 </Button>
             </div>
-            {errors.images?.message && (
-                <FormErrorMessage>{errors.images.message}</FormErrorMessage>
-            )}
 
             <div
                 className={`grid grid-cols-1 md:grid-cols-2 gap-3 transition-all duration-300 ${
                     expanded ? 'max-h-none overflow-visible' : 'max-h-[350px] overflow-y-auto'
                 }`}
             >
+                {errors.images?.message && (
+                    <FormErrorMessage>{errors.images.message}</FormErrorMessage>
+                )}
                 {fields.map((item, index) => (
                     <div
-                        key={item.id} className="border rounded-lg p-4 space-y-6 bg-white shadow-sm">
-                        <Label className="w-full mb-2">Альтернативное название изображения</Label>
-                        <Input
-                            type="text"
-                            placeholder="Опишите, что изображено на фото (для доступности и поиска)"
-                            {...register(`images.${index}.alt.ru`)}
-                            disabled={updateLoading}
-                        />
-                        {errors.images?.[index]?.alt?.ru && (
-                            <FormErrorMessage>{errors.images[index]?.alt?.ru.message}</FormErrorMessage>
-                        )}
+                        key={item.id} className="border rounded-lg p-4 space-y-3 bg-white shadow-sm">
+                        <div className="space-y-1">
+                            <Label className="w-full">Альтернативное название изображения</Label>
+                            <Input
+                                type="text"
+                                placeholder="Опишите, что изображено на фото (для доступности и поиска)"
+                                {...register(`images.${index}.alt.ru`)}
+                                disabled={updateLoading}
+                            />
+                            {errors.images?.[index]?.alt?.ru && (
+                                <FormErrorMessage>{errors.images[index]?.alt?.ru.message}</FormErrorMessage>
+                            )}
+                        </div>
 
-                        <Label className="w-full mb-2">Изображение</Label>
-                        <Input
-                            type="file"
-                            accept="image/*"
-                            disabled={updateLoading}
-                            onChange={(e) => handleImageChange(index, e)}
-                        />
-                        {errors.images?.[index]?.image && (
-                            <FormErrorMessage>{errors.images[index]?.image?.message}</FormErrorMessage>
-                        )}
+                        <div className="space-y-1">
+                            <Label className="w-full">Изображение</Label>
+                            <Input
+                                type="file"
+                                accept="image/*"
+                                disabled={updateLoading}
+                                onChange={(e) => handleImageChange(index, e)}
+                            />
+                            {errors.images?.[index]?.image && (
+                                <FormErrorMessage>{errors.images[index]?.image?.message}</FormErrorMessage>
+                            )}
+                        </div>
 
-                        <div className="flex flex-wrap items-center justify-between">
+                        <div className="flex flex-wrap gap-2 items-center justify-between">
                             <Button
                                 type="button"
                                 variant="outline"

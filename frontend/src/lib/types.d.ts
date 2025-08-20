@@ -334,6 +334,12 @@ export interface ChatMessage {
     timestamp: Date;
 }
 
+export interface IncomingChatMessage extends ChatMessage {
+    type: string;
+    chatId: string;
+}
+
+
 export interface ChatSession {
     _id: string;
     clientName: string;

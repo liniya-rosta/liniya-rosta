@@ -13,6 +13,8 @@ import {useAdminChatStore} from "@/store/superadmin/adminChatStore";
 import ChatMessages from "@/src/app/(admin)/admin/online-chat/components/ChatMessages";
 import useUserStore from "@/store/usersStore";
 import {useSuperadminAdminsStore} from "@/store/superadmin/superadminAdminsStore";
+import { hasBadWords } from "@/src/lib/profanityFilter";
+import {toast} from "react-toastify";
 
 const Page = () => {
     const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
@@ -46,7 +48,7 @@ const Page = () => {
         setShowConfirm,
         handleDelete,
         handleStatusChange,
-    } = useAdminChatActions(setChats);
+    } = useAdminChatActions(setChats, fetchData);
 
     useEffect(() => {
         void fetchData();
@@ -78,6 +80,11 @@ const Page = () => {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (!inputMessage.trim()) return;
+
+        if (hasBadWords(inputMessage)) {
+            toast.error("Сообщение содержит недопустимые слова!");
+            return;
+        }
 
         if (selectedChatId) {
             sendMessage(selectedChatId, inputMessage.trim());
