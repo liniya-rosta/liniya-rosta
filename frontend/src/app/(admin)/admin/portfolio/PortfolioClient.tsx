@@ -22,7 +22,6 @@ import {
     TableControls,
     TablePagination
 } from "@/src/app/(admin)/admin/portfolio/components/DataTable";
-import ImageModal from "@/src/app/(admin)/admin/portfolio/components/ImageModal";
 import {GalleryEditForm, ModalEdit, PortfolioEditForm} from "@/src/app/(admin)/admin/portfolio/components/ModelEdit";
 import DataSkeleton from "@/src/components/shared/DataSkeleton";
 import ConfirmDialog from "@/src/components/ui/ConfirmDialog";
@@ -31,6 +30,7 @@ import {usePersistedPageSize} from "@/hooks/usePersistedPageSize";
 import ModalGallery from "@/src/components/shared/ModalGallery";
 import {handleKyError} from "@/src/lib/handleKyError";
 import SaleLabelModal from "@/src/app/(admin)/admin/products/components/Modal/SaleLabelModal";
+import ImageViewerModal from "@/src/components/shared/ImageViewerModal";
 
 interface Props {
     error?: string | null;
@@ -301,7 +301,7 @@ const AdminPortfolioClient: React.FC<Props> = ({error}) => {
             <TablePagination table={table}/>
 
             {selectedCover &&
-                <ImageModal
+                <ImageViewerModal
                     open={isModalOpenCover}
                     openChange={() => setIsModalOpenCover(!isModalOpenCover)}
                     alt={selectedCover.alt || "Изображение портфолио"}

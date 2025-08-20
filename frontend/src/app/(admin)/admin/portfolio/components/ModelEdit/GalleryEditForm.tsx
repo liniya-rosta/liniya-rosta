@@ -13,10 +13,11 @@ import {Tooltip, TooltipContent, TooltipTrigger} from "@/src/components/ui/toolt
 import {fetchPortfolioItem} from "@/actions/portfolios";
 import {Eye} from "lucide-react";
 import {Label} from "@/src/components/ui/label";
-import ImageModal from "@/src/app/(admin)/admin/portfolio/components/ImageModal";
 import {gallerySchema} from "@/src/lib/zodSchemas/admin/portfolioSchema";
 import {handleKyError} from "@/src/lib/handleKyError";
 import {IMG_BASE} from "@/src/lib/globalConstants";
+import ImageViewerModal from "@/src/components/shared/ImageViewerModal";
+import FormErrorMessage from "@/src/components/ui/FormErrorMessage";
 
 interface Props {
     onSaved: () => void;
@@ -96,7 +97,7 @@ const GalleryEditForm: React.FC<Props> = ({onSaved}) => {
                         {...register("alt.ru")}
                     />
                     {errors.alt && (
-                        <p className="text-red-500 text-sm mb-4">{errors.alt.message}</p>
+                        <FormErrorMessage>{errors.alt.message}</FormErrorMessage>
                     )}
                 </div>
 
@@ -126,7 +127,7 @@ const GalleryEditForm: React.FC<Props> = ({onSaved}) => {
 
                     </div>
                     {errors.image && (
-                        <p className="text-red-500 text-sm mb-4">{errors.image.message}</p>
+                        <FormErrorMessage>{errors.image.message}</FormErrorMessage>
                     )}
                 </div>
 
@@ -159,7 +160,7 @@ const GalleryEditForm: React.FC<Props> = ({onSaved}) => {
                 {!isDirty && <TooltipContent>Вы ничего не изменили</TooltipContent>}
             </Tooltip>
 
-            <ImageModal
+            <ImageViewerModal
                 open={isPreviewOpen}
                 openChange={() => setIsPreviewOpen(false)}
                 image={previewImage.url}

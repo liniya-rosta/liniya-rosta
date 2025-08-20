@@ -12,7 +12,9 @@ interface Props {
 }
 
 const ImageViewerModal: React.FC<Props> = ({open, openChange, alt = "Нет альтернативного названия", image}) => {
-    const imageUrl = image.startsWith("blob:") ? image : IMG_BASE + "/" + image;
+    const imageUrl = image.startsWith("blob:")
+        ? image.trim()
+        : `${IMG_BASE.trim()}/${image.trim()}`;
 
     return (
         <Dialog open={open} onOpenChange={openChange}>
@@ -28,7 +30,7 @@ const ImageViewerModal: React.FC<Props> = ({open, openChange, alt = "Нет ал
                 >
                     <Image
                         src={imageUrl}
-                        alt={alt || "Изображение портфолио"}
+                        alt={alt}
                         width={800}
                         height={600}
                         className="w-auto h-auto max-w-full max-h-[80vh] object-contain"

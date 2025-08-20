@@ -12,13 +12,13 @@ import {useSuperAdminPortfolioStore} from "@/store/superadmin/superAdminPortfoli
 import {toast} from "react-toastify";
 import FormErrorMessage from "@/src/components/ui/FormErrorMessage";
 import LoaderIcon from "@/src/components/ui/Loading/LoaderIcon";
-import ImageModal from "@/src/app/(admin)/admin/portfolio/components/ImageModal";
 import {z} from "zod";
 import {portfolioSchema} from "@/src/lib/zodSchemas/admin/portfolioSchema";
 import {PortfolioMutation} from "@/src/lib/types";
 import {Textarea} from "@/src/components/ui/textarea";
 import {Label} from "@/src/components/ui/label";
 import {handleKyError} from "@/src/lib/handleKyError";
+import ImageViewerModal from "@/src/components/shared/ImageViewerModal";
 
 const PortfolioForm = () => {
     const {
@@ -254,7 +254,7 @@ const PortfolioForm = () => {
                 </Button>
             </form>
 
-            <ImageModal
+            <ImageViewerModal
                 open={isPreviewOpen}
                 openChange={() => setIsPreviewOpen(false)}
                 image={previewImage.url}

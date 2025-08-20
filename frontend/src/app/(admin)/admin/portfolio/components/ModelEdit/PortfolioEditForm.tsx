@@ -14,11 +14,11 @@ import LoaderIcon from "@/src/components/ui/Loading/LoaderIcon";
 import {toast} from "react-toastify";
 import {Tooltip, TooltipContent, TooltipTrigger} from "@/src/components/ui/tooltip";
 import {Eye} from "lucide-react";
-import ImageModal from "@/src/app/(admin)/admin/portfolio/components/ImageModal";
 import {Label} from "@/src/components/ui/label";
 import {portfolioItemSchema} from "@/src/lib/zodSchemas/admin/portfolioSchema";
 import {handleKyError} from "@/src/lib/handleKyError";
 import {IMG_BASE} from "@/src/lib/globalConstants";
+import ImageViewerModal from "@/src/components/shared/ImageViewerModal";
 
 interface Props {
     onSaved: () => void;
@@ -207,7 +207,7 @@ const PortfolioEditForm: React.FC<Props> = ({onSaved, updatePaginationAndData}) 
 
 
             </form>
-            <ImageModal
+            <ImageViewerModal
                 open={isPreviewOpen}
                 openChange={() => setIsPreviewOpen(false)}
                 image={previewImage.url}
