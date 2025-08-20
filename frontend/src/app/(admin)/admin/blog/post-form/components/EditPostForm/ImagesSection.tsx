@@ -25,6 +25,7 @@ interface Props {
     setPreviewImage: (image: ImageObject | null) => void;
     setIsPreviewOpen: (value: boolean) => void;
     handleImageChange: (index: number, e: React.ChangeEvent<HTMLInputElement>) => void;
+    onReplaceImage: (value: boolean) => void;
 }
 
 const ImagesSection: React.FC<Props> = ({
@@ -43,14 +44,15 @@ const ImagesSection: React.FC<Props> = ({
                                             setPreviewImage,
                                             setIsPreviewOpen,
                                             handleImageChange,
+                                            onReplaceImage,
                                         }) => {
 
     const [showConfirm, setShowConfirm] = useState(false);
 
     const handleReplaceConfirm = () => {
         setShowConfirm(false);
-        onCancelReplace();
-        append({ alt: { ru: "" }, file: null });
+        onReplaceImage(true)
+        append({ alt: { ru: "" }, image: null });
     };
 
     const showImagePreview = (file: File, alt = {ru: ""}) => {

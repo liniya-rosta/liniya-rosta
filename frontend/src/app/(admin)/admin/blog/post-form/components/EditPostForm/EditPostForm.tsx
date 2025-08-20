@@ -79,6 +79,7 @@ const EditPostForm: React.FC<Props> = ({openImagesModal, setPreviewImage, setIsP
             setUpdateLoading(true);
 
             if (replaceAllImages) {
+                console.log(data)
                 await updatePost(detailPost._id, data, "replace");
             } else {
                 await updatePost(detailPost._id, data, "append");
@@ -86,7 +87,7 @@ const EditPostForm: React.FC<Props> = ({openImagesModal, setPreviewImage, setIsP
 
             toast.success('Пост успешно обновлен');
             reset();
-            router.push('/admin/blog');
+            router.push(paginationPost ? `/admin/blog?page=${paginationPost.page}` : "/admin/blog");
         } catch (error) {
             const message = await handleKyError(error, "Ошибка при редактировании поста");
             toast.error(message);
@@ -109,6 +110,7 @@ const EditPostForm: React.FC<Props> = ({openImagesModal, setPreviewImage, setIsP
 
                 <ImagesSection
                     fields={fields}
+                    onReplaceImage={setReplaceAllImages}
                     append={append}
                     remove={remove}
                     register={register}
