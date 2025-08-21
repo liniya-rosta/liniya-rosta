@@ -15,7 +15,7 @@ import {Input} from '@/src/components/ui/input';
 import {Badge} from '@/src/components/ui/badge';
 import {Skeleton} from '@/src/components/ui/skeleton';
 import {useLocale, useTranslations} from "next-intl";
-import {Container} from '@/src/components/shared/Container';
+import {CustomContainer} from '@/src/components/shared/CustomContainer';
 import {DialogTitle} from "@radix-ui/react-dialog";
 import AnimatedEntrance from "@/src/components/shared/AnimatedEntrance";
 
@@ -185,7 +185,7 @@ const CeilingsClient: React.FC<Props> = ({initialProducts, initialCategories}) =
     );
 
     return (
-        <Container className="md:my-7">
+        <CustomContainer className="md:my-7">
             <div className="border-b bg-card">
                 <div className="pb-6 flex flex-col md:flex-row md:justify-between gap-4">
                     <AnimatedEntrance className="text-center md:text-left">
@@ -306,7 +306,7 @@ const CeilingsClient: React.FC<Props> = ({initialProducts, initialCategories}) =
                     <RequestForm closeModal={() => setShowConsultationModal(false)}/>
                 </Dialog>
             )}
-        </Container>
+        </CustomContainer>
     );
 };
 

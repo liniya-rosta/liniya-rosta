@@ -73,7 +73,7 @@ const EditPostForm: React.FC<Props> = ({openImagesModal, setPreviewImage, setIsP
     const handleImageChange = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
-        setValue(`images.${index}.file`, file, {shouldValidate: true});
+        setValue(`images.${index}.image`, file, {shouldValidate: true});
     };
 
     const requestConfirmation = (type: "replace" | "backToPage") => {
@@ -86,7 +86,7 @@ const EditPostForm: React.FC<Props> = ({openImagesModal, setPreviewImage, setIsP
         if (confirmType === "replace") {
             setReplaceAllImages(true);
             remove();
-            append({alt: {ru: ""}, file: null});
+            append({alt: {ru: ""}, image: null});
         } else if (confirmType === "backToPage") {
             router.push(paginationPost ? `/admin/blog?page=${paginationPost.page}` : "/admin/blog");
         }

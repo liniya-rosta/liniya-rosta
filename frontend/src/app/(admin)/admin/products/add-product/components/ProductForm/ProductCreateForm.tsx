@@ -72,7 +72,7 @@ const ProductCreateForm: React.FC<Props> = ({initialCategories, initialCategorie
     const overallError = fetchCategoriesError || createError;
 
     const onSubmit = async (data: CreateProductFormData) => {
-        data.images = data.images.filter(image => image.url instanceof File);
+        data.images = data.images.filter(image => image.image instanceof File);
         try {
             setCreateLoading(true);
             setCreateError(null);

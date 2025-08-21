@@ -6,7 +6,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faWhatsapp} from "@fortawesome/free-brands-svg-icons";
 import {useContactStore} from "@/store/contactsStore";
 import {useTranslations} from "next-intl";
-import { Container } from '@/src/components/shared/Container';
+import { CustomContainer } from '@/src/components/shared/CustomContainer';
 import { motion } from 'motion/react';
 
 interface Props {
@@ -32,7 +32,7 @@ const HeroSection: React.FC<Props> = ({title}) => {
                 />
                 <div className="hidden md:block absolute inset-0 bg-black/150"/>
 
-                <Container>
+                <CustomContainer>
                     <div className="md:absolute md:inset-0 flex items-center justify-center md:text-white px-4">
                         <motion.div
                             className="md:bg-black/40 md:backdrop-blur-sm p-6 md:rounded-2xl md:shadow-lg max-w-3xl mx-auto space-y-6"
@@ -71,7 +71,7 @@ const HeroSection: React.FC<Props> = ({title}) => {
                             </div>
                         </motion.div>
                     </div>
-                </Container>
+                </CustomContainer>
             </div>
         </section>
     );

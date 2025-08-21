@@ -24,6 +24,7 @@ import {fetchAllServices} from "@/actions/services";
 import ServiceFormModal from "@/src/app/(admin)/admin/services/components/ServiceFormModal";
 import {deleteService} from "@/actions/superadmin/services";
 import {handleKyError} from "@/src/lib/handleKyError";
+import SaleLabelModal from "@/src/app/(admin)/admin/products/components/Modal/SaleLabelModal";
 
 interface Props {
     data: ServiceResponse | null;
@@ -49,6 +50,7 @@ const AdminServiceClient: React.FC<Props> = ({data, error}) => {
     const [selectedToDelete, setSelectedToDelete] = useState<string[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalId, setModalId] = useState<string | null>(null);
+    const [saleLabel, setSaleLabel] = useState<string | null>(null);
 
     useEffect(() => {
         if (data) setServices(data);
@@ -93,9 +95,13 @@ const AdminServiceClient: React.FC<Props> = ({data, error}) => {
         setShowConfirm(true);
     };
 
+    const handleSaleLabelClick = (label: string) => {
+        setSaleLabel(label);
+    };
+
     const table = useReactTable({
         data: services?.items ?? [],
-        columns: getColumns(showConfirmDeleteForSingle, editService),
+        columns: getColumns(showConfirmDeleteForSingle, editService, handleSaleLabelClick),
         onSortingChange: setSorting,
         onColumnFiltersChange: setColumnFilters,
         getCoreRowModel: getCoreRowModel(),
@@ -162,6 +168,13 @@ const AdminServiceClient: React.FC<Props> = ({data, error}) => {
                 id={modalId}
                 openChange={handleModalChange}
             />
+
+            {saleLabel && (
+                <SaleLabelModal
+                    saleLabel={saleLabel}
+                    onClose={() => setSaleLabel(null)}
+                />
+            )}
 
             <ConfirmDialog
                 open={showConfirm}

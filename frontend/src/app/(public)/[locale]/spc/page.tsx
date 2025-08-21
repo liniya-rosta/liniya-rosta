@@ -7,7 +7,7 @@ import InfoAboutSpcLaminate from "@/src/app/(public)/[locale]/spc/components/Inf
 import SpcLaminatePage from "@/src/app/(public)/[locale]/spc/SpcLaminatePage";
 import {getTranslations} from "next-intl/server";
 import {Metadata} from "next";
-import {Container} from '@/src/components/shared/Container';
+import {CustomContainer} from '@/src/components/shared/CustomContainer';
 import {handleKyError} from "@/src/lib/handleKyError";
 
 export const revalidate = 3600;
@@ -56,10 +56,10 @@ const SpcPage = async () => {
     return (
         <>
             <InfoAboutSpcLaminate/>
-            <Container>
+            <CustomContainer>
                 <AdvantagesLaminate/>
                 <SpcLaminatePage initialData={laminateData} error={error}/>
-            </Container>
+            </CustomContainer>
         </>
 
     );

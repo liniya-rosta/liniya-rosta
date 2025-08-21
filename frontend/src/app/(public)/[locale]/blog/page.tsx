@@ -5,7 +5,7 @@ import {fetchPosts} from "@/actions/posts";
 import type {Metadata} from "next";
 import {getTranslations} from "next-intl/server";
 import {handleKyError} from "@/src/lib/handleKyError";
-import {Container} from '@/src/components/shared/Container';
+import {CustomContainer} from '@/src/components/shared/CustomContainer';
 
 export const revalidate = 1800;
 
@@ -50,7 +50,7 @@ const BlogPage = async () => {
 
     return (
         <>
-            <Container>
+            <CustomContainer>
                 <h1 className="text-3xl font-bold text-foreground mb-5">
                     Блог
                     <span className="block font-medium text-muted-foreground text-sm tracking-wider uppercase">
@@ -58,7 +58,7 @@ const BlogPage = async () => {
                 </span>
                 </h1>
                 <BlogClient data={posts} error={postsError} limit={limit}/>
-            </Container>
+            </CustomContainer>
         </>
     );
 };

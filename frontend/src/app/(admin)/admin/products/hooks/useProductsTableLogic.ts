@@ -24,7 +24,7 @@ export function useProductsTableLogic() {
 
     const onImages = useCallback(async (data: {
         productId: string;
-        images: { url: string; alt?: { ru: string, ky: string } | null; _id: string }[];
+        images: { image: string; alt?: { ru: string, ky: string } | null; _id?: string }[];
     }) => {
         try {
             setUpdateError(null);

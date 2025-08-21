@@ -17,14 +17,14 @@ import {Badge} from "@/src/components/ui/badge";
 
 export const getProductTableColumns = (
     categories: Category[],
-    onEditProduct: (product: Product) => void,
     onDeleteProduct: (id: string) => void,
+    onEditProduct: (product: Product) => void,
     actionLoading: boolean,
     onImageClick: (image: { url: string; alt: { ru: string, ky: string } }) => void,
     onSaleLabelClick: (label: string) => void,
-    onImagesClick: (data: {
+onImagesClick: (data: {
         productId: string;
-        images: { url: string; alt?: { ru: string, ky: string } | null; _id: string }[]
+        images: { image: string; alt?: { ru: string, ky: string } | null; _id?: string }[]
     }) => void): ColumnDef<Product>[] => {
     const getCategoryTitle = (category: string | Category) => {
         if (typeof category === "object" && category !== null) {
@@ -33,6 +33,7 @@ export const getProductTableColumns = (
         const found = categories.find((cat) => cat._id === category);
         return found ? found.title.ru : String(category);
     };
+
     return [
         {
             id: "select",
