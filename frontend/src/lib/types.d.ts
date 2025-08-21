@@ -30,6 +30,10 @@ export interface PortfolioMutation {
 
 export interface PortfolioItemPreview {
     _id: string;
+    title: {
+        ru: string;
+        ky: string;
+    };
     description: {
         ru: string;
         ky: string;
