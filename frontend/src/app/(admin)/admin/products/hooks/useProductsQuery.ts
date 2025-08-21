@@ -1,7 +1,6 @@
 import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { fetchProducts } from "@/actions/products";
-import { Product } from "@/src/lib/types";
 import { toast } from "react-toastify";
 import { handleKyError } from "@/src/lib/handleKyError";
 import {useAdminProductStore} from "@/store/superadmin/superadminProductsStore";
@@ -10,7 +9,7 @@ import {usePersistedPageSize} from "@/hooks/usePersistedPageSize";
 export type FilterType = "title" | "description";
 
 export function useProductsQuery() {
-    const { productPagination, setProductPagination } = useAdminProductStore();
+    const {products, setProducts, productPagination, setProductPagination } = useAdminProductStore();
 
     const searchParams = useSearchParams();
     const router = useRouter();
@@ -20,7 +19,6 @@ export function useProductsQuery() {
     const [pageSize, setPageSize] = usePersistedPageSize("admin_product_table_size");
     const [pageIndex, setPageIndex] = useState(initialPage - 1);
 
-    const [products, setProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 

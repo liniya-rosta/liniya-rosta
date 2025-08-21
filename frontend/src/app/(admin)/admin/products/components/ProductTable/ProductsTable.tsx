@@ -54,6 +54,7 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
         pageSize, setPageSize,
         totalPages,
         totalItems,
+        refresh,
     } = useProductsQuery();
 
     const router = useRouter();
