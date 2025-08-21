@@ -133,7 +133,7 @@ const Page = () => {
                         setFetchChatLoading(true);
                     }}
                     isLoadMoreDisabled={isLoadMoreDisabled}
-                    className={`w-full flex-col overflow-y-auto lg:w-1/3 border-r, ${selectedChatId ? "hidden lg:flex" : "flex"}`
+                    className={`w-full flex-col overflow-y-auto lg:w-1/3 border-r ${selectedChatId ? "hidden lg:flex" : "flex"}`
                     }
                 />
 
