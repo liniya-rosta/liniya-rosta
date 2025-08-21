@@ -316,6 +316,8 @@ productsSuperAdminRouter.patch("/:id", productImage.fields([
                     ky: iconAltKy
                 },
             };
+        } else if ('icon' in req.body && !req.body.icon) {
+            product.icon = null;
         }
 
         if (coverFile) {
