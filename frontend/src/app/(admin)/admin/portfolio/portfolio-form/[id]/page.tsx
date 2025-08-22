@@ -130,7 +130,6 @@ const EditPortfolioPage = () => {
                     isOpenModalEdit={openEditModalGalleryItem}
                     onRequestDelete={() => {
                         setShowConfirm(true);
-                        setIsImageDelete(true);
                     }}
                     deleteLoading={deleteLoading}
                 />

@@ -156,7 +156,9 @@ const EditPortfolioForm: React.FC<Props> = ({openImagesModal, setPreviewImage, s
                 text="Если уйти, изменения не сохранятся."
                 onConfirm={() => {
                     setShowConfirm(false);
-                    router.push("/admin/portfolio");
+                    router.push(
+                        paginationPortfolio ? `/admin/portfolio?page${paginationPortfolio?.page} ` : "/admin/portfolio"
+                    );
                 }}
                 loading={editLoading}
             />

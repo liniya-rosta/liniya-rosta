@@ -7,7 +7,7 @@ import {Dialog, DialogContent, DialogTitle} from "@/src/components/ui/dialog";
 interface Props {
     open: boolean;
     openChange: () => void,
-    alt?: {ru: string};
+    alt?: {ru: string} ;
     image: string;
 }
 
@@ -28,7 +28,7 @@ const ImageViewerModal: React.FC<Props> = ({open, openChange, alt, image}) => {
                 >
                     <Image
                         src={imageUrl}
-                        alt={alt?.ru || "Изображение портфолио"}
+                        alt={alt?.ru || "Изображение"}
                         width={800}
                         height={600}
                         className="w-auto h-auto max-w-full max-h-[80vh] object-contain"

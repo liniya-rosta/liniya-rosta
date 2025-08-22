@@ -30,7 +30,7 @@ const PortfolioBasicInfo: React.FC<Props> = ({
             <Label>SEO заголовок</Label>
             <Input {...register("seoTitle.ru")} disabled={updateLoading} />
             {errors.seoTitle?.ru && (
-                <FormErrorMessage>{errors.title.ru.message}</FormErrorMessage>
+                <FormErrorMessage>{errors.seoTitle.ru.message}</FormErrorMessage>
             )}
         </div>
 
@@ -38,7 +38,7 @@ const PortfolioBasicInfo: React.FC<Props> = ({
             <Label>Описание</Label>
             <Textarea {...register("description.ru")} disabled={updateLoading} />
             {errors.description?.ru && (
-                <FormErrorMessage>{errors.title.ru.message}</FormErrorMessage>
+                <FormErrorMessage>{errors.description.ru.message}</FormErrorMessage>
             )}
         </div>
 
@@ -46,7 +46,7 @@ const PortfolioBasicInfo: React.FC<Props> = ({
             <Label>SEO описание</Label>
             <Textarea {...register("seoDescription.ru")} disabled={updateLoading} />
             {errors.seoDescription?.ru && (
-                <FormErrorMessage>{errors.title.ru.message}</FormErrorMessage>
+                <FormErrorMessage>{errors.seoDescription.ru.message}</FormErrorMessage>
             )}
         </div>
 
@@ -61,9 +61,6 @@ const PortfolioBasicInfo: React.FC<Props> = ({
         <div className="space-y-1">
             <Label>Альтернативное название обложки</Label>
             <Input {...register("coverAlt.ru")} disabled={updateLoading} />
-            {errors.coverAlt?.ru && (
-                <FormErrorMessage>{errors.coverAlt.ru.message}</FormErrorMessage>
-            )}
         </div>
     </div>
 );

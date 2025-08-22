@@ -22,16 +22,7 @@ export interface GalleryForm {
     alt?: { ru: string },
 }
 
-export interface PortfolioMutation {
-    description: { ru: string };
-    coverAlt: { ru: string };
-    cover?: File | null;
-    gallery: GalleryForm[];
-    seoTitle?: { ru: string };
-    seoDescription?: { ru: string };
-    title?: { ru: string };
-    alts?: string[];
-}
+export type PortfolioMutation = z.infer<typeof portfolioSchema>;
 
 export interface PortfolioItemPreview {
     _id: string;

@@ -108,7 +108,7 @@ const PortfolioImagesSection: React.FC<Props> = ({
 
             <div
                 className={`grid grid-cols-1 md:grid-cols-2 gap-3 transition-all duration-300 ${
-                    expanded ? 'max-h-none overflow-visible' : 'max-h-[350px] overflow-y-auto'
+                    expanded ? 'max-h-none overflow-visible' : 'max-h-[500px] overflow-y-auto'
                 }`}
             >
                 {fields.map((field, index) => (

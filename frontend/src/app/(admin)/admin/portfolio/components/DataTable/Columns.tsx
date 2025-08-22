@@ -16,7 +16,7 @@ import React from "react";
 import {Checkbox} from "@/src/components/ui/checkbox";
 
 export const getColumns = (
-    onImageClick: (image: { cover: string; alt: string }) => void,
+    onImageClick: (image: { cover: string; alt: {ru: string} }) => void,
     onRequestDelete: (id: string) => void,
     onEditPortfolio: (item: PortfolioItemPreview) => void,
     onGallery: (id: string) => void,
@@ -204,7 +204,7 @@ export const getColumns = (
         header: "Обложка",
         cell: ({row}) => {
             const cover: string = row.getValue("cover");
-            const alt: string = row.original.coverAlt.ru;
+            const alt: string = row.original.coverAlt?.ru ?? "";
             const imageUrl = `${IMG_BASE}/${cover}`;
 
             return (
@@ -213,10 +213,7 @@ export const getColumns = (
                         <div
                             className="relative w-16 h-16 rounded overflow-hidden cursor-pointer"
                             onClick={() =>
-                                onImageClick({
-                                    cover,
-                                    alt,
-                                })
+                                onImageClick({ cover, alt: { ru: alt } })
                             }
                         >
                             <Image

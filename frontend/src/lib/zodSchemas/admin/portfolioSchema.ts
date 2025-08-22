@@ -1,35 +1,46 @@
 import {z} from "zod";
 
 export const portfolioSchema = z.object({
+    title: z
+        .string({ required_error: "Название обязательно" })
+        .min(1, "Название обязательно")
+        .max(120, "Максимальная длина названия — 120 символов"),
+
     cover: z
         .any()
         .refine((file) => file instanceof File && file.size > 0, {
-            message: "Обложка обязательна",
+            message: "Обложка обязательна для загрузки",
         }),
-    description: z.object({
-        ru: z.string()
-    }),
-    coverAlt: z.object({
-        ru: z.string()
-            .min(1, "Пропишите альтернативное название обложки")
-            .max(150, "Максимальное количество символов 150"),
-    }),
+
+    description: z
+        .string({ required_error: "Описание обязательно" })
+        .min(1, "Описание обязательно"),
+
+    coverAlt: z
+        .string({ required_error: "Альтернативное название обязательно" })
+        .min(1, "Пропишите альтернативное название обложки")
+        .max(150, "Максимальная длина — 150 символов"),
+
     gallery: z
         .array(
             z.object({
-                alt: z.object({
-                    ru: z.string(),
-                }),
-                image: z.instanceof(File, {message: "Добавьте изображение"}).nullable(),
+                alt: z
+                    .string({ required_error: "Альтернативный текст обязателен" })
+                    .min(1, "Пропишите описание изображения"),
+                image: z
+                    .instanceof(File, { message: "Добавьте изображение" })
+                    .nullable(),
             })
         )
         .min(1, "Добавьте хотя бы одно изображение в галерею"),
-    seoTitle: z.object({
-        ru: z.string()
-    }),
-    seoDescription:  z.object({
-        ru: z.string()
-    }),
+
+    seoTitle: z
+        .string({ required_error: "SEO-заголовок обязателен" })
+        .min(1, "SEO-заголовок обязателен"),
+
+    seoDescription: z
+        .string({ required_error: "SEO-описание обязательно" })
+        .min(1, "SEO-описание обязательно"),
 });
 
 export const portfolioEditSchema = z.object({

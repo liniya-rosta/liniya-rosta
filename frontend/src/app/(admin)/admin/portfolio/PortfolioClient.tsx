@@ -48,7 +48,7 @@ const AdminPortfolioClient: React.FC<Props> = ({error}) => {
     const [isModalOpenGallery, setIsModalOpenGallery] = useState(false);
     const [showConfirm, setShowConfirm] = useState(false);
 
-    const [selectedCover, setSelectedCover] = useState<{ cover: string; alt?: string } | null>(null);
+    const [selectedCover, setSelectedCover] = useState<{ cover: string; alt?: {ru: string} } | null>(null);
     const [isGalleryDelete, setGalleryDelete] = useState<boolean>(false);
     const [galleryEditSelectionMode, setGalleryEditSelectionMode] = useState(false);
 
@@ -297,7 +297,7 @@ const AdminPortfolioClient: React.FC<Props> = ({error}) => {
                 <ImageViewerModal
                     open={isModalOpenCover}
                     openChange={() => setIsModalOpenCover(!isModalOpenCover)}
-                    alt={selectedCover.alt || "Изображение портфолио"}
+                    alt={selectedCover.alt}
                     image={selectedCover.cover}
                 />
             }

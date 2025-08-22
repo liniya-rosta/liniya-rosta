@@ -13,10 +13,11 @@ import {Tooltip, TooltipContent, TooltipTrigger} from "@/src/components/ui/toolt
 import {fetchPortfolioItem} from "@/actions/portfolios";
 import {Eye} from "lucide-react";
 import {Label} from "@/src/components/ui/label";
-import ImageModal from "@/src/app/(admin)/admin/portfolio/components/ImageModal";
 import {gallerySchema} from "@/src/lib/zodSchemas/admin/portfolioSchema";
 import {handleKyError} from "@/src/lib/handleKyError";
 import {IMG_BASE} from "@/src/lib/globalConstants";
+import FormErrorMessage from "@/src/components/ui/FormErrorMessage";
+import ImageViewerModal from "@/src/components/shared/ImageViewerModal";
 
 interface Props {
     onSaved: () => void;
@@ -85,24 +86,23 @@ const GalleryEditForm: React.FC<Props> = ({onSaved}) => {
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="border-b border-b-gray-500 py-3 mb-4">
-                <div className="mb-4">
-                    <Label htmlFor="alt" className="mb-2">Альтернативное название изображения</Label>
+            <div className="border-b border-b-gray-500 py-3 space-y-3 mb-4">
+                <div className="space-y-1">
+                    <Label htmlFor="alt">Альтернативное название изображения</Label>
                     <Input
                         id="alt"
-                        className="mb-2"
                         type="text"
                         disabled={editLoading}
                         {...register("alt.ru")}
                     />
                     {errors.alt && (
-                        <p className="text-red-500 text-sm mb-4">{errors.alt.message}</p>
+                        <FormErrorMessage>{errors.alt.message}</FormErrorMessage>
                     )}
                 </div>
 
-                <div className="mb-3">
-                    <Label htmlFor="image" className="mb-2">Изображение</Label>
-                    <div className="flex gap-3 mb-2">
+                <div className="space-y-1">
+                    <Label htmlFor="image">Изображение</Label>
+                    <div className="flex gap-3">
                         <Input
                             id="image"
                             type="file"
@@ -126,26 +126,25 @@ const GalleryEditForm: React.FC<Props> = ({onSaved}) => {
 
                     </div>
                     {errors.image && (
-                        <p className="text-red-500 text-sm mb-4">{errors.image.message}</p>
+                        <FormErrorMessage>{errors.image.message}</FormErrorMessage>
                     )}
                 </div>
 
                 {galleryItem && (
-                    <>
-                        <p className="mb-3">Предыдущее изображение</p>
+                    <div className="space-y-1">
+                        <p>Предыдущее изображение</p>
                         <div className="relative w-[200px] h-[200px]">
                             <Image
                                 src={IMG_BASE + "/" + galleryItem.image}
-                                alt={galleryItem.alt.ru}
+                                alt={galleryItem.alt?.ru || "Изображение"}
                                 fill
                                 sizes="(max-width: 768px) 100vw, 200px"
                                 className="object-contain rounded"
                             />
                         </div>
-                    </>
+                    </div>
                 )}
             </div>
-
 
             <Tooltip>
                 <TooltipTrigger asChild>
@@ -159,7 +158,7 @@ const GalleryEditForm: React.FC<Props> = ({onSaved}) => {
                 {!isDirty && <TooltipContent>Вы ничего не изменили</TooltipContent>}
             </Tooltip>
 
-            <ImageModal
+            <ImageViewerModal
                 open={isPreviewOpen}
                 openChange={() => setIsPreviewOpen(false)}
                 image={previewImage.url}
