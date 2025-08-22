@@ -32,20 +32,52 @@ export const portfolioSchema = z.object({
     }),
 });
 
-export const portfolioItemSchema = z.object({
-    cover: z.instanceof(File).optional().nullable(),
+export const portfolioEditSchema = z.object({
+    title: z.object({
+        ru: z.string().max(120),
+    }).optional(),
+
+    cover: z
+        .any()
+        .transform((val) => (val instanceof FileList ? val[0] : val))
+        .refine((val) => val == null || val instanceof File, {
+            message: "Нужно выбрать файл",
+        })
+        .optional()
+        .nullable(),
+
     coverAlt: z.object({
         ru: z.string(),
     }).optional(),
+
     description: z.object({
         ru: z.string(),
     }).optional(),
-    seoTitle: z.object({
-        ru: z.string()
-    }),
-    seoDescription: z.object({
-        ru: z.string()
-    })
+
+    seoTitle: z
+        .object({
+            ru: z.string(),
+        })
+        .optional(),
+
+    seoDescription: z
+        .object({
+            ru: z.string(),
+        })
+        .optional(),
+
+    gallery: z
+        .array(
+            z.object({
+                image: z.instanceof(File).optional(),
+                alt: z
+                    .object({
+                        ru: z.string(),
+                    })
+                    .optional(),
+            })
+        )
+        .optional(),
 });
 
 export const gallerySchema = z.object({

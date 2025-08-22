@@ -1,3 +1,6 @@
+import {z} from "zod/index";
+import {portfolioEditSchema} from "@/src/lib/zodSchemas/admin/portfolioSchema";
+
 export interface ImageObject {
     alt?: {
         ru: string;
@@ -26,6 +29,8 @@ export interface PortfolioMutation {
     gallery: GalleryForm[];
     seoTitle?: { ru: string };
     seoDescription?: { ru: string };
+    title?: { ru: string };
+    alts?: string[];
 }
 
 export interface PortfolioItemPreview {
@@ -64,8 +69,8 @@ export interface PortfolioItemDetail extends PortfolioItemPreview {
     gallery: GalleryItem[];
 }
 
-type PortfolioEditValues = Partial<PortfolioMutation>;
-type GalleryEditValues = Partial<GalleryForm>;
+export type PortfolioEditValues = z.infer<typeof portfolioEditSchema>;
+export type GalleryEditValues = Partial<GalleryForm>;
 
 export interface PortfolioResponse extends PaginationMeta {
     items: PortfolioItemPreview[],

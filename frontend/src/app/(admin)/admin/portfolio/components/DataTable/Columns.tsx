@@ -18,7 +18,7 @@ import {Checkbox} from "@/src/components/ui/checkbox";
 export const getColumns = (
     onImageClick: (image: { cover: string; alt: string }) => void,
     onRequestDelete: (id: string) => void,
-    onEditCover: (id: string) => void,
+    onEditPortfolio: (item: PortfolioItemPreview) => void,
     onGallery: (id: string) => void,
     onSaleLabelClick: (text: string) => void,
 ): ColumnDef<PortfolioItemPreview>[] => [
@@ -51,6 +51,66 @@ export const getColumns = (
         },
         enableSorting: false,
         enableHiding: false,
+    },
+    {
+        accessorKey: "title.ru",
+        header: () => <div className="text-left">Заголовок</div>,
+        cell: ({row}) => {
+            const text = row.original.title?.ru || "—";
+            if (text === "—") return text;
+
+            if (text.length > 30) {
+                const preview = text.slice(0, 30) + "...";
+                return (
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <span
+                                className="cursor-pointer text-sm max-w-[320px] truncate inline-block align-top"
+                                onClick={() => onSaleLabelClick(text)}
+                                title={text}
+                            >
+                                {preview}
+                            </span>
+                        </TooltipTrigger>
+                        <TooltipContent className="max-w-[520px]">
+                            <p>Нажмите чтобы посмотреть полный заголовок</p>
+                        </TooltipContent>
+                    </Tooltip>
+                );
+            }
+
+            return <span className="text-sm">{text}</span>;
+        },
+    },
+    {
+        accessorKey: "seoTitle.ru",
+        header: () => <div className="text-left">SEO заголовок</div>,
+        cell: ({row}) => {
+            const text = row.original.seoTitle?.ru || "—";
+            if (text === "—") return text;
+
+            if (text.length > 30) {
+                const preview = text.slice(0, 30) + "...";
+                return (
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <span
+                                className="cursor-pointer text-sm max-w-[320px] truncate inline-block align-top"
+                                onClick={() => onSaleLabelClick(text)}
+                                title={text}
+                            >
+                                {preview}
+                            </span>
+                        </TooltipTrigger>
+                        <TooltipContent className="max-w-[520px]">
+                            <p>Нажмите чтобы посмотреть полный SEO заголовок</p>
+                        </TooltipContent>
+                    </Tooltip>
+                );
+            }
+
+            return <span className="text-sm">{text}</span>;
+        },
     },
     {
         id: "coverAlt",
@@ -92,36 +152,6 @@ export const getColumns = (
                         </TooltipTrigger>
                         <TooltipContent>
                             <p>Нажмите чтобы посмотреть полное описание</p>
-                        </TooltipContent>
-                    </Tooltip>
-                );
-            }
-
-            return <span className="text-sm">{text}</span>;
-        },
-    },
-    {
-        accessorKey: "seoTitle.ru",
-        header: () => <div className="text-left">SEO заголовок</div>,
-        cell: ({row}) => {
-            const text = row.original.seoTitle?.ru || "—";
-            if (text === "—") return text;
-
-            if (text.length > 30) {
-                const preview = text.slice(0, 30) + "...";
-                return (
-                    <Tooltip>
-                        <TooltipTrigger asChild>
-                            <span
-                                className="cursor-pointer text-sm max-w-[320px] truncate inline-block align-top"
-                                onClick={() => onSaleLabelClick(text)}
-                                title={text}
-                            >
-                                {preview}
-                            </span>
-                        </TooltipTrigger>
-                        <TooltipContent className="max-w-[520px]">
-                            <p>Нажмите чтобы посмотреть полный SEO заголовок</p>
                         </TooltipContent>
                     </Tooltip>
                 );
@@ -226,7 +256,7 @@ export const getColumns = (
                             <Images className="mr-2 h-4 w-4"/>
                             Посмотреть галерею
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => onEditCover(payment._id)}>
+                        <DropdownMenuItem onClick={() => onEditPortfolio(payment)}>
                             <Edit2 className="mr-2 h-4 w-4"/>
                             Редактировать
                         </DropdownMenuItem>

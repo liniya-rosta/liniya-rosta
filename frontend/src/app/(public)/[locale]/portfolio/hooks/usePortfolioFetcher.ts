@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useCallback, useState} from "react";
 import {usePortfolioStore} from "@/store/portfolioItemStore";
 import {fetchPortfolioPreviews} from "@/actions/portfolios";
 import {PortfolioResponse} from "@/src/lib/types";
@@ -22,38 +22,44 @@ export const usePortfolioFetcher = (limit: string) => {
     if (paginationPortfolio)
         paginationButtons = getPaginationButtons(page, paginationPortfolio.totalPages);
 
-    const updatedData = async (initialData?: PortfolioResponse | null, newPage?: number) => {
-        try {
-            setPortfolioLoading(true);
-            let data: PortfolioResponse;
+    const updatedData = useCallback(
+        async (initialData?: PortfolioResponse | null, newPage?: number) => {
+            try {
+                setPortfolioLoading(true);
+                let data: PortfolioResponse;
 
-            if (initialData) {
-                data = initialData;
-            } else {
-                data = await fetchPortfolioPreviews(limit, String(newPage));
+                if (initialData) {
+                    data = initialData;
+                } else {
+                    data = await fetchPortfolioPreviews(limit, String(newPage));
+                }
+
+                setPortfolioPreview(data.items);
+                setPaginationPortfolio({
+                    total: data.total,
+                    page: data.page,
+                    pageSize: data.pageSize,
+                    totalPages: data.totalPages,
+                });
+
+                setFetchErrorPortfolio(null);
+            } catch (error) {
+                const errorMessage = await handleKyError(error, tError("portfolioError"));
+                setFetchErrorPortfolio(errorMessage);
+            } finally {
+                setPortfolioLoading(false);
             }
+        },
+        [limit, setFetchErrorPortfolio, setPaginationPortfolio, setPortfolioLoading, setPortfolioPreview, tError]
+    );
 
-            setPortfolioPreview(data.items);
-            setPaginationPortfolio({
-                total: data.total,
-                page: data.page,
-                pageSize: data.pageSize,
-                totalPages: data.totalPages,
-            });
-
-            setFetchErrorPortfolio(null);
-        } catch (error) {
-            const errorMessage = await handleKyError(error, tError("portfolioError"));
-            setFetchErrorPortfolio(errorMessage);
-        } finally {
-            setPortfolioLoading(false);
-        }
-    }
-
-    const handlePageChange = async (newPage: number) => {
-        await updatedData(null, newPage);
-        setPage(newPage);
-    };
+    const handlePageChange = useCallback(
+        async (newPage: number) => {
+            await updatedData(null, newPage);
+            setPage(newPage);
+        },
+        [updatedData]
+    );
 
     return {
         page,

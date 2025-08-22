@@ -33,7 +33,6 @@ const PortfolioClient: React.FC<Props> = ({data, error, limit}) => {
         fetchErrorPortfolio,
         setFetchErrorPortfolio
     } = usePortfolioStore();
-    console.log(items);
 
     const {
         page,

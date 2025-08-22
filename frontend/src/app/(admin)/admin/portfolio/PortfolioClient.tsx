@@ -22,8 +22,7 @@ import {
     TableControls,
     TablePagination
 } from "@/src/app/(admin)/admin/portfolio/components/DataTable";
-import ImageModal from "@/src/app/(admin)/admin/portfolio/components/ImageModal";
-import {GalleryEditForm, ModalEdit, PortfolioEditForm} from "@/src/app/(admin)/admin/portfolio/components/ModelEdit";
+import {GalleryEditForm, ModalEdit} from "@/src/app/(admin)/admin/portfolio/components/ModelEdit";
 import DataSkeleton from "@/src/components/shared/DataSkeleton";
 import ConfirmDialog from "@/src/components/ui/ConfirmDialog";
 import ErrorMsg from "@/src/components/ui/ErrorMsg";
@@ -31,6 +30,8 @@ import {usePersistedPageSize} from "@/hooks/usePersistedPageSize";
 import ModalGallery from "@/src/components/shared/ModalGallery";
 import {handleKyError} from "@/src/lib/handleKyError";
 import SaleLabelModal from "@/src/app/(admin)/admin/products/components/Modal/SaleLabelModal";
+import {useRouter} from "next/navigation";
+import ImageViewerModal from "@/src/components/shared/ImageViewerModal";
 
 interface Props {
     error?: string | null;
@@ -48,7 +49,6 @@ const AdminPortfolioClient: React.FC<Props> = ({error}) => {
     const [showConfirm, setShowConfirm] = useState(false);
 
     const [selectedCover, setSelectedCover] = useState<{ cover: string; alt?: string } | null>(null);
-    const [isGalleryEdit, setIsGalleryEditing] = useState<boolean>(false);
     const [isGalleryDelete, setGalleryDelete] = useState<boolean>(false);
     const [galleryEditSelectionMode, setGalleryEditSelectionMode] = useState(false);
 
@@ -130,6 +130,12 @@ const AdminPortfolioClient: React.FC<Props> = ({error}) => {
         setRowSelection({});
     }, [pagination.pageIndex]);
 
+    const router = useRouter();
+
+    const goToEditPage = async (id: string) => {
+        router.push(`/admin/portfolio/portfolio-form/${id}`);
+    };
+
     const handleDelete = async (id: string, isGallery: boolean) => {
         try {
             setShowConfirm(false);
@@ -165,18 +171,6 @@ const AdminPortfolioClient: React.FC<Props> = ({error}) => {
         }
     };
 
-    const openEditModalCover = async (id: string) => {
-        try {
-            const portfolioItem = await fetchPortfolioItem(id);
-            setIsEditModalOpen(true);
-            setIsGalleryEditing(false);
-            setPortfolioItemDetail(portfolioItem);
-        } catch (error) {
-            const msg = await handleKyError(error, "Ошибка при получении данных портфолио");
-            toast.error(msg);
-        }
-    };
-
     const openGalleryModal = async (id: string) => {
         try {
             const portfolioItem = await fetchPortfolioItem(id);
@@ -192,7 +186,6 @@ const AdminPortfolioClient: React.FC<Props> = ({error}) => {
         try {
             const galleryItem = await fetchGalleryItem(id)
             setGalleryItem(galleryItem);
-            setIsGalleryEditing(true);
             setIsEditModalOpen(true);
         } catch (error) {
             const msg = await handleKyError(error, "Ошибка при получении данных галереи");
@@ -212,7 +205,7 @@ const AdminPortfolioClient: React.FC<Props> = ({error}) => {
                 setGalleryDelete(false);
                 setShowConfirm(true);
             },
-            openEditModalCover,
+            (item) => goToEditPage(item._id),
             openGalleryModal,
             (text) => setModalText(text)
         ),
@@ -301,7 +294,7 @@ const AdminPortfolioClient: React.FC<Props> = ({error}) => {
             <TablePagination table={table}/>
 
             {selectedCover &&
-                <ImageModal
+                <ImageViewerModal
                     open={isModalOpenCover}
                     openChange={() => setIsModalOpenCover(!isModalOpenCover)}
                     alt={selectedCover.alt || "Изображение портфолио"}
@@ -312,13 +305,8 @@ const AdminPortfolioClient: React.FC<Props> = ({error}) => {
             <ModalEdit
                 open={isEditModalOpen}
                 openChange={() => setIsEditModalOpen(!isEditModalOpen)}>
-                {isGalleryEdit ?
-                    <GalleryEditForm onSaved={() => setIsEditModalOpen(!isEditModalOpen)}/>
-                    : <PortfolioEditForm
-                        updatePaginationAndData={updatePaginationAndData}
-                        onSaved={() => setIsEditModalOpen(!isEditModalOpen)}
-                    />
-                }
+                <GalleryEditForm onSaved={() => setIsEditModalOpen(!isEditModalOpen)}/>
+
             </ModalEdit>
 
             {detailItem &&
