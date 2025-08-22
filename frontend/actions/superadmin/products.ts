@@ -1,6 +1,7 @@
 import {Product, ProductMutation} from "@/src/lib/types";
 import kyAPI from "@/src/lib/kyAPI";
 import {UpdateProductFormData} from "@/src/lib/zodSchemas/admin/productSchema";
+import ky from "ky";
 
 export const createProduct = async (productData: ProductMutation): Promise<Product> => {
     const formData = new FormData();
@@ -97,15 +98,15 @@ export const updateProduct = async (id: string, productData: UpdateProductFormDa
 };
 
 export const updateProductImage = async (imageId: string, file: File | null, alt?: string): Promise<Product> => {
-        const formData = new FormData();
-        if (file) formData.append("images", file);
-        if (alt) formData.append("alt", alt);
+    const formData = new FormData();
+    if (file) formData.append("images", file);
+    if (alt) formData.append("alt", alt);
 
-        const data = await kyAPI.patch(`superadmin/products/images/${imageId}`, {body: formData}).json<{
-            product: Product
-        }>();
-        return data.product;
-    };
+    const data = await kyAPI.patch(`superadmin/products/images/${imageId}`, {body: formData}).json<{
+        product: Product
+    }>();
+    return data.product;
+};
 
 export const deleteProductImage = async (imageId: string): Promise<string> => {
     const data = await kyAPI.delete(`superadmin/products/images/${imageId}`).json<{ message: string }>();
@@ -115,4 +116,37 @@ export const deleteProductImage = async (imageId: string): Promise<string> => {
 export const deleteProduct = async (id: string): Promise<string> => {
     const data = await kyAPI.delete(`superadmin/products/${id}`).json<{ message: string }>();
     return data.message;
+};
+
+export const fetchProductsAdmin = async ({
+                                             // limit = "10",
+                                             // page = "1",
+                                             // title,
+                                             // description,
+                                             // categoryId,
+                                             // categoryExclude,
+                                         }: {
+    limit?: string;
+    page?: string;
+    title?: string;
+    description?: string;
+    categoryId?: string;
+    categoryExclude?: string;
+}) => {
+    // const query = new URLSearchParams();
+    //
+    // query.append("limit", limit);
+    // query.append("page", page);
+    // if (title) query.append("title", title);
+    // if (description) query.append("description", description);
+    // if (categoryId) query.append("category", categoryId);
+    // if (categoryExclude) query.append("categoryExclude", categoryExclude);
+
+    return await ky.get(`api/products`).json<{
+        items: Product[];
+        page: number;
+        pageSize: number;
+        total: number;
+        totalPages: number;
+    }>();
 };

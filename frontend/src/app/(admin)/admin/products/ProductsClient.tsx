@@ -4,9 +4,8 @@ import React, {useEffect, useState} from "react";
 import {Plus} from "lucide-react";
 import {Button} from "@/src/components/ui/button";
 import {CardContent} from "@/src/components/ui/card";
-import {deleteProduct} from "@/actions/superadmin/products";
+import {deleteProduct, fetchProductsAdmin} from "@/actions/superadmin/products";
 import ProductsTable from "@/src/app/(admin)/admin/products/components/ProductTable/ProductsTable";
-import {Category, Product} from "@/src/lib/types";
 import {toast} from "react-toastify";
 import {useAdminProductStore} from "@/store/superadmin/superadminProductsStore";
 import DataSkeleton from "@/src/components/shared/DataSkeleton";
@@ -15,20 +14,9 @@ import Link from "next/link";
 import {useAdminCategoryStore} from "@/store/superadmin/superadminCategoriesStore";
 import {handleKyError} from "@/src/lib/handleKyError";
 import CreateCategoryForm from "@/src/app/(admin)/admin/products/components/Modal/CategoryCreateForm";
+import {fetchCategories} from "@/actions/categories";
 
-interface ProductsClientProps {
-    initialProducts: Product[];
-    initialCategories: Category[];
-    initialProductsError: string | null;
-    initialCategoriesError: string | null;
-}
-
-const ProductsClient: React.FC<ProductsClientProps> = ({
-                                                           initialProducts,
-                                                           initialCategories,
-                                                           initialProductsError,
-                                                           initialCategoriesError,
-                                                       }) => {
+const ProductsClient = ({}) => {
     const {
         products,
         setProducts,
@@ -55,23 +43,43 @@ const ProductsClient: React.FC<ProductsClientProps> = ({
     const anyLoading = createLoading || updateLoading || deleteLoading;
     const overallError = fetchError || fetchCategoriesError;
 
+    // await Promise.all([
+//     (async () => {
+//         try {
+//             categories = await fetchCategories();
+//         } catch (e) {
+//             categoriesError = await handleKyError(e, "Ошибка при загрузке категории.");
+//         }
+//     })(),
+//     (async () => {
+//         try {
+//             console.log("API_BASE_URL =", API_BASE_URL);
+//             const data = await fetchProducts({});
+//             products = data.items;
+//         } catch (e) {
+//             productsError = await handleKyError(e, "Ошибка при загрузке продуктов");
+//         }
+//     })()
+// ]);
+
     useEffect(() => {
-        if (initialProducts) setProducts(initialProducts);
-        if (initialCategories) setCategories(initialCategories);
-        if (initialProductsError) setFetchError(initialProductsError);
-        if (initialCategoriesError) setFetchCategoriesError(initialCategoriesError);
-        setFetchLoading(false);
-    }, [
-        initialProducts,
-        initialCategories,
-        initialProductsError,
-        initialCategoriesError,
-        setProducts,
-        setCategories,
-        setFetchError,
-        setFetchLoading,
-        setFetchCategoriesError,
-    ]);
+        const getData = async () => {
+            setFetchLoading(true);
+            try {
+                const categories = await fetchCategories();
+                const products = await fetchProductsAdmin({});
+                setProducts(products.items);
+                setCategories(categories);
+            } catch (e) {
+                const categoriesError = await handleKyError(e, "Ошибка при загрузке категории.");
+                console.log(categoriesError);
+            } finally {
+                setFetchLoading(false);
+            }
+        };
+
+        void getData();
+    }, [setProducts, setCategories, setFetchLoading]);
 
     const resetErrors = () => {
         setFetchError(null);
