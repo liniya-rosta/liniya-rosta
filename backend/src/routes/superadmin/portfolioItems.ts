@@ -3,7 +3,7 @@ import {PortfolioItem} from "../../models/PortfolioItem";
 import {portfolioImage} from "../../middleware/multer";
 import mongoose, {Types} from "mongoose";
 import {translateYandex} from "../../../translateYandex";
-import {GalleryUpdate} from "../../../types";
+import {GalleryUpdate, PortfolioFiles, PortfolioUpdate} from "../../../types";
 import slugify from "slugify";
 
 const portfolioSuperAdminRouter = express.Router();
@@ -83,85 +83,125 @@ portfolioSuperAdminRouter.post(
     }
 );
 
-portfolioSuperAdminRouter.patch("/:id", portfolioImage.single("cover"),
+portfolioSuperAdminRouter.patch(
+    "/:id",
+    portfolioImage.fields([
+        { name: "cover", maxCount: 1 },
+        { name: "gallery" },
+    ]),
     async (req, res, next) => {
         try {
-            const {id} = req.params;
+            const { id } = req.params;
+            const {
+                title,
+                description,
+                seoTitle,
+                seoDescription,
+                coverAlt,
+                slug,
+                mode = "replace",
+                alts: rawAlts,
+            } = req.body as PortfolioUpdate;
 
             if (!Types.ObjectId.isValid(id)) {
-                res.status(400).send({error: "Неверный формат ID"});
+                res.status(400).send({ error: "Неверный формат ID" });
                 return;
             }
 
-            const updateData: any = {};
+            const updateData: Record<string, unknown> = {};
 
-            if (req.file) {
-                updateData.cover = "portfolio/" + req.file.filename;
+            const files = req.files as PortfolioFiles;
+            const coverFile = files?.cover?.[0];
+            if (coverFile) {
+                updateData.cover = "portfolio/" + coverFile.filename;
             }
 
-            if (req.body.title !== undefined) {
-                const titleKy = await translateYandex(req.body.title, "ky");
-                updateData.title = {
-                    ru: req.body.title,
-                    ky: titleKy
-                };
+            if (title !== undefined) {
+                const titleKy = await translateYandex(title, "ky");
+                updateData.title = { ru: title, ky: titleKy };
             }
 
-            if (req.body.seoTitle !== undefined) {
+            if (seoTitle !== undefined) {
                 updateData.seoTitle = {
-                    ru: req.body.seoTitle?.trim() || null,
-                    ky: await translateYandex(req.body.seoTitle?.trim() || "", "ky")
+                    ru: seoTitle?.trim() || null,
+                    ky: await translateYandex(seoTitle?.trim() || "", "ky"),
                 };
             }
 
-            if (req.body.seoDescription !== undefined) {
+            if (seoDescription !== undefined) {
                 updateData.seoDescription = {
-                    ru: req.body.seoDescription?.trim() || null,
-                    ky: await translateYandex(req.body.seoDescription?.trim() || "", "ky")
+                    ru: seoDescription?.trim() || null,
+                    ky: await translateYandex(seoDescription?.trim() || "", "ky"),
                 };
             }
 
-            if (req.body.description !== undefined) {
-                const descriptionKy = await translateYandex(req.body.description, "ky");
-                updateData.description = {
-                    ru: req.body.description,
-                    ky: descriptionKy
-                };
+            if (description !== undefined) {
+                const descriptionKy = await translateYandex(description, "ky");
+                updateData.description = { ru: description, ky: descriptionKy };
             }
 
-            if (req.body.coverAlt !== undefined) {
-                const coverAltKy = await translateYandex(req.body.coverAlt, "ky");
-                updateData.coverAlt = {
-                    ru: req.body.coverAlt,
-                    ky: coverAltKy
-                };
+            if (coverAlt !== undefined) {
+                const coverAltKy = await translateYandex(coverAlt, "ky");
+                updateData.coverAlt = { ru: coverAlt, ky: coverAltKy };
             }
 
-            // slug
-            if (req.body.slug !== undefined) {
-                updateData.slug = req.body.slug;
-            } else if (req.body.title || req.body.coverAlt) {
-                const baseSlug = slugify(req.body.title || req.body.coverAlt, {
+            if (slug !== undefined) {
+                updateData.slug = slug;
+            } else if (title || coverAlt) {
+                const baseSlug = slugify(title || coverAlt || "", {
                     lower: true,
-                    strict: true
+                    strict: true,
                 });
                 let uniqueSlug = baseSlug;
                 let counter = 1;
-                while (await PortfolioItem.exists({slug: uniqueSlug, _id: {$ne: id}})) {
+                while (
+                    await PortfolioItem.exists({ slug: uniqueSlug, _id: { $ne: id } })
+                    ) {
                     uniqueSlug = `${baseSlug}-${counter}`;
                     counter++;
                 }
                 updateData.slug = uniqueSlug;
             }
 
+            const galleryFiles = files?.gallery || [];
+            const alts = Array.isArray(rawAlts)
+                ? rawAlts
+                : rawAlts
+                    ? [rawAlts]
+                    : [];
+
+            if (galleryFiles.length > 0) {
+                const altsKy = await Promise.all(
+                    alts.map((alt) => translateYandex(alt, "ky"))
+                );
+
+                const newGalleryItems = galleryFiles.map((file, i) => ({
+                    image: "portfolio/" + file.filename,
+                    alt: {
+                        ru: alts[i] || null,
+                        ky: altsKy[i] || null,
+                    },
+                }));
+
+                if (mode === "append") {
+                    await PortfolioItem.findByIdAndUpdate(
+                        id,
+                        { $push: { gallery: { $each: newGalleryItems } }, ...updateData },
+                        { new: true, runValidators: true }
+                    );
+                } else {
+                    updateData.gallery = newGalleryItems;
+                }
+            }
+
             const updatedItem = await PortfolioItem.findByIdAndUpdate(
                 id,
                 updateData,
-                {new: true, runValidators: true}
-            ).select("-gallery");
+                { new: true, runValidators: true }
+            );
 
             if (!updatedItem) {
-                res.status(404).send({message: "Элемент не найден"});
+                res.status(404).send({ message: "Элемент не найден" });
                 return;
             }
 

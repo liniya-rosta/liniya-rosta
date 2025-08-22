@@ -95,6 +95,7 @@ export const getPortfolioItemById = async (req: Request, res: Response, next: Ne
             {$match: {_id: new mongoose.Types.ObjectId(id)}},
             {
                 $project: {
+                    title: 1,
                     cover: 1,
                     coverAlt: 1,
                     description: 1,
