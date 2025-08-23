@@ -30,7 +30,7 @@ import {usePersistedPageSize} from "@/hooks/usePersistedPageSize";
 import ModalGallery from "@/src/components/shared/ModalGallery";
 import {handleKyError} from "@/src/lib/handleKyError";
 import SaleLabelModal from "@/src/app/(admin)/admin/products/components/Modal/SaleLabelModal";
-import {useRouter} from "next/navigation";
+import {useRouter, useSearchParams} from "next/navigation";
 import ImageViewerModal from "@/src/components/shared/ImageViewerModal";
 
 interface Props {
@@ -38,27 +38,8 @@ interface Props {
 }
 
 const AdminPortfolioClient: React.FC<Props> = ({error}) => {
-    const [sorting, setSorting] = useState<SortingState>([]);
-    const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-    const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-    const [rowSelection, setRowSelection] = useState({});
-
-    const [isModalOpenCover, setIsModalOpenCover] = useState(false);
-    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-    const [isModalOpenGallery, setIsModalOpenGallery] = useState(false);
-    const [showConfirm, setShowConfirm] = useState(false);
-
-    const [selectedCover, setSelectedCover] = useState<{ cover: string; alt?: {ru: string} } | null>(null);
-    const [isGalleryDelete, setGalleryDelete] = useState<boolean>(false);
-    const [galleryEditSelectionMode, setGalleryEditSelectionMode] = useState(false);
-
-    const [pageSize, setPageSize] = usePersistedPageSize("admin_portfolio_table_size");
-    const [pagination, setPagination] = useState({
-        pageIndex: 0,
-        pageSize: pageSize,
-    });
-
-    const [modalText, setModalText] = useState<string | null>(null);
+    const searchParams = useSearchParams();
+    const router = useRouter();
 
     const {
         items,
@@ -75,6 +56,30 @@ const AdminPortfolioClient: React.FC<Props> = ({error}) => {
         setPortfolioDeleteLoading,
         setPaginationPortfolio,
     } = useSuperAdminPortfolioStore();
+
+    const [sorting, setSorting] = useState<SortingState>([]);
+    const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+    const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+    const [rowSelection, setRowSelection] = useState({});
+
+    const [isModalOpenCover, setIsModalOpenCover] = useState(false);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [isModalOpenGallery, setIsModalOpenGallery] = useState(false);
+    const [showConfirm, setShowConfirm] = useState(false);
+
+    const [selectedCover, setSelectedCover] = useState<{ cover: string; alt?: {ru: string} } | null>(null);
+    const [isGalleryDelete, setGalleryDelete] = useState<boolean>(false);
+    const [galleryEditSelectionMode, setGalleryEditSelectionMode] = useState(false);
+    const [filters, setFilters] = useState({ coverAlt: "", description: "" });
+    const initialPage = Number(searchParams.get("page")) || 1;
+
+    const [pageSize, setPageSize] = usePersistedPageSize("admin_portfolio_table_size");
+    const [pagination, setPagination] = useState({
+        pageIndex: initialPage - 1,
+        pageSize: pageSize,
+    });
+
+    const [modalText, setModalText] = useState<string | null>(null);
 
     const updatePaginationAndData = async (searchValue = "", searchField = "coverAlt") => {
         try {
@@ -105,21 +110,35 @@ const AdminPortfolioClient: React.FC<Props> = ({error}) => {
         }
     };
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                setPortfolioFetchLoading(true);
-                await updatePaginationAndData();
-            } catch (error) {
-                const msg = await handleKyError(error, "Ошибка при получении данных портфолио");
-                toast.error(msg);
-            } finally {
-                setPortfolioFetchLoading(false);
-            }
-        };
+    const fetchData = async () => {
+        try {
+            const data = await fetchPortfolioPreviews(
+                pagination.pageSize.toString(),
+                (pagination.pageIndex + 1).toString(),
+                filters.coverAlt,
+                filters.description
+            );
+            setPortfolioPreview(data.items);
+            setPaginationPortfolio({
+                total: data.total,
+                page: data.page,
+                totalPages: data.totalPages,
+                pageSize: data.pageSize,
+            });
+        } catch (error) {
+            const msg = await handleKyError(error, "Ошибка при получении данных портфолио");
+            toast.error(msg);
+        } finally {
+            setPortfolioFetchLoading(false);
+        }
+    };
 
+    useEffect(() => {
         void fetchData();
-    }, [pagination]);
+    }, [ pagination.pageIndex,
+        pagination.pageSize,
+        filters.coverAlt,
+        filters.description,]);
 
     useEffect(() => {
         const selectedRows = table.getSelectedRowModel().rows;
@@ -129,12 +148,6 @@ const AdminPortfolioClient: React.FC<Props> = ({error}) => {
     useEffect(() => {
         setRowSelection({});
     }, [pagination.pageIndex]);
-
-    const router = useRouter();
-
-    const goToEditPage = async (id: string) => {
-        router.push(`/admin/portfolio/portfolio-form/${id}`);
-    };
 
     const handleDelete = async (id: string, isGallery: boolean) => {
         try {
@@ -205,7 +218,8 @@ const AdminPortfolioClient: React.FC<Props> = ({error}) => {
                 setGalleryDelete(false);
                 setShowConfirm(true);
             },
-            (item) => goToEditPage(item._id),
+            (item) =>
+                router.push(`/admin/portfolio/portfolio-form/${item._id}`),
             openGalleryModal,
             (text) => setModalText(text)
         ),
@@ -273,7 +287,8 @@ const AdminPortfolioClient: React.FC<Props> = ({error}) => {
     }
 
     const handleFilterChange = (column: string, value: string) => {
-        void updatePaginationAndData(value, column);
+        setFilters((prev) => ({ ...prev, [column]: value }));
+        setPagination((prev) => ({ ...prev, pageIndex: 0 }));
     };
 
     if (fetchPortfolioLoading) return <DataSkeleton/>

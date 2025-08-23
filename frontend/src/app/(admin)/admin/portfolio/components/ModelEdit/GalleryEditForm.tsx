@@ -162,7 +162,6 @@ const GalleryEditForm: React.FC<Props> = ({onSaved}) => {
                 open={isPreviewOpen}
                 openChange={() => setIsPreviewOpen(false)}
                 image={previewImage.url}
-                alt={previewImage.alt || "Предпросмотр изображения"}
             />
         </form>
     )
