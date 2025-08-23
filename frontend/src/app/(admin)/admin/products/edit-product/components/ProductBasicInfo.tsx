@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Label} from "@/src/components/ui/label";
 import {Input} from "@/src/components/ui/input";
 import FormErrorMessage from "@/src/components/ui/FormErrorMessage";
@@ -10,10 +10,11 @@ import {
     FieldErrors,
     UseFieldArrayAppend,
     UseFieldArrayRemove,
-    UseFormRegister
+    UseFormRegister, UseFormSetValue
 } from "react-hook-form";
 import {UpdateProductFormData} from "@/src/lib/zodSchemas/admin/productSchema";
 import {Category} from "@/src/lib/types";
+import ConfirmDialog from '@/src/components/ui/ConfirmDialog';
 
 interface ProductBasicInfoProps {
     updateLoading: boolean;
@@ -25,10 +26,12 @@ interface ProductBasicInfoProps {
     onCoverChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     fileInputIconRef: React.RefObject<HTMLInputElement | null>
     iconPreview: string | null;
+    setIconPreview: React.Dispatch<React.SetStateAction<string | null>>;
     appendCharacteristic: UseFieldArrayAppend<UpdateProductFormData, "characteristics">;
     onIconChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     characteristicFields: FieldArrayWithId<UpdateProductFormData, "characteristics">[];
     removeCharacteristic: UseFieldArrayRemove;
+    setValue: UseFormSetValue<UpdateProductFormData>;
 }
 
 const ProductBasicInfo: React.FC<ProductBasicInfoProps> = ({
@@ -41,11 +44,30 @@ const ProductBasicInfo: React.FC<ProductBasicInfoProps> = ({
                                                                onCoverChange,
                                                                fileInputIconRef,
                                                                iconPreview,
+                                                               setIconPreview,
                                                                appendCharacteristic,
                                                                onIconChange,
                                                                characteristicFields,
                                                                removeCharacteristic,
+                                                               setValue
                                                            }) => {
+
+    const [showIconConfirm, setShowIconConfirm] = useState<boolean>(false);
+
+    const handleDeleteIcon = () => setShowIconConfirm(true);
+
+    const confirmDeleteIcon = () => {
+        setValue("icon", null, { shouldDirty: true, shouldValidate: true });
+        setValue("iconAlt.ru", "", { shouldDirty: true, shouldValidate: true });
+        setIconPreview(null);
+
+        if (fileInputIconRef.current) {
+            fileInputIconRef.current.value = ""; // <-- сброс input
+        }
+
+        setShowIconConfirm(false);
+    };
+
     return (
         <>
             <div>
@@ -110,6 +132,17 @@ const ProductBasicInfo: React.FC<ProductBasicInfoProps> = ({
                     <Button type="button" onClick={() => fileInputIconRef.current?.click()} variant="outline">
                         {iconPreview ? "Изменить иконку" : "Загрузить иконку"}
                     </Button>
+                    {iconPreview && (
+                        <Button
+                            type="button"
+                            variant="destructive"
+                            className="ml-3"
+                            onClick={handleDeleteIcon}
+                            disabled={updateLoading}
+                        >
+                            Удалить инконку
+                        </Button>
+                    )}
                     <input type="file" accept="image/*" {...register("icon")} ref={fileInputIconRef}
                            onChange={onIconChange} className="hidden"/>
                 </div>
@@ -155,6 +188,17 @@ const ProductBasicInfo: React.FC<ProductBasicInfoProps> = ({
                     </div>
                 ))}
             </div>
+
+            <ConfirmDialog
+                open={showIconConfirm}
+                onOpenChange={setShowIconConfirm}
+                title="Удалить иконку?"
+                text="Вы уверены, что хотите удалить иконку?"
+                onConfirm={confirmDeleteIcon}
+                loading={updateLoading}
+                confirmText="Удалить"
+                cancelText="Отмена"
+            />
         </>
     );
 };
