@@ -17,31 +17,33 @@ interface Props {
 }
 
 const PostBasicInfo: React.FC<Props> = ({register, errors, descriptionValue, setValue, updateLoading, detailPost}) => (
-    <div className="border-b border-b-gray-500 py-3 mb-4">
-        <Label className="mb-2 block">Заголовок поста</Label>
-        <Input
-            type="text"
-            placeholder="Введите цепляющий заголовок"
-            {...register('title.ru')}
-            disabled={updateLoading}
-            className="mb-2"
-        />
-        {errors.title?.ru &&
-            <FormErrorMessage>{errors.title.ru.message}</FormErrorMessage>}
+    <div className="border-b border-b-gray-500 py-3 space-y-4">
+        <div className="space-y-1">
+            <Label className="block">Заголовок поста</Label>
+            <Input
+                type="text"
+                placeholder="Введите цепляющий заголовок"
+                {...register('title.ru')}
+                disabled={updateLoading}
+            />
+            {errors.title?.ru &&
+                <FormErrorMessage>{errors.title.ru.message}</FormErrorMessage>}
+        </div>
 
-        <Label className="mb-2 block">SEO заголовок</Label>
-        <Input
-            type="text"
-            placeholder="SEO заголовок"
-            disabled={updateLoading}
-            {...register('seoTitle.ru')}
-            className="mb-2"
-        />
-        {errors.seoTitle?.ru &&
-            <FormErrorMessage>{errors.seoTitle.ru.message}</FormErrorMessage>}
+        <div className="space-y-1">
+            <Label className="block">SEO заголовок</Label>
+            <Input
+                type="text"
+                placeholder="Заголовок, который видят в поиске в интернете"
+                disabled={updateLoading}
+                {...register('seoTitle.ru')}
+            />
+            {errors.seoTitle?.ru &&
+                <FormErrorMessage>{errors.seoTitle.ru.message}</FormErrorMessage>}
+        </div>
 
-        <div className="mb-4">
-            <label className="block mb-2 text-sm font-medium">Описание</label>
+        <div className="space-y-1">
+            <Label className="block mb-2 text-sm font-medium">Описание</Label>
             <FroalaEditorWrapper
                 key={detailPost?._id ?? 'editor'}
                 model={descriptionValue ?? detailPost?.description?.ru ?? ''}
@@ -51,16 +53,18 @@ const PostBasicInfo: React.FC<Props> = ({register, errors, descriptionValue, set
                 <FormErrorMessage>{errors.description.ru.message}</FormErrorMessage>}
         </div>
 
-        <Label className="mb-2 block">SEO описание</Label>
-        <Input
-            type="text"
-            placeholder="SEO описание"
-            {...register('seoDescription.ru')}
-            disabled={updateLoading}
-            className="mb-4"
-        />
-        {errors.seoDescription?.ru &&
-            <FormErrorMessage>{errors.seoDescription.ru.message}</FormErrorMessage>}
+        <div className="space-y-1">
+            <Label className="block">SEO описание</Label>
+            <Input
+                type="text"
+                placeholder="Краткий текст, который отображается в результатах поиска и служит для привлечения внимания пользователя, побуждая его перейти на ваш сайт."
+                {...register('seoDescription.ru')}
+                disabled={updateLoading}
+                className="mb-4"
+            />
+            {errors.seoDescription?.ru &&
+                <FormErrorMessage>{errors.seoDescription.ru.message}</FormErrorMessage>}
+        </div>
     </div>
 );
 

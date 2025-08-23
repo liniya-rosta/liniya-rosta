@@ -92,16 +92,17 @@ const AdminBlogPage = () => {
                 pageIndex: pageFromUrl - 1
             }));
         }
-    }, [searchParams, setPagination]);
+    }, [pagination.pageIndex, searchParams, setPagination]);
 
     useEffect(() => {
         void fetchData();
-    }, [pagination, filters]);
+    }, [pagination, filters, fetchData]);
 
     useEffect(() => {
         const selectedRows = table.getSelectedRowModel().rows;
         setSelectedToDelete(selectedRows.map(row => row.original._id));
-    }, [rowSelection]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [rowSelection, setSelectedToDelete]);
 
     useEffect(() => {
         setRowSelection({});
@@ -207,7 +208,7 @@ const AdminBlogPage = () => {
                 <ImageViewerModal
                     open={isPreviewOpen}
                     openChange={() => setIsPreviewOpen(false)}
-                    alt={previewImage.alt?.ru}
+                    alt={previewImage.alt}
                     image={previewImage.image}
                 />
             )}

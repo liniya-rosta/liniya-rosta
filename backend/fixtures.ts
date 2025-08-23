@@ -925,6 +925,10 @@ const run = async () => {
 
     await PortfolioItem.create([
         {
+            title: {
+                ru: "Гостинная",
+                ky: "Конок бөлмө"
+            },
             cover: 'test/IMG_0448.jpg',
             coverAlt: {ru: 'Обложка проекта 1', ky: 'Долбоордун мукабасы 1'},
             gallery: [
@@ -951,6 +955,10 @@ const run = async () => {
             }
         },
         {
+            title: {
+                ru: "Гостинная",
+                ky: "Конок бөлмө"
+            },
             cover: 'test/IMG_2683.jpg',
             coverAlt: {ru: 'Обложка проекта 2', ky: 'Долбоордун мукабасы 2'},
             gallery: [
@@ -975,6 +983,10 @@ const run = async () => {
             }
         },
         {
+            title: {
+                ru: "Гостинная",
+                ky: "Конок бөлмө"
+            },
             cover: 'test/IMG_0450.jpg',
             coverAlt: {ru: 'Обложка проекта 3', ky: 'Долбоордун мукабасы 3'},
             gallery: [
@@ -1001,6 +1013,10 @@ const run = async () => {
             }
         },
         {
+            title: {
+                ru: "Гостинная",
+                ky: "Конок бөлмө"
+            },
             cover: 'test/IMG_2682.jpg',
             coverAlt: {ru: 'Обложка проекта 4', ky: 'Долбоордун мукабасы 4'},
             gallery: [
@@ -1025,6 +1041,10 @@ const run = async () => {
             }
         },
         {
+            title: {
+                ru: "Гостинная",
+                ky: "Конок бөлмө"
+            },
             cover: 'test/IMG_2682.jpg',
             coverAlt: {ru: 'Обложка проекта 6', ky: 'Долбоордун мукабасы 6'},
             gallery: [
@@ -1050,6 +1070,10 @@ const run = async () => {
             }
         },
         {
+            title: {
+                ru: "Гостинная",
+                ky: "Конок бөлмө"
+            },
             cover: 'test/IMG_0454.jpg',
             coverAlt: {ru: 'Обложка проекта 7', ky: 'Долбоордун мукабасы 7'},
             gallery: [
@@ -1076,6 +1100,10 @@ const run = async () => {
             }
         },
         {
+            title: {
+                ru: "Гостинная",
+                ky: "Конок бөлмө"
+            },
             cover: 'test/IMG_0448.jpg',
             coverAlt: {ru: 'Обложка проекта 9', ky: 'Долбоордун мукабасы 9'},
             gallery: [
@@ -1102,6 +1130,10 @@ const run = async () => {
             }
         },
         {
+            title: {
+                ru: "Гостинная",
+                ky: "Конок бөлмө"
+            },
             cover: 'test/IMG_2682.jpg',
             coverAlt: {ru: 'Обложка проекта 10', ky: 'Долбоордун мукабасы 10'},
             gallery: [

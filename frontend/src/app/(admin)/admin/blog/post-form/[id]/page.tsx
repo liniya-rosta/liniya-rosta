@@ -32,6 +32,7 @@ const Page = () => {
     const {
         fetchOnePost,
         pagination,
+        handleReorderImages
     } = usePostsFetcher();
 
     const {
@@ -90,7 +91,7 @@ const Page = () => {
                 <ImageViewerModal
                     open={isPreviewOpen}
                     openChange={() => setIsPreviewOpen(false)}
-                    alt={previewImage.alt?.ru}
+                    alt={previewImage.alt}
                     image={previewImage.image}
                 />
             )}
@@ -111,6 +112,10 @@ const Page = () => {
 
             {detailPost && (
                 <ModalGallery
+                    canReorder
+                    onSaveOrder={async (newOrder) => {
+                        await handleReorderImages(detailPost._id, newOrder);
+                    }}
                     open={isImagesModalOpen}
                     openChange={() => setIsImagesModalOpen(false)}
                     items={detailPost.images}

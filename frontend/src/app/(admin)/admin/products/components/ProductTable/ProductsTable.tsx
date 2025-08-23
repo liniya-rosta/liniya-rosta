@@ -56,6 +56,7 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
         pageSize, setPageSize,
         totalPages,
         totalItems,
+        refresh,
     } = useProductsQuery();
 
     const router = useRouter();
@@ -118,6 +119,8 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
         } else if (idsToDelete.length === 1) {
             onDeleteProduct(idsToDelete[0]);
         }
+
+        refresh();
         setShowConfirmDialog(false);
         setIdsToDelete([]);
     };

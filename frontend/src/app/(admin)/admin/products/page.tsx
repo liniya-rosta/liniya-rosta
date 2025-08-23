@@ -4,7 +4,6 @@ import {fetchProducts} from "@/actions/products";
 import {fetchCategories} from "@/actions/categories";
 import ProductsClient from "@/src/app/(admin)/admin/products/ProductsClient";
 import {handleKyError} from "@/src/lib/handleKyError";
-import {API_BASE_URL} from "@/src/lib/globalConstants";
 
 const AdminProductsPage = async () => {
     let products: Product[] = [];
@@ -23,7 +22,6 @@ const AdminProductsPage = async () => {
         })(),
         (async () => {
             try {
-                console.log("API_BASE_URL =", API_BASE_URL);
                 const data = await fetchProducts({});
                 products = data.items;
             } catch (e) {

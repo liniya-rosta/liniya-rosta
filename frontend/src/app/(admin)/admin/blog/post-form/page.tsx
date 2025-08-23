@@ -27,7 +27,7 @@ const Page = () => {
                 <ImageViewerModal
                     open={isPreviewOpen}
                     openChange={() => setIsPreviewOpen(false)}
-                    alt={previewImage.alt?.ru}
+                    alt={previewImage.alt}
                     image={previewImage.image}
                 />
             )}

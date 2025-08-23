@@ -4,7 +4,10 @@ import {ChatSession} from "@/src/lib/types";
 import React from "react";
 import {useAdminChatStore} from "@/store/superadmin/adminChatStore";
 
-const useAdminChatActions = (setChats: React.Dispatch<React.SetStateAction<ChatSession[]>>) => {
+const useAdminChatActions = (
+    setChats: React.Dispatch<React.SetStateAction<ChatSession[]>>,
+    fetchData: () => Promise<void>
+) => {
     const {
         selectedToDelete,
         setSelectedToDelete,
@@ -27,7 +30,13 @@ const useAdminChatActions = (setChats: React.Dispatch<React.SetStateAction<ChatS
                     : "Чат удален"
             );
 
-            setChats((prev) => prev.filter((chat) => !selectedToDelete.includes(chat._id)));
+            setChats((prev) => {
+                const updated = prev.filter((chat) => !selectedToDelete.includes(chat._id));
+                if (updated.length === 0) {
+                    fetchData();
+                }
+                return updated;
+            });
         } catch {
             toast.error("Ошибка при удалении чата");
         } finally {

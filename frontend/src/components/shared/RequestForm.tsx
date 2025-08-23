@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react';
-import {useForm} from 'react-hook-form';
+import {Controller, useForm} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {toast} from "react-toastify";
 import {IRequestMutation} from "@/src/lib/types";
@@ -23,6 +23,8 @@ import {Loader2, AlertCircle} from "lucide-react";
 
 import {getRequestSchema} from "@/src/lib/zodSchemas/requestSchema";
 import {useTranslations} from "next-intl";
+import FormErrorMessage from '../ui/FormErrorMessage';
+import PhoneInput from "react-phone-input-2";
 
 interface Props {
     closeModal: () => void;
@@ -40,10 +42,14 @@ const RequestForm: React.FC<Props> = ({closeModal}) => {
     const {
         register,
         handleSubmit,
+        control,
         formState: {errors},
         reset,
     } = useForm<IRequestMutation>({
         resolver: zodResolver(schema),
+        defaultValues: {
+            phone: ""
+        }
     });
 
     const onSubmit = async (data: IRequestMutation) => {
@@ -93,7 +99,7 @@ const RequestForm: React.FC<Props> = ({closeModal}) => {
                             disabled={createLoading}
                         />
                         {errors.name && (
-                            <p className="text-sm text-red-600 mt-1">{errors.name.message}</p>
+                            <FormErrorMessage>{errors.name.message}</FormErrorMessage>
                         )}
                     </div>
 
@@ -107,21 +113,31 @@ const RequestForm: React.FC<Props> = ({closeModal}) => {
                             disabled={createLoading}
                         />
                         {errors.email && (
-                            <p className="text-sm text-red-600 mt-1">{errors.email.message}</p>
+                            <FormErrorMessage>{errors.email.message}</FormErrorMessage>
                         )}
                     </div>
 
                     <div className="grid gap-1">
                         <Label htmlFor="phone">Телефон</Label>
-                        <Input
-                            id="phone"
-                            type="tel"
-                            {...register("phone")}
-                            placeholder="+996999999999"
-                            disabled={createLoading}
+                        <Controller
+                            name="phone"
+                            control={control}
+                            render={({field}) => (
+                                <PhoneInput
+                                    country="kg"
+                                    value={field.value}
+                                    placeholder="+996999999999"
+                                    onChange={(val) => field.onChange(val)}
+                                    onBlur={field.onBlur}
+                                    inputProps={{name: field.name, required: true}}
+                                    containerClass="w-full"
+                                    inputClass="!w-full border p-2 rounded"
+                                    buttonClass="!border !border-gray-300"
+                                />
+                            )}
                         />
                         {errors.phone && (
-                            <p className="text-sm text-red-600 mt-1">{errors.phone.message}</p>
+                            <FormErrorMessage>{errors.phone.message}</FormErrorMessage>
                         )}
                     </div>
                 </div>

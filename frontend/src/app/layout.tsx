@@ -13,7 +13,7 @@ export default function RootLayout({children}: { children: React.ReactNode }) {
         <html lang="ru">
         <body className={`${manrope.variable} antialiased`}>
         {children}
-        <ToastContainer position="top-left" autoClose={500}/>
+        <ToastContainer position="top-left" autoClose={3000} pauseOnHover={true}/>
         </body>
         </html>
     );

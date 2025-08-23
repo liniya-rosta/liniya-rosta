@@ -16,7 +16,7 @@ const AdminPortfolioPage = () => {
                         Создавайте и редактируйте портфолио
                     </p>
                 </div>
-                <Link href="/admin/portfolio/add-portfolio" >
+                <Link href="/admin/portfolio/portfolio-form" >
                     <Button className="flex items-center gap-2 w-full sm:w-auto btn-hover-scale">
                         <Plus size={16} />
                         Создать портфолио

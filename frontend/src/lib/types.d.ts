@@ -1,3 +1,6 @@
+import {z} from "zod/index";
+import {portfolioEditSchema} from "@/src/lib/zodSchemas/admin/portfolioSchema";
+
 export interface ImageObject {
     alt?: {
         ru: string;
@@ -19,17 +22,14 @@ export interface GalleryForm {
     alt?: { ru: string },
 }
 
-export interface PortfolioMutation {
-    description: { ru: string };
-    coverAlt: { ru: string };
-    cover?: File | null;
-    gallery: GalleryForm[];
-    seoTitle?: { ru: string };
-    seoDescription?: { ru: string };
-}
+export type PortfolioMutation = z.infer<typeof portfolioSchema>;
 
 export interface PortfolioItemPreview {
     _id: string;
+    title: {
+        ru: string;
+        ky: string;
+    };
     description: {
         ru: string;
         ky: string;
@@ -60,8 +60,8 @@ export interface PortfolioItemDetail extends PortfolioItemPreview {
     gallery: GalleryItem[];
 }
 
-type PortfolioEditValues = Partial<PortfolioMutation>;
-type GalleryEditValues = Partial<GalleryForm>;
+export type PortfolioEditValues = z.infer<typeof portfolioEditSchema>;
+export type GalleryEditValues = Partial<GalleryForm>;
 
 export interface PortfolioResponse extends PaginationMeta {
     items: PortfolioItemPreview[],
@@ -245,6 +245,10 @@ export interface Product {
     updatedAt: string;
 }
 
+export interface ProductResponse extends PaginationMeta {
+    items: Product[];
+}
+
 export interface ProductMutation {
     category: string;
     title: { ru: string };
@@ -329,6 +333,12 @@ export interface ChatMessage {
     text: string;
     timestamp: Date;
 }
+
+export interface IncomingChatMessage extends ChatMessage {
+    type: string;
+    chatId: string;
+}
+
 
 export interface ChatSession {
     _id: string;

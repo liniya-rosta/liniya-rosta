@@ -100,7 +100,10 @@ const CreatePostForm: React.FC<Props> = ({setIsPreviewOpen, setPreviewImage}) =>
                 />
 
                 <div className="flex flex-wrap gap-1 md:gap-5">
-                    <Button type="submit" disabled={createLoading || !isDirty}>{createLoading && <LoaderIcon />}Создать пост</Button>
+                    <Button type="submit" disabled={createLoading || !isDirty}>
+                        {createLoading && <LoaderIcon />}
+                        Создать пост
+                    </Button>
                     <Link href={paginationPost ? `/admin/blog?page=${paginationPost.page}` : "/admin/blog"}>
                         <Button variant="outline" disabled={createLoading}>Отмена</Button>
                     </Link>

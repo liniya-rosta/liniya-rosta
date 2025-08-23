@@ -12,35 +12,31 @@ import {useSuperAdminPortfolioStore} from "@/store/superadmin/superAdminPortfoli
 import {toast} from "react-toastify";
 import FormErrorMessage from "@/src/components/ui/FormErrorMessage";
 import LoaderIcon from "@/src/components/ui/Loading/LoaderIcon";
-import ImageModal from "@/src/app/(admin)/admin/portfolio/components/ImageModal";
 import {z} from "zod";
 import {portfolioSchema} from "@/src/lib/zodSchemas/admin/portfolioSchema";
 import {PortfolioMutation} from "@/src/lib/types";
 import {Textarea} from "@/src/components/ui/textarea";
 import {Label} from "@/src/components/ui/label";
 import {handleKyError} from "@/src/lib/handleKyError";
+import ImageViewerModal from "@/src/components/shared/ImageViewerModal";
+import ConfirmDialog from "@/src/components/ui/ConfirmDialog";
 
-const PortfolioForm = () => {
+const PortfolioCreateForm = () => {
     const {
         register, handleSubmit, setValue, control, trigger, formState: {errors, isDirty}
     } = useForm<z.infer<typeof portfolioSchema>>({
         resolver: zodResolver(portfolioSchema),
-        defaultValues: {
-            gallery: [],
-            cover: null,
-            description: {ru: ""},
-            coverAlt: {ru: ""},
-            seoTitle: {ru: ""},
-            seoDescription: {ru: ""},
-        },
+        defaultValues: {},
     });
 
-    const {createLoading, setPortfolioCreateLoading} = useSuperAdminPortfolioStore();
+    const {createLoading, paginationPortfolio, setPortfolioCreateLoading} = useSuperAdminPortfolioStore();
     const {fields, append, remove} = useFieldArray({control, name: "gallery",});
     const router = useRouter();
 
     const [previewImage, setPreviewImage] = useState<{ url: string; alt: string }>({url: "", alt: ""});
     const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+    const [expanded, setExpanded] = useState(false);
+    const [showConfirm, setShowConfirm] = useState(false);
 
     const showImagePreview = (file: File, alt = "") => {
         const localUrl = URL.createObjectURL(file);
@@ -64,7 +60,7 @@ const PortfolioForm = () => {
     };
 
     const handleAltChange = (index: number, value: string) => {
-        setValue(`gallery.${index}.alt.ru`, value, {shouldValidate: true});
+        setValue(`gallery.${index}.alt`, value, {shouldValidate: true});
     };
 
     const onSubmit = async (data: PortfolioMutation) => {
@@ -72,6 +68,7 @@ const PortfolioForm = () => {
             setPortfolioCreateLoading(true)
             await createPortfolio(data)
             router.push("/admin/portfolio");
+            toast.success("Успешно создано портфолио")
         } catch (error) {
             const msg = await handleKyError(error, "Неизвестная ошибка при создании портфолио");
             toast.error(msg);
@@ -83,63 +80,72 @@ const PortfolioForm = () => {
     return (
         <>
             <form onSubmit={handleSubmit(onSubmit)}>
-                <div className="border-b border-b-gray-500 py-3 mb-4">
-                    <div className="mb-3">
-                        <Label className="w-full mb-2">Альтернативное название обложки</Label>
+                <div className="border-b border-b-gray-500 py-3 space-y-3 mb-4">
+                    <div className="space-y-1">
+                        <Label className="w-full">Заголовок</Label>
                         <Input
-                            className="mb-2"
                             type="text"
-                            placeholder="Опишите, что изображено на фото (для доступности и поиска)"
+                            placeholder="Введите заголовок"
                             disabled={createLoading}
-                            {...register("coverAlt.ru")}
+                            {...register("title")}
                         />
-                        {errors.coverAlt && (
-                            <FormErrorMessage>{errors.coverAlt.message}</FormErrorMessage>
+                        {errors.title && (
+                            <FormErrorMessage>{errors.title.message}</FormErrorMessage>
                         )}
                     </div>
 
-                    <div className="mb-3">
-                        <Label className="w-full mb-2">Описание</Label>
+                    <div className="space-y-1">
+                        <Label className="w-full">SEO заголовок</Label>
+                        <Input
+                            type="text"
+                            placeholder="Заголовок, который видят в поиске в интернете"
+                            disabled={createLoading}
+                            {...register("seoTitle")}
+                        />
+                        {errors.seoTitle && (
+                            <FormErrorMessage>{errors.seoTitle.message}</FormErrorMessage>
+                        )}
+                    </div>
+
+                    <div className="space-y-1">
+                        <Label className="w-full">Описание</Label>
                         <Textarea
-                            className="mb-2"
                             placeholder="Полная отделка квартиры площадью 85 м² в жилом комплексе 'Асанбай Сити'"
                             disabled={createLoading}
-                            {...register("description.ru")}
+                            {...register("description")}
                         />
                         {errors.description && (
                             <FormErrorMessage>{errors.description.message}</FormErrorMessage>
                         )}
                     </div>
 
-                    <div className="mb-3">
-                        <Label className="w-full mb-2">SEO заголовок</Label>
-                        <Input
-                            className="mb-2"
-                            type="text"
-                            placeholder="Введите SEO заголовок"
-                            disabled={createLoading}
-                            {...register("seoTitle.ru")}
-                        />
-                        {errors.seoTitle?.ru && (
-                            <FormErrorMessage>{errors.seoTitle.ru.message}</FormErrorMessage>
-                        )}
-                    </div>
-
-                    <div className="mb-3">
-                        <Label className="w-full mb-2">SEO описание</Label>
+                    <div className="space-y-1">
+                        <Label className="w-full">SEO описание</Label>
                         <Textarea
-                            className="mb-2"
-                            placeholder="Введите SEO описание"
+                            placeholder="Краткий текст, который отображается в результатах поиска и служит для привлечения внимания пользователя, побуждая его перейти на ваш сайт."
                             disabled={createLoading}
-                            {...register("seoDescription.ru")}
+                            {...register("seoDescription")}
                         />
-                        {errors.seoDescription?.ru && (
-                            <FormErrorMessage>{errors.seoDescription.ru.message}</FormErrorMessage>
+                        {errors.seoDescription && (
+                            <FormErrorMessage>{errors.seoDescription.message}</FormErrorMessage>
                         )}
                     </div>
 
-                    <div>
-                        <Label className="mb-2">Обложка</Label>
+                    <div className="space-y-1">
+                        <Label className="w-full">Альтернативное название обложки</Label>
+                        <Input
+                            type="text"
+                            placeholder="Опишите, что изображено на фото (для доступности и поиска)"
+                            disabled={createLoading}
+                            {...register("coverAlt")}
+                        />
+                        {errors.coverAlt && (
+                            <FormErrorMessage>{errors.coverAlt.message}</FormErrorMessage>
+                        )}
+                    </div>
+
+                    <div className="space-y-1">
+                        <Label>Обложка</Label>
                         <div className="flex items-center gap-3 mb-2">
                             <Input
                                 type="file"
@@ -172,34 +178,50 @@ const PortfolioForm = () => {
 
                 <div className="w-full max-w-4xl mb-3">
                     <label className="block mb-4">Галерея:</label>
-                    <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => append({alt: {ru: ""}, image: null})}
-                        disabled={createLoading}
-                        className="flex items-center gap-1 mb-4"
-                    >
-                        <Plus className="w-4 h-4"/>
-                        Добавить изображение
-                    </Button>
-                    {errors.gallery?.message && (
-                        <FormErrorMessage>{errors.gallery.message}</FormErrorMessage>
-                    )}
+                   <div className="flex items-center gap-3 flex-wrap">
+                       <Button
+                           type="button"
+                           variant="outline"
+                           size="sm"
+                           onClick={() => append({alt: "", image: null})}
+                           disabled={createLoading}
+                           className="flex items-center gap-1 mb-4"
+                       >
+                           <Plus className="w-4 h-4"/>
+                           Добавить изображение
+                       </Button>
+                       {errors.gallery?.message && (
+                           <FormErrorMessage>{errors.gallery.message}</FormErrorMessage>
+                       )}
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[500px] overflow-y-auto">
+                       <Button
+                           type="button"
+                           variant="outline"
+                           onClick={() => setExpanded(prev => !prev)}
+                           className="text-sm"
+                           disabled={createLoading || fields.length < 5}
+                       >
+                           {expanded ? 'Свернуть' : 'Развернуть все'}
+                       </Button>
+                   </div>
+
+                    <div
+                        className={`grid grid-cols-1 md:grid-cols-2 gap-3 transition-all duration-300 ${
+                            expanded ? 'max-h-none overflow-visible' : 'max-h-[500px] overflow-y-auto'
+                        }`}
+                    >
                         {fields.map((item, index) => (
                             <div key={item.id} className="border rounded-lg p-4 bg-white shadow-sm space-y-6">
                                 <Label className="w-full mb-2">Альтернативное название изображения</Label>
                                 <Input
                                     type="text"
                                     placeholder="Опишите, что изображено на фото (для доступности и поиска)"
-                                    {...register(`gallery.${index}.alt.ru`)}
+                                    {...register(`gallery.${index}.alt`)}
                                     disabled={createLoading}
                                     onChange={(e) => handleAltChange(index, e.target.value)}
                                     className="mb-3"
                                 />
-                                {errors.gallery?.[index]?.alt?.ru && (
+                                {errors.gallery?.[index]?.alt && (
                                     <FormErrorMessage>
                                         {errors.gallery[index]?.alt?.message}
                                     </FormErrorMessage>
@@ -249,19 +271,44 @@ const PortfolioForm = () => {
                     </div>
                 </div>
 
-                <Button type="submit" className="ml-auto px-8" disabled={!isDirty || createLoading}>
-                    {createLoading && <LoaderIcon/>} Создать
-                </Button>
+                <div className="flex flex-wrap gap-4 mt-6">
+                    <Button type="submit" className="px-8" disabled={!isDirty || createLoading}>
+                        {createLoading && <LoaderIcon/>} Создать
+                    </Button>
+                    <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => {
+                            setShowConfirm(true);
+                        }}
+                    >
+                        Отмена
+                    </Button>
+                </div>
+
             </form>
 
-            <ImageModal
+            <ImageViewerModal
                 open={isPreviewOpen}
                 openChange={() => setIsPreviewOpen(false)}
                 image={previewImage.url}
-                alt={previewImage.alt || "Предпросмотр изображения"}
+            />
+
+            <ConfirmDialog
+                open={showConfirm}
+                onOpenChange={setShowConfirm}
+                title="Покинуть страницу?"
+                text="Если уйти, изменения не сохранятся."
+                onConfirm={() => {
+                    setShowConfirm(false);
+                    router.push(
+                        paginationPortfolio ? `/admin/portfolio?page${paginationPortfolio?.page} ` : "/admin/portfolio"
+                    );
+                }}
+                loading={createLoading}
             />
         </>
     )
 
 }
-export default PortfolioForm;
+export default PortfolioCreateForm;

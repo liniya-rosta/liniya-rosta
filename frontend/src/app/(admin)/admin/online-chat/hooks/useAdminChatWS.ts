@@ -3,32 +3,24 @@ import useUserStore from "@/store/usersStore";
 import { WS_URL } from "@/src/lib/globalConstants";
 import { toast } from "react-toastify";
 import {useAdminChatStore} from "@/store/superadmin/adminChatStore";
-import {Chat, ChatMessage} from "@/src/lib/types";
+import {IncomingChatMessage} from "@/src/lib/types";
 
 export const useAdminChatWS = () => {
     const wsRef = useRef<WebSocket | null>(null);
     const { accessToken } = useUserStore();
     const {setOneChatMessages} = useAdminChatStore();
 
-    const handleNewMessage = useCallback((data: ChatMessage & { type: "new_message"; chatId: string }) => {
-        setOneChatMessages((prev: Chat | null) => {
-            if (!prev || prev._id !== data.chatId) return prev;
-            return { ...prev, messages: [...prev.messages, data] };
-        });
+    const handleNewMessage = useCallback((data: IncomingChatMessage) => {
+        if (data.type === "new_message") {
+            setOneChatMessages((prev) => {
+                if (!prev || prev._id !== data.chatId) return prev;
+                return {
+                    ...prev,
+                    messages: [...prev.messages, data],
+                };
+            });
+        }
     }, [setOneChatMessages]);
-
-    //
-    // const handleNewMessage = useCallback((data: any) => {
-    //     if (data.type === "new_message") {
-    //         setOneChatMessages((prev) => {
-    //             if (!prev || prev._id !== data.chatId) return prev;
-    //             return {
-    //                 ...prev,
-    //                 messages: [...prev.messages, data],
-    //             };
-    //         });
-    //     }
-    // }, [setOneChatMessages]);
 
     useEffect(() => {
         const wsUrl = `${WS_URL}?token=${accessToken}`;
@@ -40,8 +32,12 @@ export const useAdminChatWS = () => {
 
         ws.onmessage = (event) => {
             try {
-
                 const data = JSON.parse(event.data);
+                if (data.type === "error") {
+                    toast.error(data.message);
+                    return;
+                }
+
                 handleNewMessage(data);
             } catch {
                 toast.error("Ошибка получения сообщения");
