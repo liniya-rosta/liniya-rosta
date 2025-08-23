@@ -32,6 +32,7 @@ const Page = () => {
     const {
         fetchOnePost,
         pagination,
+        handleReorderImages
     } = usePostsFetcher();
 
     const {
@@ -111,6 +112,10 @@ const Page = () => {
 
             {detailPost && (
                 <ModalGallery
+                    canReorder
+                    onSaveOrder={async (newOrder) => {
+                        await handleReorderImages(detailPost._id, newOrder);
+                    }}
                     open={isImagesModalOpen}
                     openChange={() => setIsImagesModalOpen(false)}
                     items={detailPost.images}

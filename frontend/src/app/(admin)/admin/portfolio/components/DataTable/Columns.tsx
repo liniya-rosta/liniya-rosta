@@ -250,17 +250,17 @@ export const getColumns = (
                     <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Действия</DropdownMenuLabel>
                         <DropdownMenuItem onClick={() => onGallery(payment._id)}>
-                            <Images className="mr-2 h-4 w-4"/>
+                            <Images className="mr-2 h-4 w-4 hover:text-popover"/>
                             Посмотреть галерею
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => onEditPortfolio(payment)}>
-                            <Edit2 className="mr-2 h-4 w-4"/>
+                            <Edit2 className="mr-2 h-4 w-4 hover:text-popover""/>
                             Редактировать
                         </DropdownMenuItem>
                         <DropdownMenuItem
                             className="text-destructive"
                             onClick={() => onRequestDelete(payment._id)}>
-                            <Trash2 className="mr-2 h-4 w-4 text-destructive"/>
+                            <Trash2 className="mr-2 h-4 w-4 hover:text-popover"/>
                             Удалить
                         </DropdownMenuItem>
                     </DropdownMenuContent>

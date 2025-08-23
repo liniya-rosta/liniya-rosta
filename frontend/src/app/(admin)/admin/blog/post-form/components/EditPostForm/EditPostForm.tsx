@@ -40,7 +40,6 @@ const EditPostForm: React.FC<Props> = ({openImagesModal, setPreviewImage, setIsP
 
     const [expanded, setExpanded] = useState(false);
     const [replaceAllImages, setReplaceAllImages] = useState(false);
-    const [confirmType, setConfirmType] = useState<"replace" | "backToPage" | null>(null);
     const [showConfirm, setShowConfirm] = useState(false);
 
     const descriptionValue = watch("description.ru");
@@ -53,12 +52,6 @@ const EditPostForm: React.FC<Props> = ({openImagesModal, setPreviewImage, setIsP
             seoDescription: {ru: detailPost.seoDescription.ru},
         });
     }, [detailPost, reset]);
-
-    useEffect(() => {
-        if (confirmType !== null) {
-            setShowConfirm(true);
-        }
-    }, [confirmType]);
 
     if (!detailPost) return null;
 
@@ -76,20 +69,9 @@ const EditPostForm: React.FC<Props> = ({openImagesModal, setPreviewImage, setIsP
         setValue(`images.${index}.image`, file, {shouldValidate: true});
     };
 
-    const requestConfirmation = (type: "replace" | "backToPage") => {
-        setConfirmType(type);
-        setShowConfirm(true);
-    };
-
-    const confirmActions = () => {
-        console.log("requestConfirmation", confirmType);
-        if (confirmType === "replace") {
-            setReplaceAllImages(true);
-            remove();
-            append({alt: {ru: ""}, image: null});
-        } else if (confirmType === "backToPage") {
-            router.push(paginationPost ? `/admin/blog?page=${paginationPost.page}` : "/admin/blog");
-        }
+    const handleBackConfirm = () => {
+        setShowConfirm(false);
+        router.push(paginationPost ? `/admin/blog?page=${paginationPost.page}` : "/admin/blog");
     };
 
     const onSubmit = async (data: UpdatePostFormData) => {
@@ -97,6 +79,7 @@ const EditPostForm: React.FC<Props> = ({openImagesModal, setPreviewImage, setIsP
             setUpdateLoading(true);
 
             if (replaceAllImages) {
+                console.log(data)
                 await updatePost(detailPost._id, data, "replace");
             } else {
                 await updatePost(detailPost._id, data, "append");
@@ -104,7 +87,7 @@ const EditPostForm: React.FC<Props> = ({openImagesModal, setPreviewImage, setIsP
 
             toast.success('Пост успешно обновлен');
             reset();
-            router.push('/admin/blog');
+            router.push(paginationPost ? `/admin/blog?page=${paginationPost.page}` : "/admin/blog");
         } catch (error) {
             const message = await handleKyError(error, "Ошибка при редактировании поста");
             toast.error(message);
@@ -127,6 +110,7 @@ const EditPostForm: React.FC<Props> = ({openImagesModal, setPreviewImage, setIsP
 
                 <ImagesSection
                     fields={fields}
+                    onReplaceImage={setReplaceAllImages}
                     append={append}
                     remove={remove}
                     register={register}
@@ -137,7 +121,6 @@ const EditPostForm: React.FC<Props> = ({openImagesModal, setPreviewImage, setIsP
                     setExpanded={setExpanded}
                     replaceAllImages={replaceAllImages}
                     onCancelReplace={onCancelReplace}
-                    requestConfirmation={requestConfirmation}
                     openImagesModal={openImagesModal}
                     setPreviewImage={setPreviewImage}
                     setIsPreviewOpen={setIsPreviewOpen}
@@ -150,7 +133,7 @@ const EditPostForm: React.FC<Props> = ({openImagesModal, setPreviewImage, setIsP
                         className="mt-6 px-6"
                         disabled={updateLoading || !isDirty}
                     >
-                        {updateLoading && <LoaderIcon />}
+                        {updateLoading && <LoaderIcon/>}
                         Сохранить изменения
                     </Button>
 
@@ -159,7 +142,7 @@ const EditPostForm: React.FC<Props> = ({openImagesModal, setPreviewImage, setIsP
                         variant="outline"
                         className="mt-6 px-6"
                         disabled={updateLoading}
-                        onClick={() => requestConfirmation("backToPage")}
+                        onClick={() => setShowConfirm(true)}
                     >
                         Отмена
                     </Button>
@@ -168,19 +151,10 @@ const EditPostForm: React.FC<Props> = ({openImagesModal, setPreviewImage, setIsP
 
             <ConfirmDialog
                 open={showConfirm}
-                onOpenChange={(open) => {
-                    setShowConfirm(open);
-                }}
-                title={confirmType === "backToPage" ? "Покинуть страницу?" : "Заменить изображения?"}
-                text={confirmType === "replace"
-                    ? "При этом действии ВСЕ предыдущие изображения безвозвратно будут заменены. Чтобы просмотреть или редактировать нажмите на кнопку 'Просмотреть старые изображения'"
-                    : "Если покинете страницу то введённые данные будут потеряны"
-                }
-                onConfirm={() => {
-                    confirmActions();
-                    setShowConfirm(false);
-                    setConfirmType(null);
-                }}
+                onOpenChange={setShowConfirm}
+                title="Покинуть страницу?"
+                text="Если покинете страницу, введённые данные будут потеряны"
+                onConfirm={handleBackConfirm}
                 loading={updateLoading}
             />
         </>

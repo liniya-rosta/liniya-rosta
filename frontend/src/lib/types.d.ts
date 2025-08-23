@@ -245,6 +245,10 @@ export interface Product {
     updatedAt: string;
 }
 
+export interface ProductResponse extends PaginationMeta {
+    items: Product[];
+}
+
 export interface ProductMutation {
     category: string;
     title: { ru: string };
@@ -329,6 +333,12 @@ export interface ChatMessage {
     text: string;
     timestamp: Date;
 }
+
+export interface IncomingChatMessage extends ChatMessage {
+    type: string;
+    chatId: string;
+}
+
 
 export interface ChatSession {
     _id: string;

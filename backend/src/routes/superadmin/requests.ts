@@ -41,6 +41,7 @@ requestAdminRouter.get('/', async (req, res) => {
 
         const [requests, total] = await Promise.all([
             RequestFromClient.find(filter)
+                .sort({ createdAt: -1 })
                 .skip(skip)
                 .limit(limit)
                 .exec(),

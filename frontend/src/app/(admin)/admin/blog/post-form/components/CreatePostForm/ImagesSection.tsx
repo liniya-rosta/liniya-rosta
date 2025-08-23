@@ -37,11 +37,9 @@ const ImagesSection: React.FC<Props> = ({
                                             handleAltChange,
                                             handleImageChange,
                                         }) => {
-
-    console.log(errors)
     return (
-        <div className="w-full max-w-4xl mb-3">
-            <Label className="block mb-4">Изображения:</Label>
+        <div className="w-full max-w-4xl mb-3 space-y-4">
+            <Label className="block">Изображения:</Label>
 
             <div className="flex flex-wrap gap-2 mb-3">
                 <Button
@@ -73,28 +71,32 @@ const ImagesSection: React.FC<Props> = ({
             <div className={`grid grid-cols-1 md:grid-cols-2 gap-3 transition-all duration-300 ${expanded ? 'max-h-none overflow-visible' : 'max-h-[350px] overflow-y-auto'}`}>
                 {fields.map((item, index) => (
                     <div key={item.id} className="border rounded-lg p-4 space-y-6 bg-white shadow-sm">
-                        <Label className="w-full mb-2">Альтернативное название изображения</Label>
-                        <Input
-                            type="text"
-                            placeholder="Опишите, что изображено на фото (для доступности и поиска)"
-                            {...register(`images.${index}.alt.ru`)}
-                            disabled={createLoading}
-                            onChange={(e) => handleAltChange(index, e.target.value)}
-                        />
-                        {errors.images?.[index]?.alt?.ru && (
-                            <FormErrorMessage>{errors.images[index]?.alt?.ru.message}</FormErrorMessage>
-                        )}
+                        <div className="space-y-1">
+                            <Label className="w-full mb-2">Альтернативное название изображения</Label>
+                            <Input
+                                type="text"
+                                placeholder="Опишите, что изображено на фото (для доступности и поиска)"
+                                {...register(`images.${index}.alt.ru`)}
+                                disabled={createLoading}
+                                onChange={(e) => handleAltChange(index, e.target.value)}
+                            />
+                            {errors.images?.[index]?.alt?.ru && (
+                                <FormErrorMessage>{errors.images[index]?.alt?.ru.message}</FormErrorMessage>
+                            )}
+                        </div>
 
-                        <Label className="w-full mb-2">Изображение</Label>
-                        <Input
-                            type="file"
-                            accept="image/*"
-                            disabled={createLoading}
-                            onChange={(e) => handleImageChange(index, e)}
-                        />
-                        {errors.images?.[index]?.file && (
-                            <FormErrorMessage>{errors.images[index]?.file?.message}</FormErrorMessage>
-                        )}
+                        <div className="space-y-1">
+                            <Label className="w-full mb-2">Изображение</Label>
+                            <Input
+                                type="file"
+                                accept="image/*"
+                                disabled={createLoading}
+                                onChange={(e) => handleImageChange(index, e)}
+                            />
+                            {errors.images?.[index]?.file && (
+                                <FormErrorMessage>{errors.images[index]?.file?.message}</FormErrorMessage>
+                            )}
+                        </div>
 
                         <div className="flex flex-wrap gap-3 justify-between">
                             <Button

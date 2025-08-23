@@ -13,7 +13,8 @@ import {useAdminChatStore} from "@/store/superadmin/adminChatStore";
 import ChatMessages from "@/src/app/(admin)/admin/online-chat/components/ChatMessages";
 import useUserStore from "@/store/usersStore";
 import {useSuperadminAdminsStore} from "@/store/superadmin/superadminAdminsStore";
-import {AnimatePresence} from "motion/react";
+import { hasBadWords } from "@/src/lib/profanityFilter";
+import {toast} from "react-toastify";
 
 const Page = () => {
     const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
@@ -47,7 +48,7 @@ const Page = () => {
         setShowConfirm,
         handleDelete,
         handleStatusChange,
-    } = useAdminChatActions(setChats);
+    } = useAdminChatActions(setChats, fetchData);
 
     useEffect(() => {
         void fetchData();
@@ -79,6 +80,11 @@ const Page = () => {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (!inputMessage.trim()) return;
+
+        if (hasBadWords(inputMessage)) {
+            toast.error("Сообщение содержит недопустимые слова!");
+            return;
+        }
 
         if (selectedChatId) {
             sendMessage(selectedChatId, inputMessage.trim());
@@ -116,35 +122,33 @@ const Page = () => {
                 adminList={admins}
             />
             <div className="flex h-[calc(100vh-100px)] lg:h-screen">
-                <AnimatePresence>
-                    <ChatList
-                        key="chat-list"
-                        selectedChatId={selectedChatId}
-                        onSelect={setSelectedChatId}
-                        onRequestDelete={() => setShowConfirm(true)}
-                        onStatusUpdated={handleStatusChange}
-                        onLoadMore={() => {
-                            setLimit((prev) => prev + 10);
-                            setFetchChatLoading(true);
-                        }}
-                        isLoadMoreDisabled={isLoadMoreDisabled}
-                        className={`w-full flex-col overflow-y-auto lg:w-1/3 border-r, ${selectedChatId ? "hidden lg:flex" : "flex"}`
-                        }
-                    />
+                <ChatList
+                    key="chat-list"
+                    selectedChatId={selectedChatId}
+                    onSelect={setSelectedChatId}
+                    onRequestDelete={() => setShowConfirm(true)}
+                    onStatusUpdated={handleStatusChange}
+                    onLoadMore={() => {
+                        setLimit((prev) => prev + 10);
+                        setFetchChatLoading(true);
+                    }}
+                    isLoadMoreDisabled={isLoadMoreDisabled}
+                    className={`w-full flex-col overflow-y-auto lg:w-1/3 border-r ${selectedChatId ? "hidden lg:flex" : "flex"}`
+                    }
+                />
 
-                    {selectedChatId && (
-                        <ChatMessages
-                            key="chat-messages"
-                            input={inputMessage}
-                            onInputChange={setInputMessage}
-                            onSubmit={handleSubmit}
-                            onBack={() => {
-                                setSelectedChatId(null);
-                                setOneChatMessages(null);
-                            }}
-                        />
-                    )}
-                </AnimatePresence>
+                {selectedChatId && (
+                    <ChatMessages
+                        key="chat-messages"
+                        input={inputMessage}
+                        onInputChange={setInputMessage}
+                        onSubmit={handleSubmit}
+                        onBack={() => {
+                            setSelectedChatId(null);
+                            setOneChatMessages(null);
+                        }}
+                    />
+                )}
             </div>
 
             <ConfirmDialog

@@ -14,6 +14,7 @@ import {fetchProductById} from "@/actions/products";
 import {handleKyError} from "@/src/lib/handleKyError";
 import ConfirmDialog from "@/src/components/ui/ConfirmDialog";
 import ImagesEditForm from "@/src/app/(admin)/admin/products/edit-product/components/ImagesEditForm";
+import {useProductFetcher} from "@/src/app/(admin)/admin/products/hooks/useProductFetcher";
 
 interface Props {
     open: boolean;
@@ -22,6 +23,7 @@ interface Props {
 
 const ImagesModal: React.FC<Props> = ({open, onClose}) => {
     const {productDetail, setProductDetail, setProducts, products, setUpdateError} = useAdminProductStore();
+    const {fetchData} =useProductFetcher();
 
     const images = productDetail?.images ?? [];
     const productId = productDetail?._id ?? "";
@@ -55,6 +57,7 @@ const ImagesModal: React.FC<Props> = ({open, onClose}) => {
             clearSelection();
             setSelectedIds([]);
             await refreshProduct();
+            await fetchData();
 
             if (images.length === ids.length) {
                 setProductDetail(null);
@@ -100,7 +103,7 @@ const ImagesModal: React.FC<Props> = ({open, onClose}) => {
                 }
             }}
         >
-            <DialogContent className="!w-auto !max-w-6xl">
+            <DialogContent aria-describedby={undefined} className="!w-auto !max-w-6xl">
                 <DialogHeader className="flex justify-between items-center gap-4">
                     <DialogTitle>Галерея изображений</DialogTitle>
                     <div className="flex gap-2">
