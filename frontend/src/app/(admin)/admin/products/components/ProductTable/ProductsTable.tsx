@@ -20,6 +20,7 @@ import ProductTableContent from "@/src/app/(admin)/admin/products/components/Pro
 import {useProductsQuery} from "@/src/app/(admin)/admin/products/hooks/useProductsQuery";
 import ProductsTablePagination from "@/src/app/(admin)/admin/products/components/ProductTable/ProductsTablePagination";
 import {useRouter} from "next/navigation";
+import ImageModal from "@/src/app/(admin)/admin/portfolio/components/ImageModal";
 
 interface ProductsTableProps {
     actionLoading: boolean;
@@ -36,6 +37,7 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
     const {categories} = useCategoryStore();
 
     const {
+        previewImage, setPreviewImage,
         saleLabel, setSaleLabel,
         isImagesModalOpen, setIsImagesModalOpen,
         showConfirmDialog, setShowConfirmDialog,
@@ -163,6 +165,16 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
                 saleLabel={saleLabel}
                 onClose={() => setSaleLabel(null)}
             />
+
+
+            {previewImage && (
+                <ImageModal
+                    open={true}
+                    openChange={() => setPreviewImage(null)}
+                    alt={previewImage.alt?.ru || ""}
+                    image={previewImage.url}
+                />
+            )}
 
             <ImagesModal
                 open={isImagesModalOpen}
