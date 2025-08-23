@@ -20,7 +20,7 @@ import ProductTableContent from "@/src/app/(admin)/admin/products/components/Pro
 import {useProductsQuery} from "@/src/app/(admin)/admin/products/hooks/useProductsQuery";
 import ProductsTablePagination from "@/src/app/(admin)/admin/products/components/ProductTable/ProductsTablePagination";
 import {useRouter} from "next/navigation";
-import ImageModal from "@/src/app/(admin)/admin/portfolio/components/ImageModal";
+import ImageViewerModal from "@/src/components/shared/ImageViewerModal";
 
 interface ProductsTableProps {
     actionLoading: boolean;
@@ -171,14 +171,13 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
 
 
             {previewImage && (
-                <ImageModal
+                <ImageViewerModal
                     open={true}
                     openChange={() => setPreviewImage(null)}
-                    alt={previewImage.alt?.ru || ""}
+                    alt={previewImage.alt}
                     image={previewImage.url}
                 />
             )}
-
             <ImagesModal
                 open={isImagesModalOpen}
                 onClose={() => setIsImagesModalOpen(false)}
