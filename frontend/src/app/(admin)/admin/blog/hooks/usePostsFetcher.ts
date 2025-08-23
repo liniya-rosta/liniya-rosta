@@ -69,7 +69,10 @@ export const usePostsFetcher = () => {
     const handleFilterChange = useCallback((column: string, value: string) => {
         setFilters((prev) => ({ ...prev, [column]: value }));
         setPagination((prev) => ({ ...prev, pageIndex: 0 }));
-    }, []);
+        const params = new URLSearchParams(searchParams.toString());
+        params.set("page", "1");
+        router.push(`/admin/blog?${params.toString()}`, { scroll: false });
+    }, [router, searchParams]);
 
     const handleReorderImages = useCallback(async (postId: string, newOrder: ImageObject[]) => {
         try {

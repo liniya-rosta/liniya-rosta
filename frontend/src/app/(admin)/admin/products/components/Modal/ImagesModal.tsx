@@ -106,7 +106,7 @@ const ImagesModal: React.FC<Props> = ({open, onClose}) => {
             <DialogContent aria-describedby={undefined} className="!w-auto !max-w-6xl">
                 <DialogHeader className="flex justify-between items-center gap-4">
                     <DialogTitle>Галерея изображений</DialogTitle>
-                    <div className="flex gap-2">
+                    <div className="flex flex-wrap gap-2">
                         {selectionMode ? (
                             <>
                                 <Button
@@ -172,7 +172,7 @@ const ImagesModal: React.FC<Props> = ({open, onClose}) => {
                                         <div className="text-sm text-gray-700 line-clamp-2">{item.alt?.ru || "—"}</div>
                                     </CardContent>
 
-                                    <CardFooter className="flex justify-between gap-2 px-3 pb-3">
+                                    <CardFooter className="flex flex-wrap justify-between gap-2 px-3 pb-3">
                                         <Button
                                             variant="outline"
                                             size="sm"

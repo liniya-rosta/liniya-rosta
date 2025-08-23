@@ -32,12 +32,13 @@ const columnLabels: Record<string, string> = {
 
 const filterOptions = [
     { label: "По alt обложки", value: "coverAlt" },
+    { label: "По заголовку", value: "title" },
     { label: "По описанию", value: "description" },
 ];
 
 const TableControls: React.FC<Props> = ({table, showConfirm, setGalleryDelete, onFilterChange, setPersistedPageSize}) => {
     const { selectedToDelete } = useSuperAdminPortfolioStore()
-    const [filterColumn, setFilterColumn] = useState("coverAlt");
+    const [filterColumn, setFilterColumn] = useState("title");
     const filterValue = (table.getColumn(filterColumn)?.getFilterValue() as string) ?? "";
 
     return (

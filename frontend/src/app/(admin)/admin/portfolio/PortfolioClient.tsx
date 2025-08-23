@@ -70,7 +70,7 @@ const AdminPortfolioClient: React.FC<Props> = ({error}) => {
     const [selectedCover, setSelectedCover] = useState<{ cover: string; alt?: {ru: string} } | null>(null);
     const [isGalleryDelete, setGalleryDelete] = useState<boolean>(false);
     const [galleryEditSelectionMode, setGalleryEditSelectionMode] = useState(false);
-    const [filters, setFilters] = useState({ coverAlt: "", description: "" });
+    const [filters, setFilters] = useState({ coverAlt: "", description: "", title: "" });
     const initialPage = Number(searchParams.get("page")) || 1;
 
     const [pageSize, setPageSize] = usePersistedPageSize("admin_portfolio_table_size");
@@ -84,15 +84,18 @@ const AdminPortfolioClient: React.FC<Props> = ({error}) => {
     const updatePaginationAndData = async (searchValue = "", searchField = "coverAlt") => {
         try {
             const filters = {
+                title: "",
                 coverAlt: "",
                 description: "",
             };
+            if (searchField === "title") filters.coverAlt = searchValue;
             if (searchField === "coverAlt") filters.coverAlt = searchValue;
             if (searchField === "description") filters.description = searchValue;
 
             const data = await fetchPortfolioPreviews(
                 pagination.pageSize.toString(),
                 (pagination.pageIndex + 1).toString(),
+                filters.title,
                 filters.coverAlt,
                 filters.description
             );
@@ -116,7 +119,8 @@ const AdminPortfolioClient: React.FC<Props> = ({error}) => {
                 pagination.pageSize.toString(),
                 (pagination.pageIndex + 1).toString(),
                 filters.coverAlt,
-                filters.description
+                filters.description,
+                filters.title,
             );
             setPortfolioPreview(data.items);
             setPaginationPortfolio({
@@ -138,7 +142,9 @@ const AdminPortfolioClient: React.FC<Props> = ({error}) => {
     }, [ pagination.pageIndex,
         pagination.pageSize,
         filters.coverAlt,
-        filters.description,]);
+        filters.description,
+        filters.title,
+    ]);
 
     useEffect(() => {
         const selectedRows = table.getSelectedRowModel().rows;
@@ -147,6 +153,25 @@ const AdminPortfolioClient: React.FC<Props> = ({error}) => {
 
     useEffect(() => {
         setRowSelection({});
+    }, [pagination.pageIndex]);
+
+    useEffect(() => {
+        const urlPage = Number(searchParams.get("page")) || 1;
+        if (urlPage - 1 !== pagination.pageIndex) {
+            setPagination((prev) => ({
+                ...prev,
+                pageIndex: urlPage - 1,
+            }));
+        }
+    }, [searchParams]);
+
+    useEffect(() => {
+        const currentUrlPage = Number(searchParams.get("page")) || 1;
+        if (pagination.pageIndex + 1 !== currentUrlPage) {
+            const newParams = new URLSearchParams(searchParams.toString());
+            newParams.set("page", (pagination.pageIndex + 1).toString());
+            router.replace(`?${newParams.toString()}`);
+        }
     }, [pagination.pageIndex]);
 
     const handleDelete = async (id: string, isGallery: boolean) => {

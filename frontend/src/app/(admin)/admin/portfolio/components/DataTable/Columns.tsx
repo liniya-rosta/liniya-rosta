@@ -54,6 +54,7 @@ export const getColumns = (
     },
     {
         accessorKey: "title.ru",
+        id: "title",
         header: () => <div className="text-left">Заголовок</div>,
         cell: ({row}) => {
             const text = row.original.title?.ru || "—";
@@ -84,6 +85,7 @@ export const getColumns = (
     },
     {
         accessorKey: "seoTitle.ru",
+        id: "seoTitle",
         header: () => <div className="text-left">SEO заголовок</div>,
         cell: ({row}) => {
             const text = row.original.seoTitle?.ru || "—";
@@ -254,7 +256,7 @@ export const getColumns = (
                             Посмотреть галерею
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => onEditPortfolio(payment)}>
-                            <Edit2 className="mr-2 h-4 w-4 hover:text-popover""/>
+                            <Edit2 className="mr-2 h-4 w-4 hover:text-popover"/>
                             Редактировать
                         </DropdownMenuItem>
                         <DropdownMenuItem

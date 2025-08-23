@@ -157,7 +157,7 @@ const EditPortfolioForm: React.FC<Props> = ({openImagesModal, setPreviewImage, s
                 onConfirm={() => {
                     setShowConfirm(false);
                     router.push(
-                        paginationPortfolio ? `/admin/portfolio?page${paginationPortfolio?.page} ` : "/admin/portfolio"
+                        paginationPortfolio ? `/admin/portfolio?page=${paginationPortfolio?.page} ` : "/admin/portfolio"
                     );
                 }}
                 loading={editLoading}
