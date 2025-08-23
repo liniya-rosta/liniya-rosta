@@ -7,8 +7,6 @@ import {Dialog, DialogHeader} from '@/src/components/ui/dialog';
 import {Category, Product} from "@/src/lib/types";
 import {useCategoryStore} from "@/store/categoriesStore";
 import {useProductStore} from "@/store/productsStore";
-import {IMG_BASE} from "@/src/lib/globalConstants";
-import Image from "next/image";
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from '@/src/components/ui/card';
 import {Button} from '@/src/components/ui/button';
 import {Input} from '@/src/components/ui/input';
@@ -18,6 +16,7 @@ import {useLocale, useTranslations} from "next-intl";
 import {CustomContainer} from '@/src/components/shared/CustomContainer';
 import {DialogTitle} from "@radix-ui/react-dialog";
 import AnimatedEntrance from "@/src/components/shared/AnimatedEntrance";
+import CeilingsCard from "@/src/app/(public)/[locale]/ceilings/components/CeilingsCard";
 
 type Props = {
     initialProducts: Product[];
@@ -103,9 +102,7 @@ const CeilingsClient: React.FC<Props> = ({initialProducts, initialCategories}) =
         setSearchTerm('');
     }, []);
 
-    const handleImageError = useCallback((e: React.SyntheticEvent<HTMLImageElement>) => {
-        (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop';
-    }, []);
+
 
     const renderSkeleton = () => (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
@@ -139,31 +136,6 @@ const CeilingsClient: React.FC<Props> = ({initialProducts, initialCategories}) =
                     </Button>
                 )}
             </CardContent>
-        </Card>
-    );
-
-    const renderProductCard = (product: Product) => (
-        <Card key={product._id} className="overflow-hidden hover:shadow-lg transition-shadow">
-            <div className="relative w-full h-48">
-                <Image
-                    src={`${IMG_BASE}/${product.cover.url}`}
-                    fill
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    onError={handleImageError}
-                    alt={product.title[locale] || 'Product image'}
-                    className="object-cover"
-                    priority={false}
-                />
-            </div>
-            <CardHeader>
-                <CardTitle className="text-lg line-clamp-2">{product.title[locale]}</CardTitle>
-                <CardDescription className="line-clamp-2">
-                    {product.description?.[locale]}
-                </CardDescription>
-                <Badge variant="outline" className="w-fit">
-                    {product.category?.title[locale] || 'Без категории'}
-                </Badge>
-            </CardHeader>
         </Card>
     );
 
@@ -289,8 +261,10 @@ const CeilingsClient: React.FC<Props> = ({initialProducts, initialCategories}) =
                         renderSkeleton()
                     ) : filteredProducts.length > 0 ? (
                         <AnimatedEntrance direction="bottom"
-                                          className="grid grid-cols-[repeat(auto-fit,minmax(260px,1fr))] gap-6 justify-center">
-                            {filteredProducts.map(renderProductCard)}
+                                          className="grid grid-cols-[repeat(auto-fit,minmax(400px,1fr))] gap-6 justify-center">
+                            {filteredProducts.map(product => (
+                                <CeilingsCard key={product._id} product={product} />
+                            ))}
                         </AnimatedEntrance>
                     ) : (
                         renderEmptyState()

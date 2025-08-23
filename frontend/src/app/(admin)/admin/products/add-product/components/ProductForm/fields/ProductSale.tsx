@@ -6,6 +6,7 @@ import {Input} from "@/src/components/ui/input";
 import {UseFormReturn} from "react-hook-form";
 import {CreateProductFormData} from "@/src/lib/zodSchemas/admin/productSchema";
 import {useAdminProductStore} from "@/store/superadmin/superadminProductsStore";
+import dayjs from "dayjs";
 
 interface Props {
     form: UseFormReturn<CreateProductFormData>;
@@ -62,6 +63,36 @@ const ProductSale: React.FC<Props> = ({form}) => {
                             </FormErrorMessage>
                         )}
                     </FormItem>
+
+                )}
+            />
+
+            <FormField
+                control={form.control}
+                name="sale.saleDate"
+                render={({field}) => (
+                    <FormItem>
+                        <FormLabel>Делайн акции</FormLabel>
+                        <FormControl>
+                            <Input
+                                type="date"
+                                value={field.value ? dayjs(field.value).format("YYYY-MM-DD") : ""}
+                                onChange={(e) =>
+                                    field.onChange(
+                                        e.target.value ? e.target.value : null
+                                    )
+                                }
+                                placeholder="Скидка действует до"
+                                disabled={createLoading}
+                            />
+                        </FormControl>
+                        {form.formState.errors.sale?.saleDate?.message && (
+                            <FormErrorMessage>
+                                {form.formState.errors.sale?.saleDate?.message}
+                            </FormErrorMessage>
+                        )}
+                    </FormItem>
+
                 )}
             />
         </div>

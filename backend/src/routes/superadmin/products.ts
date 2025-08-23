@@ -103,6 +103,7 @@ productsSuperAdminRouter.post("/", productImage.fields([
             sale: {
                 isOnSale: req.body.isOnSale === 'true',
                 label: req.body.saleLabel,
+                saleDate: req.body.saleDate,
             },
             icon: iconFile ? {
                 url: `product/${iconFile.filename}`,
@@ -294,7 +295,7 @@ productsSuperAdminRouter.patch("/:id", productImage.fields([
         }
 
         if (!product.sale) {
-            product.sale = {isOnSale: false, label: ""};
+            product.sale = {isOnSale: false, label: "", saleDate: null};
         }
 
         if (req.body.isOnSale !== undefined) {
@@ -303,6 +304,10 @@ productsSuperAdminRouter.patch("/:id", productImage.fields([
 
         if (req.body.saleLabel !== undefined) {
             product.sale.label = req.body.saleLabel || ''
+        }
+
+        if (req.body.saleDate !== undefined) {
+            product.sale.saleDate = req.body.saleDate;
         }
 
         if (iconFile) {

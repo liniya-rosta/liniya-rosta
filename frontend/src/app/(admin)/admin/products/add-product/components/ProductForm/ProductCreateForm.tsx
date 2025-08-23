@@ -26,6 +26,7 @@ import ProductBtns
     from "@/src/app/(admin)/admin/products/add-product/components/ProductForm/fields/ProductActions/ProductBtns";
 import ProductSEO from "@/src/app/(admin)/admin/products/add-product/components/ProductForm/fields/ProductSEO";
 import {handleKyError} from "@/src/lib/handleKyError";
+import dayjs from "dayjs";
 
 interface Props {
     initialCategories: Category[];
@@ -63,6 +64,7 @@ const ProductCreateForm: React.FC<Props> = ({initialCategories, initialCategorie
             sale: {
                 isOnSale: false,
                 label: "",
+                saleDate: null,
             },
             icon: null,
             iconAlt: {ru: ""},
@@ -73,6 +75,12 @@ const ProductCreateForm: React.FC<Props> = ({initialCategories, initialCategorie
 
     const onSubmit = async (data: CreateProductFormData) => {
         data.images = data.images.filter(image => image.image instanceof File);
+        if (data.sale) {
+            data.sale.saleDate = data.sale.saleDate
+                ? dayjs(data.sale.saleDate).toISOString()
+                : null;
+        }
+        console.log(data)
         try {
             setCreateLoading(true);
             setCreateError(null);

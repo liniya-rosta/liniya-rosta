@@ -100,10 +100,17 @@ const ProductDetailView: React.FC<Props> = ({productData, fetchProductError}) =>
                 <div className="space-y-6">
                     <h1 className="text-3xl font-bold">{product.title[locale]}</h1>
                     <p className="text-muted-foreground text-lg">{product.description?.[locale]}</p>
-                    <Badge variant="secondary" className="text-sm px-3 py-1">
-                        {product.category.title[locale]}
-                    </Badge>
-
+                    <div className="flex flex-col  gap-2">
+                        <Badge variant="secondary" className="text-sm px-3 py-1">
+                            Категория: {product.category.title[locale]}
+                        </Badge>
+                        {product.sale ?
+                            <Badge variant="destructive" className="text-sm px-3 py-1">
+                                Скидка: {product.sale?.label}
+                            </Badge>
+                            : null
+                        }
+                    </div>
                     {Array.isArray(product.characteristics) && product.characteristics.length > 0 ? (
                         <div className="space-y-3 mt-6">
                             <h2 className="font-semibold text-lg">Характеристики</h2>

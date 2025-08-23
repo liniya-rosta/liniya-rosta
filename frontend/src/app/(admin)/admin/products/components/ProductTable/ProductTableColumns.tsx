@@ -21,7 +21,7 @@ export const getProductTableColumns = (
     onEditProduct: (product: Product) => void,
     actionLoading: boolean,
     onImageClick: (image: { url: string; alt: { ru: string, ky: string } }) => void,
-    onSaleLabelClick: (label: string) => void,
+    onSaleLabelClick: (label: string, saleDate?: string) => void,
 onImagesClick: (data: {
         productId: string;
         images: { image: string; alt?: { ru: string, ky: string } | null; _id?: string }[]
@@ -231,8 +231,9 @@ onImagesClick: (data: {
         {
             accessorKey: "sale",
             header: "Скидка",
-            cell: ({row}) => {
+            cell: ({ row }) => {
                 const saleLabel = row.original.sale?.label;
+                const saleDate = row.original.sale?.saleDate;
 
                 if (!row.original.sale?.isOnSale) return "—";
 
@@ -240,20 +241,20 @@ onImagesClick: (data: {
                     return (
                         <Tooltip>
                             <TooltipTrigger asChild>
-                                <span
-                                    className="inline-flex items-center justify-center w-8 h-8 cursor-pointer"
-                                    onClick={() => onSaleLabelClick(saleLabel)}
-                                >
-                                    Да
-                                </span>
+                    <span
+                        className="inline-flex items-center justify-center w-8 h-8 cursor-pointer"
+                        onClick={() => onSaleLabelClick(saleLabel, saleDate)}
+                    >
+                        Да
+                    </span>
                             </TooltipTrigger>
                             <TooltipContent>
-                                <p>Нажмите чтобы подробнее посмотреть акцию</p>
+                                <p>Нажмите, чтобы подробнее посмотреть акцию</p>
                             </TooltipContent>
                         </Tooltip>
                     );
                 } else {
-                    return 'Да';
+                    return "Да";
                 }
             },
         },

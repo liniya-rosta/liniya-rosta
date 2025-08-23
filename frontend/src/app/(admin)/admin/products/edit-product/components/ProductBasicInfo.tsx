@@ -6,6 +6,8 @@ import {Button} from "@/src/components/ui/button";
 import Image from "next/image";
 import {Trash2} from "lucide-react";
 import {
+    Control,
+    Controller,
     FieldArrayWithId,
     FieldErrors,
     UseFieldArrayAppend,
@@ -29,6 +31,7 @@ interface ProductBasicInfoProps {
     onIconChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     characteristicFields: FieldArrayWithId<UpdateProductFormData, "characteristics">[];
     removeCharacteristic: UseFieldArrayRemove;
+    control: Control<UpdateProductFormData>;
 }
 
 const ProductBasicInfo: React.FC<ProductBasicInfoProps> = ({
@@ -45,12 +48,13 @@ const ProductBasicInfo: React.FC<ProductBasicInfoProps> = ({
                                                                onIconChange,
                                                                characteristicFields,
                                                                removeCharacteristic,
+                                                               control
                                                            }) => {
     return (
         <>
             <div>
                 <Label className="mb-2 block">Название товара</Label>
-                <Input type="text" placeholder="Введите цепляющий заголовок" {...register("title.ru")}
+                <Input className="mb-2" type="text" placeholder="Введите цепляющий заголовок" {...register("title.ru")}
                        disabled={updateLoading}/>
                 {errors.title?.ru && <FormErrorMessage>{errors.title.ru.message}</FormErrorMessage>}
             </div>
@@ -58,7 +62,7 @@ const ProductBasicInfo: React.FC<ProductBasicInfoProps> = ({
             <div>
                 <Label className="mb-2 block">Категория</Label>
                 <select {...register("category")} disabled={updateLoading}
-                        className="w-full rounded-md text-sm border border-gray-300 bg-gray-50 px-4 py-2 text-gray-900">
+                        className="mb-2 w-full rounded-md text-sm border border-gray-300 bg-gray-50 px-4 py-2 text-gray-900">
                     <option value="">Выберите категорию</option>
                     {categories.map((cat) => (
                         <option key={cat._id} value={String(cat._id)}>
@@ -71,19 +75,19 @@ const ProductBasicInfo: React.FC<ProductBasicInfoProps> = ({
 
             <div>
                 <Label className="mb-2 block">Описание</Label>
-                <Input placeholder="Описание" {...register("description.ru")} disabled={updateLoading}/>
+                <Input className="mb-2" placeholder="Описание" {...register("description.ru")} disabled={updateLoading}/>
                 {errors.description?.ru && <FormErrorMessage>{errors.description.ru.message}</FormErrorMessage>}
             </div>
 
             <div>
                 <Label className="mb-2 block">SEO заголовок</Label>
-                <Input placeholder="SEO заголовок" {...register("seoTitle.ru")} disabled={updateLoading}/>
+                <Input className="mb-2" placeholder="SEO заголовок" {...register("seoTitle.ru")} disabled={updateLoading}/>
                 {errors.seoTitle?.ru && <FormErrorMessage>{errors.seoTitle.ru.message}</FormErrorMessage>}
             </div>
 
             <div>
                 <Label className="mb-2 block">SEO описание</Label>
-                <Input placeholder="SEO описание" {...register("seoDescription.ru")} disabled={updateLoading}/>
+                <Input className="mb-2" placeholder="SEO описание" {...register("seoDescription.ru")} disabled={updateLoading}/>
                 {errors.seoDescription?.ru && <FormErrorMessage>{errors.seoDescription.ru.message}</FormErrorMessage>}
             </div>
 
@@ -124,15 +128,34 @@ const ProductBasicInfo: React.FC<ProductBasicInfoProps> = ({
             <div className="grid grid-cols-2 gap-4">
                 <div>
                     <Label className="mb-2 block">Товар по акции?</Label>
-                    <select {...register("sale.isOnSale")} disabled={updateLoading}
-                            className="w-full rounded-md text-sm border border-gray-300 bg-gray-50 px-4 py-2 text-gray-900">
-                        <option value="true">Да</option>
-                        <option value="false">Нет</option>
-                    </select>
+                    <Controller
+                        name="sale.isOnSale"
+                        control={control}
+                        render={({field}) => (
+                            <select
+                                {...field}
+                                value={field.value ? "true" : "false"}
+                                onChange={(e) => field.onChange(e.target.value === "true")}
+                                disabled={updateLoading}
+                                className="w-full rounded-md text-sm border border-gray-300 bg-gray-50 px-4 py-2 text-gray-900"
+                            >
+                                <option value="false">Нет</option>
+                                <option value="true">Да</option>
+                            </select>
+                        )}
+                    />
+                    {errors.sale?.isOnSale && <FormErrorMessage>{errors.sale.isOnSale.message}</FormErrorMessage>}
                 </div>
                 <div>
                     <Label className="mb-2 block">Текст акции</Label>
-                    <Input placeholder="Например: -20%" {...register("sale.label")} disabled={updateLoading}/>
+                    <Input className="mb-2" placeholder="Например: -20%" {...register("sale.label")} disabled={updateLoading}/>
+                    {errors.sale?.label && <FormErrorMessage>{errors.sale?.label.message}</FormErrorMessage>}
+                </div>
+                <div>
+                    <Label className="mb-2 block">Дедлайн скидки</Label>
+                    <Input className="mb-2" type="date" placeholder="Скидка продлится до" {...register("sale.saleDate")}
+                           disabled={updateLoading}/>
+                    {errors.sale?.saleDate && <FormErrorMessage>{errors.sale?.saleDate.message}</FormErrorMessage>}
                 </div>
             </div>
 
