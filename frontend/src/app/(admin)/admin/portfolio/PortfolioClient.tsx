@@ -190,6 +190,7 @@ const AdminPortfolioClient: React.FC<Props> = ({error}) => {
                 if (detailItem) {
                     const updated = await fetchPortfolioItem(detailItem._id);
                     setPortfolioItemDetail(updated);
+                    await updatePaginationAndData();
                 }
             } else {
                 await deletePortfolio(id);
