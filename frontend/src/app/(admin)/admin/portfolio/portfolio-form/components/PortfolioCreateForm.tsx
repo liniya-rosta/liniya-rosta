@@ -67,10 +67,7 @@ const PortfolioCreateForm = () => {
         try {
             setPortfolioCreateLoading(true)
             await createPortfolio(data)
-            router.push(paginationPortfolio
-                ? `/admin/portfolio?page${paginationPortfolio?.page} `
-                : "/admin/portfolio"
-            );
+            router.push("/admin/portfolio");
             toast.success("Успешно создано портфолио")
         } catch (error) {
             const msg = await handleKyError(error, "Неизвестная ошибка при создании портфолио");

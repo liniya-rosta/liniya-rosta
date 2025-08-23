@@ -25,11 +25,11 @@ export const portfolioSchema = z.object({
         .array(
             z.object({
                 alt: z
-                    .string({ required_error: "Альтернативный текст обязателен" })
-                    .min(1, "Пропишите описание изображения"),
+                    .string()
+                    .optional(),
                 image: z
                     .instanceof(File, { message: "Добавьте изображение" })
-                    .nullable(),
+                    .nullable()
             })
         )
         .min(1, "Добавьте хотя бы одно изображение в галерею"),

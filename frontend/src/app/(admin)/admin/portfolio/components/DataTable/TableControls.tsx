@@ -23,6 +23,7 @@ interface Props {
 
 const columnLabels: Record<string, string> = {
     index: "№",
+    title: "title",
     coverAlt: "Альтер-ое название обложки",
     description: "Описание",
     galleryCount: "Кол-во изображений",
@@ -97,7 +98,7 @@ const TableControls: React.FC<Props> = ({table, showConfirm, setGalleryDelete, o
                                     setPersistedPageSize(pageSize);
                                 }}
                             >
-                                {pageSize} элементов
+                                {pageSize} элементов {pageSize === table.getState().pagination.pageSize && '✓'}
                             </DropdownMenuItem>
                         ))}
                     </DropdownMenuContent>

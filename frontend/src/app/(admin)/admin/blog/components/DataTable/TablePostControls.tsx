@@ -93,7 +93,7 @@ const TablePostControls: React.FC<Props> = ({ table, onFilterChange, handleBulkD
                                         setPersistedPageSize(pageSize);
                                     }}
                                 >
-                                    {pageSize} элементов
+                                    {pageSize} элементов {pageSize === table.getState().pagination.pageSize && '✓'}
                                 </DropdownMenuItem>
                             ))}
                         </DropdownMenuContent>
