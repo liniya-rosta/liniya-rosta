@@ -139,6 +139,7 @@ const AdminPortfolioClient: React.FC<Props> = ({error}) => {
 
     useEffect(() => {
         void fetchData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [ pagination.pageIndex,
         pagination.pageSize,
         filters.coverAlt,
@@ -149,6 +150,7 @@ const AdminPortfolioClient: React.FC<Props> = ({error}) => {
     useEffect(() => {
         const selectedRows = table.getSelectedRowModel().rows;
         setSelectedToDelete(selectedRows.map(row => row.original._id));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [rowSelection]);
 
     useEffect(() => {
@@ -163,6 +165,7 @@ const AdminPortfolioClient: React.FC<Props> = ({error}) => {
                 pageIndex: urlPage - 1,
             }));
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [searchParams]);
 
     useEffect(() => {
@@ -172,6 +175,7 @@ const AdminPortfolioClient: React.FC<Props> = ({error}) => {
             newParams.set("page", (pagination.pageIndex + 1).toString());
             router.replace(`?${newParams.toString()}`);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [pagination.pageIndex]);
 
     const handleDelete = async (id: string, isGallery: boolean) => {
