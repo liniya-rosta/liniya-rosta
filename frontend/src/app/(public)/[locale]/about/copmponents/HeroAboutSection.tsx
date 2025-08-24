@@ -10,6 +10,7 @@ import {useTranslations} from "next-intl";
 const HeroAboutSection = () => {
     const [isModalTopOpen, setIsModalTopOpen] = React.useState(false);
     const tBtn = useTranslations("Buttons");
+    const tAboutPage = useTranslations("AboutPage");
 
     return (
         <section className="bg-[#f7f3ed] flex rounded-xl md:h-[500px] items-center justify-center px-9 py-20 md:py-0">
@@ -25,11 +26,10 @@ const HeroAboutSection = () => {
 
                     <div className="space-y-6 text-center md:text-left">
                         <h1 className="text-30-48-1_2 font-bold">
-                            О компании
+                            {tAboutPage("title")}
                         </h1>
                         <p className="text-lg text-foreground/60">
-                            Наша компания - современный центр решений для интерьера
-                            Мы предлагаем всё для стильного, функционального и долговечного ремонта.
+                            {tAboutPage("description")}
                         </p>
                         <Dialog open={isModalTopOpen} onOpenChange={setIsModalTopOpen}>
                             <DialogTrigger asChild>
