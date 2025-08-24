@@ -205,6 +205,10 @@
         border: 1px solid var(--highlight);
     }
 
+    .border-b-highlight {
+        border-bottom: 2px solid var(--highlight);
+    }
+
     .underline-animate {
         @apply relative inline-block;
     }

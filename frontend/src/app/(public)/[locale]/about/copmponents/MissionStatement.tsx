@@ -14,15 +14,15 @@ const MissionStatement = async () => {
 
                 <div className="grid md:grid-cols-2 gap-12">
                     <div className="flex items-start space-x-6">
-                        <span className="text-7xl font-bold text-highlight-light">1</span>
-                        <p className="text-foreground/60 text-lg leading-relaxed">
+                        <span className="hidden sm:inline text-7xl font-bold text-highlight-light">1</span>
+                        <p className="text-center sm:text-left text-foreground/60 text-lg leading-relaxed">
                             {tAboutPage("MissionBlock1")}
                         </p>
                     </div>
 
                     <div className="flex items-start space-x-6">
-                        <span className="text-7xl font-bold text-highlight-light">2</span>
-                        <p className="text-foreground/60 text-lg leading-relaxed">
+                        <span className="hidden sm:inline text-7xl font-bold text-highlight-light">2</span>
+                        <p className="text-center sm:text-left text-foreground/60 text-lg leading-relaxed">
                             {tAboutPage("MissionBlock2")}
                         </p>
                     </div>

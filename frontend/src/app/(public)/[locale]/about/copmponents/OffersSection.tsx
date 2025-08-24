@@ -1,6 +1,5 @@
 import React from 'react';
 import {Lamp, Wallpaper, Paintbrush, Ruler} from "lucide-react"
-import {Card, CardHeader, CardTitle, CardContent} from "@/src/components/ui/card"
 import Link from "next/link";
 import {getTranslations} from "next-intl/server";
 
@@ -39,21 +38,23 @@ const OffersSection = async () => {
     ];
     return (
         <section>
-            <h2 className="text-23-30-1_5 font-bold text-center mb-12">
+            <h2 className="text-23-30-1_5 font-bold w-max mx-auto mb-12 border-b-highlight">
                 {tAboutPage("OffersTitle")}
             </h2>
 
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
                 {offers.map((offer, index) => (
-                    <Card key={index} className="light-shadow-card">
-                        <Link href={offer.link}>
-                            <CardHeader className="flex items-center gap-3 mb-3">
+                    <div key={index} className="light-shadow-card border border-foreground/10 px-6 py-10">
+                        <Link href={offer.link} >
+                            <div className="flex items-center gap-3 mb-3">
                                 <offer.icon className={`w-8 h-8 ${offer.color}`}/>
-                                <CardTitle>{offer.title}</CardTitle>
-                            </CardHeader>
-                            <CardContent>{offer.description}</CardContent>
+                                <h4 className="font-bold text-primary">
+                                    {offer.title}
+                                </h4>
+                            </div>
+                            <div className="text-foreground/60">{offer.description}</div>
                         </Link>
-                    </Card>
+                    </div>
                 ))}
             </div>
 

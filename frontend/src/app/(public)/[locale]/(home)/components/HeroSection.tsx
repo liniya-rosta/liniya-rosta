@@ -49,7 +49,7 @@ const HeroSection: React.FC<Props> = ({title}) => {
                                     <DialogTrigger asChild>
                                         <Button
                                             size="lg"
-                                            className="min-w-[180px] font-semibold shadow-md btn-hover-scale">
+                                            className="min-w-[180px] font-semibold shadow-md btn-highlight btn-hover-scale">
                                             {tBtn("requestBtn1")}
                                         </Button>
                                     </DialogTrigger>

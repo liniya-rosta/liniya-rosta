@@ -184,27 +184,7 @@
 
     "CertificatesTitle": "Сертификаты",
     "WallpaperCertsTitle": "Сертификаты на обои",
-    "FilmCertsTitle": "Сертификаты на плёнку",
-
-    "WallpaperCert1": "Обои тканые КМ1",
-    "WallpaperCert2": "Протокол испытаний",
-    "WallpaperCert3": "Сертификат соответствия",
-    "WallpaperCert4": "Эко сертификат",
-    "WallpaperCert5": "Экспертное заключение на нетканой основе",
-    "WallpaperCert6": "Экспертное заключение на тканой основе",
-
-    "FilmCert1": "Тесты на плёнку RoHS",
-    "FilmCert2": "Тесты на плёнку EN71",
-    "FilmCert3": "ГОСТ Р ИСО",
-    "FilmCert4": "Сертификат соответствия MSD Ideal Home Prestige и Evo КМ3",
-    "FilmCert5": "REACH",
-    "FilmCert6": "Пожарная декларация",
-    "FilmCert7": "ЭКО",
-    "FilmCert8": "Сертификат MSD Classic Profi Standart",
-    "FilmCert9": "A+",
-    "FilmCert10": "Арталикс Идеал",
-    "FilmCert11": "РОСЭКОАРТАЛИКС",
-    "FilmCert12": "Сертификат соответствия MSD Ideal Home IDEAL КМ4"
+    "FilmCertsTitle": "Сертификаты на плёнку"
   },
 
   "NotFound": {

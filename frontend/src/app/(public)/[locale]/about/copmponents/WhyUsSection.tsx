@@ -24,35 +24,39 @@ const WhyUsSection = () => {
 
                     <div className="flex flex-col gap-6">
                         <div className="p-6 space-y-6">
-                            <p>
+                            <p className="text-center md:text-left">
                                 {tAboutPage("WhyUsBlock1")}
                             </p>
-                            <Dialog open={isModalTopOpen} onOpenChange={setIsModalTopOpen}>
-                                <DialogTrigger asChild>
-                                    <Button
-                                        size="lg"
-                                        className="min-w-[180px] font-semibold shadow-md btn-hover-scale">
-                                        {tAboutPage("WhyUsBtn1")}
-                                    </Button>
-                                </DialogTrigger>
-                                <RequestForm closeModal={() => setIsModalTopOpen(false)}/>
-                            </Dialog>
+                            <div className="flex justify-center md:justify-start">
+                                <Dialog open={isModalTopOpen} onOpenChange={setIsModalTopOpen}>
+                                    <DialogTrigger asChild>
+                                        <Button
+                                            size="lg"
+                                            className="min-w-[180px] font-semibold shadow-md btn-highlight btn-hover-scale">
+                                            {tAboutPage("WhyUsBtn1")}
+                                        </Button>
+                                    </DialogTrigger>
+                                    <RequestForm closeModal={() => setIsModalTopOpen(false)}/>
+                                </Dialog>
+                            </div>
                         </div>
 
                         <div className="p-6 space-y-6">
-                            <p>
+                            <p className="text-center md:text-left">
                                 {tAboutPage("WhyUsBlock2")}
                             </p>
-                            <Dialog open={isModalTopOpen} onOpenChange={setIsModalTopOpen}>
-                                <DialogTrigger asChild>
-                                    <Button
-                                        size="lg"
-                                        className="min-w-[180px] font-semibold shadow-md btn-hover-scale">
-                                        {tAboutPage("WhyUsBtn2")}
-                                    </Button>
-                                </DialogTrigger>
-                                <RequestForm closeModal={() => setIsModalTopOpen(false)}/>
-                            </Dialog>
+                            <div className="flex justify-center md:justify-start">
+                                <Dialog open={isModalTopOpen} onOpenChange={setIsModalTopOpen}>
+                                    <DialogTrigger asChild>
+                                        <Button
+                                            size="lg"
+                                            className="min-w-[180px] font-semibold shadow-md btn-highlight btn-hover-scale">
+                                            {tAboutPage("WhyUsBtn2")}
+                                        </Button>
+                                    </DialogTrigger>
+                                    <RequestForm closeModal={() => setIsModalTopOpen(false)}/>
+                                </Dialog>
+                            </div>
                         </div>
                     </div>
                 </div>
