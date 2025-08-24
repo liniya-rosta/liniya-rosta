@@ -192,8 +192,13 @@ export interface Post {
     seoDescription: { ru: string, ky: string };
 }
 
+
 export interface PostResponse extends PaginationMeta {
     items: Post[];
+}
+
+export interface ProductResponse extends PaginationMeta {
+    items: Product[];
 }
 
 export interface UpdateImagePost {
