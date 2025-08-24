@@ -60,7 +60,7 @@ const ChatContainer = () => {
     };
 
     return (
-        <div className={`fixed ${isChatOpen ? "bottom-0" : " bottom-40"} md:bottom-40 right-0 xl:right-50 z-50`}>
+        <div className={`fixed ${isChatOpen ? "bottom-0" : " bottom-40"} md:bottom-40 right-0 2xl:right-50 z-50`}>
             <div
                 className={`flex flex-col ${
                     isChatOpen
