@@ -85,7 +85,11 @@ export const updateProduct = async (id: string, productData: UpdateProductFormDa
             formData.append('saleDate', productData.sale.saleDate);
         }
     }
-    if (productData.icon instanceof File) formData.append('icon', productData.icon);
+    if (productData.icon instanceof File) {
+        formData.append('icon', productData.icon)
+    } else if (productData.icon === null) {
+        formData.append('icon', "")
+    }
     if (productData.iconAlt) formData.append('iconAlt', productData.iconAlt.ru);
 
     formData.append("mode", mode);

@@ -1,6 +1,6 @@
 'use client'
 
-import React, {useEffect} from 'react';
+import React, {useCallback, useEffect} from 'react';
 import {FetchRequestsResponse} from "@/src/lib/types";
 import {fetchAllRequests} from "@/actions/superadmin/requests";
 import {useAdminRequestsStore} from "@/store/superadmin/adminRequestsStore";
@@ -23,27 +23,27 @@ const RequestsPage = () => {
         setTotalItems,
     } = useAdminRequestsStore()
 
+    const getDataFetch = useCallback(async () => {
+        setFetchAllLoading(true);
+        setFetchAllError(null);
+
+        try {
+            const response: FetchRequestsResponse = await fetchAllRequests({ page: 1, archived: false });
+            setRequests(response.data);
+            setPage(1);
+            setLastPage(response.totalPages);
+            setTotalItems(response.totalItems);
+        } catch (e) {
+            const msg = await handleKyError(e, "Произошла ошибка при получении заявок");
+            setFetchAllError(msg);
+        } finally {
+            setFetchAllLoading(false);
+        }
+    }, [setFetchAllError, setFetchAllLoading, setLastPage, setPage, setRequests, setTotalItems]);
+
     useEffect(() => {
-        const getDataFetch = async () => {
-            setFetchAllLoading(true);
-            setFetchAllError(null);
-
-            try {
-                const response: FetchRequestsResponse = await fetchAllRequests({page: 1, archived: false});
-                setRequests(response.data);
-                setPage(1);
-                setLastPage(response.totalPages);
-                setTotalItems(response.totalItems);
-            } catch (e) {
-                const msg = await handleKyError(e, "Произошла ошибка при получении заявок");
-                setFetchAllError(msg);
-            } finally {
-                setFetchAllLoading(false);
-            }
-        };
-
-        getDataFetch().then();
-    }, []);
+        void getDataFetch();
+    }, [getDataFetch]);
 
     if (fetchAllLoading) return <DataSkeleton/>
     if (fetchAllError) return <ErrorMsg error={fetchAllError}/>

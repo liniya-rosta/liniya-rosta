@@ -46,7 +46,7 @@ const PortfolioClient: React.FC<Props> = ({data, error, limit}) => {
             void updatedData(data);
         }
         setFetchErrorPortfolio(error);
-    }, [data, error]);
+    }, [data, error, setFetchErrorPortfolio, updatedData]);
 
     if (fetchLoadingPortfolio) return <LoadingFullScreen/>
     if (fetchErrorPortfolio) return <ErrorMsg error={fetchErrorPortfolio}/>;
@@ -71,6 +71,7 @@ const PortfolioClient: React.FC<Props> = ({data, error, limit}) => {
                                         <CartPortfolio
                                             alt={item.coverAlt[locale]}
                                             imageSrc={imageUrl}
+                                            title={item.title}
                                         />
                                     </Link>
                                 );

@@ -10,6 +10,18 @@ const GalleryItemSchema = new Schema({
 });
 
 const PortfolioItemSchema = new mongoose.Schema({
+    title: {
+        ru: {
+            type: String,
+            required:[true, "Альтер-ое название портфолио обязательно"],
+            maxLength: 120,
+        },
+        ky: {
+            type: String,
+            required:true,
+            maxLength: 120,
+        }
+    },
     cover: {
         type: String,
         required: [true, "Поле обложки портфолио обязательно"],

@@ -14,14 +14,14 @@ interface Props {
 
 const ChatIconsButtons: React.FC<Props> = ({isChatOpen, isMenuOpen, onSelectChat, onMainButtonClick}) => {
     return (
-        <div className="fixed bottom-24 right-24 flex flex-col items-center gap-3 z-50">
+        <div className="relative flex flex-col justify-end items-center gap-3">
             <AnimatePresence>
                 {isMenuOpen && !isChatOpen && (
                     <>
                         <motion.button
                             key="online"
                             initial={{ opacity: 0, y: 0, scale: 0.5 }}
-                            animate={{ opacity: 1, y: -120, scale: 1 }}
+                            animate={{ opacity: 1, y: -126, scale: 1 }}
                             exit={{ opacity: 0, y: 0, scale: 0.5 }}
                             transition={{ type: "spring", stiffness: 300, damping: 20, delay: 0.05 }}
                             className="w-12 h-12 rounded-full bg-blue-500 flex items-center justify-center shadow-lg absolute cursor-pointer"
@@ -35,7 +35,7 @@ const ChatIconsButtons: React.FC<Props> = ({isChatOpen, isMenuOpen, onSelectChat
                         <motion.button
                             key="whatsapp"
                             initial={{ opacity: 0, y: 0, scale: 0.5 }}
-                            animate={{ opacity: 1, y: -60, scale: 1 }}
+                            animate={{ opacity: 1, y: -70, scale: 1 }}
                             exit={{ opacity: 0, y: 0, scale: 0.5 }}
                             transition={{ type: "spring", stiffness: 300, damping: 20 }}
                             className="w-12 h-12 rounded-full bg-green-500 flex items-center justify-center shadow-lg absolute cursor-pointer"
@@ -58,12 +58,11 @@ const ChatIconsButtons: React.FC<Props> = ({isChatOpen, isMenuOpen, onSelectChat
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.5 }}
                         transition={{ duration: 0.2 }}
-                        className="bg-highlight-light rounded-full shadow-lg flex items-center justify-center cursor-pointer"
-                        style={{ width: 70, height: 70 }}
+                        className="bg-highlight-light w-12 h-12 md:w-15 md:h-15 rounded-full shadow-lg flex items-center justify-center cursor-pointer"
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.95 }}
                     >
-                        <Headset className="text-white w-10 h-10 relative z-10" />
+                        <Headset className="text-white h-7 w-7 md:w-8 md:h-8 relative z-10" />
                     </motion.button>
                 </AnimatePresence>
             )}

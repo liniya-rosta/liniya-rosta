@@ -26,7 +26,7 @@ interface Props {
 const ProductEditForm: React.FC<Props> = ({openImagesModal, setPreviewImage, setIsPreviewOpen}) => {
     const router = useRouter();
     const {categories, fetchCategoriesLoading, setCategories, setFetchCategoriesLoading} = useAdminCategoryStore();
-    const {updateLoading, setUpdateError, productDetail, paginationProduct} = useAdminProductStore();
+    const {updateLoading, setUpdateError, productDetail, paginationProduct, setUpdateLoading} = useAdminProductStore();
 
     const {
         register,
@@ -152,20 +152,21 @@ const ProductEditForm: React.FC<Props> = ({openImagesModal, setPreviewImage, set
     const onCoverChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
-        setValue("cover", file);
+        setValue("cover", file, { shouldDirty: true, shouldValidate: true });
         setCoverPreview(URL.createObjectURL(file));
     };
 
     const onIconChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
-        setValue("icon", file);
+        setValue("icon", file, { shouldDirty: true, shouldValidate: true });
         setIconPreview(URL.createObjectURL(file));
     };
 
     const onSubmit = async (data: UpdateProductFormData) => {
         try {
             setUpdateError(null);
+            setUpdateLoading(true);
             if (replaceAllImages) {
                 await updateProduct(productDetail._id, data, "replace");
             } else {
@@ -177,8 +178,12 @@ const ProductEditForm: React.FC<Props> = ({openImagesModal, setPreviewImage, set
         } catch (e) {
             const msg = await handleKyError(e, "Ошибка при обновлении продукта");
             toast.error(msg);
+            setUpdateLoading(false);
             console.error(msg);
+        } finally {
+            setUpdateLoading(false);
         }
+
     };
 
     return (
@@ -198,6 +203,8 @@ const ProductEditForm: React.FC<Props> = ({openImagesModal, setPreviewImage, set
                                   onIconChange={onIconChange}
                                   characteristicFields={characteristicFields}
                                   removeCharacteristic={removeCharacteristic}
+                                  setIconPreview={setIconPreview}
+                                  setValue={setValue}
                                   control={control}
                 />
 

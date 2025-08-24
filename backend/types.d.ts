@@ -74,6 +74,21 @@ export interface GalleryUpdate {
     "gallery.$.alt.ky"?: string;
 }
 
+export interface PortfolioFiles {
+    cover?: Express.Multer.File[];
+    gallery?: Express.Multer.File[];
+}
+
+export interface PortfolioUpdate {
+    title?: string;
+    description?: string;
+    seoTitle?: string;
+    seoDescription?: string;
+    coverAlt?: string;
+    slug?: string;
+    mode?: "append" | "replace";
+    alts?: string | string[];
+}
 
 export interface ServiceUpdate {
     title?: {

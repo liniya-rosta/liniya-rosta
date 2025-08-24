@@ -21,11 +21,20 @@ RUN npm run build
 FROM node:22-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production
+
+RUN addgroup -g 10001 -S app \
+ && adduser -u 10001 -S -G app app
+
 COPY package*.json ./
 RUN npm ci --omit=dev --no-audit --no-fund
+
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/public ./public
-RUN addgroup -S app && adduser -S app -G app && chown -R app:app /app
-USER app
+
+RUN mkdir -p /app/public/{posts,products,portfolio} \
+ && chown -R 10001:10001 /app
+
+USER 10001:10001
+
 EXPOSE 8000
 CMD ["node", "dist/index.js"]

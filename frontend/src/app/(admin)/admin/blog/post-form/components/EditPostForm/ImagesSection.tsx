@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {UseFormRegister, Control, FieldErrors, UseFieldArrayAppend} from 'react-hook-form';
 import {Button} from '@/src/components/ui/button';
 import {Plus, Eye} from 'lucide-react';
@@ -7,6 +7,7 @@ import FormErrorMessage from '@/src/components/ui/FormErrorMessage';
 import {Input} from '@/src/components/ui/input';
 import {UpdatePostFormData} from '@/src/lib/zodSchemas/admin/postSchema';
 import {ImageObject} from '@/src/lib/types';
+import ConfirmDialog from '@/src/components/ui/ConfirmDialog';
 
 interface Props {
     fields: { id: string }[];
@@ -20,11 +21,11 @@ interface Props {
     setExpanded: React.Dispatch<React.SetStateAction<boolean>>;
     replaceAllImages: boolean;
     onCancelReplace: () => void;
-    requestConfirmation: (type: "replace" | "backToPage") => void;
     openImagesModal: () => void;
     setPreviewImage: (image: ImageObject | null) => void;
     setIsPreviewOpen: (value: boolean) => void;
     handleImageChange: (index: number, e: React.ChangeEvent<HTMLInputElement>) => void;
+    onReplaceImage: (value: boolean) => void;
 }
 
 const ImagesSection: React.FC<Props> = ({
@@ -39,12 +40,20 @@ const ImagesSection: React.FC<Props> = ({
                                             setExpanded,
                                             replaceAllImages,
                                             onCancelReplace,
-                                            requestConfirmation,
                                             openImagesModal,
                                             setPreviewImage,
                                             setIsPreviewOpen,
                                             handleImageChange,
+                                            onReplaceImage,
                                         }) => {
+
+    const [showConfirm, setShowConfirm] = useState(false);
+
+    const handleReplaceConfirm = () => {
+        setShowConfirm(false);
+        onReplaceImage(true)
+        append({ alt: { ru: "" }, image: null });
+    };
 
     const showImagePreview = (file: File, alt = {ru: ""}) => {
         const localUrl = URL.createObjectURL(file);
@@ -53,8 +62,8 @@ const ImagesSection: React.FC<Props> = ({
     };
 
     return (
-        <div className="w-full max-w-4xl mb-3">
-            <label className="block mb-4">Изображения:</label>
+        <div className="w-full max-w-4xl mb-3 space-y-4">
+            <label className="block">Изображения:</label>
 
             <div className="flex flex-wrap gap-2 md:gap-5">
                 <Button
@@ -64,7 +73,6 @@ const ImagesSection: React.FC<Props> = ({
                             append({alt: {ru: ""}, image: null});
                     }}
                     disabled={updateLoading}
-                    className="mb-4"
                 >
                     <Plus className="w-4 h-4 mr-2"/>
                     Добавить изображение
@@ -85,7 +93,7 @@ const ImagesSection: React.FC<Props> = ({
                         if (replaceAllImages) {
                             onCancelReplace();
                         } else {
-                            requestConfirmation("replace");
+                            setShowConfirm(true);
                         }
                     }}
                 >
@@ -96,47 +104,51 @@ const ImagesSection: React.FC<Props> = ({
                     type="button"
                     variant="outline"
                     onClick={() => setExpanded(prev => !prev)}
-                    className="text-sm"
+                    className="text-sm mb-4"
                     disabled={updateLoading || fields.length < 5}
                 >
                     {expanded ? 'Свернуть' : 'Развернуть все'}
                 </Button>
             </div>
-            {errors.images?.message && (
-                <FormErrorMessage>{errors.images.message}</FormErrorMessage>
-            )}
 
             <div
                 className={`grid grid-cols-1 md:grid-cols-2 gap-3 transition-all duration-300 ${
                     expanded ? 'max-h-none overflow-visible' : 'max-h-[350px] overflow-y-auto'
                 }`}
             >
+                {errors.images?.message && (
+                    <FormErrorMessage>{errors.images.message}</FormErrorMessage>
+                )}
                 {fields.map((item, index) => (
                     <div
-                        key={item.id} className="border rounded-lg p-4 space-y-6 bg-white shadow-sm">
-                        <Label className="w-full mb-2">Альтернативное название изображения</Label>
-                        <Input
-                            type="text"
-                            placeholder="Опишите, что изображено на фото (для доступности и поиска)"
-                            {...register(`images.${index}.alt.ru`)}
-                            disabled={updateLoading}
-                        />
-                        {errors.images?.[index]?.alt?.ru && (
-                            <FormErrorMessage>{errors.images[index]?.alt?.ru.message}</FormErrorMessage>
-                        )}
+                        key={item.id} className="border rounded-lg p-4 space-y-3 bg-white shadow-sm">
+                        <div className="space-y-1">
+                            <Label className="w-full">Альтернативное название изображения</Label>
+                            <Input
+                                type="text"
+                                placeholder="Опишите, что изображено на фото (для доступности и поиска)"
+                                {...register(`images.${index}.alt.ru`)}
+                                disabled={updateLoading}
+                            />
+                            {errors.images?.[index]?.alt?.ru && (
+                                <FormErrorMessage>{errors.images[index]?.alt?.ru.message}</FormErrorMessage>
+                            )}
+                        </div>
 
-                        <Label className="w-full mb-2">Изображение</Label>
-                        <Input
-                            type="file"
-                            accept="image/*"
-                            disabled={updateLoading}
-                            onChange={(e) => handleImageChange(index, e)}
-                        />
-                        {errors.images?.[index]?.image && (
-                            <FormErrorMessage>{errors.images[index]?.image?.message}</FormErrorMessage>
-                        )}
+                        <div className="space-y-1">
+                            <Label className="w-full">Изображение</Label>
+                            <Input
+                                type="file"
+                                accept="image/*"
+                                disabled={updateLoading}
+                                onChange={(e) => handleImageChange(index, e)}
+                            />
+                            {errors.images?.[index]?.image && (
+                                <FormErrorMessage>{errors.images[index]?.image?.message}</FormErrorMessage>
+                            )}
+                        </div>
 
-                        <div className="flex flex-wrap items-center justify-between">
+                        <div className="flex flex-wrap gap-2 items-center justify-between">
                             <Button
                                 type="button"
                                 variant="outline"
@@ -165,6 +177,15 @@ const ImagesSection: React.FC<Props> = ({
                     </div>
                 ))}
             </div>
+
+            <ConfirmDialog
+                open={showConfirm}
+                onOpenChange={setShowConfirm}
+                title="Заменить изображения?"
+                text="При этом действии ВСЕ предыдущие изображения будут заменены"
+                onConfirm={handleReplaceConfirm}
+                loading={updateLoading}
+            />
         </div>
     );
 };

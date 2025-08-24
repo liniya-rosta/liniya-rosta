@@ -337,7 +337,7 @@ onImagesClick: (data: {
                                 disabled={actionLoading}
                                 className="cursor-pointer"
                             >
-                                <Edit2 className="mr-2 h-4 w-4"/>
+                                <Edit2 className="mr-2 h-4 w-4 hover:text-white"/>
                                 Редактировать
                             </DropdownMenuItem>
 
@@ -351,16 +351,16 @@ onImagesClick: (data: {
                                 })}
                                 className="cursor-pointer"
                             >
-                                <Images className="mr-2 h-4 w-4"/>
+                                <Images className="mr-2 h-4 w-4 hover:text-white"/>
                                 Изображения
                             </DropdownMenuItem>
 
                             <DropdownMenuItem
                                 onClick={() => onDeleteProduct(product._id)}
                                 disabled={actionLoading}
-                                className="text-red-600 focus:text-red-600 cursor-pointer"
+                                className="text-destructive cursor-pointer"
                             >
-                                <Trash2 className="mr-2 h-4 w-4 text-red-600 focus:text-red-600"/>
+                                <Trash2 className="mr-2 h-4 w-4 hover:text-white"/>
                                 Удалить
                             </DropdownMenuItem>
                         </DropdownMenuContent>

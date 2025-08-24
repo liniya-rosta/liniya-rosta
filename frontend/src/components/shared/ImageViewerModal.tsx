@@ -7,18 +7,18 @@ import {Dialog, DialogContent, DialogTitle} from "@/src/components/ui/dialog";
 interface Props {
     open: boolean;
     openChange: () => void,
-    alt?: string;
+    alt?: {ru: string} ;
     image: string;
 }
 
-const ImageViewerModal: React.FC<Props> = ({open, openChange, alt = "Нет альтернативного названия", image}) => {
+const ImageViewerModal: React.FC<Props> = ({open, openChange, alt, image}) => {
     const imageUrl = image.startsWith("blob:") ? image : IMG_BASE + "/" + image;
 
     return (
         <Dialog open={open} onOpenChange={openChange}>
             <DialogContent aria-describedby={undefined}>
 
-                <DialogTitle>{alt}</DialogTitle>
+                <DialogTitle>{alt ? alt.ru : "Нет альтернативного названия"}</DialogTitle>
                 <a
                     target="_blank"
                     rel="noopener noreferrer"
@@ -28,7 +28,7 @@ const ImageViewerModal: React.FC<Props> = ({open, openChange, alt = "Нет ал
                 >
                     <Image
                         src={imageUrl}
-                        alt={alt || "Изображение портфолио"}
+                        alt={alt?.ru || "Изображение"}
                         width={800}
                         height={600}
                         className="w-auto h-auto max-w-full max-h-[80vh] object-contain"

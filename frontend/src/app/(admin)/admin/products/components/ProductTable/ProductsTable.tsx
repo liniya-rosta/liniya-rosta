@@ -20,6 +20,7 @@ import ProductTableContent from "@/src/app/(admin)/admin/products/components/Pro
 import {useProductsQuery} from "@/src/app/(admin)/admin/products/hooks/useProductsQuery";
 import ProductsTablePagination from "@/src/app/(admin)/admin/products/components/ProductTable/ProductsTablePagination";
 import {useRouter} from "next/navigation";
+import ImageViewerModal from "@/src/components/shared/ImageViewerModal";
 
 interface ProductsTableProps {
     actionLoading: boolean;
@@ -36,6 +37,7 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
     const {categories} = useCategoryStore();
 
     const {
+        previewImage, setPreviewImage,
         saleLabel, setSaleLabel,
         saleDate,
         isImagesModalOpen, setIsImagesModalOpen,
@@ -55,6 +57,7 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
         pageSize, setPageSize,
         totalPages,
         totalItems,
+        refresh,
     } = useProductsQuery();
 
     const router = useRouter();
@@ -117,6 +120,8 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
         } else if (idsToDelete.length === 1) {
             onDeleteProduct(idsToDelete[0]);
         }
+
+        refresh();
         setShowConfirmDialog(false);
         setIdsToDelete([]);
     };
@@ -165,6 +170,16 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
                 saleDate={saleDate}
                 onClose={() => setSaleLabel(null)}
             />
+
+
+            {previewImage && (
+                <ImageViewerModal
+                    open={true}
+                    openChange={() => setPreviewImage(null)}
+                    alt={previewImage.alt}
+                    image={previewImage.url}
+                />
+            )}
 
             <ImagesModal
                 open={isImagesModalOpen}

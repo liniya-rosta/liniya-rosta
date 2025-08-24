@@ -165,11 +165,6 @@ export const getPostTableColumns = (
             },
         },
         {
-            accessorKey: "seoTitle",
-            header: "SEO заголовок",
-            cell: ({row}) => row.original.seoTitle?.ru || "—",
-        },
-        {
             accessorKey: 'seoDescription',
             header: 'SEO описание',
             cell: ({row}) => {
@@ -258,18 +253,18 @@ export const getPostTableColumns = (
                             <DropdownMenuItem
                                 onClick={() => onOpenImagesModal(post)}
                             >
-                                <Images className="mr-2 h-4 w-4 hover:text-white"/>
+                                <Images className="mr-2 h-4 w-4 hover:text-popover"/>
                                 Все изображения
                             </DropdownMenuItem>
                             <DropdownMenuItem onClick={() => onEditPost(post)}>
-                                <Edit2 className="mr-2 h-4 w-4 hover:text-white"/>
+                                <Edit2 className="mr-2 h-4 w-4 hover:text-popover"/>
                                 Редактировать
                             </DropdownMenuItem>
                             <DropdownMenuItem
                                 onClick={() => onDeletePost([post._id])}
                                 className="text-destructive"
                             >
-                                <Trash2 className="mr-2 h-4 w-4 hover:text-white"/>
+                                <Trash2 className="mr-2 h-4 w-4 hover:popover"/>
                                 Удалить
                             </DropdownMenuItem>
                         </DropdownMenuContent>
