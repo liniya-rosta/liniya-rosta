@@ -6,6 +6,7 @@ import WhyUsSection from "@/src/app/(public)/[locale]/about/copmponents/WhyUsSec
 import CertificatesSection from "@/src/app/(public)/[locale]/about/copmponents/CertificatesSection";
 import MissionStatement from "@/src/app/(public)/[locale]/about/copmponents/MissionStatement";
 import {getTranslations} from "next-intl/server";
+import type {Metadata} from "next";
 
 export const generateMetadata = async (): Promise<Metadata> => {
     const t = await getTranslations("AboutPage");
