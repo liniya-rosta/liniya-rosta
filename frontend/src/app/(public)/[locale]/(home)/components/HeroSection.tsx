@@ -21,21 +21,21 @@ const HeroSection: React.FC<Props> = ({title}) => {
 
     return (
         <section aria-labelledby="hero-heading" className="text-center space-y-6 mb-15 md:mb-20">
-            <div className="md:relative w-full md:h-[500px] mb-8 -mt-[35px]">
+            <div className="relative w-full h-[500px] mb-8 -mt-[35px]">
                 <video
-                    className="hidden md:block absolute top-0 left-0 w-full h-full object-cover"
+                    className="block absolute top-0 left-0 w-full h-full object-cover"
                     src="/video/background-home.mp4"
                     autoPlay
                     muted
                     loop
                     playsInline
                 />
-                <div className="hidden md:block absolute inset-0 bg-black/150"/>
+                <div className="block absolute inset-0 bg-black/150"/>
 
                 <CustomContainer>
-                    <div className="md:absolute md:inset-0 flex items-center justify-center md:text-white px-4">
+                    <div className="absolute inset-0 flex items-center justify-center text-white px-4">
                         <motion.div
-                            className="md:bg-black/40 md:backdrop-blur-sm p-6 md:rounded-2xl md:shadow-lg max-w-3xl mx-auto space-y-6"
+                            className="bg-black/40 backdrop-blur-sm p-6 rounded-2xl shadow-lg max-w-3xl mx-auto space-y-6"
                             initial={{ opacity: 0, y: 30 }}
                             animate={{opacity: 1, y: 0 }}
                             transition={{ duration: 0.8, ease: "easeOut" }}>
