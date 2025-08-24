@@ -67,7 +67,11 @@ const PortfolioSection = () => {
                                     key={item._id}
                                     className="flex items-center justify-center w-full h-full"
                                 >
-                                    <CartPortfolio buttonLink={item._id} imageSrc={`${IMG_BASE}/${item.cover}`}/>
+                                    <CartPortfolio
+                                        buttonLink={item.slug}
+                                        imageSrc={`${IMG_BASE}/${item.cover}`}
+                                        title={item.title}
+                                    />
                                 </SwiperSlide>
                             ))
                         ) : (

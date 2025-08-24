@@ -2,12 +2,13 @@ import {GalleryItem, PortfolioItemDetail, PortfolioResponse} from "@/src/lib/typ
 import kyAPI from "@/src/lib/kyAPI";
 
 export const fetchPortfolioPreviews = async (
-    limit?: string, page?: string, coverAlt?: string, description?: string) => {
+    limit?: string, page?: string, coverAlt?: string, description?: string, title?: string) => {
     const searchParams = new URLSearchParams();
 
     if (page) searchParams.append("page", page);
     if (limit) searchParams.append("limit", limit);
     if (coverAlt) searchParams.append("coverAlt", coverAlt);
+    if (title) searchParams.append("title", title);
     if (description) searchParams.append("description", description);
 
     return await kyAPI

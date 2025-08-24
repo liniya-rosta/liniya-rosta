@@ -4,7 +4,7 @@ import mongoose, {isValidObjectId, PipelineStage} from "mongoose";
 
 export const getPortfolioItems = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const {galleryId, limit = 10, page = 1, description, coverAlt} = req.query;
+        const {galleryId, limit = 10, page = 1, description, coverAlt, title} = req.query;
 
         if (galleryId) {
             const item = await PortfolioItem.findOne(
@@ -28,6 +28,7 @@ export const getPortfolioItems = async (req: Request, res: Response, next: NextF
         type MatchStage = Partial<{
             "description.ru": { $regex: string; $options: string };
             "coverAlt.ru": { $regex: string; $options: string };
+            "title.ru": { $regex: string; $options: string };
         }>;
 
         const matchStage: MatchStage = {};
@@ -40,6 +41,10 @@ export const getPortfolioItems = async (req: Request, res: Response, next: NextF
             matchStage["coverAlt.ru"] = { $regex: coverAlt, $options: "i" };
         }
 
+        if (title && typeof title === "string") {
+            matchStage["title.ru"] = { $regex: title, $options: "i" };
+        }
+
         const aggregationPipeline = [
             Object.keys(matchStage).length > 0 ? {$match: matchStage} : null,
             {$sort: {_id: -1}},
@@ -48,6 +53,7 @@ export const getPortfolioItems = async (req: Request, res: Response, next: NextF
             {
                 $project: {
                     cover: 1,
+                    title: 1,
                     coverAlt: 1,
                     description: 1,
                     slug: 1,
@@ -89,6 +95,7 @@ export const getPortfolioItemById = async (req: Request, res: Response, next: Ne
             {$match: {_id: new mongoose.Types.ObjectId(id)}},
             {
                 $project: {
+                    title: 1,
                     cover: 1,
                     coverAlt: 1,
                     description: 1,

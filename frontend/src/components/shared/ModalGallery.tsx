@@ -137,7 +137,7 @@ const SortableImage: React.FC<{
                     className="text-sm text-gray-700 line-clamp-2">{item.alt?.ru || "Нет альтернативного названия"}</div>
             </CardContent>
 
-            <CardFooter className="flex justify-between gap-2">
+            <CardFooter className="flex flex-wrap justify-between gap-2">
                 <Button
                     variant="outline"
                     size="sm"
@@ -219,8 +219,11 @@ const ModalGallery: React.FC<Props> = ({
     };
 
     const content = (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-h-[70vh] overflow-y-auto p-2">
-            {currentItems.map((item) => {
+        <div
+            className={`grid grid-cols-1 gap-6 max-h-[70vh] overflow-y-auto p-2
+            ${currentItems.length > 2 ? "sm:grid-cols-[repeat(auto-fit,minmax(220px,1fr))]" : "grid-cols-1"}
+            `}>
+        {currentItems.map((item) => {
                 const key = getKey(item);
                 return (
                     <SortableImage
@@ -248,10 +251,10 @@ const ModalGallery: React.FC<Props> = ({
             clearSelection();
             openChange();
         }}>
-            <DialogContent aria-describedby={undefined} className="!w-auto !max-w-6xl">
+            <DialogContent aria-describedby={undefined} className={`${currentItems.length > 2 && "!w-[95vw] !max-w-[1200px] !m-0"}  p-4`}>
                 <DialogHeader className="flex justify-between items-center gap-4">
                     <DialogTitle>Галерея</DialogTitle>
-                    <div className="flex gap-2">
+                    <div className="flex flex-wrap justify-center gap-2">
                         {selectionMode ? (
                             <>
                                 <Button

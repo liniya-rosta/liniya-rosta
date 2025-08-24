@@ -1,4 +1,4 @@
-import PortfolioForm from "@/src/app/(admin)/admin/portfolio/components/PortfolioForm";
+import PortfolioCreateForm from "@/src/app/(admin)/admin/portfolio/portfolio-form/components/PortfolioCreateForm";
 
 const AddPortfolio = async () => {
     return (
@@ -7,7 +7,7 @@ const AddPortfolio = async () => {
                 <div className="mx-auto w-[80%]">
                     <h2 className="font-bold text-3xl mb-5 text-center">Создать портфолио</h2>
                     <div className="max-w-4xl mx-auto">
-                        <PortfolioForm/>
+                        <PortfolioCreateForm/>
                     </div>
                 </div>
             </div>

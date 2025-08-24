@@ -1,11 +1,10 @@
-import { NextIntlClientProvider } from 'next-intl';
-import { getMessages } from 'next-intl/server';
+import {NextIntlClientProvider} from 'next-intl';
+import {getMessages} from 'next-intl/server';
 import Header from "@/src/components/shared/Header";
 import Footer from "@/src/components/shared/Footer/Footer";
 import type {Metadata} from "next";
 import ChatContainer from "@/src/components/shared/OnlineChat/ChatContainer";
 import React from "react";
-import { CustomContainer } from '@/src/components/shared/CustomContainer';
 
 export const metadata: Metadata = {
     metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL!),
@@ -45,19 +44,17 @@ export default async function LocaleLayout({
     children: React.ReactNode;
     params: Promise<{ locale: 'ru' | 'ky' }>;
 }) {
-    const { locale } = await params;
+    const {locale} = await params;
 
-    const messages = await getMessages({ locale });
+    const messages = await getMessages({locale});
 
     return (
         <NextIntlClientProvider locale={locale} messages={messages}>
             <div className="min-h-screen flex flex-col">
-                <Header />
+                <Header/>
                 <main className="flex-grow">{children}</main>
-                <CustomContainer>
-                    <ChatContainer/>
-                </CustomContainer>
-                <Footer />
+                <ChatContainer/>
+                <Footer/>
             </div>
         </NextIntlClientProvider>
     );

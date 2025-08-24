@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useRef} from "react";
 import { Button } from "@/src/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import {useAdminChatStore} from "@/store/superadmin/adminChatStore";
@@ -22,6 +22,16 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
 
     const {oneChatMessages} =useAdminChatStore();
     const {user} = useUserStore();
+    const messagesEndRef = useRef<HTMLDivElement>(null);
+
+    const scrollToBottom = () => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    };
+
+    useEffect(() => {
+        scrollToBottom();
+    }, [oneChatMessages?.messages]);
+
 
     const disabledBtn = oneChatMessages?.messages.length === 0 || oneChatMessages?.status === "Без ответа" ||
         oneChatMessages?.status === "Завершена" || (oneChatMessages?.adminId !== user?._id && oneChatMessages?.status !== "Новый");
@@ -58,6 +68,7 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
                 ) : (
                     <p className="text-center text-gray-400">Нет сообщений</p>
                 )}
+                <div ref={messagesEndRef} />
             </div>
 
             <div className="sticky bottom-0 bg-white border-t px-4 py-6 shrink-0">
@@ -68,6 +79,20 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
                         className="flex-1 border rounded px-4 py-2"
                         value={input}
                         onChange={(e) => onInputChange(e.target.value)}
+                        onKeyDown={(e) => {
+                            if (
+                                e.key === "Enter" &&
+                                !e.shiftKey &&
+                                !disabledBtn &&
+                                input.trim() !== ""
+                            ) {
+                                e.preventDefault();
+                                const form = e.currentTarget.form;
+                                if (form) {
+                                    form.dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }));
+                                }
+                            }
+                        }}
                     />
                     <Button type="submit" className="px-4 py-2" disabled={disabledBtn}>
                         Отправить
