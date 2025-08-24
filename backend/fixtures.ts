@@ -91,7 +91,7 @@ const run = async () => {
     });
 
 
-    const [lightingTechnology, film, spatula, ventilationGrilles, spc] = await Category.create(
+    const [lightingTechnology, film, spatula, ventilationGrilles, wallpapers, spc] = await Category.create(
         {
             title: {
                 ru: 'Светотехника',
@@ -115,6 +115,13 @@ const run = async () => {
                 ru: 'Вентиляционные решетки',
                 ky: 'Желдетүү торлору',
             },
+        },
+        {
+            title: {
+                ru: 'Натяжные обои',
+                ky: 'Созулган обои',
+            },
+            slug: 'wallpapers',
         },
         {
             title: {
@@ -594,6 +601,116 @@ const run = async () => {
                 { key: { ru: "Особенность", ky: "Өзгөчөлүк" }, value: { ru: "Обратный клапан", ky: "Кайтарма клапан" } }
             ],
             sale: { isOnSale: false, label: '20%' }
+        },
+        {
+            category: wallpapers,
+            title: { ru: "Обои 'Сканди'", ky: "Обои 'Сканди'" },
+            description: { ru: "Матовые, бежевые, ширина 3.2 м", ky: "Матовый, бегеж, 3.2 м" },
+            seoTitle: { ru: "Натяжные обои Сканди — Линия Роста", ky: "Натяждуу обои Сканди — Линия Роста" },
+            seoDescription: { ru: "Матовые бежевые обои 3.2 м", ky: "Матовый беген түстөгү 3.2 м" },
+            cover: { url: "test/laminate2.JPG", alt: { ru: "Обои Сканди", ky: "Обои Сканди" } },
+            characteristics: [{ key: { ru: "Ширина", ky: "Туурасы" }, value: { ru: "3.2 м", ky: "3.2 м" } }],
+            sale: { isOnSale: false, label: "20%" },
+        },
+        {
+            category: wallpapers,
+            title: { ru: "Обои 'Лофт Белый'", ky: "Обои 'Лофт Ак'" },
+            description: { ru: "Гладкие, белые, ширина 3.2 м", ky: "Тегиз, ак, 3.2 м" },
+            seoTitle: { ru: "Обои Лофт Белый — Линия Роста", ky: "Обои Лофт Ак — Линия Роста" },
+            seoDescription: { ru: "Гладкие белые обои", ky: "Тегиз ак обои" },
+            cover: { url: "test/laminate2.JPG", alt: { ru: "Обои Лофт Белый", ky: "Обои Лофт Ак" } },
+            characteristics: [{ key: { ru: "Поверхность", ky: "Бети" }, value: { ru: "Гладкая", ky: "Тегиз" } }],
+            sale: { isOnSale: false, label: "20%" },
+        },
+        {
+            category: wallpapers,
+            title: { ru: "Обои 'Бетон Светлый'", ky: "Обои 'Жеңил бетон'" },
+            description: { ru: "Фактура бетона, светло-серая", ky: "Бетон текстурасы, ачык боз" },
+            seoTitle: { ru: "Обои Бетон Светлый — Линия Роста", ky: "Обои Жеңил бетон — Линия Роста" },
+            seoDescription: { ru: "Светло-серые бетон-обои", ky: "Ачык боз бетон обои" },
+            cover: { url: "test/laminate2.JPG", alt: { ru: "Обои Бетон Светлый", ky: "Обои Жеңил бетон" } },
+            characteristics: [{ key: { ru: "Текстура", ky: "Текстура" }, value: { ru: "Бетон", ky: "Бетон" } }],
+            sale: { isOnSale: false, label: "20%" },
+        },
+        {
+            category: wallpapers,
+            title: { ru: "Обои 'Мрамор Серый'", ky: "Обои 'Сарык мармар'" },
+            description: { ru: "Фактура мрамора, серый", ky: "Мармар текстурасы, боз" },
+            seoTitle: { ru: "Обои Мрамор Серый — Линия Роста", ky: "Обои Мармар Боз — Линия Роста" },
+            seoDescription: { ru: "Серые мраморные обои", ky: "Боз мармар обои" },
+            cover: { url: "test/laminate2.JPG", alt: { ru: "Обои Мрамор Серый", ky: "Обои Мармар Боз" } },
+            characteristics: [{ key: { ru: "Текстура", ky: "Текстура" }, value: { ru: "Мрамор", ky: "Мармар" } }],
+            sale: { isOnSale: false, label: "20%" },
+        },
+        {
+            category: wallpapers,
+            title: { ru: "Обои 'Лён Натуральный'", ky: "Обои 'Лен табигый'" },
+            description: { ru: "Фактура льна, тёплый беж", ky: "Лен текстурасы, жылуу бегеж" },
+            seoTitle: { ru: "Обои Лён Натуральный — Линия Роста", ky: "Обои Лен Табигый — Линия Роста" },
+            seoDescription: { ru: "Бежевые льняные обои", ky: "Бегеж лен обои" },
+            cover: { url: "test/laminate2.JPG", alt: { ru: "Обои Лён", ky: "Обои Лен" } },
+            characteristics: [{ key: { ru: "Текстиль", ky: "Токуу" }, value: { ru: "Лён", ky: "Лен" } }],
+            sale: { isOnSale: true, label: "20%" },
+        },
+        {
+            category: wallpapers,
+            title: { ru: "Обои 'Сатин Перламутр'", ky: "Обои 'Сатин перламутр'" },
+            description: { ru: "Лёгкий блеск, молочный", ky: "Жеңил жылтыраган, сүт түс" },
+            seoTitle: { ru: "Обои Сатин Перламутр — Линия Роста", ky: "Обои Сатин Перламутр — Линия Роста" },
+            seoDescription: { ru: "Сатиновые перламутровые обои", ky: "Сатин перламутр обои" },
+            cover: { url: "test/laminate2.JPG", alt: { ru: "Сатин Перламутр", ky: "Сатин Перламутр" } },
+            characteristics: [{ key: { ru: "Эффект", ky: "Эффект" }, value: { ru: "Перламутр", ky: "Перламутр" } }],
+            sale: { isOnSale: false, label: "20%" },
+        },
+        {
+            category: wallpapers,
+            title: { ru: "Обои 'Микроцемент'", ky: "Обои 'Микроцемент'" },
+            description: { ru: "Тёплый серо-бежевый, мат", ky: "Жылуу боз-бегеж, матовый" },
+            seoTitle: { ru: "Обои Микроцемент — Линия Роста", ky: "Обои Микроцемент — Линия Роста" },
+            seoDescription: { ru: "Матовые обои с эффектом микроцемента", ky: "Микроцемент эффект, мат" },
+            cover: { url: "test/laminate2.JPG", alt: { ru: "Обои Микроцемент", ky: "Обои Микроцемент" } },
+            characteristics: [{ key: { ru: "Поверхность", ky: "Бети" }, value: { ru: "Матовая", ky: "Матовый" } }],
+            sale: { isOnSale: false, label: "20%" },
+        },
+        {
+            category: wallpapers,
+            title: { ru: "Обои 'Латте'", ky: "Обои 'Латте'" },
+            description: { ru: "Тёплый светло-коричневый", ky: "Жылуу ачык күрөң" },
+            seoTitle: { ru: "Обои Латте — Линия Роста", ky: "Обои Латте — Линия Роста" },
+            seoDescription: { ru: "Тёплые обои цвета латте", ky: "Латте түстөгү обои" },
+            cover: { url: "test/laminate2.JPG", alt: { ru: "Обои Латте", ky: "Обои Латте" } },
+            characteristics: [{ key: { ru: "Цвет", ky: "Түс" }, value: { ru: "Латте", ky: "Латте" } }],
+            sale: { isOnSale: false, label: "20%" },
+        },
+        {
+            category: wallpapers,
+            title: { ru: "Обои 'Графит'", ky: "Обои 'Графит'" },
+            description: { ru: "Глубокий серый, мат", ky: "Терең боз, матовый" },
+            seoTitle: { ru: "Обои Графит — Линия Роста", ky: "Обои Графит — Линия Роста" },
+            seoDescription: { ru: "Глубокие серые матовые обои", ky: "Терең боз мат обои" },
+            cover: { url: "test/laminate2.JPG", alt: { ru: "Обои Графит", ky: "Обои Графит" } },
+            characteristics: [{ key: { ru: "Оттенок", ky: "Өңү" }, value: { ru: "Графит", ky: "Графит" } }],
+            sale: { isOnSale: false, label: "20%" },
+        },
+        {
+            category: wallpapers,
+            title: { ru: "Обои 'Сахара'", ky: "Обои 'Сахара'" },
+            description: { ru: "Песочный тёплый, фактурный", ky: "Кумдуу жылуу, текстуралуу" },
+            seoTitle: { ru: "Обои Сахара — Линия Роста", ky: "Обои Сахара — Линия Роста" },
+            seoDescription: { ru: "Тёплые песочные фактурные обои", ky: "Кумдуу текстуралуу обои" },
+            cover: { url: "test/laminate2.JPG", alt: { ru: "Обои Сахара", ky: "Обои Сахара" } },
+            characteristics: [{ key: { ru: "Текстура", ky: "Текстура" }, value: { ru: "Песок", ky: "Кум" } }],
+            sale: { isOnSale: true, label: "20%" },
+        },
+        {
+            category: wallpapers,
+            title: { ru: "Обои 'Туман Утро'", ky: "Обои 'Туман таң'" },
+            description: { ru: "Холодный светло-серый, мат", ky: "Муздак ачык боз, мат" },
+            seoTitle: { ru: "Обои Туман Утро — Линия Роста", ky: "Обои Туман таң — Линия Роста" },
+            seoDescription: { ru: "Светло-серые матовые обои", ky: "Ачык боз мат обои" },
+            cover: { url: "test/laminate2.JPG", alt: { ru: "Обои Туман Утро", ky: "Обои Туман таң" } },
+            characteristics: [{ key: { ru: "Поверхность", ky: "Бети" }, value: { ru: "Матовая", ky: "Матовый" } }],
+            sale: { isOnSale: false, label: "20%" },
         }
     );
 
