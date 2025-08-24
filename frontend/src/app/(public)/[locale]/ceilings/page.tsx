@@ -35,7 +35,7 @@ export const generateMetadata = async (): Promise<Metadata> => {
 
 const CeilingsPage = async () => {
         const categorySlug = 'spc';
-        const limit = "5";
+        const limit = "4";
         const categories = await fetchCategories(categorySlug);
         const spcCategory = categories[0];
 
