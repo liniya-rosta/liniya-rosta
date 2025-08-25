@@ -66,7 +66,7 @@ const ProductBasicInfo: React.FC<ProductBasicInfoProps> = ({
         setIconPreview(null);
 
         if (fileInputIconRef.current) {
-            fileInputIconRef.current.value = ""; // <-- сброс input
+            fileInputIconRef.current.value = "";
         }
 
         setShowIconConfirm(false);

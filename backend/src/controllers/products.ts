@@ -105,8 +105,6 @@ export const getProducts = async (req: Request, res: Response, next: NextFunctio
             Product.countDocuments(matchStage)
         ]);
 
-        console.log(items);
-
         res.send({
             items,
             total: totalCount,

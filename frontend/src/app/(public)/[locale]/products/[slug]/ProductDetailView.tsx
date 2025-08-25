@@ -10,6 +10,7 @@ import LoadingFullScreen from "@/src/components/ui/Loading/LoadingFullScreen";
 import {useProductStore} from "@/store/productsStore";
 import {useLocale, useTranslations} from "next-intl";
 import {CustomContainer} from '@/src/components/shared/CustomContainer';
+import ImageViewerModal from "@/src/components/shared/ImageViewerModal";
 
 interface Props {
     productData: Product | null;
@@ -114,8 +115,8 @@ const ProductDetailView: React.FC<Props> = ({productData, fetchProductError}) =>
                                 className="my-1"
                                 src={`${IMG_BASE}/${product.icon.url}`}
                                 alt={product.icon.alt?.[locale] || 'Product icon'}
-                                width={50}
-                                height={50}
+                                width={70}
+                                height={70}
                             />
                             : null
                         }
@@ -138,22 +139,19 @@ const ProductDetailView: React.FC<Props> = ({productData, fetchProductError}) =>
                         </div>
                     )}
                 </div>
-                {/*{previewImage && (*/}
-                {/*    <ImagePreviewModal*/}
-                {/*        image={previewImage}*/}
-                {/*        onClose={() => setPreviewImage(null)}*/}
-                {/*    />*/}
-                {/*)}*/}
                 {previewImage && (
-                    <p>asdfasdf</p>
+                    <ImageViewerModal
+                        image={previewImage.url}
+                        alt={previewImage.alt}
+                        openChange={() => setPreviewImage(null)}
+                        open={true}
+                    />
                 )}
-
 
             </div>
         </CustomContainer>
     );
 };
 
-//надо доработать подробный просмотр!!!!
 
 export default ProductDetailView;
