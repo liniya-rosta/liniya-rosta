@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import mongoose from "mongoose";
 import config from "./config";
 import User from "./src/models/User";
@@ -10,8 +11,19 @@ import Contact from "./src/models/Contact";
 import Service from "./src/models/Service";
 import ChatSession from "./src/models/ChatSession";
 
+console.log('MONGO_URI from .env =', process.env.MONGO_URI);
+console.log('config.db =', config.db);
+
 const run = async () => {
-    await mongoose.connect(config.db);
+    try {
+        console.log('Connecting to Mongo.......');
+        await mongoose.connect(config.db!);
+        console.log('✅ Connected');
+    } catch (e) {
+        console.error('❌ Mongo connect error:', e);
+        process.exit(1);
+    }
+
     const db = mongoose.connection;
 
     try {
@@ -1772,7 +1784,21 @@ const run = async () => {
         },
     ]);
 
-    await db.close();
+    console.log('Counts:', {
+        users: await User.countDocuments(),
+        categories: await Category.countDocuments(),
+        products: await Product.countDocuments(),
+        posts: await Post.countDocuments(),
+        portfolioItems: await PortfolioItem.countDocuments(),
+        requests: await RequestFromClient.countDocuments(),
+        contacts: await Contact.countDocuments(),
+        services: await Service.countDocuments(),
+        chatSessions: await ChatSession.countDocuments(),
+    });
+
+    await mongoose.disconnect();
+    console.log('✅ Seed done');
+    process.exit(0);
 }
 
 
