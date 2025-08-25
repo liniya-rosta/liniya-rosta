@@ -22,13 +22,30 @@ jobs:
 
       - name: Deploy
         run: |
-          ssh ${{ secrets.DO_USER }}@${{ secrets.DO_HOST }} << 'EOF'
-            cd liniya-rosta
-            git pull origin main
-          
-            cd frontend && npm ci && npm run build
-            cd ../backend && npm ci && npm run build
-    
-            pm2 restart next-app || pm2 start "npm start" --name next-app
-            pm2 restart api-app || pm2 start "npm start" --name api-app
-          EOF
+          ssh -o StrictHostKeyChecking=no ${{ secrets.DO_USER }}@${{ secrets.DO_HOST }} 'bash -lc "
+          set -e
+
+          export NVM_DIR=\$HOME/.nvm
+          [ -s \$NVM_DIR/nvm.sh ] && . \$NVM_DIR/nvm.sh
+          [ -s \$NVM_DIR/bash_completion ] && . \$NVM_DIR/bash_completion
+          nvm use --lts
+
+          cd ~/liniya-rosta
+          git pull origin main
+
+          cd frontend
+          npm ci
+          npm run build
+
+          cd ../backend
+          npm ci
+          npm run build
+
+          cd ~/liniya-rosta/frontend
+          pm2 describe next-app >/dev/null 2>&1 && pm2 restart next-app || pm2 start \"npm start\" --name next-app
+
+          cd ~/liniya-rosta/backend
+          pm2 describe api-app >/dev/null 2>&1 && pm2 restart api-app || pm2 start \"npm start\" --name api-app
+
+          pm2 save
+          "'
