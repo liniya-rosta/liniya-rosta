@@ -25,6 +25,10 @@ jobs:
           ssh ${{ secrets.DO_USER }}@${{ secrets.DO_HOST }} << 'EOF'
             cd liniya-rosta
             git pull origin main
-            docker-compose down
-            docker-compose up -d --build
+          
+            cd frontend && npm ci && npm run build
+            cd ../backend && npm ci && npm run build
+    
+            pm2 restart next-app || pm2 start "npm start" --name next-app
+            pm2 restart api-app || pm2 start "npm start" --name api-app
           EOF
