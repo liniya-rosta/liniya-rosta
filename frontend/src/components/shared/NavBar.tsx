@@ -84,7 +84,8 @@ const NavBar = () => {
                                                     <Link
                                                         key={child.href}
                                                         href={child.href}
-                                                        className={`flex items-center px-4 py-2  text-sm rounded-lg transition hover:bg-gray-100`}
+                                                        className={`flex items-center px-4 py-2  text-sm rounded-lg transition hover:bg-gray-100 
+                                                        ${isChildActive && "font-bold"}`}
                                                     >
                                                         {child.label}
                                                         {isChildActive && (
