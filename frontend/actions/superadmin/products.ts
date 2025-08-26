@@ -142,7 +142,7 @@ export const fetchProductsAdmin = async ({
     // if (categoryId) query.append("category", categoryId);
     // if (categoryExclude) query.append("categoryExclude", categoryExclude);
 
-    return await ky.get(`api/products`).json<{
+    return await ky.get(`/api/products/`).json<{
         items: Product[];
         page: number;
         pageSize: number;
