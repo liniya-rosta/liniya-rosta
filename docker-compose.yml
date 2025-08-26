@@ -1,0 +1,57 @@
+services:
+  mongo:
+    image: mongo:latest
+    restart: always
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+    networks: [app]
+
+  backend:
+    build: ./backend
+    env_file: [.env]
+    volumes:
+      - ./backend/public:/app/public
+    environment:
+      - MONGODB_URI=mongodb://mongo:27017/liniya-rosta
+    depends_on:
+      mongo:
+        condition: service_healthy
+    networks: [app]
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        NEXT_PUBLIC_BASE_URL: ${NEXT_PUBLIC_BASE_URL}
+        NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL}
+        NEXT_PUBLIC_IMG_SERVER: ${NEXT_PUBLIC_IMG_SERVER}
+    env_file: [ .env ]
+    environment:
+      - API_BASE_URL_INTERNAL=http://backend:8000
+    depends_on:
+      - backend
+    networks: [ app ]
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - frontend
+      - backend
+    networks: [app]
+
+networks:
+  app:
+    driver: bridge
+
+volumes:
+  mongo-data:
