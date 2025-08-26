@@ -6,6 +6,7 @@ import Burger from "@/src/components/ui/Burger";
 import { useTranslations } from "next-intl";
 import {AnimatePresence, motion } from "motion/react"
 import {useState} from "react";
+import { Check } from "lucide-react";
 
 const NavBar = () => {
     const pathName = usePathname();
@@ -83,10 +84,12 @@ const NavBar = () => {
                                                     <Link
                                                         key={child.href}
                                                         href={child.href}
-                                                        className={`block px-4 py-2 text-sm rounded-lg transition
-                                                            ${isChildActive ? "bg-gray-100 font-semibold text-primary" : "hover:bg-gray-100"}`}
+                                                        className={`flex items-center px-4 py-2  text-sm rounded-lg transition hover:bg-gray-100`}
                                                     >
                                                         {child.label}
+                                                        {isChildActive && (
+                                                             <Check className="ml-2 h-4 w-4 text-primary" />
+                                                    )   }
                                                     </Link>
                                                 );
                                             })}

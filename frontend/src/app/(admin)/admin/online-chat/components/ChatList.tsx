@@ -52,7 +52,9 @@ const ChatList: React.FC<ChatListProps> = ({
         }
     };
 
-    const isDeleteBtnDisabled = deleteChatLoading || selectedToDelete.length === 0;
+    const isDeleteBtnDisabled = deleteChatLoading || selectedToDelete.length === 0 || allChats
+        .filter((c) => selectedToDelete.includes(c._id))
+        .some((c) => c.status !== "Завершена");
 
     return (
         <motion.div
@@ -145,6 +147,7 @@ const ChatList: React.FC<ChatListProps> = ({
                                            onRequestDelete();
                                            setSelectedToDelete([chat._id]);
                                        }}
+                                       disabled={chat.status !== "Завершена"}
                                    >
                                        Удалить
                                    </Button>
