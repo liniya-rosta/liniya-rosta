@@ -13,9 +13,9 @@ const Header = () => {
     const locale = useLocale();
 
     return (
-        <header className="py-6 shadow mb-15 md:mb-8 gap-4">
+        <header className="py-6 shadow mb-15 md:mb-8 gap-4 z-50">
             <CustomContainer>
-                <div className="flex items-center flex-wrap xl:justify-between gap-4">
+                <div className="flex items-center flex-wrap lg:justify-between gap-4">
                     <Link href={`/${locale}`} className="shrink-0 block">
                         <Image
                             src={logo}
@@ -25,7 +25,7 @@ const Header = () => {
                         />
                     </Link>
                     <NavBar />
-                    <LanguageSwitcher className="ml-auto xl:ml-0"/>
+                    <LanguageSwitcher className="ml-auto lg:ml-0"/>
                 </div>
             </CustomContainer>
         </header>

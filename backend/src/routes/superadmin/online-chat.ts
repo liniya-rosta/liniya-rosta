@@ -7,7 +7,7 @@ import {MongoFilter} from "../../../types";
 
 const chatAdminRouter = express.Router();
 
-chatAdminRouter.get("/", async (req:RequestWithUser, res, next) => {
+chatAdminRouter.get("/", async (req: RequestWithUser, res, next) => {
     try {
         const page = parseInt(req.query.page as string) || 1;
         const limit = parseInt(req.query.limit as string) || 20;
@@ -33,7 +33,7 @@ chatAdminRouter.get("/", async (req:RequestWithUser, res, next) => {
             !!adminId;
 
         if (status) filter.status = status;
-        if (clientName) filter.clientName = { $regex: clientName, $options: "i" };
+        if (clientName) filter.clientName = {$regex: clientName, $options: "i"};
         if (adminId) filter.adminId = adminId;
 
         if (createdFrom || createdTo) {
@@ -50,15 +50,15 @@ chatAdminRouter.get("/", async (req:RequestWithUser, res, next) => {
 
         if (req.user?.role === "admin" && !hasFilters) {
             filter.$or = [
-                { status: { $ne: "В работе" } },
-                { status: "В работе", adminId: req.user._id }
+                {status: {$ne: "В работе"}},
+                {status: "В работе", adminId: req.user._id}
             ];
         }
 
         const [chats, totalCount] = await Promise.all([
             ChatSession.find(filter)
                 .select("-messages")
-                .sort({ updatedAt: -1 })
+                .sort({updatedAt: -1})
                 .skip(skip)
                 .limit(limit),
             ChatSession.countDocuments(filter),
@@ -83,7 +83,7 @@ chatAdminRouter.get("/", async (req:RequestWithUser, res, next) => {
 
 chatAdminRouter.get("/:id", async (req, res, next) => {
     try {
-        const { id } = req.params;
+        const {id} = req.params;
 
         if (!mongoose.Types.ObjectId.isValid(id)) {
             res.status(400).send({error: "Неверный формат ID чата"});
@@ -92,7 +92,7 @@ chatAdminRouter.get("/:id", async (req, res, next) => {
 
         const chat = await ChatSession.findById(id);
 
-        if(!chat) {
+        if (!chat) {
             res.status(404).send({error: "Чат не найден"});
             return;
         }
@@ -105,22 +105,30 @@ chatAdminRouter.get("/:id", async (req, res, next) => {
 
 chatAdminRouter.patch("/:id", async (req, res, next) => {
     try {
-        const { status } = req.body;
-        const { id } = req.params;
+        const {status} = req.body;
+        const {id} = req.params;
 
         if (!mongoose.Types.ObjectId.isValid(id)) {
             res.status(400).send({error: "Неверный формат ID чата"});
             return;
         }
 
+        const updateData: any = {status, updatedAt: new Date()};
+
+        if (status === "Завершена") {
+            updateData.expireAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
+        } else {
+            updateData.expireAt = null;
+        }
+
         const updatedChat = await ChatSession.findByIdAndUpdate(
             id,
-            { status, updatedAt: new Date() },
-            { new: true }
+            updateData,
+            {new: true}
         );
 
         if (!updatedChat) {
-             res.status(404).json({ error: "Чат не найден" });
+            res.status(404).json({error: "Чат не найден"});
             return;
         }
 
@@ -139,13 +147,14 @@ chatAdminRouter.delete("/:id", async (req, res, next) => {
             return;
         }
 
-        const chat = await ChatSession.findByIdAndDelete({ _id: id });
+        const chat = await ChatSession.findOneAndDelete({_id: id, status: "Завершена"});
 
-        if(!chat) {
-            res.status(404).send({error: "Чат не найден"});
+        if (!chat) {
+            res.status(400).send({error: "Можно удалить только завершённые чаты"});
             return;
         }
-        res.send({message: "Чат успешно удален"});
+
+        res.send({message: "Чат успешно удалён"});
     } catch (error) {
         next(error);
     }
