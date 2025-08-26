@@ -1,12 +1,14 @@
 'use client'
 
 import React, {useEffect} from 'react';
-import {useLocale} from "next-intl";
 import {Product} from "@/src/lib/types";
 import LoadingFullScreen from "@/src/components/ui/Loading/LoadingFullScreen";
 import ErrorMsg from "@/src/components/ui/ErrorMsg";
 import {useProductStore} from "@/store/productsStore";
 import CeilingsCard from "@/src/app/(public)/[locale]/ceilings/components/CeilingsCard";
+import {CustomContainer} from "@/src/components/shared/CustomContainer";
+import {useTranslations} from "next-intl";
+import SectionAnimation from "@/src/components/shared/SectionAnimation";
 
 interface Props {
     initialData: Product[] | null;
@@ -14,13 +16,14 @@ interface Props {
 }
 
 const WallpaperList: React.FC<Props> = ({initialData, error}) => {
-    const locale = useLocale() as "ru" | "ky";
     const {
         products,
         fetchProductsLoading,
         setFetchProductsLoading,
         setProducts,
     } = useProductStore();
+
+    const t = useTranslations("WallpaperPage");
 
     useEffect(() => {
         if (initialData) {
@@ -34,11 +37,16 @@ const WallpaperList: React.FC<Props> = ({initialData, error}) => {
     if (error) return <ErrorMsg error={error}/>;
 
     return (
-        <div>
-            {products.map(product => (
-                <CeilingsCard key={product._id} product={product}/>
-            ))}
-        </div>
+        <CustomContainer className="mb-10 md:mb-20">
+            <SectionAnimation>
+                <h2 className="text-18-28-1_2 font-bold text-center mb-12">{t("WallpaperListTitle")}</h2>
+                <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 ">
+                    {products.map(product => (
+                        <CeilingsCard key={product._id} product={product} />
+                    ))}
+                </div>
+            </SectionAnimation>
+        </CustomContainer>
     );
 };
 

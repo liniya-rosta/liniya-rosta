@@ -232,7 +232,9 @@
     "ApplicationsCard2Item3": "Студиялар",
     "ApplicationsCard2Item4": "Мейманканалар",
     "ApplicationsCard3Title": "Ар кандай долбоорлор",
-    "ApplicationsCard3Item1": "Коопсуздук, тазалык жана эстетика маанилүү болгон жерлерде"
+    "ApplicationsCard3Item1": "Коопсуздук, тазалык жана эстетика маанилүү болгон жерлерде",
+
+    "WallpaperListTitle": "Тартылма обойлор каталогy"
   },
 
   "NotFound": {
@@ -268,7 +270,9 @@
     "allWorksBtn": "Бардык иштер",
     "detailBtn": "Толугураак",
     "returnToBlog": "Блогго кайтуу",
-    "allPosts": "Бардык посттор"
+    "allPosts": "Бардык посттор",
+    "ceilingsBtn": "Созулган шыптар",
+    "spcBtn": "SPC-ламинат"
   },
   "Errors": {
     "servicesError": "Бир нерсе туура эмес кетти. Кызматтар жүктөлгөн жок.",

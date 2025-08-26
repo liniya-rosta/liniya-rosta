@@ -42,14 +42,13 @@ const Page = async () => {
     let wallpaperData: Product[] | null = null;
     let error: string | null = null;
     const tError = await getTranslations('Errors');
-    const limit = "3";
 
     try {
         const categorySlug = 'stretch-wallpaper';
         const categories = await fetchCategories(categorySlug);
         const wallpaperCategory = categories[0];
 
-        const wallpaperResponse = await fetchProducts({categoryId: wallpaperCategory._id, limit});
+        const wallpaperResponse = await fetchProducts({categoryId: wallpaperCategory._id});
         wallpaperData = wallpaperResponse.items;
     } catch (e) {
         error = await handleKyError(e, tError('wallpaperError'));
