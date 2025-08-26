@@ -18,14 +18,16 @@ const WallpaperList: React.FC<Props> = ({initialData, error}) => {
     const {
         products,
         fetchProductsLoading,
-        paginationProducts,
-        setFetchProductsError,
-        setFetchProductsLoading
+        setFetchProductsLoading,
+        setProducts,
     } = useProductStore();
 
     useEffect(() => {
+        if (initialData) {
+            setProducts(initialData)
+        }
         setFetchProductsLoading(false);
-    }, [setFetchProductsLoading]);
+    }, []);
 
 
     if (fetchProductsLoading) return <LoadingFullScreen/>
