@@ -40,10 +40,15 @@ const ChatSessionSchema = new Schema(
             },
             default: "Новый",
         },
-        expireAt: { type: Date, default: () => new Date(Date.now() + 24*60*60*1000) }
+        expireAt: {
+            type: Date,
+            default: null,
+        },
     },
     { timestamps: true }
 );
+
+ChatSessionSchema.index({ expireAt: 1 }, { expireAfterSeconds: 0 });
 
 const ChatSession = mongoose.model("ChatSession", ChatSessionSchema);
 export default ChatSession;

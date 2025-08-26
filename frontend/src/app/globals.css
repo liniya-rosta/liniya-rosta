@@ -152,6 +152,10 @@
         letter-spacing: -0.015em;
     }
 
+    .bg-beige{
+        background-color: oklch(0.9656 0.0091 78.28);
+    }
+
     .btn-hover-scale {
         @apply transition duration-500 hover:scale-105;
     }
@@ -180,6 +184,11 @@
         line-height: 1.5;
     }
 
+    .text-23-40-1_2 {
+        font-size: clamp(23px, calc(25px + (40 - 23) * ((100vw - 320px) / (1920 - 320))), 40px);
+        line-height: 1.2;
+    }
+
     .text-highlight-light {
         color: var(--highlight-light);
     }
@@ -198,6 +207,10 @@
 
     .border-highlight {
         border: 1px solid var(--highlight);
+    }
+
+    .border-b-highlight {
+        border-bottom: 2px solid var(--highlight);
     }
 
     .underline-animate {

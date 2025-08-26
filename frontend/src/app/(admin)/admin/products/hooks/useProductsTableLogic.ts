@@ -10,6 +10,7 @@ export function useProductsTableLogic() {
     // Модалки
     const [previewImage, setPreviewImage] = useState<{ url: string; alt: { ru: string, ky: string } } | null>(null);
     const [saleLabel, setSaleLabel] = useState<string | null>(null);
+    const [saleDate, setSaleDate] = useState<string | null>(null);
     const [isImagesModalOpen, setIsImagesModalOpen] = useState(false);
     const [showConfirmDialog, setShowConfirmDialog] = useState(false);
     const [idsToDelete, setIdsToDelete] = useState<string[]>([]);
@@ -18,8 +19,9 @@ export function useProductsTableLogic() {
         setPreviewImage(image);
     }, []);
 
-    const onSaleLabelClick = useCallback((label: string) => {
+    const onSaleLabelClick = useCallback((label: string, saleDate?: string) => {
         setSaleLabel(label);
+        setSaleDate(saleDate || null);
     }, []);
 
     const onImages = useCallback(async (data: {
@@ -40,6 +42,7 @@ export function useProductsTableLogic() {
 
     return {
         previewImage, setPreviewImage,
+        saleDate, setSaleDate,
         saleLabel, setSaleLabel,
         isImagesModalOpen, setIsImagesModalOpen,
         showConfirmDialog, setShowConfirmDialog,

@@ -185,7 +185,7 @@ const PortfolioCreateForm = () => {
                            size="sm"
                            onClick={() => append({alt: "", image: null})}
                            disabled={createLoading}
-                           className="flex items-center gap-1 mb-4"
+                           className="flex items-center gap-1"
                        >
                            <Plus className="w-4 h-4"/>
                            Добавить изображение

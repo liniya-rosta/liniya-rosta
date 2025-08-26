@@ -50,7 +50,7 @@ const SpcPage = async () => {
         const laminateResponse = await fetchProducts({categoryId: spcCategory._id});
         laminateData = laminateResponse.items;
     } catch (e) {
-        error = await handleKyError(e, tError('SpcError'));
+        error = await handleKyError(e, tError('spcError'));
     }
 
     return (

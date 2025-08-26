@@ -142,6 +142,17 @@ export const getOnlineChatRouter = (
                 }
 
                 if (data.type === "admin_message" && isAdmin && admin) {
+                    const chat = await ChatSession.findById(chatId);
+                    if (!chat) {
+                        ws.send(JSON.stringify({ type: "error", message: "Чат не найден" }));
+                        return;
+                    }
+
+                    if (chat.adminId && chat.adminId.toString() !== admin._id.toString()) {
+                        ws.send(JSON.stringify({ type: "error", message: "Чат уже ведёт другой админ" }));
+                        return;
+                    }
+
                     if (hasBadWords(data.text) || hasRepeatingChars(data.text)) {
                         ws.send(JSON.stringify({ type: "error", message: "Сообщение недопустимо" }));
                         return;

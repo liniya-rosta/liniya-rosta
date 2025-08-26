@@ -19,7 +19,7 @@ const ServicesContent: React.FC<Props> = ({text}) => {
         <SectionAnimation className="bg-gray-100 py-16 px-6 mb-10 md:mb-20">
             <CustomContainer>
                 <div className="text-center mb-12">
-                    <h2 className="text-23-30-1_5 font-bold mb-4">{tServices("advantagesTitle")}</h2>
+                    <h2 className="text-23-30-1_5 font-bold mb-4">{tServices("servicesTitle")}</h2>
                     <p className="text-gray-600">
                         {text}
                     </p>
