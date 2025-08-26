@@ -7,9 +7,17 @@ export type CreateCategoryPayload = {
     };
 };
 
+export type UpdateCategoryPayload = Partial<CreateCategoryPayload>
+
 export const createCategory = async (data: CreateCategoryPayload) => {
     return await kyAPI
         .post("superadmin/categories", { json: data })
+        .json<{ category: Category }>();
+};
+
+export const updateCategory = async (id: string, data: UpdateCategoryPayload) => {
+    return await kyAPI
+        .patch(`superadmin/categories/${id}`, { json: data })
         .json<{ category: Category }>();
 };
 

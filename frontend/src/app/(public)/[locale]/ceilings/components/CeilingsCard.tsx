@@ -39,7 +39,7 @@ const CeilingsCard: React.FC<Props> = ({product}) => {
                     {product.description?.[locale]}
                 </CardDescription>
                 <div className="flex flex-col gap-2 mt-auto">
-                    <Badge variant="secondary" className="text-sm px-3 py-1 my-1">
+                    <Badge variant="secondary" className="text-sm px-3 py-1 my-1 whitespace-normal break-words">
                         Категория: {product.category.title[locale]}
                     </Badge>
                     {product.sale && product.sale.isOnSale ?

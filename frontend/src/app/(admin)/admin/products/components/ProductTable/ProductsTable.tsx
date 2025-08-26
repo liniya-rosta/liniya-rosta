@@ -147,6 +147,7 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
                 }}
                 setPageSize={setPageSize}
                 setPageIndex={setPageIndex}
+                onRefresh={refresh}
             />
 
             <ProductTableContent table={table}/>
