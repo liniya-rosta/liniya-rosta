@@ -13,7 +13,7 @@ const MapSection= () => {
             <h2 id="map-heading" className="text-xl font-semibold mb-4 text-gray-900">
                 {tContacts("locationTitle")}
             </h2>
-            <div className="w-full h-[300px] rounded-xl overflow-hidden">
+            <div className="w-full h-[300px] rounded-xl overflow-hidden mb-[40px]">
                 <iframe
                     src={contact.linkLocation}
                     className="w-full h-full border-0"

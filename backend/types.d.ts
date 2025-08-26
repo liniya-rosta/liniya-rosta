@@ -139,6 +139,7 @@ export interface IProduct {
     sale: {
         isOnSale: boolean;
         label: string | null;
+        saleDate: Date | null;
     };
     icon: ImageItem;
     createdAt: Date;

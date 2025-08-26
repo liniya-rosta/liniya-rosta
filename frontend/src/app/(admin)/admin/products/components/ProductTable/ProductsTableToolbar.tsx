@@ -18,6 +18,7 @@ import {handleKyError} from "@/src/lib/handleKyError";
 import {toast} from "react-toastify";
 import {deleteCategory} from "@/actions/superadmin/categories";
 import ConfirmDialog from "@/src/components/ui/ConfirmDialog";
+import CategoryForm from "@/src/app/(admin)/admin/products/components/Modal/CategoryCreateForm";
 
 type FilterType = 'title' | 'description';
 
@@ -38,6 +39,7 @@ interface Props {
     setPageIndex: (page: number) => void;
 
     onConfirmDialogOpen: (ids: string[]) => void;
+    onRefresh: () => void;
 }
 
 const ProductsTableToolbar: React.FC<Props> = ({
@@ -52,9 +54,11 @@ const ProductsTableToolbar: React.FC<Props> = ({
                                                    onConfirmDialogOpen,
                                                    setPageSize,
                                                    setPageIndex,
+                                                   onRefresh
                                                }) => {
     const {categories, setCategories, setDeleteCategoryLoading, setDeleteCategoryError} = useAdminCategoryStore();
     const [deleteOpen, setDeleteOpen] = React.useState(false);
+    const [editCategory, setEditCategory] = React.useState<typeof categories[0] | null>(null);
 
     const getFilterPlaceholder = () => {
         switch (activeFilterType) {
@@ -205,14 +209,28 @@ const ProductsTableToolbar: React.FC<Props> = ({
                 </DropdownMenu>
             </div>
 
-            <Button
-                variant="destructive"
-                className="shrink-0"
-                disabled={!categoryId}
-                onClick={() => setDeleteOpen(true)}
-            >
-                Удалить категорию
-            </Button>
+            <div className="flex gap-3 flex-wrap">
+                <Button
+                    variant="destructive"
+                    className="shrink-0"
+                    disabled={!categoryId}
+                    onClick={() => setDeleteOpen(true)}
+                >
+                    Удалить категорию
+                </Button>
+
+                <Button
+                    variant="outline"
+                    className="shrink-0"
+                    disabled={!categoryId}
+                    onClick={() => {
+                        const cat = categories.find(c => c._id === categoryId);
+                        if (cat) setEditCategory(cat);
+                    }}
+                >
+                    Редактировать категорию
+                </Button>
+            </div>
 
             <ConfirmDialog
                 open={deleteOpen}
@@ -221,6 +239,15 @@ const ProductsTableToolbar: React.FC<Props> = ({
                 text="Будут удалены все продукты, связанные с этой категорией. Операцию нельзя отменить."
                 onConfirm={onDeleteCategory}
             />
+
+            {editCategory && (
+                <CategoryForm
+                    open={!!editCategory}
+                    onClose={() => setEditCategory(null)}
+                    initialData={editCategory}
+                    onSuccess={onRefresh}
+                />
+            )}
 
         </div>
     );

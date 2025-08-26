@@ -192,8 +192,13 @@ export interface Post {
     seoDescription: { ru: string, ky: string };
 }
 
+
 export interface PostResponse extends PaginationMeta {
     items: Post[];
+}
+
+export interface ProductResponse extends PaginationMeta {
+    items: Product[];
 }
 
 export interface UpdateImagePost {
@@ -235,6 +240,7 @@ export interface Product {
     sale?: {
         isOnSale: boolean;
         label?: string;
+        saleDate?: string
     };
     icon?: {
         alt?: { ru: string, ky?: string; };
@@ -264,7 +270,8 @@ export interface ProductMutation {
     }[];
     sale?: {
         isOnSale: boolean;
-        label?: string | null
+        label?: string | null;
+        saleDate?: string | null;
     };
     icon?: File | null;
     iconAlt?: { ru: string } | null;

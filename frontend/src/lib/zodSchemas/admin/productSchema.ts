@@ -16,6 +16,24 @@ const characteristicSchema = z.object({
 const saleSchema = z.object({
     isOnSale: z.boolean(),
     label: z.string().optional().nullable(),
+    saleDate: z.string().optional().nullable(),
+}).superRefine((data, ctx) => {
+    if (data.isOnSale) {
+        if (!data.label || data.label.trim() === "") {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: "Укажите текст акции",
+                path: ["label"],
+            });
+        }
+        if (!data.saleDate || data.saleDate.trim() === "") {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: "Укажите дату окончания акции",
+                path: ["saleDate"],
+            });
+        }
+    }
 });
 
 const imageItemSchema = z.object({

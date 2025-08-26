@@ -29,7 +29,7 @@ postsSuperAdminRouter.post("/", postImage.array("images"), async (req, res, next
         const altsKy = await Promise.all(alts.map(alt => translateYandex(alt, "ky")));
 
         const images = files.map((file, index) => ({
-            image: `post/${file.filename}`,
+            image: `posts/${file.filename}`,
             alt: {
                 ru: alts[index],
                 ky: altsKy[index]
@@ -146,7 +146,7 @@ postsSuperAdminRouter.patch("/:id", postImage.array("images"), async (req, res, 
 
         if (files && files.length > 0) {
             const newImages = files.map((file, index) => ({
-                image: `post/${file.filename}`,
+                image: `posts/${file.filename}`,
                 alt: {
                     ru: alts[index],
                     ky: altsKy[index],
@@ -199,7 +199,7 @@ postsSuperAdminRouter.patch("/:id/update-image", postImage.single("newImage"), a
         }
 
         if (req.file) {
-            imageItem.image = `post/${req.file.filename}`;
+            imageItem.image = `posts/${req.file.filename}`;
         }
 
         if (alt !== undefined) {

@@ -128,6 +128,7 @@
       "sunday": "Воскресенье"
     }
   },
+
   "CeilingsPage": {
     "descriptionSeo": "Натяжные потолки в Бишкеке от компании Линия Роста. Качество, гарантия, профессиональный монтаж.",
     "ogTitle": "Натяжные потолки | Линия Роста",
@@ -139,10 +140,11 @@
     "filter": {
       "categoriesTitle": "Категории",
       "filterSearch": "Поиск товаров",
-      "countProductsTitle": "Найдено товаров:",
+      "countProductsTitle": "Всего товаров:",
       "allProducts": "Все товары",
       "removeFilter": "Сбросить фильтр"
-    }
+    },
+    "noProducts": "Пока нет товаров"
   },
   "BlogPage": {
     "descriptionSeo": "Последние новости, статьи и советы от компании Линия Роста. Всё о потолках, ламинате и интерьерных решениях.",
@@ -254,7 +256,8 @@
     "submitBtn": "Отправить",
     "portfolioBtn": "Открыть галерею",
     "canselBtn": "Отмена",
-    "allProductBtn": "Все товары",
+    "ceilingsBtn": "Натяжные потолки",
+    "spcBtn": "SPC-ламинат",
     "allWorksBtn": "Все работы",
     "detailBtn": "Подробнее",
     "returnToBlog": "Вернуться к блогу",

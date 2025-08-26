@@ -1,30 +1,56 @@
 "use client";
 
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Dialog, DialogContent, DialogHeader, DialogTitle} from "@/src/components/ui/dialog";
 import {Button} from "@/src/components/ui/button";
 import {Input} from "@/src/components/ui/input";
 import {toast} from "react-toastify";
 import {useAdminCategoryStore} from "@/store/superadmin/superadminCategoriesStore";
 import LoaderIcon from "@/src/components/ui/Loading/LoaderIcon";
-import {createCategory} from "@/actions/superadmin/categories";
+import {createCategory, updateCategory} from "@/actions/superadmin/categories";
 import {handleKyError} from "@/src/lib/handleKyError";
 
-const CreateCategoryForm: React.FC<{ open: boolean; onClose: () => void }> = ({open, onClose}) => {
+interface CategoryFormProps {
+    open: boolean;
+    onClose: () => void;
+    initialData?: { _id?: string; title: { ru: string } } | null;
+    onSuccess?: () => void;
+}
+
+const CategoryForm: React.FC<CategoryFormProps> = ({open, onClose, initialData, onSuccess}) => {
     const [title, setTitle] = useState<{ ru: string }>({ru: ""});
     const [loading, setLoading] = useState(false);
     const {setCategories, categories, setCreateCategoryError} = useAdminCategoryStore();
 
+    const isEdit = Boolean(initialData?._id);
+
+    useEffect(() => {
+        if (initialData) {
+            setTitle(initialData.title);
+        } else {
+            setTitle({ru: ""});
+        }
+    }, [initialData, open]);
+
     const handleSubmit = async () => {
         setLoading(true);
         try {
-            const res = await createCategory({title});
-            toast.success("Категория успешно создана");
-            setCategories([...categories, res.category]);
+            if (isEdit && initialData?._id) {
+                const res = await updateCategory(initialData._id, {title});
+                toast.success("Категория обновлена");
+                setCategories(categories.map(c => c._id === res.category._id ? res.category : c));
+            } else {
+                const res = await createCategory({title});
+                toast.success("Категория успешно создана");
+                setCategories([...categories, res.category]);
+            }
             setTitle({ru: ""});
             onClose();
+            if (onSuccess) {
+                onSuccess();
+            }
         } catch (e) {
-            const message = await handleKyError(e, "Ошибка при создании категории");
+            const message = await handleKyError(e, isEdit ? "Ошибка при обновлении категории" : "Ошибка при создании категории");
             setCreateCategoryError(message);
             toast.error(message);
         } finally {
@@ -36,7 +62,7 @@ const CreateCategoryForm: React.FC<{ open: boolean; onClose: () => void }> = ({o
         <Dialog open={open} onOpenChange={onClose}>
             <DialogContent className="max-w-sm">
                 <DialogHeader>
-                    <DialogTitle>Создание категории</DialogTitle>
+                    <DialogTitle>{isEdit ? "Редактирование категории" : "Создание категории"}</DialogTitle>
                 </DialogHeader>
                 <div className="space-y-4">
                     <Input
@@ -46,7 +72,7 @@ const CreateCategoryForm: React.FC<{ open: boolean; onClose: () => void }> = ({o
                         disabled={loading}
                     />
                     <Button onClick={handleSubmit} disabled={loading || !title.ru.trim()} className="w-full">
-                        {loading ? <LoaderIcon/> : "Создать"}
+                        {loading ? <LoaderIcon/> : isEdit ? "Сохранить" : "Создать"}
                     </Button>
                 </div>
             </DialogContent>
@@ -54,4 +80,4 @@ const CreateCategoryForm: React.FC<{ open: boolean; onClose: () => void }> = ({o
     );
 };
 
-export default CreateCategoryForm;
+export default CategoryForm;
