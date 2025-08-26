@@ -152,6 +152,10 @@
         letter-spacing: -0.015em;
     }
 
+    .bg-beige{
+        background-color: oklch(0.9656 0.0091 78.28);
+    }
+
     .btn-hover-scale {
         @apply transition duration-500 hover:scale-105;
     }

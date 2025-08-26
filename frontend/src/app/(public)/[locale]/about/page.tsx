@@ -8,6 +8,8 @@ import MissionStatement from "@/src/app/(public)/[locale]/about/copmponents/Miss
 import {getTranslations} from "next-intl/server";
 import type {Metadata} from "next";
 
+export const revalidate = 3600;
+
 export const generateMetadata = async (): Promise<Metadata> => {
     const t = await getTranslations("AboutPage");
     const tHeader = await getTranslations("Header");

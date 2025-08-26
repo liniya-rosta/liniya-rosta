@@ -10,6 +10,7 @@ import SectionAnimation from '@/src/components/shared/SectionAnimation';
 const WhyUsSection = () => {
     const [isModalTopOpen, setIsModalTopOpen] = React.useState(false);
     const tAboutPage = useTranslations("AboutPage");
+    const tBtn = useTranslations("Buttons");
 
     return (
         <SectionAnimation className="py-10">
@@ -34,7 +35,7 @@ const WhyUsSection = () => {
                                         <Button
                                             size="lg"
                                             className="min-w-[180px] font-semibold shadow-md btn-highlight btn-hover-scale">
-                                            {tAboutPage("WhyUsBtn1")}
+                                            {tBtn("requestBtn2")}
                                         </Button>
                                     </DialogTrigger>
                                     <RequestForm closeModal={() => setIsModalTopOpen(false)}/>
@@ -44,7 +45,7 @@ const WhyUsSection = () => {
 
                         <div className="p-6 space-y-6">
                             <p className="text-center md:text-left">
-                                {tAboutPage("WhyUsBlock2")}
+                                {tAboutPage("WhyUsBlock")}
                             </p>
                             <div className="flex justify-center md:justify-start">
                                 <Dialog open={isModalTopOpen} onOpenChange={setIsModalTopOpen}>

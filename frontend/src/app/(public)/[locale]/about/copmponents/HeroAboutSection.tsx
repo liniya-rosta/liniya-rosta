@@ -14,7 +14,7 @@ const HeroAboutSection = () => {
     const tAboutPage = useTranslations("AboutPage");
 
     return (
-        <section className="bg-[#f7f3ed] flex rounded-xl md:h-[500px] items-center justify-center px-9 py-20 md:py-0">
+        <section className="bg-beige flex rounded-xl md:h-[500px] items-center justify-center px-9 py-20 md:py-0">
             <CustomContainer>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 justify-around items-center">
                     <AnimatedEntrance direction="bottom" className="hidden md:flex flex-col items-center">

@@ -76,7 +76,7 @@ const NavBar = () => {
                                             animate={{ opacity: 1, y: 0 }}
                                             exit={{ opacity: 0, y: -10 }}
                                             transition={{ duration: 0.2 }}
-                                            className="absolute left-0 top-full mt-2 w-48 bg-white shadow-lg rounded-xl p-2"
+                                            className="absolute left-0 top-full mt-2 w-53 bg-white shadow-lg rounded-xl p-2"
                                         >
                                             {children.map((child) => {
                                                 const isChildActive = cleanPathname === child.href;
