@@ -11,6 +11,7 @@ import {useProductStore} from "@/store/productsStore";
 import {useLocale, useTranslations} from "next-intl";
 import {CustomContainer} from '@/src/components/shared/CustomContainer';
 import ImageViewerModal from "@/src/components/shared/ImageViewerModal";
+import {API_BASE_URL} from "@/src/lib/globalConstants";
 
 interface Props {
     productData: Product | null;
@@ -46,7 +47,7 @@ const ProductDetailView: React.FC<Props> = ({productData, fetchProductError}) =>
     if (fetchProductsError) return <p>{tError("CeilingDetailError")}</p>
 
     const IMG_BASE = process.env.NEXT_PUBLIC_IMG_SERVER;
-    const src = `${IMG_BASE}/${product?.cover.url}`;
+    const src = `${API_BASE_URL}/${product?.cover.url}`;
 
     if (product) return (
         <CustomContainer>

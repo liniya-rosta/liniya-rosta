@@ -73,6 +73,7 @@ export interface Category {
         ru: string;
         ky: string;
     };
+    slug:string;
 }
 
 export interface ValidationError {
