@@ -67,11 +67,18 @@ const ProductsSection = () => {
                         </p>
                     </div>
 
-                    <BtnArrow className="btn-hover-scale">
-                        <Link href="/ceilings" className="text-sm font-medium">
-                            {tBtn("allProductBtn")}
-                        </Link>
-                    </BtnArrow>
+                    <div className="flex flex-wrap gap-2">
+                        <BtnArrow className="btn-hover-scale">
+                            <Link href="/ceilings" className="text-sm font-medium">
+                                {tBtn("ceilingsBtn")}
+                            </Link>
+                        </BtnArrow>
+                        <BtnArrow className="btn-hover-scale">
+                            <Link href="/spc" className="text-sm font-medium">
+                                {tBtn("spcBtn")}
+                            </Link>
+                        </BtnArrow>
+                    </div>
                 </div>
             </div>
         </SectionAnimation>

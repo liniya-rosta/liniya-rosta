@@ -72,7 +72,13 @@ const ProductEditForm: React.FC<Props> = ({openImagesModal, setPreviewImage, set
                 description: {ru: productDetail.description?.ru},
                 seoTitle: {ru: productDetail.seoTitle.ru},
                 seoDescription: {ru: productDetail.seoDescription.ru},
-                sale: {...productDetail.sale},
+                sale: {
+                    isOnSale: productDetail.sale?.isOnSale ?? false,
+                    label: productDetail.sale?.label || "",
+                    saleDate: productDetail.sale?.saleDate
+                        ? productDetail.sale.saleDate.split("T")[0]
+                        : ""
+                },
                 category: productDetail.category?._id,
                 coverAlt: productDetail.cover.alt,
                 iconAlt: productDetail.icon?.alt,
@@ -94,7 +100,11 @@ const ProductEditForm: React.FC<Props> = ({openImagesModal, setPreviewImage, set
             description: {ru: productDetail.description?.ru},
             seoTitle: {ru: productDetail.seoTitle.ru},
             seoDescription: {ru: productDetail.seoDescription.ru},
-            sale: {...productDetail.sale},
+            sale: {
+                isOnSale: false,
+                label: "",
+                saleDate: null,
+            },
             category: productDetail.category?._id || "",
             coverAlt: productDetail.cover.alt,
             iconAlt: productDetail.icon?.alt,
@@ -195,6 +205,7 @@ const ProductEditForm: React.FC<Props> = ({openImagesModal, setPreviewImage, set
                                   removeCharacteristic={removeCharacteristic}
                                   setIconPreview={setIconPreview}
                                   setValue={setValue}
+                                  control={control}
                 />
 
                 <ImagesSection

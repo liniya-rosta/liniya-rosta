@@ -77,14 +77,15 @@ const ProductSchema = new Schema({
             },
             sale: {
                 isOnSale: {type: Boolean, required: true, default: false},
-                label: {type: String, default: null, maxLength: 150}
+                label: {type: String, default: null, maxLength: 150},
+                saleDate: {type: Date},
             },
             icon: {
                 url: {type: String},
                 alt: {
                     ru: {type: String, default: null, maxLength: 150},
                     ky: {type: String, default: null}
-                }
+                },
             }
         },
         {

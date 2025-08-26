@@ -45,6 +45,9 @@ export const createProduct = async (productData: ProductMutation): Promise<Produ
         if (productData.sale.label) {
             formData.append('saleLabel', productData.sale.label);
         }
+        if (productData.sale.saleDate) {
+            formData.append('saleDate', productData.sale.saleDate);
+        }
     }
 
     if (productData.icon instanceof File) {
@@ -77,6 +80,9 @@ export const updateProduct = async (id: string, productData: UpdateProductFormDa
         formData.append('isOnSale', String(productData.sale.isOnSale));
         if (productData.sale.label) {
             formData.append('saleLabel', productData.sale.label);
+        }
+        if (productData.sale.saleDate) {
+            formData.append('saleDate', productData.sale.saleDate);
         }
     }
     if (productData.icon instanceof File) {

@@ -51,9 +51,9 @@ const BlogPage = async () => {
     return (
         <>
             <CustomContainer>
-                <h1 className="text-3xl font-bold text-foreground mb-5">
+                <h1 className="text-3xl font-bold text-foreground">
                     Блог
-                    <span className="block font-medium text-muted-foreground text-sm tracking-wider uppercase">
+                    <span className="block mt-2 font-medium text-muted-foreground text-sm tracking-wider uppercase">
                     {tBlog("subTitle")}
                 </span>
                 </h1>

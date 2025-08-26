@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { Product } from '@/src/lib/types';
+import {PaginationMeta, Product} from '@/src/lib/types';
 
 interface ProductState {
     products: Product[];
@@ -10,6 +10,8 @@ interface ProductState {
     setFetchProductsError: (error: string | null) => void;
     product: Product | null;
     setProduct: (product: Product) => void;
+    paginationProducts: PaginationMeta | null;
+    setPaginationProducts: (data: PaginationMeta) => void;
 }
 
 export const useProductStore = create<ProductState>((set) => ({
@@ -21,4 +23,6 @@ export const useProductStore = create<ProductState>((set) => ({
     setFetchProductsError: (error) => set({fetchProductsError: error}),
     product: null,
     setProduct: (product) => set({product}),
+    paginationProducts: null,
+    setPaginationProducts: (data) => set({ paginationProducts: data }),
 }));
