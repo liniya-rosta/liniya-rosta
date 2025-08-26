@@ -37,7 +37,6 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
 
         const safeUser = {
             _id: user._id,
-            email: user.email,
             role: user.role,
             displayName: user.displayName,
         };
