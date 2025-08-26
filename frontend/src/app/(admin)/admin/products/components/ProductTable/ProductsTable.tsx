@@ -39,6 +39,7 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
     const {
         previewImage, setPreviewImage,
         saleLabel, setSaleLabel,
+        saleDate,
         isImagesModalOpen, setIsImagesModalOpen,
         showConfirmDialog, setShowConfirmDialog,
         idsToDelete, setIdsToDelete,
@@ -146,6 +147,7 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
                 }}
                 setPageSize={setPageSize}
                 setPageIndex={setPageIndex}
+                onRefresh={refresh}
             />
 
             <ProductTableContent table={table}/>
@@ -166,6 +168,7 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
 
             <SaleLabelModal
                 saleLabel={saleLabel}
+                saleDate={saleDate}
                 onClose={() => setSaleLabel(null)}
             />
 

@@ -7,7 +7,7 @@ import {Badge} from '@/src/components/ui/badge';
 import {IMG_BASE} from '@/src/lib/globalConstants';
 import {Product} from "@/src/lib/types";
 import Link from "next/link";
-import {useLocale} from "next-intl";
+import {useLocale, useTranslations} from "next-intl";
 
 interface Props {
     product: Product;
@@ -15,6 +15,8 @@ interface Props {
 
 const ProductCard: React.FC<Props> = ({product}) => {
     const locale = useLocale() as "ru" | "ky";
+    const tBtn = useTranslations("Buttons")
+
     return (
         <Card className="flex flex-col h-full">
             <div className="flex-shrink-0">
@@ -45,7 +47,7 @@ const ProductCard: React.FC<Props> = ({product}) => {
 
             <CardFooter className="p-4 pt-0">
                 <Link href={`/products/${product.slug}`} className="w-full">
-                    <Button className="w-full btn-hover-scale">Подробнее</Button>
+                    <Button className="w-full btn-hover-scale">{tBtn("detailBtn")}</Button>
                 </Link>
             </CardFooter>
         </Card>

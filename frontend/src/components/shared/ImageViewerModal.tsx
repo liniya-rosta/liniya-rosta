@@ -7,7 +7,7 @@ import {Dialog, DialogContent, DialogTitle} from "@/src/components/ui/dialog";
 interface Props {
     open: boolean;
     openChange: () => void,
-    alt?: {ru: string} ;
+    alt?: {ru: string} | null;
     image: string;
 }
 

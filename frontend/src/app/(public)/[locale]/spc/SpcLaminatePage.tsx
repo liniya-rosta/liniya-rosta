@@ -35,39 +35,45 @@ const SpcLaminatePage: React.FC<Props> = ({initialData, error}) => {
         setFetchProductsError(error);
     }, [initialData, error, setProducts, setFetchProductsLoading, setFetchProductsError]);
 
+    const breakpoints = {
+        0: {slidesPerView: 1},
+        600: {slidesPerView: 2, spaceBetween: 15},
+        1144: {slidesPerView: 3, spaceBetween: 20},
+    };
+
     return (
         <SectionAnimation className="mb-[55px]">
             <h3 className="sm:text-2xl text-xl mb-8 text-center">{tSpc("catalogTitle")}</h3>
-            <Swiper
-                slidesPerView={1}
-                navigation
-                loop={true}
-                pagination={{clickable: true}}
-                modules={[Navigation, Pagination]}
-                className="mySwiper py-4"
-            >
-                {fetchProductsLoading ? (
-                    <SwiperSlide>
-                        <Loading/>
-                    </SwiperSlide>
-                ) : fetchProductsError ? (
-                    <SwiperSlide>
-                        <h4>{tError("spcError")}</h4>
-                    </SwiperSlide>
-                ) : (
-                    products.map(item => (
-                        <SwiperSlide key={item._id}>
-                            <LaminateCard
-                                title={item.title[locale]}
-                                image={item.cover.url}
-                                description={item.description?.[locale]}/>
-                        </SwiperSlide>
-                    ))
-                )}
+            {fetchProductsLoading ? (
+                <Loading/>
+            ) : fetchProductsError ? (
+                <h4 className="text-center">{tError("spcError")}</h4>
+            ) : (
 
-            </Swiper>
-        </SectionAnimation>
-    );
-};
+                <Swiper
+                    slidesPerView={3}
+                    navigation
+                    loop
+                    pagination={{clickable: true}}
+                    modules={[Navigation, Pagination]}
+                    className="w-full py-4"
+                    breakpoints={breakpoints}
+                    autoHeight
+                >
+                        {products.map(item => (
+                                <SwiperSlide key={item._id}>
+                                    <LaminateCard
+                                        title={item.title[locale]}
+                                        image={item.cover.url}
+                                        description={item.description?.[locale]}
+                                    />
+                                </SwiperSlide>
+                                ))}
+                            </Swiper>
 
-export default SpcLaminatePage;
+                            )}
+                </SectionAnimation>
+                    );
+                    };
+
+                    export default SpcLaminatePage;

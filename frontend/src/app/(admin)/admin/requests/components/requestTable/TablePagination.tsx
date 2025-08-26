@@ -63,8 +63,8 @@ const TablePagination = () => {
                 <span className="px-2 text-sm">
                 Страница {page} из {lastPage || "…"}
                 </span>
+                <span className="px-2 text-sm">Всего заявок: {totalItems}</span>
                 <div className="flex items-center justify-center md:justify-end space-x-2 py-2 flex-wrap">
-                    <span className="px-2 text-sm">Всего заявок: {totalItems}</span>
                     <Tooltip>
                         <TooltipTrigger asChild>
                             <Button

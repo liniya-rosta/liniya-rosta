@@ -44,7 +44,7 @@ productsSuperAdminRouter.post("/", productImage.fields([
 
 
         const images = imagesFiles.map((file, i) => ({
-            image: "product/" + file.filename,
+            image: "products/" + file.filename,
             alt: {
                 ru: alts[i],
                 ky: altsKy[i]
@@ -95,7 +95,7 @@ productsSuperAdminRouter.post("/", productImage.fields([
             },
             description: descriptionField,
             cover: {
-                url: `product/${coverFile.filename}`,
+                url: `products/${coverFile.filename}`,
                 alt: {ru: req.body.coverAlt, ky: coverAltKy},
             },
             images,
@@ -103,9 +103,10 @@ productsSuperAdminRouter.post("/", productImage.fields([
             sale: {
                 isOnSale: req.body.isOnSale === 'true',
                 label: req.body.saleLabel,
+                saleDate: req.body.saleDate,
             },
             icon: iconFile ? {
-                url: `product/${iconFile.filename}`,
+                url: `products/${iconFile.filename}`,
                 alt: {ru: req.body.iconAlt, ky: iconAltKy},
             } : null,
         });
@@ -149,7 +150,7 @@ productsSuperAdminRouter.post(
             );
 
             const newImages = imagesFiles.map((file, i) => ({
-                url: "product/" + file.filename,
+                url: "products/" + file.filename,
                 alt: {
                     ru: alts[i] || "",
                     ky: altsKy[i] || "",
@@ -274,7 +275,7 @@ productsSuperAdminRouter.patch("/:id", productImage.fields([
                 const altsKy = await Promise.all(alts.map((alt) => translateYandex(alt || '', "ky")));
 
                 const newImages = imagesFiles.map((file, i) => ({
-                    image: "product/" + file.filename,
+                    image: "products/" + file.filename,
                     alt: {
                         ru: alts[i] || '',
                         ky: altsKy[i] || '',
@@ -294,7 +295,7 @@ productsSuperAdminRouter.patch("/:id", productImage.fields([
         }
 
         if (!product.sale) {
-            product.sale = {isOnSale: false, label: ""};
+            product.sale = {isOnSale: false, label: "", saleDate: null};
         }
 
         if (req.body.isOnSale !== undefined) {
@@ -305,12 +306,16 @@ productsSuperAdminRouter.patch("/:id", productImage.fields([
             product.sale.label = req.body.saleLabel || ''
         }
 
+        if (req.body.saleDate !== undefined) {
+            product.sale.saleDate = req.body.saleDate;
+        }
+
         if (iconFile) {
             const iconAltRu = req.body.iconAlt || '';
             const iconAltKy = await translateYandex(iconAltRu, "ky");
 
             product.icon = {
-                url: `product/${iconFile.filename}`,
+                url: `products/${iconFile.filename}`,
                 alt: {
                     ru: iconAltRu,
                     ky: iconAltKy
@@ -325,7 +330,7 @@ productsSuperAdminRouter.patch("/:id", productImage.fields([
             const coverAltKy = await translateYandex(coverAltRu, "ky");
 
             product.cover = {
-                url: `product/${coverFile.filename}`,
+                url: `products/${coverFile.filename}`,
                 alt: {
                     ru: coverAltRu,
                     ky: coverAltKy
@@ -358,7 +363,7 @@ productsSuperAdminRouter.patch("/images/:imageId", productImage.fields([{
         const newAlt = req.body.alt;
 
         const updateFields: any = {};
-        if (file) updateFields["images.$.image"] = "product/" + file.filename;
+        if (file) updateFields["images.$.image"] = "products/" + file.filename;
         if (newAlt) {
             updateFields["images.$.alt.ru"] = newAlt;
             updateFields["images.$.alt.ky"] = await translateYandex(newAlt, "ky");

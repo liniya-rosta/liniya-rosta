@@ -7,6 +7,11 @@ export const getProducts = async (req: Request, res: Response, next: NextFunctio
     try {
         const {title, category, imagesId, limit = 10, page = 1, description, categoryExclude} = req.query;
 
+        await Product.updateMany(
+            { "sale.isOnSale": true, "sale.saleDate": { $lte: new Date() } },
+            { $set: { "sale.isOnSale": false, "sale.saleDate": null } }
+        );
+
         if (imagesId) {
             const item = await Product.findOne(
                 {"images._id": imagesId},
