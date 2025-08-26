@@ -2,6 +2,7 @@ import React from 'react';
 import {Lamp, Wallpaper, Paintbrush, Ruler} from "lucide-react"
 import Link from "next/link";
 import {getTranslations} from "next-intl/server";
+import SectionAnimation from "@/src/components/shared/SectionAnimation";
 
 const OffersSection = async () => {
     const tAboutPage = await getTranslations("AboutPage");
@@ -37,7 +38,7 @@ const OffersSection = async () => {
         },
     ];
     return (
-        <section>
+        <SectionAnimation>
             <h2 className="text-23-30-1_5 font-bold w-max mx-auto mb-12 border-b-highlight">
                 {tAboutPage("OffersTitle")}
             </h2>
@@ -58,7 +59,7 @@ const OffersSection = async () => {
                 ))}
             </div>
 
-        </section>
+        </SectionAnimation>
     );
 };
 

@@ -1,6 +1,7 @@
 import React from "react";
 import {FileText} from "lucide-react";
 import {getTranslations} from "next-intl/server";
+import SectionAnimation from "@/src/components/shared/SectionAnimation";
 
 const CertificatesSection = async () => {
     const t = await getTranslations("AboutPage");
@@ -58,7 +59,7 @@ const CertificatesSection = async () => {
     ];
 
     return (
-        <section className="py-16 mb-10 md:mb-20">
+        <SectionAnimation className="py-16 mb-10 md:mb-20">
             <div className="space-y-16">
                 <h2 className="text-23-30-1_5 font-bold text-center border-b-highlight w-max mx-auto">
                     {t("CertificatesTitle")}
@@ -106,7 +107,7 @@ const CertificatesSection = async () => {
                     </div>
                 </div>
             </div>
-        </section>
+        </SectionAnimation>
     );
 };
 

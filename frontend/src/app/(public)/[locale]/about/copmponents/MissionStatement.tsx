@@ -1,12 +1,13 @@
 import React from 'react';
 import {CustomContainer} from "@/src/components/shared/CustomContainer";
 import {getTranslations} from "next-intl/server";
+import SectionAnimation from '@/src/components/shared/SectionAnimation';
 
 const MissionStatement = async () => {
     const tAboutPage = await getTranslations("AboutPage");
 
     return (
-        <section className="py-16 bg-secondary/20">
+        <SectionAnimation className="py-16 bg-secondary/20">
             <CustomContainer>
                 <h2 className="text-23-30-1_5 font-semibold text-center text-foreground/80 mb-12">
                     {tAboutPage("MissionTitle")}
@@ -28,7 +29,7 @@ const MissionStatement = async () => {
                     </div>
                 </div>
             </CustomContainer>
-        </section>
+        </SectionAnimation>
     );
 };
 

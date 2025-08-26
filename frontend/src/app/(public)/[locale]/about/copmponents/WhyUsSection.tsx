@@ -5,13 +5,14 @@ import {Button} from '@/src/components/ui/button';
 import {Dialog, DialogTrigger} from "@/src/components/ui/dialog";
 import RequestForm from "@/src/components/shared/RequestForm";
 import {useTranslations} from "next-intl";
+import SectionAnimation from '@/src/components/shared/SectionAnimation';
 
 const WhyUsSection = () => {
     const [isModalTopOpen, setIsModalTopOpen] = React.useState(false);
     const tAboutPage = useTranslations("AboutPage");
 
     return (
-        <section className="py-10">
+        <SectionAnimation className="py-10">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                     <h2 className="text-23-40-1_2 leading-snug text-center md:text-left">
                         <span className="font-bold block">
@@ -60,7 +61,7 @@ const WhyUsSection = () => {
                         </div>
                     </div>
                 </div>
-        </section>
+        </SectionAnimation>
     );
 };
 
