@@ -103,7 +103,7 @@ const run = async () => {
     });
 
 
-    const [lightingTechnology, film, spatula, ventilationGrilles, spc] = await Category.create(
+    const [lightingTechnology, film, spatula, ventilationGrilles, spc, stretchWallpaper] = await Category.create(
         {
             title: {
                 ru: 'Светотехника',
@@ -134,6 +134,13 @@ const run = async () => {
                 ky: 'SPC',
             },
             slug: 'spc',
+        },
+        {
+            title: {
+                ru: 'Натяжные обои',
+                ky: 'Тартылган обойлор',
+            },
+            slug: 'stretch-wallpaper',
         }
     );
 
@@ -374,13 +381,6 @@ const run = async () => {
                 {key: {ru: "Количество диодов", ky: "Диоддордун саны"}, value: {ru: "40 шт", ky: "40 даана"}},
             ],
             sale: {isOnSale: false, label: '',},
-            icon: {
-                url: "test/leds-power-icon.png",
-                alt: {
-                    ru: "Изображение иконки",
-                    ky: "Сөлөкөт сүрөтү"
-                }
-            }
         },
         {
             category: lightingTechnology,
@@ -971,6 +971,74 @@ const run = async () => {
             ],
             sale: {isOnSale: false, label: '20%'}
         },
+        {
+            category: stretchWallpaper,
+            title: { ru: "Натяжные обои Premium White", ky: "Премиум Ак тартылган обойлор" },
+            description: {
+                ru: "Белые натяжные обои для жилых интерьеров. Идеально ровная поверхность, долговечность до 15 лет.",
+                ky: "Турак жай интерьери үчүн ак тартылган обойлор. Идеалдуу түз бет, 15 жылга чейин кызмат кылат."
+            },
+            seoTitle: {
+                ru: "Купить Натяжные обои Premium White в Бишкеке — Линия Роста",
+                ky: "Бишкектен Премиум Ак тартылган обойлор сатып алыңыз — Линия Роста"
+            },
+            seoDescription: {
+                ru: "Белые натяжные обои для жилых интерьеров. Гладкие, стильные, долговечные.",
+                ky: "Ак тартылган обойлор. Гладкий, стильдүү жана узак кызмат кылат."
+            },
+            cover: {
+                url: "test/wallpaper-1.JPG",
+                alt: { ru: "натяжные обои белые", ky: "ак тартылган обойлор" }
+            },
+            images: [
+                { image: "test/wallpaper-2.jpeg", alt: { ru: "Интерьер спальни", ky: "Жатак бөлмөнүн интерьери" } },
+                { image: "test/wallpaper-3.jpeg", alt: { ru: "Интерьер гостиной", ky: "Конок бөлмөнүн интерьери" } }
+            ],
+            characteristics: [
+                { key: { ru: "Цвет", ky: "Түсү" }, value: { ru: "Белый", ky: "Ак" } },
+                { key: { ru: "Долговечность", ky: "Узак кызмат кылуу мөөнөтү" }, value: { ru: "15 лет", ky: "15 жыл" } },
+                { key: { ru: "Применение", ky: "Колдонуу" }, value: { ru: "Жилые интерьеры", ky: "Турак жай интерьери" } },
+            ],
+            sale: { isOnSale: false },
+            icon: {
+                url: "test/stretch-wallpaper-icon.png",
+                alt: { ru: "иконка обоев", ky: "обой иконкасы" }
+            }
+        },
+        {
+            category: stretchWallpaper,
+            title: { ru: "Натяжные обои Modern Gray", ky: "Заманбап боз тартылган обойлор" },
+            description: {
+                ru: "Стильные серые натяжные обои для офисов и студий. Сочетают эстетику и шумоизоляцию.",
+                ky: "Кеңселер жана студиялар үчүн заманбап боз тартылган обойлор. Эстетика жана үн өткөрбөөчүлүк."
+            },
+            seoTitle: {
+                ru: "Купить Натяжные обои Modern Gray в Бишкеке — Линия Роста",
+                ky: "Бишкектен Заманбап боз тартылган обойлор сатып алыңыз — Линия Роста"
+            },
+            seoDescription: {
+                ru: "Серые натяжные обои для офисов и студий. Красота и шумоизоляция.",
+                ky: "Кеңсе жана студия үчүн боз тартылган обойлор. Эстетика жана үн өткөрбөөчүлүк."
+            },
+            cover: {
+                url: "test/wallpaper-2.jpeg",
+                alt: { ru: "натяжные обои серые", ky: "боз тартылган обойлор" }
+            },
+            images: [
+                { image: "test/wallpaper-4.jpeg", alt: { ru: "Офисный интерьер", ky: "Кеңсе интерьери" } },
+                { image: "test/wallpaper-3.jpeg", alt: { ru: "Студия", ky: "Студия" } }
+            ],
+            characteristics: [
+                { key: { ru: "Цвет", ky: "Түсү" }, value: { ru: "Серый", ky: "Боз" } },
+                { key: { ru: "Звукоизоляция", ky: "Үн өткөрбөөчүлүк" }, value: { ru: "Да", ky: "Ооба" } },
+                { key: { ru: "Применение", ky: "Колдонуу" }, value: { ru: "Коммерческие интерьеры", ky: "Коммерциялык интерьерлер" } },
+            ],
+            sale: { isOnSale: true, label: '10%', saleDate: "2025-09-15T18:00:00.000+00:00" },
+            icon: {
+                url: "test/stretch-wallpaper-icon2.png",
+                alt: { ru: "иконка серых обоев", ky: "боз обойлордун иконкасы" }
+            }
+        }
     );
 
     await Post.create([
