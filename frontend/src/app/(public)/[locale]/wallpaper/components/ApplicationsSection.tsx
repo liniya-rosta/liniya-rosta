@@ -2,6 +2,7 @@ import React from "react";
 
 import {CustomContainer} from "@/src/components/shared/CustomContainer";
 import {getTranslations} from "next-intl/server";
+import SectionAnimation from "@/src/components/shared/SectionAnimation";
 
 const ApplicationsSection = async () => {
     const t = await getTranslations("WallpaperPage");
@@ -22,7 +23,7 @@ const ApplicationsSection = async () => {
     ];
 
     return (
-        <section className="py-20 px-6 bg-gray-50">
+        <SectionAnimation className="py-20 px-6 bg-gray-50">
             <h2 className="text-18-28-1_2 font-bold text-center mb-12">{t("ApplicationsTitle")}</h2>
 
             <CustomContainer>
@@ -39,7 +40,7 @@ const ApplicationsSection = async () => {
                     ))}
                 </div>
             </CustomContainer>
-        </section>
+        </SectionAnimation>
     );
 };
 

@@ -11,6 +11,7 @@ import {useProductStore} from "@/store/productsStore";
 import {useLocale, useTranslations} from "next-intl";
 import {CustomContainer} from '@/src/components/shared/CustomContainer';
 import ImageViewerModal from "@/src/components/shared/ImageViewerModal";
+import {API_BASE_URL} from "@/src/lib/globalConstants";
 
 interface Props {
     productData: Product | null;

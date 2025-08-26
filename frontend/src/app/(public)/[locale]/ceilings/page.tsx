@@ -4,7 +4,7 @@ import CeilingsClient from "@/src/app/(public)/[locale]/ceilings/CeilingsClient"
 import {Metadata} from "next";
 import {getTranslations} from "next-intl/server";
 import {handleKyError} from "@/src/lib/handleKyError";
-import {Category, ProductResponse} from "@/src/lib/types";
+import {ProductResponse} from "@/src/lib/types";
 
 export const revalidate = 1800;
 
@@ -34,32 +34,38 @@ export const generateMetadata = async (): Promise<Metadata> => {
 };
 
 const CeilingsPage = async () => {
-        const categorySlug = 'spc';
-        const limit = "4";
-        const categories = await fetchCategories(categorySlug);
-        const spcCategory = categories[0];
+    const limit = "4";
+    const allCategories = await fetchCategories();
 
-        let products: ProductResponse | null = null;
-        let allCategories: Category[] | null = null;
-        let productError: string | null = null;
-        const tError = await getTranslations("Errors");
+    const spcCategory = allCategories.find(cat => cat.slug === "spc");
+    const stretchWallpaperCategory = allCategories.find(cat => cat.slug === "stretch-wallpaper");
 
-        try {
-            [products, allCategories] = await Promise.all([
-                fetchProducts({categoryExclude: spcCategory._id, limit}),
-                fetchCategories()
-            ]);
-        } catch (e) {
-            productError = await handleKyError(e, tError('productsError'));
-        }
+    const excludedCategories = [spcCategory?._id, stretchWallpaperCategory?._id].filter(Boolean) as string[];
+
+    let products: ProductResponse | null = null;
+    let productError: string | null = null;
+    const tError = await getTranslations("Errors");
+
+    try {
+        products = await fetchProducts({
+            categoryExclude: [spcCategory?._id, stretchWallpaperCategory?._id].filter(Boolean) as string[],
+            limit,
+        });
+    } catch (e) {
+        productError = await handleKyError(e, tError("productsError"));
+    }
+
+    const filteredCategories = allCategories.filter(cat =>
+        !excludedCategories.includes(cat._id)
+    );
 
         return (
             <CeilingsClient
                 data={products}
-                initialCategories={allCategories}
+                initialCategories={filteredCategories}
                 limit={limit}
                 error={productError}
-                categorySpc={spcCategory._id}
+                excludedCategories={excludedCategories}
             />
         );
 };
