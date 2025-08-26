@@ -9,7 +9,7 @@ export const fetchPosts = async (limit?: string, page?: string, title?: string, 
     if (title) searchParams.append("title", title);
     if (description) searchParams.append("description", description);
 
-    return await kyAPI.get("posts", {searchParams}).json<PostResponse>();
+    return await kyAPI.get("posts/", {searchParams}).json<PostResponse>();
 };
 
 export const fetchPostById = async (postId: string): Promise<Post> => {
