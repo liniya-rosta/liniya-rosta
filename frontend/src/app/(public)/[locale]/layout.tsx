@@ -7,7 +7,7 @@ import ChatContainer from "@/src/components/shared/OnlineChat/ChatContainer";
 import React from "react";
 
 export const metadata: Metadata = {
-    metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL!),
+    metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL ?? 'https://liniya-rosta.com'),
     title: {
         template: '%s | Линия Роста',
         default: 'Линия Роста',
