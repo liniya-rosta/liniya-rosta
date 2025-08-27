@@ -172,6 +172,7 @@ export interface EditProfileForm {
     displayName?: string;
     email?: string;
     password?: string;
+    confirmPassword: string;
 }
 
 export interface Post {
