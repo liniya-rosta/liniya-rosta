@@ -11,7 +11,7 @@ interface Props {
 
 const PaginationButtons: React.FC<Props> = ({page, totalPages, paginationButtons, onPageChange}) => {
     return (
-        <div className="flex justify-center mt-6 gap-4">
+        <div className="flex justify-center mt-6 mb-25 gap-4">
             <BtnArrow
                 onClick={() => onPageChange(page - 1)}
                 disabled={page === 1}
