@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {Button} from "@/src/components/ui/button";
-import {API_BASE_URL} from "@/src/lib/globalConstants";
+import {IMG_BASE} from "@/src/lib/globalConstants";
 import {useFieldArray, useForm} from "react-hook-form";
 import {UpdateProductFormData, updateProductSchema} from "@/src/lib/zodSchemas/admin/productSchema";
 import {zodResolver} from "@hookform/resolvers/zod";
@@ -134,8 +134,8 @@ const ProductEditForm: React.FC<Props> = ({openImagesModal, setPreviewImage, set
         }
     };
 
-    const [coverPreview, setCoverPreview] = useState<string | null>(productDetail?.cover?.url ? `${API_BASE_URL}/${productDetail.cover.url}` : null);
-    const [iconPreview, setIconPreview] = useState<string | null>(productDetail?.icon?.url ? `${API_BASE_URL}/${productDetail.icon.url}` : null);
+    const [coverPreview, setCoverPreview] = useState<string | null>(productDetail?.cover?.url ? `${IMG_BASE}/${productDetail.cover.url}` : null);
+    const [iconPreview, setIconPreview] = useState<string | null>(productDetail?.icon?.url ? `${IMG_BASE}/${productDetail.icon.url}` : null);
 
     const fileInputCoverRef = useRef<HTMLInputElement>(null);
     const fileInputIconRef = useRef<HTMLInputElement>(null);
@@ -152,14 +152,14 @@ const ProductEditForm: React.FC<Props> = ({openImagesModal, setPreviewImage, set
     const onCoverChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
-        setValue("cover", file, { shouldDirty: true, shouldValidate: true });
+        setValue("cover", file, {shouldDirty: true, shouldValidate: true});
         setCoverPreview(URL.createObjectURL(file));
     };
 
     const onIconChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
-        setValue("icon", file, { shouldDirty: true, shouldValidate: true });
+        setValue("icon", file, {shouldDirty: true, shouldValidate: true});
         setIconPreview(URL.createObjectURL(file));
     };
 
