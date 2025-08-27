@@ -45,7 +45,7 @@ const WhyUsSection = () => {
 
                         <div className="p-6 space-y-6">
                             <p className="text-center md:text-left">
-                                {tAboutPage("WhyUsBlock")}
+                                {tAboutPage("WhyUsBlock2")}
                             </p>
                             <div className="flex justify-center md:justify-start">
                                 <Dialog open={isModalTopOpen} onOpenChange={setIsModalTopOpen}>
@@ -53,7 +53,7 @@ const WhyUsSection = () => {
                                         <Button
                                             size="lg"
                                             className="min-w-[180px] font-semibold shadow-md btn-highlight btn-hover-scale">
-                                            {tAboutPage("WhyUsBtn2")}
+                                            {tAboutPage("WhyUsBtn")}
                                         </Button>
                                     </DialogTrigger>
                                     <RequestForm closeModal={() => setIsModalTopOpen(false)}/>
