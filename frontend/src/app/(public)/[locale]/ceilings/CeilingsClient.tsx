@@ -22,10 +22,10 @@ type Props = {
     error: string | null;
     limit: string;
     initialCategories: Category[] | null;
-    categorySpc: string;
+    excludedCategories: string[];
 };
 
-const CeilingsClient: React.FC<Props> = ({data, error, limit, initialCategories, categorySpc}) => {
+const CeilingsClient: React.FC<Props> = ({data, error, limit, initialCategories, excludedCategories}) => {
     const tError = useTranslations("Errors");
     const tCeilings = useTranslations("CeilingsPage");
 
@@ -49,7 +49,7 @@ const CeilingsClient: React.FC<Props> = ({data, error, limit, initialCategories,
         setCategoryId, categoryId,
         searchTitle, setSearchTitle,
         handleSearch
-    } = useProductFetcher(limit, categorySpc)
+    } = useProductFetcher(limit, excludedCategories)
 
     useEffect(() => {
         if (initialCategories) {

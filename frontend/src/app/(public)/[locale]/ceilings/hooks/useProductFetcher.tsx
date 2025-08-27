@@ -5,7 +5,7 @@ import { useProductStore } from "@/store/productsStore";
 import { fetchProducts } from "@/actions/products";
 import { ProductResponse } from "@/src/lib/types";
 
-export const useProductFetcher = (limit: string, categorySpc: string) => {
+export const useProductFetcher = (limit: string, excludedCategories: string[]) => {
     const {
         paginationProducts,
         setFetchProductsLoading,
@@ -39,13 +39,13 @@ export const useProductFetcher = (limit: string, categorySpc: string) => {
             if (initialData) {
                 data = initialData;
             } else {
-                const query: Record<string, string> = {
+                const query: Record<string, string | string[]> = {
                     limit,
                     page: String(newPage),
                 };
 
                 if (currentCategory === "all") {
-                    query.categoryExclude = categorySpc;
+                    query.categoryExclude = excludedCategories;
                 } else {
                     query.categoryId = currentCategory;
                 }

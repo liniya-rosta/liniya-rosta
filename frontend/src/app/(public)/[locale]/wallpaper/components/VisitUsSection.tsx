@@ -7,6 +7,7 @@ import {useTranslations} from "next-intl";
 import {Dialog, DialogTrigger} from "@/src/components/ui/dialog";
 import RequestForm from "@/src/components/shared/RequestForm";
 import {CustomContainer} from "@/src/components/shared/CustomContainer";
+import SectionAnimation from "@/src/components/shared/SectionAnimation";
 
 const VisitUsSection = () => {
     const [isModalTopOpen, setIsModalTopOpen] = React.useState(false);
@@ -14,7 +15,7 @@ const VisitUsSection = () => {
     const t = useTranslations("WallpaperPage");
 
     return (
-        <section className="py-20 px-6">
+        <SectionAnimation className="py-20 px-6">
             <CustomContainer>
                 <div className="grid gap-12 md:grid-cols-2 items-center">
                     <div>
@@ -47,7 +48,7 @@ const VisitUsSection = () => {
                     </div>
                 </div>
             </CustomContainer>
-        </section>
+        </SectionAnimation>
     );
 };
 

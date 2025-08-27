@@ -14,7 +14,7 @@ export const fetchProducts = async ({
     title?: string;
     description?: string;
     categoryId?: string;
-    categoryExclude?: string;
+    categoryExclude?: string | string[];
 }) => {
     const query = new URLSearchParams();
 
@@ -23,9 +23,16 @@ export const fetchProducts = async ({
     if (title) query.append("title", title);
     if (description) query.append("description", description);
     if (categoryId) query.append("category", categoryId);
-    if (categoryExclude) query.append("categoryExclude", categoryExclude);
 
-    return await kyAPI.get(`products?${query.toString()}`).json<ProductResponse>();
+    if (categoryExclude) {
+        if (Array.isArray(categoryExclude)) {
+            categoryExclude.forEach(id => query.append("categoryExclude", id));
+        } else {
+            query.append("categoryExclude", categoryExclude);
+        }
+    }
+
+    return await kyAPI.get(`products/?${query.toString()}`).json<ProductResponse>();
 };
 
 export const fetchProductById = async (id: string): Promise<Product> => {

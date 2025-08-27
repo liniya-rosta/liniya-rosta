@@ -14,10 +14,9 @@ export const revalidate = 3600;
 
 export async function generateMetadata(): Promise<Metadata> {
     const t = await getTranslations('HomePage');
-    const tHeader = await getTranslations('Header');
 
     return {
-        title: tHeader('headerLinks.home'),
+        title: { absolute: 'Линия Роста — натяжные потолки, SPC ламинат и интерьерные решения в Бишкеке' },
         description: t('descriptionSeo'),
         openGraph: {
             title: t('ogTitle'),

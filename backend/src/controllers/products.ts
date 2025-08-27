@@ -45,8 +45,18 @@ export const getProducts = async (req: Request, res: Response, next: NextFunctio
             conditions.push({ category: new mongoose.Types.ObjectId(category) });
         }
 
-        if (categoryExclude && typeof categoryExclude === "string") {
-            conditions.push({ category: { $ne: new mongoose.Types.ObjectId(categoryExclude) } });
+        if (categoryExclude) {
+            const excludeCategories = Array.isArray(categoryExclude)
+                ? categoryExclude
+                : [categoryExclude];
+
+            const excludeIds = excludeCategories
+                .filter((id): id is string => typeof id === "string")
+                .map(id => new mongoose.Types.ObjectId(id));
+
+            if (excludeIds.length > 0) {
+                conditions.push({ category: { $nin: excludeIds } });
+            }
         }
 
         const matchStage: FilterQuery<IProduct> = {};
