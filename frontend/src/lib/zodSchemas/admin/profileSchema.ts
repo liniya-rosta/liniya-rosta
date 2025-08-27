@@ -21,4 +21,9 @@ export const profileSchema = z.object({
         .refine((val) => !val || val.length >= 3, {
             message: "Пароль должен быть не короче 3 символов",
         }),
-});
+    confirmPassword: z.string().min(1, "Подтвердите пароль"),
+})
+    .refine((data) => data.password === data.confirmPassword, {
+        message: "Пароли не совпадают",
+        path: ["confirmPassword"],
+    });

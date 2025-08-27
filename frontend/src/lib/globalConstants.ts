@@ -5,5 +5,5 @@ export const API_BASE_URL =
 
 export const IMG_BASE = process.env.NEXT_PUBLIC_IMG_SERVER || "http://backend:8000";
 
-const wsBase = API_BASE_URL.replace(/^http/, "ws");
+const wsBase = API_BASE_URL.replace(/^https/, "ws");
 export const WS_URL = `${wsBase}/ws/online-chat`;
