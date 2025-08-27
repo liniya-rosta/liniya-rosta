@@ -6,7 +6,7 @@ import Script from "next/script";
 const InstagramSection = () => {
     const tHome = useTranslations("HomePage");
     return (
-        <SectionAnimation className="space-y-6 mx-auto">
+        <SectionAnimation className="space-y-6 mx-auto mb-15 md:mb-25">
             <h3 className="main-section-title text-center text-23-30-1_5">
                 {tHome("instagramTitle")}
             </h3>
