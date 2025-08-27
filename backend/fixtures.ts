@@ -1000,10 +1000,6 @@ const run = async () => {
                 { key: { ru: "Применение", ky: "Колдонуу" }, value: { ru: "Жилые интерьеры", ky: "Турак жай интерьери" } },
             ],
             sale: { isOnSale: false },
-            icon: {
-                url: "test/stretch-wallpaper-icon.png",
-                alt: { ru: "иконка обоев", ky: "обой иконкасы" }
-            }
         },
         {
             category: stretchWallpaper,
@@ -1034,10 +1030,6 @@ const run = async () => {
                 { key: { ru: "Применение", ky: "Колдонуу" }, value: { ru: "Коммерческие интерьеры", ky: "Коммерциялык интерьерлер" } },
             ],
             sale: { isOnSale: true, label: '10%', saleDate: "2025-09-15T18:00:00.000+00:00" },
-            icon: {
-                url: "test/stretch-wallpaper-icon2.png",
-                alt: { ru: "иконка серых обоев", ky: "боз обойлордун иконкасы" }
-            }
         }
     );
 

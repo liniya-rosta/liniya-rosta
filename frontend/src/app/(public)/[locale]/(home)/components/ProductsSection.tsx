@@ -14,6 +14,7 @@ const ProductsSection = () => {
     const tHome = useTranslations("HomePage");
     const tError = useTranslations("Errors");
     const tBtn = useTranslations("Buttons");
+    const tHeader = useTranslations("Header");
 
     return (
         <SectionAnimation ariaLabelledby="products-heading" className="py-12">
@@ -68,12 +69,17 @@ const ProductsSection = () => {
                     </div>
 
                     <div className="flex flex-wrap gap-2">
-                        <BtnArrow className="btn-hover-scale">
-                            <Link href="/ceilings" className="text-sm font-medium">
+                        <BtnArrow variant="link">
+                            <Link  href="/ceilings" className="text-sm font-medium">
                                 {tBtn("ceilingsBtn")}
                             </Link>
                         </BtnArrow>
-                        <BtnArrow className="btn-hover-scale">
+                        <BtnArrow variant="link">
+                            <Link href="/wallpaper" className="text-sm font-medium">
+                                {tHeader("headerLinks.stretchWallpaper")}
+                            </Link>
+                        </BtnArrow>
+                        <BtnArrow variant="link">
                             <Link href="/spc" className="text-sm font-medium">
                                 {tBtn("spcBtn")}
                             </Link>

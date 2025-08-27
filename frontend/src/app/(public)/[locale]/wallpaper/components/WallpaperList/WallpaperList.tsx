@@ -24,6 +24,7 @@ const WallpaperList: React.FC<Props> = ({initialData, error}) => {
     } = useProductStore();
 
     const t = useTranslations("WallpaperPage");
+    const tProduct = useTranslations("CeilingsPage");
 
     useEffect(() => {
         if (initialData) {
@@ -41,9 +42,13 @@ const WallpaperList: React.FC<Props> = ({initialData, error}) => {
             <SectionAnimation>
                 <h2 className="text-18-28-1_2 font-bold text-center mb-12">{t("WallpaperListTitle")}</h2>
                 <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 ">
-                    {products.map(product => (
-                        <CeilingsCard key={product._id} product={product} />
-                    ))}
+                    {products.length > 0 ? (
+                        products.map((product) => (
+                            <CeilingsCard key={product._id} product={product}/>
+                        ))
+                    ) : (
+                        <p className="text-lg text-center font-medium text-gray-600">{tProduct("noProducts")}</p>
+                    )}
                 </div>
             </SectionAnimation>
         </CustomContainer>

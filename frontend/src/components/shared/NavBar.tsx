@@ -1,7 +1,6 @@
 "use client";
 
-import Link from "next/link";
-import {usePathname} from "next/navigation";
+import {Link, usePathname} from "@/src/i18n/navigation";
 import Burger from "@/src/components/ui/Burger";
 import { useTranslations } from "next-intl";
 import {AnimatePresence, motion } from "motion/react"
@@ -40,7 +39,7 @@ const NavBar = () => {
 
     return (
         <nav className="py-4">
-            <div className="hidden lg:flex gap-7.5 items-center justify-center">
+            <div className="hidden lg:flex gap-2 lg:gap-7.5 items-center justify-center">
                 {navItems.map(({ href, label, children }) => {
                     const isActive = children
                         ? children.some(child => cleanPathname === child.href)
@@ -89,8 +88,8 @@ const NavBar = () => {
                                                     >
                                                         {child.label}
                                                         {isChildActive && (
-                                                             <Check className="ml-2 h-4 w-4 text-primary" />
-                                                    )   }
+                                                            <Check className="ml-2 h-4 w-4 text-primary" />
+                                                        )   }
                                                     </Link>
                                                 );
                                             })}
@@ -135,3 +134,4 @@ const NavBar = () => {
     );
 };
 export default NavBar
+

@@ -30,7 +30,7 @@ const LanguageSwitcher: React.FC<Props> = ({className}) => {
         <Select value={locale} onValueChange={handleChange}>
             <SelectTrigger className={cn("md-min-w-[140px] border-primary cursor-pointer", className)}>
                 <Earth className="text-primary"/>
-                <span className="hidden sm:inline">
+                <span className="hidden md:inline lg:hidden xl:inline">
                     <SelectValue/>
                  </span>
             </SelectTrigger>
