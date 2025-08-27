@@ -39,6 +39,7 @@ const ProfileForm: React.FC<Props> = ({closeModal}) => {
             displayName: '',
             email: '',
             password: '',
+            confirmPassword:'',
         }
     });
 
@@ -49,6 +50,7 @@ const ProfileForm: React.FC<Props> = ({closeModal}) => {
                 displayName: user.displayName || '',
                 email: user.email || '',
                 password: '',
+                confirmPassword: ''
             });
         }
     }, [user, reset]);
@@ -123,6 +125,21 @@ const ProfileForm: React.FC<Props> = ({closeModal}) => {
                         />
                         {errors.password && <p className="text-sm text-red-600">{errors.password.message}</p>}
                     </div>
+
+                    <div className="grid gap-1">
+                        <Label htmlFor="confirmPassword">Подтвердите пароль</Label>
+                        <Input
+                            id="confirmPassword"
+                            type="password"
+                            {...register('confirmPassword')}
+                            placeholder="Повторите новый пароль"
+                            disabled={isSubmitting}
+                        />
+                        {errors.confirmPassword && (
+                            <p className="text-sm text-red-600">{errors.confirmPassword.message}</p>
+                        )}
+                    </div>
+
                 </div>
 
                 <DialogFooter className="mt-4">

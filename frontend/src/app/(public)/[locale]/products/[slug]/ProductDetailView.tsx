@@ -51,7 +51,7 @@ const ProductDetailView: React.FC<Props> = ({productData, fetchProductError}) =>
     if (product) return (
         <CustomContainer>
             <div
-                className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(320px,400px)] gap-10 md:my-7">
+                className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(320px,400px)] gap-10 md:my-7 mb-25">
                 <div>
                     <div
                         className="relative w-full h-[360px] sm:h-[440px] md:h-[500px] rounded-xl overflow-hidden border shadow-lg">
