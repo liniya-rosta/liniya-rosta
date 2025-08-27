@@ -8,6 +8,7 @@ import logo from "../../../public/logo.png"
 import { CustomContainer } from './CustomContainer';
 import Link from 'next/link';
 import { useLocale } from 'next-intl';
+import {CircleUserRound} from "lucide-react";
 
 const Header = () => {
     const locale = useLocale();
@@ -15,7 +16,7 @@ const Header = () => {
     return (
         <header className="py-6 shadow mb-15 md:mb-8 gap-4 z-50">
             <CustomContainer>
-                <div className="flex items-center flex-wrap lg:justify-between gap-4">
+                <div className="flex items-center lg:justify-between gap-4">
                     <Link href={`/${locale}`} className="shrink-0 block">
                         <Image
                             src={logo}
@@ -25,7 +26,12 @@ const Header = () => {
                         />
                     </Link>
                     <NavBar />
-                    <LanguageSwitcher className="ml-auto lg:ml-0"/>
+                    <div className="flex items-center gap-4 ml-auto lg:ml-0">
+                        <Link href={"/admin"}>
+                            <CircleUserRound />
+                        </Link>
+                        <LanguageSwitcher/>
+                    </div>
                 </div>
             </CustomContainer>
         </header>
