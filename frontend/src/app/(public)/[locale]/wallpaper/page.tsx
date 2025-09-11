@@ -6,7 +6,7 @@ import ApplicationsSection from "@/src/app/(public)/[locale]/wallpaper/component
 import {Metadata} from "next";
 import {getTranslations} from "next-intl/server";
 import WallpaperList from "@/src/app/(public)/[locale]/wallpaper/components/WallpaperList/WallpaperList";
-import {Product} from "@/src/lib/types";
+import {ProductResponse} from "@/src/lib/types";
 import {fetchCategories} from "@/actions/categories";
 import {fetchProducts} from "@/actions/products";
 import {handleKyError} from "@/src/lib/handleKyError";
@@ -39,17 +39,22 @@ export const generateMetadata = async (): Promise<Metadata> => {
 };
 
 const Page = async () => {
-    let wallpaperData: Product[] | null = null;
+    let wallpaperData: ProductResponse| null = null;
     let error: string | null = null;
     const tError = await getTranslations('Errors');
+    const limit = "9";
+    let categoryId: string | null = null;
 
     try {
         const categorySlug = 'stretch-wallpaper';
         const categories = await fetchCategories(categorySlug);
-        const wallpaperCategory = categories[0];
 
-        const wallpaperResponse = await fetchProducts({categoryId: wallpaperCategory._id});
-        wallpaperData = wallpaperResponse.items;
+        if (categories.length > 0) {
+            categoryId = categories[0]._id;
+            wallpaperData = await fetchProducts({ categoryId, limit });
+        } else {
+            error = tError('wallpaperError');
+        }
     } catch (e) {
         error = await handleKyError(e, tError('wallpaperError'));
     }
@@ -61,7 +66,12 @@ const Page = async () => {
             <ApplicationsSection/>
             <VisitUsSection/>
 
-            <WallpaperList error={error} initialData={wallpaperData} />
+            <WallpaperList
+                error={error}
+                initialData={wallpaperData}
+                limit={limit}
+                categoryId={categoryId}
+            />
         </div>
     );
 };
