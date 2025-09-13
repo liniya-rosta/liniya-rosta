@@ -12,13 +12,13 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
 
         const user = await User.findOne({email: req.body.email});
         if (!user) {
-            res.status(404).send({error: "Пользователь не найден"});
+            res.status(404).send({error: "Неверный email или пароль"});
             return;
         }
 
         const isMatch = await user.checkPassword(req.body.password);
         if (!isMatch) {
-            res.status(400).send({error: "Пароль неверный"});
+            res.status(400).send({error: "Неверный email или пароль"});
             return;
         }
 

@@ -64,7 +64,7 @@ const ChatContainer = () => {
             <div
                 className={`flex flex-col ${
                     isChatOpen
-                        ? "w-screen h-screen max-w-full max-h-full md:w-[400px] md:h-[560px]"
+                        ? "w-screen h-[80vh] max-w-full max-h-full md:w-[400px] md:h-[560px]"
                         : ""
                 }`}
             >

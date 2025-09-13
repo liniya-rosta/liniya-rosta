@@ -75,18 +75,27 @@ categoriesSuperAdminRouter.patch("/:id", async (req, res, next) => {
 categoriesSuperAdminRouter.delete("/:id", async (req, res, next) => {
     try {
         if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
-            res.status(400).send({error: "Неверный формат ID категории"});
+             res.status(400).send({ error: "Неверный формат ID категории" });
             return;
         }
 
-        const category = await Category.findByIdAndDelete(req.params.id);
+        const category = await Category.findById(req.params.id);
+
         if (!category) {
-            res.status(404).send({error: "Категория не найдена"});
+             res.status(404).send({ error: "Категория не найдена" });
             return;
         }
 
-        await Product.deleteMany({category: req.params.id});
-        res.send({message: "Категория и связанные с ней продукты успешно удалены"});
+        const protectedCategories = ["spc", "stretch-wallpaper"];
+
+        if (protectedCategories.includes(category.slug ?? "")) {
+             res.status(403).send({ error: "Удаление этой категории запрещено" });
+            return;
+        }
+
+        await Category.findByIdAndDelete(req.params.id);
+        await Product.deleteMany({ category: req.params.id });
+        res.send({ message: "Категория и связанные с ней продукты успешно удалены" });
     } catch (e) {
         next(e);
     }
