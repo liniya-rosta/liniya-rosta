@@ -40,9 +40,8 @@ const HeroSectionPortfolio = () => {
                 </Dialog>
 
                 <Button
-                    variant="outline"
                     size="lg"
-                    className="btn-hover-scale"
+                    className="btn-white border border-primary btn-hover-scale"
                     asChild
                 >
                     <a href={`https://wa.me/${contact?.whatsapp}`} target="_blank"
