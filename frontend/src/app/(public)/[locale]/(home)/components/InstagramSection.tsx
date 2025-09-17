@@ -18,7 +18,7 @@ const InstagramSection = () => {
 
             <div className="rounded-xl overflow-hidden">
                 <iframe
-                    src="https://cdn.lightwidget.com/widgets/a5595befc0b75c39ae732dfc56693cbd.html"
+                    src="https://cdn.lightwidget.com/widgets/70e87ca9d4cd522d9a285042ea153982.html"
                     className="lightwidget-widget w-full h-[380px]"
                     scrolling="no"
                     allowTransparency

@@ -27,10 +27,10 @@ const HeroWallpaperSection = () => {
 
             <div className="flex flex-col items-center bg-beige justify-center text-center px-6 py-20">
                 <AnimatedEntrance>
-                    <h1 className="relative text-30-48-1_2 font-bold mb-6 max-w-3xl z-10">
+                    <h1 className="text-30-48-1_2 font-bold mb-6 max-w-3xl z-10">
                         <span className="text-highlight">{t("titlePart1")}</span> {t("titlePart2")}
                     </h1>
-                    <p className="relative text-lg text-foreground/60 max-w-2xl mb-8 z-10">
+                    <p className="text-lg text-foreground/60 max-w-2xl mx-auto mb-8 z-10">
                         {t("description")}
                     </p>
                     <Dialog open={isModalTopOpen} onOpenChange={setIsModalTopOpen}>
