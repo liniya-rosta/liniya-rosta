@@ -5,11 +5,11 @@ import VisitUsSection from "@/src/app/(public)/[locale]/wallpaper/components/Vis
 import ApplicationsSection from "@/src/app/(public)/[locale]/wallpaper/components/ApplicationsSection";
 import {Metadata} from "next";
 import {getTranslations} from "next-intl/server";
-import WallpaperList from "@/src/app/(public)/[locale]/wallpaper/components/WallpaperList/WallpaperList";
 import {ProductResponse} from "@/src/lib/types";
 import {fetchCategories} from "@/actions/categories";
 import {fetchProducts} from "@/actions/products";
 import {handleKyError} from "@/src/lib/handleKyError";
+import WallpaperList from "@/src/app/(public)/[locale]/wallpaper/components/WallpaperList";
 
 export const revalidate = 1800;
 
