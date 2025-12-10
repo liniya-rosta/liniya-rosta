@@ -28,7 +28,7 @@ export const CopyPhoneButton = ({ phone }: { phone: string }) => {
                 <Button
                     size="lg"
                     onClick={handleCopy}
-                    className="bg-primary-foreground text-primary hover:bg-background/80 btn-hover-scale select-none"
+                    className="btn-white btn-hover-scale select-none"
                 >
                     {copied ? (
                         <>
