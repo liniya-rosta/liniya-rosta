@@ -8,8 +8,7 @@ import React from "react";
 
 const BASE = "https://liniya-rosta.com";
 
-export async function generateMetadata({params}: { params: Promise<{ locale: 'ru' | 'ky' }> }): Promise<Metadata> {
-    const {locale} = await params;
+export async function generateMetadata({params}: { params: Promise<{ locale: 'ru' | 'ky' }> }): Promise<Metadata> {    const {locale} = await params;
     const canon = `${BASE}/${locale}`;
 
     return {
@@ -57,7 +56,7 @@ export async function generateMetadata({params}: { params: Promise<{ locale: 'ru
                                                    params
                                                }: {
         children: React.ReactNode;
-        params: Promise<{ locale: 'ru' | 'ky' }>;
+        params: Promise<{ locale: string }>;
     }) {
         const {locale} = await params;
 
